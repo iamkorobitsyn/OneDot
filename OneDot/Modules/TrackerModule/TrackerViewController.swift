@@ -10,12 +10,16 @@ import MapKit
 
 class TrackerViewController: UIViewController {
     
+    
     let mapView: MKMapView = MKMapView()
     let locationManager: CLLocationManager = CLLocationManager()
+    
+    let alert: UIAlertController = AlertController(title: "1", message: "1", url: "1")
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setConstraints()
+        present(alert, animated: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -23,6 +27,28 @@ class TrackerViewController: UIViewController {
     }
     
     private func checkLocationEnabled() {
+        
+        let queue = DispatchQueue.global(qos: .userInitiated)
+        
+        queue.async {
+            if CLLocationManager.locationServicesEnabled() {
+                
+                DispatchQueue.main.async {
+                    self.setupLocationManager()
+                    self.checkAuthorization()
+                }
+            } else {
+                print("test")
+            }
+        }
+         
+    }
+    
+    private func setupLocationManager() {
+        
+    }
+    
+    private func checkAuthorization() {
         
     }
 
