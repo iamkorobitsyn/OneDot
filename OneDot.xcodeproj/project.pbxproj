@@ -20,8 +20,10 @@
 		6502D6EC2A59A517000F96E0 /* UIColor + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502D6EB2A59A517000F96E0 /* UIColor + Extansions.swift */; };
 		6502D6F02A5C9A1F000F96E0 /* TrackerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502D6EF2A5C9A1F000F96E0 /* TrackerButton.swift */; };
 		6502D6F32A5CA034000F96E0 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502D6F22A5CA034000F96E0 /* CustomTabBar.swift */; };
+		654893992AAE8099005039DF /* ActivitiesMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654893982AAE8099005039DF /* ActivitiesMenu.swift */; };
 		657D66252AA8693400397427 /* gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 657D66242AA8693400397427 /* gitignore */; };
 		657D66272AA86D7000397427 /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657D66262AA86D7000397427 /* AlertController.swift */; };
+		659879222AB48BBD004F6E2D /* ActivityButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659879212AB48BBD004F6E2D /* ActivityButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,8 +61,10 @@
 		6502D6EB2A59A517000F96E0 /* UIColor + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + Extansions.swift"; sourceTree = "<group>"; };
 		6502D6EF2A5C9A1F000F96E0 /* TrackerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerButton.swift; sourceTree = "<group>"; };
 		6502D6F22A5CA034000F96E0 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
+		654893982AAE8099005039DF /* ActivitiesMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesMenu.swift; sourceTree = "<group>"; };
 		657D66242AA8693400397427 /* gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gitignore; sourceTree = "<group>"; };
 		657D66262AA86D7000397427 /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
+		659879212AB48BBD004F6E2D /* ActivityButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,8 +241,18 @@
 			children = (
 				6502D6EF2A5C9A1F000F96E0 /* TrackerButton.swift */,
 				657D66262AA86D7000397427 /* AlertController.swift */,
+				659879202AB48B46004F6E2D /* Activities */,
 			);
 			path = CustomViews;
+			sourceTree = "<group>";
+		};
+		659879202AB48B46004F6E2D /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				654893982AAE8099005039DF /* ActivitiesMenu.swift */,
+				659879212AB48BBD004F6E2D /* ActivityButton.swift */,
+			);
+			path = Activities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -372,12 +386,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				6502D6E22A595A94000F96E0 /* ToolsViewController.swift in Sources */,
+				654893992AAE8099005039DF /* ActivitiesMenu.swift in Sources */,
 				6502D6B22A595315000F96E0 /* OneDot.xcdatamodeld in Sources */,
 				6502D6EC2A59A517000F96E0 /* UIColor + Extansions.swift in Sources */,
 				6502D6E52A595AC6000F96E0 /* ProfileViewController.swift in Sources */,
 				6502D6F32A5CA034000F96E0 /* CustomTabBar.swift in Sources */,
 				6502D6F02A5C9A1F000F96E0 /* TrackerButton.swift in Sources */,
 				657D66272AA86D7000397427 /* AlertController.swift in Sources */,
+				659879222AB48BBD004F6E2D /* ActivityButton.swift in Sources */,
 				6502D6E92A596919000F96E0 /* TabBarController.swift in Sources */,
 				6502D6AC2A595315000F96E0 /* TrackerViewController.swift in Sources */,
 				6502D6A82A595315000F96E0 /* AppDelegate.swift in Sources */,
@@ -541,15 +557,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XSJLPH4XDX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OneDot/Recourses/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Разрешить использование вашего местоположения?";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please, allow to see current location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -568,15 +586,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XSJLPH4XDX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OneDot/Recourses/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Разрешить использование вашего местоположения?";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please, allow to see current location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

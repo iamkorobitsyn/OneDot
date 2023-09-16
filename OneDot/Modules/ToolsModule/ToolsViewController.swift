@@ -12,7 +12,7 @@ class ToolsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = UIColor.blue
+        view.backgroundColor = UIColor.customBlueMid
     }
 
 }
