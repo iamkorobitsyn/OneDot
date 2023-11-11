@@ -16,13 +16,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let tabBar = TabBarController()
-        window?.rootViewController = tabBar
+        
+        window?.overrideUserInterfaceStyle =
+        TraitCollectionManager.shared.theme.getUserInterfaceStyle()
+        
+        let rootViewController = MainVC()
+        let navigationController = NavigationVC()
+        navigationController.pushViewController(rootViewController, animated: true)
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
+
         
         return true
     }
-    
 
     // MARK: - Core Data stack
 

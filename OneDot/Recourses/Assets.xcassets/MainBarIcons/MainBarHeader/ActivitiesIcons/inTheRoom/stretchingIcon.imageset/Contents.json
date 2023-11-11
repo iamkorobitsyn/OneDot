@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "stretchingIcon.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
