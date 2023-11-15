@@ -74,7 +74,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
 //        view.addSubview(settingsButton)
         view.addSubview(greetingLoadingView)
         
-        tabBar.backgroundColor = .custom.mainDynamic
+        tabBar.backgroundColor = .currentColorSet.tabBarColor
         
         
 
@@ -121,24 +121,24 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
         print(i)
         if i == 1 {
             setNavigationBar(true,
-                .custom.mainDynamic,
-                .custom.titleDynamic,
+                .currentColorSet.mainDynamicColor,
+                .currentColorSet.titleDynamicColor,
                 .label)
         } else if i == 2 {
             setNavigationBar(false,
-                .custom.mainDynamic,
-                .custom.titleDynamic,
+                .currentColorSet.mainDynamicColor,
+                .currentColorSet.titleDynamicColor,
                 .label)
         } else if i == 0 {
             if traitCollection.userInterfaceStyle == .light {
                 setNavigationBar(true,
-                    .custom.mainDynamic,
-                    .custom.titleDynamic,
+                    .currentColorSet.mainDynamicColor,
+                    .currentColorSet.titleDynamicColor,
                     .label)
             } else if traitCollection.userInterfaceStyle == .dark {
                 setNavigationBar(false,
-                    .custom.mainDynamic,
-                    .custom.titleDynamic,
+                    .currentColorSet.mainDynamicColor,
+                    .currentColorSet.titleDynamicColor,
                     .label)
             }
         }
@@ -161,7 +161,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
             navigationBar.standardAppearance.largeTitleTextAttributes = 
             [.backgroundColor: UIColor.clear,
              .foregroundColor: foregroundColor,
-             .font: UIFont.systemFont(ofSize: 35, weight: .medium, width: .compressed)]
+             .font: UIFont.systemFont(ofSize: 35, weight: .black, width: .compressed)]
             
         } else {
 
@@ -169,7 +169,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
             appearence.largeTitleTextAttributes = [.backgroundColor: UIColor.clear,
                                                    .foregroundColor: foregroundColor,
                                                    .font: UIFont.systemFont(ofSize: 35,
-                                                    weight: .medium,
+                                                    weight: .black,
                                                     width: .compressed)]
             appearence.backgroundColor = backgroundColor
             navigationBar.scrollEdgeAppearance = appearence
@@ -227,11 +227,10 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
 
 extension NavigationVC: NavigationVCColorSetProtocol {
     func update(_ set: ColorSetProtocol, _ barBGIsHidden: Bool) {
-        tabBar.backgroundColor = set.mainDynamic
-        
-        
+        tabBar.backgroundColor = set.tabBarColor
+        print("work")
         settingsButton.backgroundColor = .white
-        setNavigationBar(barBGIsHidden, set.mainDynamic, set.titleDynamic, set.titleDynamic)
+        setNavigationBar(barBGIsHidden, set.mainDynamicColor, set.titleDynamicColor, set.titleDynamicColor)
     }
     
 

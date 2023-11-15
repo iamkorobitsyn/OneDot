@@ -10,9 +10,9 @@ import UIKit
 
 class MainBarColorThemesView: UIView {
     
+    
     var navigationVCDelegate: NavigationVCColorSetProtocol?
     var mainVCDelegate: MainVCColorSetProtocol?
-    let factoryColorSet = FactoryColorSet()
     
     let title: UILabel = UILabel()
     
@@ -21,13 +21,41 @@ class MainBarColorThemesView: UIView {
     let systemTestButton = UIButton()
     
     var selectorList: [UIButton] = [UIButton]()
+    var colorSetList = FactoryColorSet.shared.get()
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+        
+        
+     
+        
         setViews()
         setConstraints()
+        
+        
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 10, right: 10)
+        layout.itemSize = CGSize(width: 220, height: 280)
+        layout.scrollDirection = .horizontal
+        
+        let myCollectionView: UICollectionView = UICollectionView(frame: self.frame, collectionViewLayout: layout)
+        myCollectionView.dataSource = self
+        myCollectionView.delegate = self
+        myCollectionView.register(MainBarColorThemesCollectionCell.self, forCellWithReuseIdentifier: "MyCell")
+        myCollectionView.backgroundColor = UIColor.white
+        myCollectionView.backgroundColor = .red.withAlphaComponent(0.3)
+        self.addSubview(myCollectionView)
+        
+        myCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            myCollectionView.widthAnchor.constraint(equalToConstant:
+                                            UIScreen.main.bounds.width),
+            myCollectionView.heightAnchor.constraint(equalToConstant: 100),
+            myCollectionView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            myCollectionView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 40)
+        ])
 
     }
     
@@ -38,6 +66,8 @@ class MainBarColorThemesView: UIView {
         title.font = UIFont.systemFont(ofSize: 30, weight: .black)
         title.text = ""
         title.textColor = .lightGray
+        
+        
         
         addSubview(lightTestButton)
         lightTestButton.backgroundColor = .lightGray
@@ -55,22 +85,24 @@ class MainBarColorThemesView: UIView {
         selectorList.append(contentsOf: [systemTestButton,
                                          lightTestButton,
                                          darkTestButton])
+        selectorList[0].isHidden = true
+        selectorList[1].isHidden = true
+        selectorList[2].isHidden = true
         
         registerForTraitChanges([UITraitUserInterfaceStyle.self], 
                                 action: #selector(changeUserInterfaceStyle))
+        
     }
     
     //MARK: - ChangeUserInterfaceStyle
     
     @objc private func changeUserInterfaceStyle() {
         if traitCollection.userInterfaceStyle == .dark {
-            UIColor.custom = factoryColorSet.get(.sunsetSky)
-            navigationVCDelegate?.update(factoryColorSet.get(.sunsetSky), false)
-            mainVCDelegate?.update(factoryColorSet.get(.sunsetSky), false)
+            navigationVCDelegate?.update(UIColor.currentColorSet, false)
+            mainVCDelegate?.update(UIColor.currentColorSet, false)
         } else if traitCollection.userInterfaceStyle == .light {
-            UIColor.custom = factoryColorSet.get(.sunsetSky)
-            navigationVCDelegate?.update(factoryColorSet.get(.sunsetSky), true)
-            mainVCDelegate?.update(factoryColorSet.get(.sunsetSky), true)
+            navigationVCDelegate?.update(UIColor.currentColorSet, true)
+            mainVCDelegate?.update(UIColor.currentColorSet, true)
         }
     }
     
@@ -85,15 +117,15 @@ class MainBarColorThemesView: UIView {
                 TraitCollectionManager.shared.theme.getUserInterfaceStyle()
                 
                 if i == 1 {
-                    UIColor.custom = factoryColorSet.get(.sunsetSky)
-                    navigationVCDelegate?.update(factoryColorSet.get(.sunsetSky), true)
-                    mainVCDelegate?.update(factoryColorSet.get(.sunsetSky), true)
+
+                    navigationVCDelegate?.update(UIColor.currentColorSet, true)
+                    mainVCDelegate?.update(UIColor.currentColorSet, true)
                 }
                 
                 if i == 2 {
-                    UIColor.custom = factoryColorSet.get(.sunsetSky)
-                    navigationVCDelegate?.update(factoryColorSet.get(.sunsetSky), false)
-                    mainVCDelegate?.update(factoryColorSet.get(.sunsetSky), false)
+
+                    navigationVCDelegate?.update(UIColor.currentColorSet, false)
+                    mainVCDelegate?.update(UIColor.currentColorSet, false)
                 }
                 
                 
@@ -109,6 +141,7 @@ class MainBarColorThemesView: UIView {
         lightTestButton.translatesAutoresizingMaskIntoConstraints = false
         darkTestButton.translatesAutoresizingMaskIntoConstraints = false
         systemTestButton.translatesAutoresizingMaskIntoConstraints = false
+        
         
         NSLayoutConstraint.activate([
             title.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -129,7 +162,8 @@ class MainBarColorThemesView: UIView {
             systemTestButton.heightAnchor.constraint(equalToConstant: 50),
             systemTestButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             systemTestButton.centerXAnchor.constraint(equalTo: centerXAnchor,
-                                                      constant: 50)
+                                                      constant: 50),
+            
         ])
     }
     
@@ -138,3 +172,47 @@ class MainBarColorThemesView: UIView {
     }
     
 }
+
+extension MainBarColorThemesView: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return colorSetList.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let myCell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyCell", for: indexPath) as? MainBarColorThemesCollectionCell
+        myCell?.title.text = colorSetList[indexPath.row].textTitle
+        return myCell ?? UICollectionViewCell()
+    }
+    
+    //MARK: - DidSelectCollectionView
+    
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    {
+        
+        
+        let colorSet = colorSetList[indexPath.row]
+        UIColor.currentColorSet = colorSet
+        ColorIndexManager.shared.colorIndex = indexPath.row
+        
+        TraitCollectionManager.shared.theme = colorSet.theme
+        window?.overrideUserInterfaceStyle =
+        TraitCollectionManager.shared.theme.getUserInterfaceStyle()
+        
+        if traitCollection.userInterfaceStyle == .light {
+            navigationVCDelegate?.update(colorSet, true)
+            mainVCDelegate?.update(colorSet, true)
+        }
+        
+        if traitCollection.userInterfaceStyle == .dark {
+            navigationVCDelegate?.update(colorSet, false)
+            mainVCDelegate?.update(colorSet, false)
+            
+        }
+        
+        
+
+    }
+}
+
+

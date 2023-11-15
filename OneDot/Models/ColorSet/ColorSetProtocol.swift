@@ -10,11 +10,24 @@ import UIKit
 
 protocol ColorSetProtocol {
     
-    var mainDynamic: UIColor {get}
-    var titleDynamic: UIColor {get}
-    var specialDynamic: UIColor {get}
+    var theme: Theme {get}
     
-    var deep: UIColor {get}
-    var light: UIColor {get}
-    var special: UIColor {get}
+    var textTitle: String {get}
+    var imageNamed: String {get}
+    
+    var mainDynamicColor: UIColor {get}
+    var titleDynamicColor: UIColor {get}
+    var specialDynamicColor: UIColor {get}
+    
+    var mainSelectorColor: UIColor {get}
+    var additionalSelectorColor: UIColor {get}
+    
+    var tabBarColor: UIColor {get}
+    
+    var deepColor: UIColor {get}
+    var lightColor: UIColor {get}
+    var specialColor: UIColor {get}
+    
+    
+   
 }

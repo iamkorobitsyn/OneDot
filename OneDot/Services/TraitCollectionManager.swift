@@ -38,3 +38,18 @@ class TraitCollectionManager {
         }
     }
 }
+
+
+class ColorIndexManager {
+    static let shared = ColorIndexManager()
+    
+    var colorIndex: Int? {
+        get {
+            UserDefaults.standard.integer(forKey: "currentColor")
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: "currentColor")
+        }
+    }
+    
+}

@@ -9,7 +9,7 @@ import UIKit
 import AudioToolbox
 
 class MainBarHeader: UIView {
-    let colorSet = UIColor.custom
+    let colorSet = UIColor.currentColorSet
 
     let exercises = FactoryExercises()
     var currentExercise: Exercise?
@@ -76,9 +76,11 @@ class MainBarHeader: UIView {
         }
     }
     
+    //MARK: - UpdateColors
+    
     func updateColors(_ set: ColorSetProtocol) {
-        toolsStack.backgroundColor = set.mainDynamic
-        locationStack.backgroundColor = set.mainDynamic
+        toolsStack.backgroundColor = set.mainSelectorColor
+        locationStack.backgroundColor = set.additionalSelectorColor
     }
     
     
@@ -133,6 +135,7 @@ class MainBarHeader: UIView {
         }
         
         if indoorButton.isTouchInside {
+            gpsView.isHidden = true
             feedbackGen.selectionChanged()
             completion?(indoorButton)
             
@@ -149,6 +152,8 @@ class MainBarHeader: UIView {
             outdoorButton.setInactiveState(.onTheStreet)
             UserDefaultsManager.shared.selectorSave("room")
         } else if outdoorButton.isTouchInside {
+            gpsView.isHidden = false
+            
             feedbackGen.selectionChanged()
             completion?(outdoorButton)
             
@@ -190,7 +195,7 @@ class MainBarHeader: UIView {
         toolsStack = UIStackView(arrangedSubviews: [calculatorButton,
                                                     soundButton,
                                                     themesButton])
-        toolsStack.backgroundColor = .custom.mainDynamic
+        toolsStack.backgroundColor = .currentColorSet.mainSelectorColor
         toolsStack.axis = .horizontal
         toolsStack.distribution = .fillEqually
         toolsStack.spacing = stackSpacing
@@ -199,7 +204,7 @@ class MainBarHeader: UIView {
         
         locationStack = UIStackView(arrangedSubviews: [indoorButton,
                                                          outdoorButton])
-        locationStack.backgroundColor = .custom.mainDynamic
+        locationStack.backgroundColor = .currentColorSet.additionalSelectorColor
         locationStack.axis = .horizontal
         locationStack.distribution = .fillEqually
         locationStack.spacing = stackSpacing
@@ -312,9 +317,9 @@ class MainBarHeader: UIView {
             locationTitle.centerXAnchor.constraint(equalTo:
                                          locationStack.centerXAnchor),
             
-            gpsView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            gpsView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            gpsView.widthAnchor.constraint(equalToConstant: 50),
+            gpsView.centerYAnchor.constraint(equalTo: locationStack.centerYAnchor, constant: -10),
+            gpsView.leadingAnchor.constraint(equalTo: locationStack.trailingAnchor, constant: 5),
+            gpsView.widthAnchor.constraint(equalToConstant: 20),
             gpsView.heightAnchor.constraint(equalToConstant: 20)
         ])
     }

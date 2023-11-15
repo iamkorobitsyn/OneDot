@@ -28,6 +28,7 @@
 		65657FBA2AD415920081F5D7 /* MeasuringButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */; };
 		65657FC02AD5D5B60081F5D7 /* NotificationsSettingsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FBF2AD5D5B60081F5D7 /* NotificationsSettingsViewCell.swift */; };
 		65663C732AF5025200241E3E /* MainBarBodyBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65663C722AF5025200241E3E /* MainBarBodyBase.swift */; };
+		657AEA022B00113B001129DD /* MainBarColorThemesCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657AEA012B00113B001129DD /* MainBarColorThemesCollectionCell.swift */; };
 		657D66252AA8693400397427 /* gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 657D66242AA8693400397427 /* gitignore */; };
 		657D66272AA86D7000397427 /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657D66262AA86D7000397427 /* AlertController.swift */; };
 		6584A5B12ADBC710003C97CF /* IntegrationsButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6584A5B02ADBC710003C97CF /* IntegrationsButtonView.swift */; };
@@ -57,7 +58,7 @@
 		65FF25E42AF989830008F492 /* MainBarMetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25E32AF989830008F492 /* MainBarMetronomeView.swift */; };
 		65FF25E62AF98A5B0008F492 /* MainBarStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25E52AF98A5B0008F492 /* MainBarStoriesView.swift */; };
 		65FF25E82AF98A7D0008F492 /* MainBarWidgetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25E72AF98A7D0008F492 /* MainBarWidgetsView.swift */; };
-		65FF25EF2AFAE39F0008F492 /* NavigationVCColorSetProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25EE2AFAE39F0008F492 /* NavigationVCColorSetProtocol.swift */; };
+		65FF25EF2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25EE2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift */; };
 		65FF25F22AFB70440008F492 /* ColorSetProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25F12AFB70440008F492 /* ColorSetProtocol.swift */; };
 		65FF25F42AFB718D0008F492 /* ColorSetCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25F32AFB718D0008F492 /* ColorSetCollection.swift */; };
 		65FF25F62AFB78190008F492 /* FactoryColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25F52AFB78190008F492 /* FactoryColorSet.swift */; };
@@ -106,6 +107,7 @@
 		65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuringButtonView.swift; sourceTree = "<group>"; };
 		65657FBF2AD5D5B60081F5D7 /* NotificationsSettingsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsViewCell.swift; sourceTree = "<group>"; };
 		65663C722AF5025200241E3E /* MainBarBodyBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBarBodyBase.swift; sourceTree = "<group>"; };
+		657AEA012B00113B001129DD /* MainBarColorThemesCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBarColorThemesCollectionCell.swift; sourceTree = "<group>"; };
 		657D66242AA8693400397427 /* gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gitignore; sourceTree = "<group>"; };
 		657D66262AA86D7000397427 /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
 		6584A5B02ADBC710003C97CF /* IntegrationsButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationsButtonView.swift; sourceTree = "<group>"; };
@@ -135,7 +137,7 @@
 		65FF25E32AF989830008F492 /* MainBarMetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBarMetronomeView.swift; sourceTree = "<group>"; };
 		65FF25E52AF98A5B0008F492 /* MainBarStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBarStoriesView.swift; sourceTree = "<group>"; };
 		65FF25E72AF98A7D0008F492 /* MainBarWidgetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBarWidgetsView.swift; sourceTree = "<group>"; };
-		65FF25EE2AFAE39F0008F492 /* NavigationVCColorSetProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationVCColorSetProtocol.swift; sourceTree = "<group>"; };
+		65FF25EE2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSetUpdateProtocol.swift; sourceTree = "<group>"; };
 		65FF25F12AFB70440008F492 /* ColorSetProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSetProtocol.swift; sourceTree = "<group>"; };
 		65FF25F32AFB718D0008F492 /* ColorSetCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSetCollection.swift; sourceTree = "<group>"; };
 		65FF25F52AFB78190008F492 /* FactoryColorSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactoryColorSet.swift; sourceTree = "<group>"; };
@@ -479,6 +481,7 @@
 			isa = PBXGroup;
 			children = (
 				659008172AF1D5C1008C208D /* MainBarColorThemesView.swift */,
+				657AEA012B00113B001129DD /* MainBarColorThemesCollectionCell.swift */,
 			);
 			path = MainBarColorThemesView;
 			sourceTree = "<group>";
@@ -487,8 +490,8 @@
 			isa = PBXGroup;
 			children = (
 				65FF25F12AFB70440008F492 /* ColorSetProtocol.swift */,
-				65FF25EE2AFAE39F0008F492 /* NavigationVCColorSetProtocol.swift */,
 				65FF25F32AFB718D0008F492 /* ColorSetCollection.swift */,
+				65FF25EE2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift */,
 				65FF25F52AFB78190008F492 /* FactoryColorSet.swift */,
 			);
 			path = ColorSet;
@@ -647,7 +650,7 @@
 				65C82A052AEAC3220022C69B /* SettingsBaseViewCell.swift in Sources */,
 				65EC20772AEEBD3800410905 /* CGFloat + Extansions.swift in Sources */,
 				65551C772AC5D8CF00CE3309 /* Shaper.swift in Sources */,
-				65FF25EF2AFAE39F0008F492 /* NavigationVCColorSetProtocol.swift in Sources */,
+				65FF25EF2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift in Sources */,
 				6502D6B22A595315000F96E0 /* OneDot.xcdatamodeld in Sources */,
 				65FF25E42AF989830008F492 /* MainBarMetronomeView.swift in Sources */,
 				6502D6EC2A59A517000F96E0 /* UIColor + Extansions.swift in Sources */,
@@ -658,6 +661,7 @@
 				65EC20792AEF008500410905 /* SettingsBaseButton.swift in Sources */,
 				65FF25E82AF98A7D0008F492 /* MainBarWidgetsView.swift in Sources */,
 				65EDA5872AEA948D007B6AE5 /* InTheRoomExercises.swift in Sources */,
+				657AEA022B00113B001129DD /* MainBarColorThemesCollectionCell.swift in Sources */,
 				6589BFDD2AD942EC00DE4E97 /* ColorThemesViewCell.swift in Sources */,
 				65551C7C2AC61E4100CE3309 /* SettingsVC.swift in Sources */,
 				6502D6F02A5C9A1F000F96E0 /* TabBar.swift in Sources */,

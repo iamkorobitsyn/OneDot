@@ -15,6 +15,7 @@ class MainBarHeadGPS: UIView {
     
     private let label: UILabel = UILabel()
     let pillingCircle: CAShapeLayer = CAShapeLayer()
+    let satelliteIcon: UIImageView = UIImageView()
     
     
     override init(frame: CGRect) {
@@ -28,7 +29,7 @@ class MainBarHeadGPS: UIView {
     
     func drawPillingCircle() {
         let path = UIBezierPath()
-        let center = CGPoint(x: 40, y: 9.8)
+        let center = CGPoint(x: 25, y: 10)
         path.addArc(withCenter: center,
                     radius: 2,
                     startAngle: 0,
@@ -46,6 +47,10 @@ class MainBarHeadGPS: UIView {
         label.textColor = .gray
         label.text = "GPS"
         label.font = UIFont.systemFont(ofSize: 8, weight: .medium)
+        label.isHidden = true
+        
+        addSubview(satelliteIcon)
+        satelliteIcon.image = UIImage(named: "satelliteIcon")
     }
     
  
@@ -53,11 +58,17 @@ class MainBarHeadGPS: UIView {
     
     private func setConstraints() {
         label.translatesAutoresizingMaskIntoConstraints = false
+        satelliteIcon.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             
             label.centerYAnchor.constraint(equalTo: centerYAnchor),
-            label.centerXAnchor.constraint(equalTo: centerXAnchor)
+            label.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            satelliteIcon.widthAnchor.constraint(equalToConstant: 15),
+            satelliteIcon.heightAnchor.constraint(equalToConstant: 15),
+            satelliteIcon.centerXAnchor.constraint(equalTo: centerXAnchor),
+            satelliteIcon.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
     
