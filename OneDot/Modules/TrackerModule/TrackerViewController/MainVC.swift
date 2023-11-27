@@ -12,9 +12,8 @@ class MainVC: UIViewController {
     
     let mapView: MKMapView = MKMapView()
     let locationManager: CLLocationManager = CLLocationManager()
-    let mainBarHeader: MainBarHeader = MainBarHeader()
-    let mainBarBody: MainBarBodyBase = MainBarBodyBase()
-    let settingsViewController = SettingsVC()
+    let trackerBar: TrackerBarView = TrackerBarView()
+    let toolsBar: ToolsBarView = ToolsBarView()
     
     var tabBarCompletion: ((Bool)->())?
     
@@ -35,14 +34,14 @@ class MainVC: UIViewController {
 
         getUserDefaults()
 
-        setViewsCompletion()
+        showToolBar()
         
-        mainBarBody.colorThemesView.mainVCDelegate = self
         
-        let button = UIBarButtonItem(image: UIImage(named: "settingsButton"), style: .done, target: self, action: nil)
-        
-        navigationController?.navigationBar.topItem?.rightBarButtonItem = button
-
+        for cell in toolsBar.themesVC.currentRows {
+            if let themesCell = cell as? ColorThemeViewCell {
+                themesCell.mainVCColorSetDelegate = self
+            }
+        }
     }
 
     
@@ -50,98 +49,101 @@ class MainVC: UIViewController {
         let value = UserDefaultsManager.shared.selectorLoad()
         if value == "street" {
             title = "MAP"
-            mainBarHeader.locationTitle.text = "Outdoor"
-            mainBarHeader.picker.currentLocation = "street"
-            mainBarHeader.picker.picker.reloadAllComponents()
+            trackerBar.locationTitle.text = "Outdoor"
+            trackerBar.picker.currentLocation = "street"
+            trackerBar.picker.picker.reloadAllComponents()
             let currentRow = UserDefaultsManager.shared.onTheStreetLoad()
-            mainBarHeader.picker.picker.selectRow(currentRow, inComponent: 0, animated: true)
-            mainBarHeader.currentExercise = mainBarHeader.exercises.get(.street)[currentRow]
-            mainBarHeader.picker.title.text = mainBarHeader.currentExercise?.titleName
-            mainBarHeader.picker.titleView.image = UIImage(named: mainBarHeader.currentExercise?.titleIcon ?? "")
+            trackerBar.picker.picker.selectRow(currentRow, inComponent: 0, animated: true)
+            trackerBar.currentExercise = trackerBar.exercises.get(.street)[currentRow]
+            trackerBar.picker.title.text = trackerBar.currentExercise?.titleName
+            trackerBar.picker.titleView.image = UIImage(named: trackerBar.currentExercise?.titleIcon ?? "")
             
-            mainBarHeader.outdoorButton.setActiveState(.onTheStreet)
-            mainBarHeader.indoorButton.setInactiveState(.inRoom)
+            trackerBar.outdoorButton.setActiveState(.indoor)
+            trackerBar.indoorButton.setInactiveState(.outdoor)
             print(value)
             
             
         } else if value == "room" {
             title = "NOTES"
-            mainBarHeader.locationTitle.text = "Indoor"
-            mainBarHeader.picker.currentLocation = "room"
-            mainBarHeader.picker.picker.reloadAllComponents()
+            trackerBar.locationTitle.text = "Indoor"
+            trackerBar.picker.currentLocation = "room"
+            trackerBar.picker.picker.reloadAllComponents()
             let currentRow = UserDefaultsManager.shared.inRoomLoad()
-            mainBarHeader.picker.picker.selectRow(currentRow, inComponent: 0, animated: true)
-            mainBarHeader.currentExercise = mainBarHeader.exercises.get(.room)[currentRow]
-            mainBarHeader.picker.title.text = mainBarHeader.currentExercise?.titleName
-            mainBarHeader.picker.titleView.image = UIImage(named: mainBarHeader.currentExercise?.titleIcon ?? "")
+            trackerBar.picker.picker.selectRow(currentRow, inComponent: 0, animated: true)
+            trackerBar.currentExercise = trackerBar.exercises.get(.room)[currentRow]
+            trackerBar.picker.title.text = trackerBar.currentExercise?.titleName
+            trackerBar.picker.titleView.image = UIImage(named: trackerBar.currentExercise?.titleIcon ?? "")
             
-            mainBarHeader.indoorButton.setActiveState(.inRoom)
-            mainBarHeader.outdoorButton.setInactiveState(.onTheStreet)
+            trackerBar.indoorButton.setActiveState(.outdoor)
+            trackerBar.outdoorButton.setInactiveState(.indoor)
         }
     }
     
     
-    private func setViewsCompletion() {
-        mainBarBody.completion = { [weak self] in
-            guard let self else {return}
-            mainBarHeader.toolsTitle.text = ""
-            mainBarHeader.setButtonsStates(false, true)
-            tabBarCompletion?(false)
-        }
+    private func showToolBar() {
         
-        
-        
-        mainBarHeader.completion = { [weak self] button in
+ 
+        trackerBar.completion = { [weak self] button in
             guard let self else {return}
             
-            if button == mainBarHeader.calculatorButton {
-                mainBarBody.setStatesFor(mainBarBody.calculatorStack,
-                                         UserDefaultsManager.shared.calculatorViewLoad())
+            if button == trackerBar.calculatorButton {
+
+                toolsBar.showVC(.calculator)
+
+                trackerBar.statesRefresh(locations: false, tools: true)
+                trackerBar.calculatorButton.setActiveState(.calculator)
+                trackerBar.toolsTitle.text = "Calculator"
                 
-                mainBarHeader.toolsTitle.text = "Calculator"
-                mainBarHeader.setButtonsStates(false, true)
-                mainBarHeader.calculatorButton.setActiveState(.calculator)
-                guard mainBarBody.isHidden == true else {return}
-                mainBarBody.isHidden = false
-                Animator.shared.MainBarBodyShow(mainBarBody)
-                tabBarCompletion?(true)
+                guard toolsBar.isHidden == true else {return}
+                toolsBar.isHidden = false
+                Animator.shared.toolsBarShow(toolsBar)
+                toolsBar.showTabBarCompletion?(false)
                 
-            } else if button == mainBarHeader.soundButton {
-                mainBarBody.setStatesFor(mainBarBody.soundStack,
-                                         UserDefaultsManager.shared.soundViewLoad())
+            } else if button == trackerBar.soundButton {
                 
-                mainBarHeader.toolsTitle.text = "Sound"
-                mainBarHeader.setButtonsStates(false, true)
-                mainBarHeader.soundButton.setActiveState(.sound)
-                guard mainBarBody.isHidden == true else {return}
-                mainBarBody.isHidden = false
-                Animator.shared.MainBarBodyShow(mainBarBody)
-                tabBarCompletion?(true)
+                toolsBar.showVC(.sound)
                 
-            } else if button == mainBarHeader.themesButton {
-                mainBarBody.setStatesFor(mainBarBody.themesStack,
-                                         UserDefaultsManager.shared.themesViewLoad())
+                trackerBar.statesRefresh(locations: false, tools: true)
+                trackerBar.soundButton.setActiveState(.sound)
+                trackerBar.toolsTitle.text = "Sound"
                 
-                mainBarHeader.toolsTitle.text = "Themes"
-                mainBarHeader.setButtonsStates(false, true)
-                mainBarHeader.themesButton.setActiveState(.themes)
-                guard mainBarBody.isHidden == true else {return}
-                mainBarBody.isHidden = false
-                Animator.shared.MainBarBodyShow(mainBarBody)
-                tabBarCompletion?(true)
+                guard toolsBar.isHidden == true else {return}
+                toolsBar.isHidden = false
+                Animator.shared.toolsBarShow(toolsBar)
+                toolsBar.showTabBarCompletion?(false)
                 
-            } else if button == mainBarHeader.indoorButton {
+            } else if button == trackerBar.themesButton {
+                
+                toolsBar.showVC(.themes)
+                
+                trackerBar.statesRefresh(locations: false, tools: true)
+                trackerBar.themesButton.setActiveState(.themes)
+                trackerBar.toolsTitle.text = "Themes"
+                
+                guard toolsBar.isHidden == true else {return}
+                toolsBar.isHidden = false
+                Animator.shared.toolsBarShow(toolsBar)
+                toolsBar.showTabBarCompletion?(false)
+
+            } else if button == trackerBar.settingsButton {
+                
+                toolsBar.showVC(.settings)
+                
+                trackerBar.statesRefresh(locations: false, tools: true)
+                trackerBar.settingsButton.setActiveState(.settings)
+                trackerBar.toolsTitle.text = "Settings"
+                
+                guard toolsBar.isHidden == true else {return}
+                toolsBar.isHidden = false
+                Animator.shared.toolsBarShow(toolsBar)
+                toolsBar.showTabBarCompletion?(false)
+                
+            } else if button == trackerBar.indoorButton {
                 title = "NOTES"
-            } else if button == mainBarHeader.outdoorButton {
+            } else if button == trackerBar.outdoorButton {
                 title = "MAP"
             }
         }
-    }
-    
-    @objc private func presentSettings() {
-        present(settingsViewController, animated: true)
-        settingsViewController.modalPresentationStyle = .overFullScreen
-        
     }
     
     //MARK: - LocationManager&Authorization
@@ -230,8 +232,8 @@ extension MainVC {
         view.addSubview(mapView)
         mapView.overrideUserInterfaceStyle = .light
         
-        view.addSubview(mainBarBody)
-        view.addSubview(mainBarHeader)
+        view.addSubview(toolsBar)
+        view.addSubview(trackerBar)
         
         setMapGradient()
         
@@ -242,8 +244,8 @@ extension MainVC {
     
     private func setConstraints() {
         mapView.translatesAutoresizingMaskIntoConstraints = false
-        mainBarHeader.translatesAutoresizingMaskIntoConstraints = false
-        mainBarBody.translatesAutoresizingMaskIntoConstraints = false
+        trackerBar.translatesAutoresizingMaskIntoConstraints = false
+        toolsBar.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             
@@ -252,19 +254,19 @@ extension MainVC {
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            mainBarHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            mainBarHeader.topAnchor.constraint(equalTo: 
+            trackerBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            trackerBar.topAnchor.constraint(equalTo: 
                                             view.safeAreaLayoutGuide.topAnchor,
                                             constant: 10),
-            mainBarHeader.heightAnchor.constraint(equalToConstant:
+            trackerBar.heightAnchor.constraint(equalToConstant:
                                             mainBarHeight),
-            mainBarHeader.widthAnchor.constraint(equalToConstant:
+            trackerBar.widthAnchor.constraint(equalToConstant:
                                             mainBarWidth),
             
-            mainBarBody.widthAnchor.constraint(equalToConstant: mainBarWidth),
-            mainBarBody.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
-            mainBarBody.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            mainBarBody.topAnchor.constraint(equalTo: mainBarHeader.bottomAnchor,
+            toolsBar.widthAnchor.constraint(equalToConstant: mainBarWidth),
+            toolsBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            toolsBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            toolsBar.topAnchor.constraint(equalTo: trackerBar.bottomAnchor,
                                             constant: 10)
         ])
     }
@@ -306,9 +308,19 @@ extension MainVC {
 
 extension MainVC: MainVCColorSetProtocol {
     func update(_ set: ColorSetProtocol, _ barBGIsHidden: Bool) {
-        mainBarHeader.updateColors(set)
+        trackerBar.updateColors(set)
         
-        navigationController?.navigationBar.topItem?.rightBarButtonItem?.tintColor = .label
+        for cell in toolsBar.settingsVC.currentRows {
+            if let measuring = cell as? MeasuringViewCell {
+                measuring.updateColors(set)
+            }
+            if let notifications = cell as? NotificationsViewCell {
+                notifications.updateColors(set)
+            }
+            if let connections = cell as? ConnectionsViewCell {
+                connections.updateColors(set)
+            }
+        }
     }
 }
 

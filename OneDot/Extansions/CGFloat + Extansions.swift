@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 extension CGFloat {
+    
+    static let barWidth: CGFloat = .init(UIScreen.main.bounds.width / 1.05)
     
     static let mainIconSide: CGFloat = .init(42)
     static let mainIconCorner: CGFloat = .init(21)

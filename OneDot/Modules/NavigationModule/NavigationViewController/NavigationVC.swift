@@ -10,13 +10,12 @@ import UIKit
 class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAnimationDelegate {
     
     
-    let mainVC = MainBarColorThemesView()
+    let themesVC = ThemesVC()
     let test = MainVC()
     
     
-    let greetingLoadingView: GreetingView = GreetingView()
+    let splashScreen: SplashScreen = SplashScreen()
     let tabBar: TabBar = TabBar()
-    let settingsButton: UIButton = UIButton()
     
     let profileVC: ProfileVC = ProfileVC()
     let settingsVC: SettingsVC = SettingsVC()
@@ -32,8 +31,9 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
 
         delegate = self
 
-        Animator.shared.greetingViewRotation(greetingLoadingView.launchLogo,
-                                             delegate: greetingLoadingView)
+        Animator.shared.splashScreenAnimate(splashScreen.launchLogo,
+                                          splashScreen.gradientLayer,
+                                             delegate: splashScreen)
         setViews()
         getCurrentUserInterfaceStyle()
         setConstraints()
@@ -45,7 +45,11 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
     override func viewDidAppear(_ animated: Bool) {
         for vc in viewControllers {
             if let main = vc as? MainVC {
-                main.mainBarBody.colorThemesView.navigationVCDelegate = self
+                for cell in main.toolsBar.themesVC.currentRows {
+                    if let themesCell = cell as? ColorThemeViewCell {
+                        themesCell.navigationVCColorSetDelegate = self
+                    }
+                }
             }
         }
         
@@ -53,13 +57,15 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
         
         for vc in viewControllers {
             if let main = vc as? MainVC {
-                main.tabBarCompletion = { [weak self] hide in
+                main.toolsBar.showTabBarCompletion = { [weak self] show in
                     guard let self else {return}
-                    if hide == true {
-                        Animator.shared.tabBarHide(tabBar, self)
-                    } else {
+                    if show == true {
                         Animator.shared.tabBarShow(tabBar)
                         tabBar.isHidden = false
+                        main.trackerBar.statesRefresh(locations: false,
+                                                      tools: true)
+                    } else {
+                        Animator.shared.tabBarHide(tabBar, self)
                     }
                 }
             }
@@ -70,9 +76,10 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
     //MARK: - SetView
     
     private func setViews() {
+        
         view.addSubview(tabBar)
-//        view.addSubview(settingsButton)
-        view.addSubview(greetingLoadingView)
+        view.addSubview(splashScreen)
+        
         
         tabBar.backgroundColor = .currentColorSet.tabBarColor
         
@@ -81,20 +88,6 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
         tabBar.profileButton.addTarget(self,
                                        action: #selector(presentProfile), 
                                        for: .touchUpInside)
-        
-//        settingsButton.addTarget(self, action: #selector(presentSettings), for: .touchUpInside)
-//        settingsButton.setImage(UIImage(named: "Image"), for: .normal)
-//        settingsButton.setImage(UIImage(named: "Image"), for: .highlighted)
-
-//        settingsButton.layer.cornerRadius = 21
-//        settingsButton.layer.borderColor = UIColor.white.cgColor
-//        settingsButton.layer.borderWidth = 0.5
-//        settingsButton.backgroundColor = UIColor.sunsetSkyColor
-        
-        let button = UIBarButtonItem(systemItem: .add)
-        
-        navigationController?.navigationBar.topItem?.rightBarButtonItem = button
-        
     }
     
     @objc private func presentSettings() {
@@ -164,7 +157,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
              .font: UIFont.systemFont(ofSize: 35, weight: .black, width: .compressed)]
             
         } else {
-
+        
             let appearence = UINavigationBarAppearance()
             appearence.largeTitleTextAttributes = [.backgroundColor: UIColor.clear,
                                                    .foregroundColor: foregroundColor,
@@ -187,39 +180,30 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
             
             tabBar.isHidden = false
             tabBar.isUserInteractionEnabled = true
-            settingsButton.isHidden = false
         } else if viewController == profileVC {
             tabBar.isUserInteractionEnabled = false
-            settingsButton.isHidden = false
         } else if viewController == settingsVC {
             tabBar.isUserInteractionEnabled = false
-            settingsButton.isHidden = true
         }
     }
     
     //MARK: - SetConstraints
     
     private func setConstraints() {
+        splashScreen.translatesAutoresizingMaskIntoConstraints = false
         tabBar.translatesAutoresizingMaskIntoConstraints = false
-        greetingLoadingView.translatesAutoresizingMaskIntoConstraints = false
-//        settingsButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            greetingLoadingView.topAnchor.constraint(equalTo: view.topAnchor),
-            greetingLoadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            greetingLoadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            greetingLoadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            splashScreen.topAnchor.constraint(equalTo: view.topAnchor),
+            splashScreen.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            splashScreen.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            splashScreen.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             tabBar.widthAnchor.constraint(equalToConstant: tabBarWidth),
             tabBar.heightAnchor.constraint(equalToConstant: tabBarHeight),
             tabBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             tabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, 
-                                            constant: -20),
-//            settingsButton.widthAnchor.constraint(equalToConstant: 24),
-//            settingsButton.heightAnchor.constraint(equalToConstant: 24),
-//            settingsButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 60),
-//            settingsButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, 
-//                                            constant: -20)
+                                            constant: -20)
         ])
     }
 }
@@ -228,8 +212,6 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
 extension NavigationVC: NavigationVCColorSetProtocol {
     func update(_ set: ColorSetProtocol, _ barBGIsHidden: Bool) {
         tabBar.backgroundColor = set.tabBarColor
-        print("work")
-        settingsButton.backgroundColor = .white
         setNavigationBar(barBGIsHidden, set.mainDynamicColor, set.titleDynamicColor, set.titleDynamicColor)
     }
     

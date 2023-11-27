@@ -81,9 +81,9 @@ extension UIColor {
         switch traitCollection.userInterfaceStyle {
             
         case .dark:
-            return .init(r: 49, g: 44, b: 58, alpha: 1)
-        default:
             return .init(r: 88, g: 79, b: 105, alpha: 1)
+        default:
+            return .init(r: 107, g: 96, b: 128, alpha: 1)
         }
     }
     
@@ -93,12 +93,12 @@ extension UIColor {
         case .dark:
             return .init(r: 255, g: 255, b: 255, alpha: 1)
         default:
-            return .init(r: 88, g: 79, b: 105, alpha: 1)
+            return .init(r: 107, g: 96, b: 128, alpha: 1)
         }
     }
     
-    static let graphiteDeep: UIColor = .init(r: 49, g: 44, b: 58, alpha: 1)
-    static let graphiteLight: UIColor = .init(r: 88, g: 79, b: 105, alpha: 1)
+    static let graphiteDeep: UIColor = .init(r: 88, g: 79, b: 105, alpha: 1)
+    static let graphiteLight: UIColor = .init(r: 107, g: 96, b: 128, alpha: 1)
     
     
     

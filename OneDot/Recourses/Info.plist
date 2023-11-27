@@ -6,10 +6,10 @@
 	<string></string>
 	<key>UILaunchScreen</key>
 	<dict>
-		<key>UIColorName</key>
-		<string>launchScreenBG</string>
 		<key>UIImageName</key>
 		<string>launchScreenLogo</string>
+		<key>UIColorName</key>
+		<string>launchScreenBG</string>
 		<key>UIImageRespectsSafeAreaInsets</key>
 		<false/>
 	</dict>

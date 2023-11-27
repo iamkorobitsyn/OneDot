@@ -17,46 +17,6 @@ class UserDefaultsManager {
     
     //MARK: - MainBody
     
-    private let calculatorKey = "calculator"
-    private let soundKey = "sound"
-    private let themesKey = "themes"
-    
-    func calculatorViewLoad() -> Int {
-        if let value = userDefaults.value(forKey: calculatorKey) as? Int {
-            return value
-        } else {
-            return 0
-        }
-    }
-    
-    func calculatorViewSave(_ value: Int) {
-        userDefaults.setValue(value, forKey: calculatorKey)
-    }
-    
-    func soundViewLoad() -> Int {
-        if let value = userDefaults.value(forKey: soundKey) as? Int {
-            return value
-        } else {
-            return 0
-        }
-    }
-    
-    func soundViewSave(_ value: Int) {
-        userDefaults.setValue(value, forKey: soundKey)
-    }
-    
-    func themesViewLoad() -> Int {
-        if let value = userDefaults.value(forKey: themesKey) as? Int {
-            return value
-        } else {
-            return 0
-        }
-    }
-    
-    func themesViewSave(_ value: Int) {
-        userDefaults.setValue(value, forKey: themesKey)
-    }
-    
     //MARK: - MainHeader
     
     private let selectorKey = "selector"

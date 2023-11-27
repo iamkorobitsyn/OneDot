@@ -10,10 +10,11 @@ import UIKit
 
 protocol ColorSetProtocol {
     
-    var theme: Theme {get}
-    
     var textTitle: String {get}
-    var imageNamed: String {get}
+    
+    var imageLight: String {get}
+    var imageDeep: String {get}
+    var imageSystem: String {get}
     
     var mainDynamicColor: UIColor {get}
     var titleDynamicColor: UIColor {get}
@@ -27,7 +28,5 @@ protocol ColorSetProtocol {
     var deepColor: UIColor {get}
     var lightColor: UIColor {get}
     var specialColor: UIColor {get}
-    
-    
-   
+ 
 }

@@ -16,22 +16,30 @@ class Animator {
     
     //MARK: - GreetingViews
     
-    func greetingViewRotation(_ view: UIView,
+    func splashScreenAnimate(_ logo: UIView,
+                           _ gradient: CAGradientLayer,
                               delegate: CAAnimationDelegate) {
         
-        let animation = CABasicAnimation(keyPath: "transform.rotation.z")
-        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        animation.duration = 1.5
-        animation.repeatCount = 1
-        animation.fromValue = 0
-        animation.toValue = .pi * 2.0
-        animation.delegate = delegate
+        let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        rotation.duration = 1.5
+        rotation.repeatCount = 1
+        rotation.fromValue = 0
+        rotation.toValue = .pi * 2.0
+        rotation.delegate = delegate
         
-        view.layer.add(animation, forKey: nil)
+        logo.layer.add(rotation, forKey: nil)
+        
+        let opacity = CABasicAnimation(keyPath: "opacity")
+        opacity.fromValue = 0
+        opacity.toValue = 1
+        opacity.duration = 1.5
+        
+        gradient.add(opacity, forKey: nil)
         
     }
     
-    func greetingViewOpacity(_ view: UIView) {
+    func splashScreenDamping(_ view: UIView) {
         let opacity = CABasicAnimation(keyPath: "opacity")
         
         opacity.fromValue = 1
@@ -46,7 +54,7 @@ class Animator {
     func MainBarBodyHide(_ view: UIView, _ delegate: CAAnimationDelegate) {
         let animatoonList = CAAnimationGroup()
         
-        let transform = CABasicAnimation(keyPath: "transform.translation.y")
+        let transform = CABasicAnimation(keyPath: "transform.translation.x")
         transform.duration = 0.2
         transform.fromValue = 0
         transform.toValue = -UIScreen.main.bounds.height / 2
@@ -68,9 +76,9 @@ class Animator {
     }
     
     
-    func MainBarBodyShow(_ view: UIView) {
+    func toolsBarShow(_ view: UIView) {
         
-        let animation = CABasicAnimation(keyPath: "transform.translation.y")
+        let animation = CABasicAnimation(keyPath: "transform.translation.x")
         animation.duration = 0.2
         animation.fromValue = -UIScreen.main.bounds.height / 2
         animation.toValue = 0
