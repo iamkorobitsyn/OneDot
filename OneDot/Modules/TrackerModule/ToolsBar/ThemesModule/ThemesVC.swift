@@ -23,6 +23,10 @@ class ThemesVC: UIViewController {
              colorThemes
     }
     
+    let storiesCell = StoriesThemesViewCell()
+    let widgetsCell = WidgetsThemeViewCell()
+    let colorThemesCell = ColorThemeViewCell()
+    
     var currentRows: [ToolsBarCellBase] = []
     
     private let tableView: UITableView = UITableView()
@@ -44,8 +48,8 @@ class ThemesVC: UIViewController {
         sectionStack = UIStackView(arrangedSubviews: sectionButtonList)
         sectionStack.axis = .horizontal
         sectionStack.distribution = .fillEqually
-        sectionStack.spacing = .stackSpacing
-        sectionStack.layer.cornerRadius = .stackCorner
+        sectionStack.spacing = 0
+        sectionStack.layer.cornerRadius = CGFloat.iconSide / 2
         view.addSubview(sectionStack)
         
         view.addSubview(sectionTitle)
@@ -59,6 +63,8 @@ class ThemesVC: UIViewController {
                            forCellReuseIdentifier: "cell")
         tableView.backgroundColor = .none
         tableView.separatorStyle = .none
+        tableView.layer.borderWidth = 0.3
+        tableView.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         
         storiesSectionButton.addTarget(self,
                                          action: #selector(buttonTapt),
@@ -70,7 +76,7 @@ class ThemesVC: UIViewController {
                                              action: #selector(buttonTapt),
                                              for: .touchUpInside)
         
-        setActiveSection(.colorThemes)
+        setActiveSection(.stories)
     }
     
     
@@ -91,46 +97,40 @@ class ThemesVC: UIViewController {
             
         case .stories:
             setImage(storiesSectionButton,
-                     named: "measuringIconFill")
+                     named: "themesStoriesIconFill")
             setImage(widgetsSectionButton,
-                     named: "notificationsIconStroke")
+                     named: "themesWidgetsIconStroke")
             setImage(colorThemesSectionButton,
-                     named: "connectionsIconStroke")
-            sectionTitle.text = "Measuring"
+                     named: "themesColorIconStroke")
+            sectionTitle.text = "Stories"
             
             currentRows.removeAll()
-            let cell = MeasuringViewCell()
-            currentRows.append(cell)
-            
+            currentRows.append(storiesCell)
             tableView.reloadData()
         case .widgets:
             setImage(widgetsSectionButton,
-                     named: "notificationsIconFill")
+                     named: "themesWidgetsIconFill")
             setImage(colorThemesSectionButton,
-                     named: "connectionsIconStroke")
+                     named: "themesColorIconStroke")
             setImage(storiesSectionButton,
-                     named: "measuringIconStroke")
-            sectionTitle.text = "Notifications"
+                     named: "themesStoriesIconStroke")
+            sectionTitle.text = "Widgets"
             
             currentRows.removeAll()
-            let cell = NotificationsViewCell()
-            currentRows.append(cell)
-            
+            currentRows.append(widgetsCell)
             tableView.reloadData()
             
         case .colorThemes:
             setImage(colorThemesSectionButton,
-                     named: "connectionsIconFill")
+                     named: "themesColorIconFill")
             setImage(storiesSectionButton,
-                     named: "measuringIconStroke")
+                     named: "themesStoriesIconStroke")
             setImage(widgetsSectionButton,
-                     named: "notificationsIconStroke")
-            sectionTitle.text = "Conections"
+                     named: "themesWidgetsIconStroke")
+            sectionTitle.text = "Colors"
             
             currentRows.removeAll()
-            let cell = ColorThemeViewCell()
-            currentRows.append(cell)
-            
+            currentRows.append(colorThemesCell)
             tableView.reloadData()
             
         }
@@ -156,12 +156,12 @@ class ThemesVC: UIViewController {
             
             sectionStack.widthAnchor.constraint(equalToConstant:
                                            (CGFloat(sectionStack.subviews.count) *
-                                            CGFloat.mainIconSide) +
+                                            CGFloat.iconSide) +
                                            (CGFloat(sectionStack.subviews.count) *
-                                            CGFloat.stackSpacing) -
-                                            CGFloat.stackSpacing),
+                                            0) -
+                                            0),
             sectionStack.heightAnchor.constraint(equalToConstant:
-                                            CGFloat.mainIconSide),
+                                            CGFloat.iconSide),
             sectionStack.centerXAnchor.constraint(equalTo:
                                             view.centerXAnchor),
             sectionStack.topAnchor.constraint(equalTo:
@@ -175,14 +175,17 @@ class ThemesVC: UIViewController {
                                             constant: 5),
             
             tableView.leadingAnchor.constraint(equalTo:
-                                            view.leadingAnchor),
+                                            view.leadingAnchor,
+                                            constant: -0.5),
             tableView.topAnchor.constraint(equalTo:
                                             sectionTitle.bottomAnchor,
                                             constant: 10),
             tableView.trailingAnchor.constraint(equalTo:
-                                            view.trailingAnchor),
+                                            view.trailingAnchor,
+                                            constant: 0.5),
             tableView.bottomAnchor.constraint(equalTo:
-                                            view.bottomAnchor)
+                                            view.bottomAnchor,
+                                            constant: 0.5)
         ])
     }
 }

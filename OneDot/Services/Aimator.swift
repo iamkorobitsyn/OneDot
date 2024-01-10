@@ -51,40 +51,40 @@ class Animator {
     
     //MARK: - SelectorView
     
-    func MainBarBodyHide(_ view: UIView, _ delegate: CAAnimationDelegate) {
-        let animatoonList = CAAnimationGroup()
-        
-        let transform = CABasicAnimation(keyPath: "transform.translation.x")
-        transform.duration = 0.2
-        transform.fromValue = 0
-        transform.toValue = -UIScreen.main.bounds.height / 2
-        transform.delegate = delegate
-        
-        view.layer.add(transform, forKey: nil)
-        
-        let opacity = CABasicAnimation(keyPath: "opacity")
-        opacity.beginTime = 0.2
-        opacity.duration = 0.3
-        opacity.fromValue = 0
-        opacity.toValue = 0
-        
-        animatoonList.animations = [transform, opacity]
-        animatoonList.duration = 0.5
-        
-        view.layer.add(animatoonList, forKey: nil)
-        
-    }
+//    func MainBarBodyHide(_ view: UIView, _ delegate: CAAnimationDelegate) {
+//        let animatoonList = CAAnimationGroup()
+//        
+//        let transform = CABasicAnimation(keyPath: "transform.translation.x")
+//        transform.duration = 0.1
+//        transform.fromValue = 0
+//        transform.toValue = -UIScreen.main.bounds.height / 2
+//        transform.delegate = delegate
+//        
+//        view.layer.add(transform, forKey: nil)
+//        
+//        let opacity = CABasicAnimation(keyPath: "opacity")
+//        opacity.beginTime = 0.1
+//        opacity.duration = 0.1
+//        opacity.fromValue = 0
+//        opacity.toValue = 0
+//        
+//        animatoonList.animations = [transform, opacity]
+//        animatoonList.duration = 0.2
+//        
+//        view.layer.add(animatoonList, forKey: nil)
+//        
+//    }
     
     
-    func toolsBarShow(_ view: UIView) {
-        
-        let animation = CABasicAnimation(keyPath: "transform.translation.x")
-        animation.duration = 0.2
-        animation.fromValue = -UIScreen.main.bounds.height / 2
-        animation.toValue = 0
-        view.layer.add(animation, forKey: nil)
-        
-    }
+//    func toolsBarShow(_ view: UIView) {
+//        
+//        let animation = CABasicAnimation(keyPath: "transform.translation.x")
+//        animation.duration = 0.2
+//        animation.fromValue = -UIScreen.main.bounds.height / 2
+//        animation.toValue = 0
+//        view.layer.add(animation, forKey: nil)
+//        
+//    }
     
     //MARK: - TabBarView
     
@@ -133,13 +133,13 @@ class Animator {
     
     //MARK: - GPSView
     
-        func animateConnectionStick(_ shape: CAShapeLayer) {
+        func animateGPSCursor(_ shape: UIImageView) {
             let animation = CABasicAnimation(keyPath: "opacity")
             animation.duration = 1.5
-            animation.fromValue = 0.2
+            animation.fromValue = 0.6
             animation.toValue = 1
             animation.repeatCount = .infinity
-            shape.add(animation, forKey: nil)
+            shape.layer.add(animation, forKey: nil)
         }
     }
 

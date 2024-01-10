@@ -12,10 +12,11 @@ class TrackerBarButton: UIButton {
     enum State {
         case outdoor,
              indoor,
+             notesIndoor,
+             notesOutdoor,
              calculator,
              sound,
-             themes,
-             settings
+             themes
     }
     
     override init(frame: CGRect) {
@@ -26,36 +27,39 @@ class TrackerBarButton: UIButton {
         switch state {
             
         case .outdoor:
-            setImage("outdoorIconActive")
+            setImage("trackerBarOutdoorIconActive")
         case .indoor:
-            setImage("indoorIconActive")
+            setImage("trackerBarIndoorIconActive")
+        case .notesIndoor:
+            setImage("trackerBarNoteIconIndoorActive")
+        case .notesOutdoor:
+            setImage("trackerBarNoteIconOutdoorActive")
         case .calculator:
-            setImage("CalculatorIconActive")
+            setImage("trackerBarCalculatorIconActive")
         case .sound:
-            setImage("soundIconActive")
+            setImage("trackerBarSoundIconActive")
         case .themes:
-            setImage("themesIconActive")
-        case .settings:
-            setImage("settingsIconActive")
+            setImage("trackerBarThemesIconActive")
         }
     }
     
     func setInactiveState(_ state: State) {
         switch state {
-       
+            
         case .outdoor:
-            setImage("outdoorIconInactive")
+            setImage("trackerBarOutdoorIconInactive")
         case .indoor:
-            setImage("indoorIconInactive")
+            setImage("trackerBarIndoorIconInactive")
+        case .notesIndoor:
+            setImage("trackerBarNoteIconIndoorInactive")
+        case .notesOutdoor:
+            setImage("trackerBarNoteIconIndoorInactive")
         case .calculator:
-            setImage("CalculatorIconInactive")
+            setImage("trackerBarCalculatorIconInactive")
         case .sound:
-            setImage("soundIconInactive")
+            setImage("trackerBarSoundIconInactive")
         case .themes:
-            setImage("themesIconInactive")
-        case .settings:
-            setImage("settingsIconInactive")
-        
+            setImage("trackerBarThemesIconInactive")
         }
     }
     

@@ -11,7 +11,7 @@ import UIKit
 protocol ColorSetProtocol {
     
     var textTitle: String {get}
-    
+    var colorIcon: String {get}
     var imageLight: String {get}
     var imageDeep: String {get}
     var imageSystem: String {get}

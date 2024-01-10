@@ -45,11 +45,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
     override func viewDidAppear(_ animated: Bool) {
         for vc in viewControllers {
             if let main = vc as? MainVC {
-                for cell in main.toolsBar.themesVC.currentRows {
-                    if let themesCell = cell as? ColorThemeViewCell {
-                        themesCell.navigationVCColorSetDelegate = self
-                    }
-                }
+                main.toolsBar.themesVC.colorThemesCell.navigationVCColorSetDelegate = self
             }
         }
         

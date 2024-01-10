@@ -13,6 +13,7 @@ class SoundVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .red.withAlphaComponent(0.2)
         titleee.text = "SOUND"
         view.addSubview(titleee)
         titleee.translatesAutoresizingMaskIntoConstraints = false

@@ -30,22 +30,25 @@
 		65551C772AC5D8CF00CE3309 /* Shaper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65551C762AC5D8CF00CE3309 /* Shaper.swift */; };
 		65551C792AC60F5A00CE3309 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */; };
 		65551C7C2AC61E4100CE3309 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65551C7B2AC61E4100CE3309 /* SettingsVC.swift */; };
+		655B53902B2139470020FF32 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655B538F2B2139470020FF32 /* CoreDataManager.swift */; };
 		65657FBA2AD415920081F5D7 /* MeasuringButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */; };
 		65657FC02AD5D5B60081F5D7 /* NotificationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FBF2AD5D5B60081F5D7 /* NotificationsViewCell.swift */; };
 		657D66252AA8693400397427 /* gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 657D66242AA8693400397427 /* gitignore */; };
 		657D66272AA86D7000397427 /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657D66262AA86D7000397427 /* AlertController.swift */; };
+		658037392B1D444000856C03 /* NotesBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658037382B1D444000856C03 /* NotesBarView.swift */; };
 		6584A5B12ADBC710003C97CF /* IntegrationsButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6584A5B02ADBC710003C97CF /* IntegrationsButtonView.swift */; };
 		6585863C2B13D40E00BE9D28 /* ToolsBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6585863B2B13D40E00BE9D28 /* ToolsBarView.swift */; };
 		6585863E2B13D60300BE9D28 /* CalculatorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6585863D2B13D60300BE9D28 /* CalculatorVC.swift */; };
 		6589BFDF2ADAC27700DE4E97 /* ConnectionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6589BFDE2ADAC27700DE4E97 /* ConnectionsViewCell.swift */; };
 		659879222AB48BBD004F6E2D /* TrackerBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659879212AB48BBD004F6E2D /* TrackerBarButton.swift */; };
+		659B0B772B1DFA69006E52A8 /* NotesTableViewEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659B0B762B1DFA69006E52A8 /* NotesTableViewEditCell.swift */; };
 		65C82A052AEAC3220022C69B /* ToolsBarCellBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C82A042AEAC3220022C69B /* ToolsBarCellBase.swift */; };
 		65C8CF102AD2241A00BDC35D /* MeasuringViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C8CF0F2AD2241A00BDC35D /* MeasuringViewCell.swift */; };
 		65D473712AC2E2A700551E66 /* TrackerBarGPS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D473702AC2E2A700551E66 /* TrackerBarGPS.swift */; };
 		65E060342AC0E62800AD5DD6 /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E060332AC0E62800AD5DD6 /* NavigationVC.swift */; };
 		65EC20772AEEBD3800410905 /* CGFloat + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */; };
 		65EC20792AEF008500410905 /* SettingsBaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC20782AEF008500410905 /* SettingsBaseButton.swift */; };
-		65EDA5802AEA3E0B007B6AE5 /* TrackerBarPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA57F2AEA3E0B007B6AE5 /* TrackerBarPicker.swift */; };
+		65EDA5802AEA3E0B007B6AE5 /* TrackerBarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA57F2AEA3E0B007B6AE5 /* TrackerBarPickerView.swift */; };
 		65EDA5872AEA948D007B6AE5 /* InTheRoomExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA5862AEA948D007B6AE5 /* InTheRoomExercises.swift */; };
 		65EDA58B2AEA950F007B6AE5 /* FactoryExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA58A2AEA950F007B6AE5 /* FactoryExercises.swift */; };
 		65EDA58D2AEA951D007B6AE5 /* ExerciseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA58C2AEA951D007B6AE5 /* ExerciseProtocol.swift */; };
@@ -101,22 +104,25 @@
 		65551C762AC5D8CF00CE3309 /* Shaper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shaper.swift; sourceTree = "<group>"; };
 		65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		65551C7B2AC61E4100CE3309 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
+		655B538F2B2139470020FF32 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuringButtonView.swift; sourceTree = "<group>"; };
 		65657FBF2AD5D5B60081F5D7 /* NotificationsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewCell.swift; sourceTree = "<group>"; };
 		657D66242AA8693400397427 /* gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gitignore; sourceTree = "<group>"; };
 		657D66262AA86D7000397427 /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
+		658037382B1D444000856C03 /* NotesBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesBarView.swift; sourceTree = "<group>"; };
 		6584A5B02ADBC710003C97CF /* IntegrationsButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationsButtonView.swift; sourceTree = "<group>"; };
 		6585863B2B13D40E00BE9D28 /* ToolsBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsBarView.swift; sourceTree = "<group>"; };
 		6585863D2B13D60300BE9D28 /* CalculatorVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorVC.swift; sourceTree = "<group>"; };
 		6589BFDE2ADAC27700DE4E97 /* ConnectionsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsViewCell.swift; sourceTree = "<group>"; };
 		659879212AB48BBD004F6E2D /* TrackerBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerBarButton.swift; sourceTree = "<group>"; };
+		659B0B762B1DFA69006E52A8 /* NotesTableViewEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesTableViewEditCell.swift; sourceTree = "<group>"; };
 		65C82A042AEAC3220022C69B /* ToolsBarCellBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsBarCellBase.swift; sourceTree = "<group>"; };
 		65C8CF0F2AD2241A00BDC35D /* MeasuringViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuringViewCell.swift; sourceTree = "<group>"; };
 		65D473702AC2E2A700551E66 /* TrackerBarGPS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerBarGPS.swift; sourceTree = "<group>"; };
 		65E060332AC0E62800AD5DD6 /* NavigationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
 		65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat + Extansions.swift"; sourceTree = "<group>"; };
 		65EC20782AEF008500410905 /* SettingsBaseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBaseButton.swift; sourceTree = "<group>"; };
-		65EDA57F2AEA3E0B007B6AE5 /* TrackerBarPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerBarPicker.swift; sourceTree = "<group>"; };
+		65EDA57F2AEA3E0B007B6AE5 /* TrackerBarPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerBarPickerView.swift; sourceTree = "<group>"; };
 		65EDA5862AEA948D007B6AE5 /* InTheRoomExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InTheRoomExercises.swift; sourceTree = "<group>"; };
 		65EDA58A2AEA950F007B6AE5 /* FactoryExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactoryExercises.swift; sourceTree = "<group>"; };
 		65EDA58C2AEA951D007B6AE5 /* ExerciseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseProtocol.swift; sourceTree = "<group>"; };
@@ -226,6 +232,8 @@
 				6502D6E72A5968E4000F96E0 /* NavigationModule */,
 				6502D6E02A595A3E000F96E0 /* TrackerModule */,
 				6502D6E62A595ADA000F96E0 /* ProfileModule */,
+				65551C7A2AC61DF800CE3309 /* SettingsModule */,
+				657D66262AA86D7000397427 /* AlertController.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -255,6 +263,7 @@
 				650DD1E92AFDB7C8009AAD2D /* TraitCollectionManager.swift */,
 				6521308D2AC587210056DEA5 /* Aimator.swift */,
 				65551C762AC5D8CF00CE3309 /* Shaper.swift */,
+				655B538F2B2139470020FF32 /* CoreDataManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -264,8 +273,8 @@
 			children = (
 				65657FBC2AD5D46C0081F5D7 /* TrackerViewController */,
 				658F7A4D2AF46AA300FF087F /* TrackerBar */,
+				658037372B1D420E00856C03 /* NotesBar */,
 				65C517002AF01F0400095AFE /* ToolsBar */,
-				657D66262AA86D7000397427 /* AlertController.swift */,
 			);
 			path = TrackerModule;
 			sourceTree = "<group>";
@@ -359,6 +368,15 @@
 			path = SettingsViewController;
 			sourceTree = "<group>";
 		};
+		658037372B1D420E00856C03 /* NotesBar */ = {
+			isa = PBXGroup;
+			children = (
+				658037382B1D444000856C03 /* NotesBarView.swift */,
+				659B0B762B1DFA69006E52A8 /* NotesTableViewEditCell.swift */,
+			);
+			path = NotesBar;
+			sourceTree = "<group>";
+		};
 		6584A5B22ADBC716003C97CF /* IntegrationsView */ = {
 			isa = PBXGroup;
 			children = (
@@ -400,7 +418,7 @@
 			children = (
 				654893982AAE8099005039DF /* TrackerBarView.swift */,
 				659879212AB48BBD004F6E2D /* TrackerBarButton.swift */,
-				65EDA57F2AEA3E0B007B6AE5 /* TrackerBarPicker.swift */,
+				65EDA57F2AEA3E0B007B6AE5 /* TrackerBarPickerView.swift */,
 				65D473702AC2E2A700551E66 /* TrackerBarGPS.swift */,
 			);
 			path = TrackerBar;
@@ -414,7 +432,6 @@
 				6585863A2B13D2BE00BE9D28 /* CalculatorModule */,
 				6585863F2B13DDBA00BE9D28 /* SoundModule */,
 				658586402B13DDDA00BE9D28 /* ThemesModule */,
-				65551C7A2AC61DF800CE3309 /* SettingsModule */,
 			);
 			path = ToolsBar;
 			sourceTree = "<group>";
@@ -574,10 +591,12 @@
 				651E215D2B1497E000658CA6 /* ColorThemeViewCell.swift in Sources */,
 				650DD1EA2AFDB7C8009AAD2D /* TraitCollectionManager.swift in Sources */,
 				6589BFDF2ADAC27700DE4E97 /* ConnectionsViewCell.swift in Sources */,
-				65EDA5802AEA3E0B007B6AE5 /* TrackerBarPicker.swift in Sources */,
+				65EDA5802AEA3E0B007B6AE5 /* TrackerBarPickerView.swift in Sources */,
 				65FF25F62AFB78190008F492 /* FactoryColorSet.swift in Sources */,
 				65FF25F22AFB70440008F492 /* ColorSetProtocol.swift in Sources */,
+				659B0B772B1DFA69006E52A8 /* NotesTableViewEditCell.swift in Sources */,
 				651E215B2B1497AF00658CA6 /* WidgetsThemeViewCell.swift in Sources */,
+				655B53902B2139470020FF32 /* CoreDataManager.swift in Sources */,
 				653A88112ADBC629007EDD97 /* NotificationButtonView.swift in Sources */,
 				6521308E2AC587210056DEA5 /* Aimator.swift in Sources */,
 				651E21552B148D8500658CA6 /* SoundVC.swift in Sources */,
@@ -607,6 +626,7 @@
 				65EDA58B2AEA950F007B6AE5 /* FactoryExercises.swift in Sources */,
 				65551C792AC60F5A00CE3309 /* UserDefaultsManager.swift in Sources */,
 				651E21572B148F9B00658CA6 /* ThemesVC.swift in Sources */,
+				658037392B1D444000856C03 /* NotesBarView.swift in Sources */,
 				65657FC02AD5D5B60081F5D7 /* NotificationsViewCell.swift in Sources */,
 				651E21592B14971200658CA6 /* StoriesThemesViewCell.swift in Sources */,
 				659879222AB48BBD004F6E2D /* TrackerBarButton.swift in Sources */,

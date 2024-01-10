@@ -15,51 +15,34 @@ class UserDefaultsManager {
     
     private init() {}
     
-    //MARK: - MainBody
+    //MARK: - UserIndoor&ExersiseStatus
     
-    //MARK: - MainHeader
-    
-    private let selectorKey = "selector"
-    private let inRoomKey = "inRoom"
-    private let onTheStreetKey = "onTheStreet"
-    
-    func selectorLoad() -> String {
-        if let value = userDefaults.value(forKey: selectorKey) as? String {
-            return value
-        } else {
-            return "street"
+    var userIndoorStatus: Bool {
+        get {
+            return userDefaults.value(forKey: "userIndoorStatus") as? Bool ?? false
+        } set {
+            userDefaults.setValue(newValue, forKey: "userIndoorStatus")
+            userDefaults.synchronize()
         }
     }
     
-    func selectorSave(_ value: String) {
-        userDefaults.setValue(value, forKey: selectorKey)
-    }
-    
-    func inRoomLoad() -> Int {
-        if let value = userDefaults.value(forKey: inRoomKey) as? Int {
-            return value
-        } else {
-            return 3
+    var pickerRowIndoor: Int {
+        get {
+            return userDefaults.value(forKey: "pickerRowIndoor") as? Int ?? 3
+        } set {
+            userDefaults.setValue(newValue, forKey: "pickerRowIndoor")
+            userDefaults.synchronize()
         }
     }
     
-    func inRoomSave(_ value: Int) {
-        userDefaults.setValue(value, forKey: inRoomKey)
-    }
-    
-    func onTheStreetLoad() -> Int {
-        if let value = userDefaults.value(forKey: onTheStreetKey) as? Int {
-            return value
-        } else {
-            return 3
+    var pickerRowOutdoor: Int {
+        get {
+            return userDefaults.value(forKey: "pickerRowOutdoor") as? Int ?? 3
+        } set {
+            userDefaults.setValue(newValue, forKey: "pickerRowOutdoor")
+            userDefaults.synchronize()
         }
     }
-    
-    func onTheStreetSave(_ value: Int) {
-        userDefaults.setValue(value, forKey: onTheStreetKey)
-    }
-    
-    
     
     //MARK: - Settings
     
@@ -82,18 +65,26 @@ class UserDefaultsManager {
     
     //MARK: - MeasuringView
     
-    
-    func countDownLoad() -> String {
-        if let value = userDefaults.value(forKey: countDownKey) as? String {
-            return value
-        } else {
-            return "3"
+    var countDownValue: Int {
+        get {
+            userDefaults.value(forKey: "countDownValue") as? Int ?? 3
+        } set {
+            userDefaults.setValue(newValue, forKey: "countDownValue")
+            userDefaults.synchronize()
         }
     }
     
-    func countDownSave(_ value: String) {
-        userDefaults.setValue(value, forKey: countDownKey)
-    }
+//    func countDownLoad() -> String {
+//        if let value = userDefaults.value(forKey: countDownKey) as? String {
+//            return value
+//        } else {
+//            return "3"
+//        }
+//    }
+//    
+//    func countDownSave(_ value: String) {
+//        userDefaults.setValue(value, forKey: countDownKey)
+//    }
     
     func autopauseLoad() -> Bool {
         if let value = userDefaults.value(forKey: autopauseKey) as? Bool {

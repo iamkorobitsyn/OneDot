@@ -12,16 +12,18 @@ class ColorThemeViewCell: ToolsBarCellBase {
     var navigationVCColorSetDelegate: NavigationVCColorSetProtocol?
     var mainVCColorSetDelegate: MainVCColorSetProtocol?
     
-    let lightThemeButton = UIButton()
-    let lightTitle: UILabel = UILabel()
+    private let lightThemeButton = UIButton()
+    private let lightTitle: UILabel = UILabel()
     
-    let darkThemeButton = UIButton()
-    let darkTitle: UILabel = UILabel()
+    private let darkThemeButton = UIButton()
+    private let darkTitle: UILabel = UILabel()
     
-    let systemThemeButton = UIButton()
-    let systemTitle: UILabel = UILabel()
+    private let systemThemeButton = UIButton()
+    private let systemTitle: UILabel = UILabel()
     
-    let picker = UIPickerView()
+    private let picker = UIPickerView()
+    private let colorTitle: UILabel = UILabel()
+    private let pickerSeparator: CAShapeLayer = CAShapeLayer()
     
     var buttonsList: [UIButton] = [UIButton]()
     var colorSetList = FactoryColorSet.shared.get()
@@ -29,8 +31,7 @@ class ColorThemeViewCell: ToolsBarCellBase {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        registerForTraitChanges([UITraitUserInterfaceStyle.self],
-                                action: #selector(changeUserInterfaceStyle))
+        
         
         picker.delegate = self
         picker.dataSource = self
@@ -38,6 +39,15 @@ class ColorThemeViewCell: ToolsBarCellBase {
         setViews()
         setConstraints()
         setCurrentStates()
+        
+        
+        registerForTraitChanges([UITraitUserInterfaceStyle.self],
+                                action: #selector(changeUserInterfaceStyle))
+    }
+    
+    deinit {
+        navigationVCColorSetDelegate = nil
+        mainVCColorSetDelegate = nil
     }
     
     //MARK: - SetCurrentStates
@@ -51,6 +61,8 @@ class ColorThemeViewCell: ToolsBarCellBase {
         setButtonImage(lightThemeButton, UIColor.currentColorSet.imageLight)
         setButtonImage(darkThemeButton, UIColor.currentColorSet.imageDeep)
         setButtonImage(systemThemeButton, UIColor.currentColorSet.imageSystem)
+        
+        colorTitle.text = UIColor.currentColorSet.textTitle
         
         switch TraitCollectionManager.shared.theme {
             
@@ -113,12 +125,29 @@ class ColorThemeViewCell: ToolsBarCellBase {
                                          darkThemeButton])
         
         addSubview(picker)
+        let rotationAngle: CGFloat = -90 * (.pi / 180)
+        picker.transform = CGAffineTransform(rotationAngle: rotationAngle)
+        
+        addSubview(colorTitle)
+        colorTitle.font = UIFont.systemFont(ofSize: 25,
+                                            weight: .medium,
+                                            width: .compressed)
+        colorTitle.textColor = .gray
+        
+        Shaper.shared.drawCenterXSeparator(shape: pickerSeparator,
+                                                      view: self,
+                                                      xMove: -41,
+                                                      xAdd: 21,
+                                                      y: 310,
+                                                      lineWidth: 0.7,
+                                                      color: .lightGray)
  
     }
     
     //MARK: - ChangeUserInterfaceStyle
     
     @objc private func changeUserInterfaceStyle() {
+        
         if traitCollection.userInterfaceStyle == .dark {
             navigationVCColorSetDelegate?.update(UIColor.currentColorSet, false)
             mainVCColorSetDelegate?.update(UIColor.currentColorSet, false)
@@ -143,6 +172,7 @@ class ColorThemeViewCell: ToolsBarCellBase {
     }
     
     @objc private func buttonPressed() {
+        
         for i in 0..<buttonsList.count {
             if buttonsList[i].isTouchInside {
 
@@ -169,19 +199,18 @@ class ColorThemeViewCell: ToolsBarCellBase {
         systemTitle.translatesAutoresizingMaskIntoConstraints = false
         
         picker.translatesAutoresizingMaskIntoConstraints = false
+        colorTitle.translatesAutoresizingMaskIntoConstraints = false
         
         
         NSLayoutConstraint.activate([
             
             darkThemeButton.widthAnchor.constraint(equalToConstant: 110),
             darkThemeButton.heightAnchor.constraint(equalToConstant: 200),
-            darkThemeButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            darkThemeButton.bottomAnchor.constraint(lessThanOrEqualTo:
-                                            picker.topAnchor ,
-                                            constant: 0),
-            darkThemeButton.topAnchor.constraint(lessThanOrEqualTo: topAnchor,
-                                            constant: 120),
-            
+            darkThemeButton.centerXAnchor.constraint(equalTo: 
+                                            centerXAnchor),
+            darkThemeButton.topAnchor.constraint(equalTo:
+                                            contentView.topAnchor,
+                                            constant: 20),
             
             lightThemeButton.widthAnchor.constraint(equalToConstant: 110),
             lightThemeButton.heightAnchor.constraint(equalToConstant: 200),
@@ -189,8 +218,6 @@ class ColorThemeViewCell: ToolsBarCellBase {
                                             darkThemeButton.centerYAnchor),
             lightThemeButton.trailingAnchor.constraint(equalTo:
                                             darkThemeButton.leadingAnchor),
-            
-            
             
             systemThemeButton.widthAnchor.constraint(equalToConstant: 110),
             systemThemeButton.heightAnchor.constraint(equalToConstant: 200),
@@ -214,10 +241,18 @@ class ColorThemeViewCell: ToolsBarCellBase {
             systemTitle.bottomAnchor.constraint(equalTo:
                                             systemThemeButton.bottomAnchor,
                                             constant: -10),
-            picker.widthAnchor.constraint(equalToConstant: .barWidth),
-            picker.heightAnchor.constraint(equalToConstant: 130),
-            picker.centerYAnchor.constraint(equalTo: centerYAnchor,
-                                            constant: 150)
+            picker.widthAnchor.constraint(equalToConstant: 45),
+            picker.heightAnchor.constraint(equalToConstant: .barWidth),
+            picker.centerXAnchor.constraint(equalTo: centerXAnchor),
+            picker.centerYAnchor.constraint(equalTo:
+                                            darkThemeButton.bottomAnchor,
+                                            constant: 60),
+            
+            colorTitle.topAnchor.constraint(equalTo:
+                                            picker.centerYAnchor,
+                                            constant: 40),
+            colorTitle.centerXAnchor.constraint(equalTo: 
+                                            contentView.centerXAnchor)
             
         ])
     }
@@ -241,19 +276,31 @@ extension ColorThemeViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        let title = UILabel()
-        title.font = UIFont.systemFont(ofSize: 25, weight: .medium, width: .compressed)
-        title.text = colorSetList[row].textTitle
-        title.textAlignment = .center
-        title.textColor = .gray
-        return title
+        
+        picker.subviews.forEach() {
+            $0.backgroundColor = .clear
+        }
+        
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: colorSetList[row].colorIcon)
+        imageView.backgroundColor = .none
+        imageView.contentMode = .scaleAspectFit
+        let rotationAngle: CGFloat = 90 * (.pi / 180)
+        imageView.transform = CGAffineTransform(rotationAngle: rotationAngle)
+        return imageView
     }
     
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-        return 42
+        return 60
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+        45
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+        colorTitle.text = colorSetList[row].textTitle
         
         UIColor.currentColorSet = colorSetList[row]
         ColorIndexManager.shared.colorIndex = row

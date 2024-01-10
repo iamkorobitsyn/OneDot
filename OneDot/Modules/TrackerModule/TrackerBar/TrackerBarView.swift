@@ -9,67 +9,108 @@ import UIKit
 import AudioToolbox
 
 class TrackerBarView: UIView {
-    let colorSet = UIColor.currentColorSet
+    
+    var completionForActiveButton: ((UIButton)->())?
+    
+    private let colorSet = UIColor.currentColorSet
+    private let feedbackGen = UISelectionFeedbackGenerator()
 
-    let exercises = FactoryExercises()
-    var currentExercise: Exercise?
+    private let exercises = FactoryExercises()
+    private var currentExercise: Exercise?
     
-    var completion: ((_ button: UIButton)->())?
+    private let visualEffectView: UIVisualEffectView = {
+        let view = UIVisualEffectView()
+        view.effect = UIBlurEffect(style: .light)
+        view.frame = CGRect(x: 0, y: 0,
+                                        width: CGFloat.barWidth,
+                                        height: CGFloat.headerBarHeight)
+        view.clipsToBounds = true
+        view.layer.cornerRadius = CGFloat.barCorner
+        view.layer.cornerCurve = .continuous
+        return view
+    }()
     
-    let picker: TrackerBarPicker = TrackerBarPicker()
-    let gpsView: TrackerBarGPS = TrackerBarGPS()
+    private let locationStack: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.backgroundColor = .currentColorSet.additionalSelectorColor
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        stack.spacing = 0
+        stack.layer.cornerRadius = CGFloat.iconSide / 2
+        return stack
+    }()
     
-    
-    let feedbackGen = UISelectionFeedbackGenerator()
-    
+    private let toolsStack: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.backgroundColor = .currentColorSet.mainSelectorColor
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        stack.spacing = 0
+        stack.layer.cornerRadius = CGFloat.iconSide / 2
+        return stack
+    }()
 
-    let pickerSeparator: CAShapeLayer = CAShapeLayer()
-
-    private let visualEffectView = UIVisualEffectView()
+    private let locationTitle: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.textColor = .gray
+        return label
+    }()
     
-    var toolsStack: UIStackView = UIStackView()
-    var locationStack: UIStackView = UIStackView()
-
-    //MARK: - Labels
-
-    let locationTitle: UILabel = UILabel()
-    let toolsTitle: UILabel = UILabel()
+    private let toolsTitle: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.textColor = .gray
+        return label
+    }()
     
-    //MARK: - SelectorButtons
+    let gpsView: TrackerBarGPS = {
+        let view = TrackerBarGPS()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
+    let settingsButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(named: "trackerBarSettingsIcon"), for: .normal)
+        return button
+    }()
+    
+    let pickerView: TrackerBarPickerView = {
+        let view = TrackerBarPickerView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .none
+        return view
+    }()
+    
+    private let pickerSeparator: CAShapeLayer = CAShapeLayer()
     
     let outdoorButton: TrackerBarButton = TrackerBarButton()
     let indoorButton: TrackerBarButton = TrackerBarButton()
+    let notesButton: TrackerBarButton = TrackerBarButton()
     
     let calculatorButton: TrackerBarButton = TrackerBarButton()
     let soundButton: TrackerBarButton = TrackerBarButton()
     let themesButton: TrackerBarButton = TrackerBarButton()
-    let settingsButton: TrackerBarButton = TrackerBarButton()
     
-    
-    //MARK: - Metrics
-    
-    let mainBarWidth: CGFloat = UIScreen.main.bounds.width / 1.05
-    let mainBarHeight: CGFloat = 130
-    let mainBarCorner: CGFloat = 30
-    
-    let selectorStackSide: CGFloat = 42
-    let stackSpacing: CGFloat = 2
-
+   
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        
-        
+
         setButtonTargets()
         statesRefresh(locations: true, tools: true)
         setViews()
         setConstraints()
         didBecomeObserver()
         
-        outdoorButton.setActiveState(.indoor)
+        setExerciseState(indoor: UserDefaultsManager.shared.userIndoorStatus)
         
-        picker.completion = { [weak self] exercise in
+        pickerView.completion = { [weak self] exercise in
             guard let self else { return }
             currentExercise = exercise
             print(exercise.titleName)
@@ -83,166 +124,160 @@ class TrackerBarView: UIView {
         locationStack.backgroundColor = set.additionalSelectorColor
     }
     
-    
-    //MARK: - Targets
-    
-    private func setButtonTargets() {
-        
-        outdoorButton.addTarget(self,
-                                    action: #selector(buttonTapped),
-                                    for: .touchUpInside)
-        indoorButton.addTarget(self,
-                                  action: #selector(buttonTapped),
-                                  for: .touchUpInside)
-        calculatorButton.addTarget(self,
-                                   action: #selector(buttonTapped),
-                                   for: .touchUpInside)
-        soundButton.addTarget(self,
-                              action: #selector(buttonTapped),
-                              for: .touchUpInside)
-        themesButton.addTarget(self,
-                               action: #selector(buttonTapped),
-                               for: .touchUpInside)
-        settingsButton.addTarget(self,
-                                 action: #selector(buttonTapped),
-                                 for: .touchUpInside)
-        
-        
-    }
+    //MARK: - RefreshButtons
     
     func statesRefresh(locations: Bool, tools: Bool) {
         if locations != false {
-            outdoorButton.setInactiveState(.indoor)
-            indoorButton.setInactiveState(.outdoor)
+            outdoorButton.setInactiveState(.outdoor)
+            indoorButton.setInactiveState(.indoor)
             locationTitle.text = ""
         }
         if tools != false {
             calculatorButton.setInactiveState(.calculator)
             soundButton.setInactiveState(.sound)
             themesButton.setInactiveState(.themes)
-            settingsButton.setInactiveState(.settings)
             toolsTitle.text = ""
         }
     }
     
+    
+    //MARK: - Targets
+    
+    private func setButtonTargets() {
+        
+        outdoorButton.addTarget(self, action: #selector(buttonTapped),
+                                for: .touchUpInside)
+        indoorButton.addTarget(self, action: #selector(buttonTapped),
+                               for: .touchUpInside)
+        calculatorButton.addTarget(self, action: #selector(buttonTapped),
+                                   for: .touchUpInside)
+        soundButton.addTarget(self, action: #selector(buttonTapped),
+                              for: .touchUpInside)
+        themesButton.addTarget(self, action: #selector(buttonTapped),
+                               for: .touchUpInside)
+        settingsButton.addTarget(self, action: #selector(buttonTapped),
+                                 for: .touchUpInside)
+        notesButton.addTarget(self, action: #selector(buttonTapped),
+                              for: .touchUpInside)
+    }
     
     //MARK: - ButtonTapped
     
     @objc private func buttonTapped() {
         
         if calculatorButton.isTouchInside {
-            completion?(calculatorButton)
+            completionForActiveButton?(calculatorButton)
+            
+            statesRefresh(locations: false, tools: true)
+            calculatorButton.setActiveState(.calculator)
+            toolsTitle.text = "Calculator"
+ 
         } else if  soundButton.isTouchInside {
-            completion?(soundButton)
+            completionForActiveButton?(soundButton)
+            
+            statesRefresh(locations: false, tools: true)
+            soundButton.setActiveState(.sound)
+            toolsTitle.text = "Sound"
+
         } else if  themesButton.isTouchInside {
-            completion?(themesButton)
+            completionForActiveButton?(themesButton)
+            
+            statesRefresh(locations: false, tools: true)
+            themesButton.setActiveState(.themes)
+            toolsTitle.text = "Themes"
+
         } else if settingsButton.isTouchInside {
-            completion?(settingsButton)
+            completionForActiveButton?(settingsButton)
+            
+        } else if outdoorButton.isTouchInside {
+            completionForActiveButton?(outdoorButton)
+            setExerciseState(indoor: false)
+        } else if indoorButton.isTouchInside {
+            completionForActiveButton?(indoorButton)
+            setExerciseState(indoor: true)
+        } else if notesButton.isTouchInside {
+            if gpsView.isHidden == false {
+                notesButton.setActiveState(.notesOutdoor)
+                completionForActiveButton?(notesButton)
+            }
         }
+    }
+    
+    //MARK: - ExerciseStates
+    
+    private func setExerciseState(indoor: Bool) {
+        feedbackGen.selectionChanged()
+        gpsView.isHidden = indoor
         
-         if outdoorButton.isTouchInside {
-            gpsView.isHidden = false
+        if indoor == true {
+            pickerView.currentLocation = "room"
+            pickerView.picker.reloadAllComponents()
+            statesRefresh(locations: true, tools: false)
+            indoorButton.setActiveState(.indoor)
+            notesButton.setActiveState(.notesIndoor)
+            locationTitle.text = "Indoor"
+            UserDefaultsManager.shared.userIndoorStatus = true
             
-            feedbackGen.selectionChanged()
-            completion?(outdoorButton)
-            
-            picker.currentLocation = "street"
-            picker.picker.reloadAllComponents()
-            let currentRow = UserDefaultsManager.shared.onTheStreetLoad()
-            picker.picker.selectRow(currentRow, inComponent: 0, animated: true)
-            currentExercise = exercises.get(.street)[currentRow]
-            picker.title.text = currentExercise?.titleName
-            picker.titleView.image = UIImage(named: currentExercise?.titleIcon ?? "")
-            
+            let row = UserDefaultsManager.shared.pickerRowIndoor
+            pickerView.picker.selectRow(row, inComponent: 0, animated: true)
+            currentExercise = nil
+            currentExercise = exercises.get(.room)[row]
+            pickerView.title.text = currentExercise?.titleName
+            pickerView.titleView.image = UIImage(named: currentExercise?.titleIcon ?? "")
+        } else {
+            pickerView.currentLocation = "street"
+            pickerView.picker.reloadAllComponents()
+            statesRefresh(locations: true, tools: false)
+            outdoorButton.setActiveState(.outdoor)
+            notesButton.setInactiveState(.notesIndoor)
             locationTitle.text = "Outdoor"
-            outdoorButton.setActiveState(.indoor)
-            indoorButton.setInactiveState(.outdoor)
-            UserDefaultsManager.shared.selectorSave("street")
-         } else if indoorButton.isTouchInside {
-             gpsView.isHidden = true
-             feedbackGen.selectionChanged()
-             completion?(indoorButton)
-             
-             picker.currentLocation = "room"
-             picker.picker.reloadAllComponents()
-             let currentRow = UserDefaultsManager.shared.inRoomLoad()
-             picker.picker.selectRow(currentRow, inComponent: 0, animated: true)
-             currentExercise = exercises.get(.room)[currentRow]
-             picker.title.text = currentExercise?.titleName
-             picker.titleView.image = UIImage(named: currentExercise?.titleIcon ?? "")
-             
-             locationTitle.text = "Indoor"
-             indoorButton.setActiveState(.outdoor)
-             outdoorButton.setInactiveState(.indoor)
-             UserDefaultsManager.shared.selectorSave("room")
-         }
-        
+            
+            
+            UserDefaultsManager.shared.userIndoorStatus = false
+            
+            let row = UserDefaultsManager.shared.pickerRowOutdoor
+            pickerView.picker.selectRow(row, inComponent: 0, animated: true)
+            currentExercise = exercises.get(.street)[row]
+            pickerView.title.text = currentExercise?.titleName
+            pickerView.titleView.image = UIImage(named: currentExercise?.titleIcon ?? "")
+        }
     }
     
     
     //MARK: - SetViews
     private func setViews() {
-        layer.cornerRadius = mainBarCorner
+        layer.cornerRadius = CGFloat.barCorner
         layer.cornerCurve = .continuous
         layer.borderWidth = 0.3
         layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         
         addSubview(visualEffectView)
-        
-        visualEffectView.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
-        visualEffectView.frame = CGRect(x: 0, y: 0,
-                                        width: mainBarWidth,
-                                        height: mainBarHeight)
-        visualEffectView.clipsToBounds = true
-        visualEffectView.layer.cornerRadius = mainBarCorner
-        visualEffectView.layer.cornerCurve = .continuous
-        
-        toolsStack = UIStackView(arrangedSubviews: [calculatorButton,
-                                                    soundButton,
-                                                    themesButton,
-                                                   settingsButton])
-        toolsStack.backgroundColor = .currentColorSet.mainSelectorColor
-        toolsStack.axis = .horizontal
-        toolsStack.distribution = .fillEqually
-        toolsStack.spacing = stackSpacing
-        toolsStack.layer.cornerRadius = selectorStackSide / 2
-        addSubview(toolsStack)
-        
-        locationStack = UIStackView(arrangedSubviews: [outdoorButton,
-                                                         indoorButton])
-        locationStack.backgroundColor = .currentColorSet.additionalSelectorColor
-        locationStack.axis = .horizontal
-        locationStack.distribution = .fillEqually
-        locationStack.spacing = stackSpacing
-        locationStack.layer.cornerRadius = selectorStackSide / 2
+
+        locationStack.addArrangedSubview(outdoorButton)
+        locationStack.addArrangedSubview(indoorButton)
+        locationStack.addArrangedSubview(notesButton)
         addSubview(locationStack)
         
-
+        toolsStack.addArrangedSubview(calculatorButton)
+        toolsStack.addArrangedSubview(soundButton)
+        toolsStack.addArrangedSubview(themesButton)
+        addSubview(toolsStack)
         
-        addSubview(picker)
-        picker.backgroundColor = .none
-
         addSubview(gpsView)
+        addSubview(settingsButton)
         
         addSubview(toolsTitle)
-        toolsTitle.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        toolsTitle.textColor = .gray
-        
         addSubview(locationTitle)
-        locationTitle.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        locationTitle.textColor = .gray
-        
+    
+        addSubview(pickerView)
+
         Shaper.shared.drawCenterXSeparator(shape: pickerSeparator,
-                                                      view: self,
-                                           xMove: -mainBarWidth / 3.1,
-                                                      xAdd: -mainBarWidth / 5,
-                                                      y: 115,
-                                                      lineWidth: 0.7,
-                                                      color: .lightGray)
-        
-        
-        
-        
+                                           view: self,
+                                           xMove: -CGFloat.barWidth / 3.1,
+                                           xAdd: -CGFloat.barWidth / 5,
+                                           y: 115,
+                                           lineWidth: 0.7,
+                                           color: .lightGray)
     }
     
     //MARK: - NavigationControllerObserver
@@ -257,74 +292,59 @@ class TrackerBarView: UIView {
     //MARK: - ObserverAnimation
     
     @objc private func animations() {
-        Animator.shared.animateConnectionStick(gpsView.pillingCircle)
+        Animator.shared.animateGPSCursor(gpsView.satelliteIcon)
     }
     
     //MARK: - SetConstraints
     
     private func setConstraints() {
-        toolsStack.translatesAutoresizingMaskIntoConstraints = false
-        locationStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        toolsTitle.translatesAutoresizingMaskIntoConstraints = false
-        locationTitle.translatesAutoresizingMaskIntoConstraints = false
-        picker.translatesAutoresizingMaskIntoConstraints = false
-        gpsView.translatesAutoresizingMaskIntoConstraints = false
-        
         
         NSLayoutConstraint.activate([
+            locationStack.widthAnchor.constraint(equalToConstant:
+                                            42 * CGFloat(locationStack.subviews.count)),
+            locationStack.heightAnchor.constraint(equalToConstant: 42),
+            locationStack.topAnchor.constraint(equalTo: topAnchor,
+                                            constant: 15),
+            locationStack.centerXAnchor.constraint(equalTo: centerXAnchor,
+                                            constant: -CGFloat.barWidth / 4 + 5),
             
             toolsStack.widthAnchor.constraint(equalToConstant:
-                                        (selectorStackSide *
-                                 CGFloat(toolsStack.subviews.count)) +
-                                        (stackSpacing *
-                                 CGFloat(toolsStack.subviews.count) -
-                                         stackSpacing)),
-            toolsStack.heightAnchor.constraint(equalToConstant:
-                                         selectorStackSide),
-            toolsStack.topAnchor.constraint(equalTo: 
-                                         topAnchor,
-                                         constant: 15),
-            toolsStack.centerXAnchor.constraint(equalTo:
-                                         centerXAnchor,
-                                         constant: mainBarWidth / 4 - 5),
+                                            42 * CGFloat(toolsStack.subviews.count)),
+            toolsStack.heightAnchor.constraint(equalToConstant: 42),
+            toolsStack.topAnchor.constraint(equalTo: topAnchor,
+                                            constant: 15),
+            toolsStack.leadingAnchor.constraint(equalTo: centerXAnchor),
             
-            locationStack.widthAnchor.constraint(equalToConstant: 
-                                        (selectorStackSide *
-                                 CGFloat(locationStack.subviews.count)) +
-                                        (stackSpacing *
-                                 CGFloat(locationStack.subviews.count) -
-                                         stackSpacing)),
-            locationStack.heightAnchor.constraint(equalToConstant:
-                                         selectorStackSide),
-            locationStack.topAnchor.constraint(equalTo:
-                                         topAnchor,
-                                         constant: 15),
-            locationStack.centerXAnchor.constraint(equalTo:
-                                         centerXAnchor,
-                                                   constant: -mainBarWidth / 4 + 5),
+            settingsButton.widthAnchor.constraint(equalToConstant: 42),
+            settingsButton.heightAnchor.constraint(equalToConstant: 42),
+            settingsButton.topAnchor.constraint(equalTo: topAnchor,
+                                            constant: 15),
+            settingsButton.trailingAnchor.constraint(equalTo:
+                                            trailingAnchor,
+                                            constant: -10),
             
-            picker.widthAnchor.constraint(equalToConstant:
-                                         mainBarWidth),
-            picker.heightAnchor.constraint(equalToConstant: 50),
-            picker.centerXAnchor.constraint(equalTo: centerXAnchor),
-            picker.centerYAnchor.constraint(equalTo: centerYAnchor,
-                                         constant: mainBarHeight / 4),
+            pickerView.widthAnchor.constraint(equalToConstant:
+                                            CGFloat.barWidth),
+            pickerView.heightAnchor.constraint(equalToConstant: 50),
+            pickerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            pickerView.centerYAnchor.constraint(equalTo: centerYAnchor,
+                                            constant: CGFloat.headerBarHeight / 4),
             
             toolsTitle.topAnchor.constraint(equalTo: 
-                                         toolsStack.bottomAnchor,
-                                         constant: 3),
+                                            toolsStack.bottomAnchor,
+                                            constant: 3),
             toolsTitle.centerXAnchor.constraint(equalTo:
-                                         toolsStack.centerXAnchor),
+                                            toolsStack.centerXAnchor),
             
             locationTitle.topAnchor.constraint(equalTo: 
-                                         locationStack.bottomAnchor,
-                                         constant: 3),
+                                            locationStack.bottomAnchor,
+                                            constant: 3),
             locationTitle.centerXAnchor.constraint(equalTo:
-                                         locationStack.centerXAnchor),
+                                            locationStack.centerXAnchor),
             
-            gpsView.centerYAnchor.constraint(equalTo: locationStack.centerYAnchor, constant: -15),
-            gpsView.trailingAnchor.constraint(equalTo: locationStack.leadingAnchor, constant: -15),
+            gpsView.centerYAnchor.constraint(equalTo: locationStack.centerYAnchor,
+                                            constant: 15),
+            gpsView.trailingAnchor.constraint(equalTo: locationStack.leadingAnchor),
             gpsView.widthAnchor.constraint(equalToConstant: 30),
             gpsView.heightAnchor.constraint(equalToConstant: 30)
         ])

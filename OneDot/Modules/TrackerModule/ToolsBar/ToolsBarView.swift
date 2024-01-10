@@ -10,13 +10,17 @@ import UIKit
 
 class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
     
-    private let skipButton: UIButton = UIButton()
-    private let skipTitle: UILabel = UILabel()
+    let skipButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setBackgroundImage(UIImage(named: "additionalHideIcon"),
+                                      for: .normal)
+        return button
+    }()
     
     let calcuatorVC: CalculatorVC = CalculatorVC()
     let soundVC: SoundVC = SoundVC()
     let themesVC: ThemesVC = ThemesVC()
-    let settingsVC: SettingsVC = SettingsVC()
     
     
     var showTabBarCompletion: ((Bool) -> ())?
@@ -24,8 +28,7 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
     enum VCCases {
         case calculator,
              sound,
-             themes,
-             settings
+             themes
     }
     
     override init(effect: UIVisualEffect?) {
@@ -58,22 +61,9 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
         contentView.addSubview(themesVC.view)
         themesVC.view.frame = self.frame
         themesVC.view.isHidden = true
-        
-        contentView.addSubview(settingsVC.view)
-        settingsVC.view.frame = self.frame
-        settingsVC.view.isHidden = true
-        
 
         contentView.addSubview(skipButton)
-        skipButton.backgroundColor = .clear
-        skipButton.setBackgroundImage(UIImage(named: "toolsSkipIcon"), for: .normal)
-        skipButton.setBackgroundImage(UIImage(named: "toolsSkipIcon"), for: .highlighted)
         skipButton.addTarget(self, action: #selector(skip), for: .touchUpInside)
-        
-        contentView.addSubview(skipTitle)
-        skipTitle.textColor = .gray
-        skipTitle.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        skipTitle.text = "Skip"
     }
     
     func showVC(_ VCCase: VCCases) {
@@ -83,55 +73,41 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
             calcuatorVC.view.isHidden = false
             soundVC.view.isHidden = true
             themesVC.view.isHidden = true
-            settingsVC.view.isHidden = true
         case .sound:
             soundVC.view.isHidden = false
             themesVC.view.isHidden = true
-            settingsVC.view.isHidden = true
             calcuatorVC.view.isHidden = true
         case .themes:
             themesVC.view.isHidden = false
-            settingsVC.view.isHidden = true
             calcuatorVC.view.isHidden = true
             soundVC.view.isHidden = true
-        case .settings:
-            settingsVC.view.isHidden = false
-            calcuatorVC.view.isHidden = true
-            soundVC.view.isHidden = true
-            themesVC.view.isHidden = true
-        
         }
     }
     
     
     @objc private func skip() {
+        skipButton.isHidden = true
         showTabBarCompletion?(true)
-        Animator.shared.MainBarBodyHide(self, self)
+        self.isHidden = true
+//        Animator.shared.MainBarBodyHide(self, self)
     }
     
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        self.isHidden = true
+//        self.isHidden = true
     }
     
     //MARK: - SetConstrains
     
     private func setConstraints() {
-        skipButton.translatesAutoresizingMaskIntoConstraints = false
-        skipTitle.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             skipButton.widthAnchor.constraint(equalToConstant: 42),
             skipButton.heightAnchor.constraint(equalToConstant: 42),
             skipButton.topAnchor.constraint(equalTo:
-                                            topAnchor, constant: 20),
+                                            topAnchor, constant: 10),
             skipButton.trailingAnchor.constraint(equalTo:
                                             trailingAnchor,
-                                            constant: -20),
-            skipTitle.centerXAnchor.constraint(equalTo:
-                                            skipButton.centerXAnchor),
-            skipTitle.topAnchor.constraint(equalTo:
-                                            skipButton.bottomAnchor,
-                                            constant: 5)
+                                            constant: -10)
         ])
     }
     

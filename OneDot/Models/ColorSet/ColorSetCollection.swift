@@ -13,7 +13,7 @@ import UIKit
 class GrayMoonColorSet: ColorSetProtocol {
     
     var textTitle: String = "GRAY MOON"
-    
+    var colorIcon: String = "themesGrayMoonColorIcon"
     var imageLight: String = "grayMoonLightImage"
     var imageDeep: String = "grayMoonDeepImage"
     var imageSystem: String = "grayMoonSystemImage"
@@ -37,7 +37,7 @@ class GrayMoonColorSet: ColorSetProtocol {
 class SunsetSkyColorSet: ColorSetProtocol {
     
     var textTitle: String = "SUNSET SKY"
-    
+    var colorIcon: String = "themesSunsetSkyColorIcon"
     var imageLight: String = "sunsetSkyLightImage"
     var imageDeep: String = "sunsetSkyDeepImage"
     var imageSystem: String = "sunsetSkySystemImage"
@@ -61,7 +61,7 @@ class SunsetSkyColorSet: ColorSetProtocol {
 class GraphiteColorSet: ColorSetProtocol {
 
     var textTitle: String = "GRAPHITE"
-    
+    var colorIcon: String = "themesGraphiteColorIcon"
     var imageLight: String = "graphiteLightImage"
     var imageDeep: String = "graphiteDeepImage"
     var imageSystem: String = "graphiteSystemImage"
@@ -85,7 +85,7 @@ class GraphiteColorSet: ColorSetProtocol {
 class SandColorSet: ColorSetProtocol {
     
     var textTitle: String = "SAND"
-    
+    var colorIcon: String = "themesSandColorIcon"
     var imageLight: String = "sandLightImage"
     var imageDeep: String = "sandDeepImage"
     var imageSystem: String = "sandSystemImage"
@@ -109,7 +109,7 @@ class SandColorSet: ColorSetProtocol {
 class FirstSpecialColorSet: ColorSetProtocol {
     
     var textTitle: String = "FIRST SPECIAL"
-    
+    var colorIcon: String = "themesFirstSpecialColorIcon"
     var imageLight: String = "firstSpecialLightImage"
     var imageDeep: String = "firstSpecialDeepImage"
     var imageSystem: String = "firstSpecialSystemImage"
@@ -134,7 +134,7 @@ class FirstSpecialColorSet: ColorSetProtocol {
 class SecondSpecialColorSet: ColorSetProtocol {
 
     var textTitle: String = "SECOND SPECIAL"
-    
+    var colorIcon: String = "themesSecondSpecialColorIcon"
     var imageLight: String = "secondSpecialLightImage"
     var imageDeep: String = "secondSpecialDeepImage"
     var imageSystem: String = "secondSpecialSystemImage"
@@ -159,7 +159,7 @@ class SecondSpecialColorSet: ColorSetProtocol {
 class ThirdSpecialColorSet: ColorSetProtocol {
     
     var textTitle: String = "THIRD SPECIAL"
-    
+    var colorIcon: String = "themesThirdSpecialColorIcon"
     var imageLight: String = "thirdSpecialLightImage"
     var imageDeep: String = "thirdSpecialDeepImage"
     var imageSystem: String = "thirdSpecialSystemImage"

@@ -12,139 +12,125 @@ class MainVC: UIViewController {
     
     let mapView: MKMapView = MKMapView()
     let locationManager: CLLocationManager = CLLocationManager()
+    
+    let notesBarView: NotesBarView = NotesBarView()
+    
     let trackerBar: TrackerBarView = TrackerBarView()
     let toolsBar: ToolsBarView = ToolsBarView()
     
     var tabBarCompletion: ((Bool)->())?
     
-    //MARK: - Metrics
-    
-    let mainBarWidth: CGFloat = UIScreen.main.bounds.width / 1.05
-    let mainBarHeight: CGFloat = 130
-    let mainBarCorner: CGFloat = 30
+    enum ToolsNotesStates {
+        case indoor
+        case outdoor
+        case notes
+        case calculator
+        case sound
+        case themes
+        case settings
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setViews()
         
         setConstraints()
         setupLocationManager()
         checkLocationEnabled()
 
-        getUserDefaults()
 
-        showToolBar()
-        
-        
-        for cell in toolsBar.themesVC.currentRows {
-            if let themesCell = cell as? ColorThemeViewCell {
-                themesCell.mainVCColorSetDelegate = self
-            }
-        }
-    }
-
-    
-    private func getUserDefaults() {
-        let value = UserDefaultsManager.shared.selectorLoad()
-        if value == "street" {
-            title = "MAP"
-            trackerBar.locationTitle.text = "Outdoor"
-            trackerBar.picker.currentLocation = "street"
-            trackerBar.picker.picker.reloadAllComponents()
-            let currentRow = UserDefaultsManager.shared.onTheStreetLoad()
-            trackerBar.picker.picker.selectRow(currentRow, inComponent: 0, animated: true)
-            trackerBar.currentExercise = trackerBar.exercises.get(.street)[currentRow]
-            trackerBar.picker.title.text = trackerBar.currentExercise?.titleName
-            trackerBar.picker.titleView.image = UIImage(named: trackerBar.currentExercise?.titleIcon ?? "")
-            
-            trackerBar.outdoorButton.setActiveState(.indoor)
-            trackerBar.indoorButton.setInactiveState(.outdoor)
-            print(value)
-            
-            
-        } else if value == "room" {
-            title = "NOTES"
-            trackerBar.locationTitle.text = "Indoor"
-            trackerBar.picker.currentLocation = "room"
-            trackerBar.picker.picker.reloadAllComponents()
-            let currentRow = UserDefaultsManager.shared.inRoomLoad()
-            trackerBar.picker.picker.selectRow(currentRow, inComponent: 0, animated: true)
-            trackerBar.currentExercise = trackerBar.exercises.get(.room)[currentRow]
-            trackerBar.picker.title.text = trackerBar.currentExercise?.titleName
-            trackerBar.picker.titleView.image = UIImage(named: trackerBar.currentExercise?.titleIcon ?? "")
-            
-            trackerBar.indoorButton.setActiveState(.outdoor)
-            trackerBar.outdoorButton.setInactiveState(.indoor)
-        }
-    }
-    
-    
-    private func showToolBar() {
-        
- 
-        trackerBar.completion = { [weak self] button in
+        trackerBar.completionForActiveButton = { [weak self] button in
             guard let self else {return}
             
             if button == trackerBar.calculatorButton {
-
-                toolsBar.showVC(.calculator)
-
-                trackerBar.statesRefresh(locations: false, tools: true)
-                trackerBar.calculatorButton.setActiveState(.calculator)
-                trackerBar.toolsTitle.text = "Calculator"
-                
-                guard toolsBar.isHidden == true else {return}
-                toolsBar.isHidden = false
-                Animator.shared.toolsBarShow(toolsBar)
-                toolsBar.showTabBarCompletion?(false)
-                
+                setViewsState(.calculator)
             } else if button == trackerBar.soundButton {
-                
-                toolsBar.showVC(.sound)
-                
-                trackerBar.statesRefresh(locations: false, tools: true)
-                trackerBar.soundButton.setActiveState(.sound)
-                trackerBar.toolsTitle.text = "Sound"
-                
-                guard toolsBar.isHidden == true else {return}
-                toolsBar.isHidden = false
-                Animator.shared.toolsBarShow(toolsBar)
-                toolsBar.showTabBarCompletion?(false)
-                
+                setViewsState(.sound)
             } else if button == trackerBar.themesButton {
-                
-                toolsBar.showVC(.themes)
-                
-                trackerBar.statesRefresh(locations: false, tools: true)
-                trackerBar.themesButton.setActiveState(.themes)
-                trackerBar.toolsTitle.text = "Themes"
-                
-                guard toolsBar.isHidden == true else {return}
-                toolsBar.isHidden = false
-                Animator.shared.toolsBarShow(toolsBar)
-                toolsBar.showTabBarCompletion?(false)
-
+                setViewsState(.themes)
             } else if button == trackerBar.settingsButton {
-                
-                toolsBar.showVC(.settings)
-                
-                trackerBar.statesRefresh(locations: false, tools: true)
-                trackerBar.settingsButton.setActiveState(.settings)
-                trackerBar.toolsTitle.text = "Settings"
-                
-                guard toolsBar.isHidden == true else {return}
-                toolsBar.isHidden = false
-                Animator.shared.toolsBarShow(toolsBar)
-                toolsBar.showTabBarCompletion?(false)
-                
+                setViewsState(.settings)
             } else if button == trackerBar.indoorButton {
-                title = "NOTES"
+                setViewsState(.indoor)
             } else if button == trackerBar.outdoorButton {
-                title = "MAP"
+                setViewsState(.outdoor)
+            } else if button == trackerBar.notesButton {
+                setViewsState(.notes)
             }
         }
+        
+        toolsBar.themesVC.colorThemesCell.mainVCColorSetDelegate = self
+        
+        notesBarView.completionOfHide = { [weak self] in
+            guard let self else {return}
+            trackerBar.notesButton.setInactiveState(.notesIndoor)
+        }
+        
+        getLocationState(indoorIs: UserDefaultsManager.shared.userIndoorStatus)
     }
+    
+    private func getLocationState(indoorIs: Bool) {
+
+        if indoorIs == true {
+            title = "NOTES"
+            notesBarView.isHidden = false
+            notesBarView.setState(state: .indoor)
+        } else {
+            title = "MAP"
+            notesBarView.isHidden = true
+            notesBarView.setState(state: .outdoor)
+        }
+    }
+    
+    private func setViewsState(_ state: ToolsNotesStates) {
+        switch state {
+            
+        case .indoor:
+            getLocationState(indoorIs: true)
+            UserDefaultsManager.shared.userIndoorStatus = true
+
+        case .outdoor:
+            getLocationState(indoorIs: false)
+            UserDefaultsManager.shared.userIndoorStatus = false
+
+        case .notes:
+            
+            notesBarView.isHidden = false
+            
+        case .calculator:
+            
+            toolsBar.showVC(.calculator)
+            toolsBar.skipButton.isHidden = false
+            guard toolsBar.isHidden == true else {return}
+            toolsBar.isHidden = false
+//            Animator.shared.toolsBarShow(toolsBar)
+            toolsBar.showTabBarCompletion?(false)
+            
+        case .sound:
+            
+            toolsBar.showVC(.sound)
+            toolsBar.skipButton.isHidden = false
+            guard toolsBar.isHidden == true else {return}
+            toolsBar.isHidden = false
+//            Animator.shared.toolsBarShow(toolsBar)
+            toolsBar.showTabBarCompletion?(false)
+            
+        case .themes:
+            
+            toolsBar.showVC(.themes)
+            toolsBar.skipButton.isHidden = false
+            guard toolsBar.isHidden == true else {return}
+            toolsBar.isHidden = false
+//            Animator.shared.toolsBarShow(toolsBar)
+            toolsBar.showTabBarCompletion?(false)
+            
+        case .settings:
+            let settingsVC: SettingsVC = SettingsVC()
+            present(settingsVC, animated: true) 
+        }
+    }
+    
     
     //MARK: - LocationManager&Authorization
     
@@ -231,13 +217,15 @@ extension MainVC {
         
         view.addSubview(mapView)
         mapView.overrideUserInterfaceStyle = .light
+        view.addSubview(notesBarView)
+        notesBarView.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        notesBarView.clipsToBounds = true
         
-        view.addSubview(toolsBar)
+        
         view.addSubview(trackerBar)
-        
+        view.addSubview(toolsBar)
+
         setMapGradient()
-        
-        
     }
     
     //MARK: - SetConstraints
@@ -246,8 +234,11 @@ extension MainVC {
         mapView.translatesAutoresizingMaskIntoConstraints = false
         trackerBar.translatesAutoresizingMaskIntoConstraints = false
         toolsBar.translatesAutoresizingMaskIntoConstraints = false
+        notesBarView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
+            
+            
             
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
             mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -259,15 +250,23 @@ extension MainVC {
                                             view.safeAreaLayoutGuide.topAnchor,
                                             constant: 10),
             trackerBar.heightAnchor.constraint(equalToConstant:
-                                            mainBarHeight),
+                                            CGFloat.headerBarHeight),
             trackerBar.widthAnchor.constraint(equalToConstant:
-                                            mainBarWidth),
+                                            CGFloat.barWidth),
             
-            toolsBar.widthAnchor.constraint(equalToConstant: mainBarWidth),
+            toolsBar.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             toolsBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             toolsBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             toolsBar.topAnchor.constraint(equalTo: trackerBar.bottomAnchor,
-                                            constant: 10)
+                                            constant: 10),
+            
+            notesBarView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            notesBarView.topAnchor.constraint(equalTo:
+                                            view.safeAreaLayoutGuide.topAnchor,
+                                            constant: CGFloat.headerBarHeight + 20),
+            notesBarView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            notesBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor, 
+                                            constant: -20)
         ])
     }
     
@@ -309,18 +308,18 @@ extension MainVC {
 extension MainVC: MainVCColorSetProtocol {
     func update(_ set: ColorSetProtocol, _ barBGIsHidden: Bool) {
         trackerBar.updateColors(set)
-        
-        for cell in toolsBar.settingsVC.currentRows {
-            if let measuring = cell as? MeasuringViewCell {
-                measuring.updateColors(set)
-            }
-            if let notifications = cell as? NotificationsViewCell {
-                notifications.updateColors(set)
-            }
-            if let connections = cell as? ConnectionsViewCell {
-                connections.updateColors(set)
-            }
-        }
     }
 }
 
+
+extension MainVC: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+    
+    
+}

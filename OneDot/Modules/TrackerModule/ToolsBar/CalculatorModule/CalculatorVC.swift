@@ -13,7 +13,8 @@ class CalculatorVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        titleee.text = "CALCULATOR"
+//        view.backgroundColor = .blue.withAlphaComponent(0.2)
+//        titleee.text = "CALCULATOR"
         view.addSubview(titleee)
         titleee.translatesAutoresizingMaskIntoConstraints = false
         

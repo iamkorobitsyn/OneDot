@@ -111,13 +111,13 @@ class TabBar: UIView {
            feedbackGen.selectionChanged()
            
            if !trackingStatus {
-               pauseButton.setImage(UIImage(named: "startIcon"), for: .normal)
-               pauseButton.setImage(UIImage(named: "startIcon"), for: .highlighted)
+               pauseButton.setImage(UIImage(named: "tabBarStartIcon"), for: .normal)
+               pauseButton.setImage(UIImage(named: "tabBarStartIcon"), for: .highlighted)
                Animator.shared.AnimateStartButton(pauseImageView)
                trackingStatus.toggle()
            } else {
-               pauseButton.setImage(UIImage(named: "pauseIcon"), for: .normal)
-               pauseButton.setImage(UIImage(named: "pauseIcon"), for: .highlighted)
+               pauseButton.setImage(UIImage(named: "tabBarPauseIcon"), for: .normal)
+               pauseButton.setImage(UIImage(named: "tabBarPauseIcon"), for: .highlighted)
                pauseImageView.layer.removeAllAnimations()
                trackingStatus.toggle()
            }
@@ -168,22 +168,22 @@ class TabBar: UIView {
         addSubview(cancelButton)
         addSubview(finishButton)
         
-        startImageView.image = UIImage(named: "startIconRed")
-        pauseImageView.image = UIImage(named: "startIconRed")
+        startImageView.image = UIImage(named: "tabBarStartIconRed")
+        pauseImageView.image = UIImage(named: "tabBarStartIconRed")
         
-        prepareButton.setImage(UIImage(named: "startIcon"), for: .normal)
-        prepareButton.setImage(UIImage(named: "startIcon"), for: .highlighted)
-        startButton.setImage(UIImage(named: "startIcon"), for: .normal)
-        startButton.setImage(UIImage(named: "startIcon"), for: .highlighted)
-        pauseButton.setImage(UIImage(named: "pauseIcon"), for: .normal)
-        pauseButton.setImage(UIImage(named: "pauseIcon"), for: .highlighted)
+        prepareButton.setImage(UIImage(named: "tabBarStartIcon"), for: .normal)
+        prepareButton.setImage(UIImage(named: "tabBarStartIcon"), for: .highlighted)
+        startButton.setImage(UIImage(named: "tabBarStartIcon"), for: .normal)
+        startButton.setImage(UIImage(named: "tabBarStartIcon"), for: .highlighted)
+        pauseButton.setImage(UIImage(named: "tabBarPauseIcon"), for: .normal)
+        pauseButton.setImage(UIImage(named: "tabBarPauseIcon"), for: .highlighted)
         
-        profileButton.setImage(UIImage(named: "profileIcon"), for: .normal)
-        profileButton.setImage(UIImage(named: "profileIcon"), for: .highlighted)
-        cancelButton.setImage(UIImage(named: "cancelIcon"), for: .normal)
-        cancelButton.setImage(UIImage(named: "cancelIcon"), for: .highlighted)
-        finishButton.setImage(UIImage(named: "stopIcon"), for: .normal)
-        finishButton.setImage(UIImage(named: "stopIcon"), for: .highlighted)
+        profileButton.setImage(UIImage(named: "tabBarProfileIcon"), for: .normal)
+        profileButton.setImage(UIImage(named: "tabBarProfileIcon"), for: .highlighted)
+        cancelButton.setImage(UIImage(named: "tabBarCancelIcon"), for: .normal)
+        cancelButton.setImage(UIImage(named: "tabBarCancelIcon"), for: .highlighted)
+        finishButton.setImage(UIImage(named: "tabBarStopIcon"), for: .normal)
+        finishButton.setImage(UIImage(named: "tabBarStopIcon"), for: .highlighted)
         
         
     }

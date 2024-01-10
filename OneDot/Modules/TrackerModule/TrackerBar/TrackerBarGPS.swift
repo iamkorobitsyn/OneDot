@@ -11,32 +11,25 @@ import UIKit
 class TrackerBarGPS: UIView {
 
     
-    //MARK: - Views&Shapes
+    private let label: UILabel = {
+        let label = UILabel()
+        label.textColor = .gray
+        label.text = "GPS"
+        label.font = UIFont.systemFont(ofSize: 6, weight: .medium)
+        return label
+    }()
     
-    private let label: UILabel = UILabel()
-    let pillingCircle: CAShapeLayer = CAShapeLayer()
-    let satelliteIcon: UIImageView = UIImageView()
+    let satelliteIcon: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage(named: "additionalGPSCursorIconGreen")
+        return view
+    }()
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setViews()
         setConstraints()
-        drawPillingCircle()
-        
-        pillingCircle.fillColor = UIColor.green.cgColor
-    }
-    
-    func drawPillingCircle() {
-        let path = UIBezierPath()
-        let center = CGPoint(x: 27, y: 28)
-        path.addArc(withCenter: center,
-                    radius: 2,
-                    startAngle: 0,
-                    endAngle: CGFloat.pi * 2,
-                    clockwise: true)
-        pillingCircle.path = path.cgPath
-        layer.addSublayer(pillingCircle)
     }
     
     
@@ -44,12 +37,7 @@ class TrackerBarGPS: UIView {
     
     private func setViews() {
         addSubview(satelliteIcon)
-        satelliteIcon.image = UIImage(named: "satelliteIcon")
-        
         addSubview(label)
-        label.textColor = .gray
-        label.text = "GPS"
-        label.font = UIFont.systemFont(ofSize: 6, weight: .medium)
     }
     
  
@@ -61,11 +49,11 @@ class TrackerBarGPS: UIView {
         
         NSLayoutConstraint.activate([
             
-            label.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 13),
+            label.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 11),
             label.centerXAnchor.constraint(equalTo: satelliteIcon.centerXAnchor),
             
-            satelliteIcon.widthAnchor.constraint(equalToConstant: 16),
-            satelliteIcon.heightAnchor.constraint(equalToConstant: 16),
+            satelliteIcon.widthAnchor.constraint(equalToConstant: 12),
+            satelliteIcon.heightAnchor.constraint(equalToConstant: 12),
             satelliteIcon.centerXAnchor.constraint(equalTo: centerXAnchor),
             satelliteIcon.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
