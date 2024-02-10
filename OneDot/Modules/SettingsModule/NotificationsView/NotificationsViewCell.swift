@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class NotificationsViewCell: ToolsBarCellBase {
+class NotificationsViewCell: UITableViewCell {
     
     private var weeklyReportStackWidth = CGFloat()
 
@@ -43,6 +43,9 @@ class NotificationsViewCell: ToolsBarCellBase {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.backgroundColor = .clear
+        backgroundColor = .clear
+        selectionStyle = .none
         setViews()
         setConstraints()
         
@@ -52,13 +55,14 @@ class NotificationsViewCell: ToolsBarCellBase {
         setAchievingGoalsButtons()
         getAchievingGoalsStates()
         
-        Shaper.shared.drawCenterXSeparator(shape: separatorLine,
-                                           view: self,
-                                           xMove: -20,
-                                           xAdd: 20,
-                                           y: heightForRow,
-                                           lineWidth: 4,
-                                           color: .lightGray)
+        
+        Shaper.shared.drawXSeparator(shape: separatorLine,
+                                     view: self,
+                                     x: 100,
+                                     y: heightForRow,
+                                     length:
+                                     UIScreen.main.bounds.width - 200,
+                                     color: .lightGray)
     }
     
     //MARK: UpdateColors

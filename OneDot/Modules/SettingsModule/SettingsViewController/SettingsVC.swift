@@ -9,11 +9,23 @@ import UIKit
 
 class SettingsVC: UIViewController {
     
+    private let topTitle: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "SETTINGS"
+        label.textColor = .gray
+        label.font = UIFont.systemFont(ofSize: 35, weight: .heavy, width: .compressed)
+        return label
+    }()
+    private let topSeparator: CAShapeLayer = CAShapeLayer()
+    
     private let measuringSectionButton: UIButton = UIButton()
     private let notificationsSectionButton: UIButton = UIButton()
     private let connectionsSectionButton: UIButton = UIButton()
     private var sectionButtonList: [UIButton] = [UIButton]()
     private var sectionStack: UIStackView = UIStackView()
+    
+    
     
     private let visualEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView()
@@ -43,7 +55,7 @@ class SettingsVC: UIViewController {
 
     private let tableView: UITableView = UITableView()
     
-    private let sectionList: [ToolsBarCellBase] = []
+    private let sectionList: [UITableViewCell] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,10 +100,19 @@ class SettingsVC: UIViewController {
 //                                             for: .touchUpInside)
         
         visualEffectView.contentView.addSubview(hideButton)
+        visualEffectView.contentView.addSubview(topTitle)
         hideButton.addTarget(self, action: #selector(skip), for: .touchUpInside)
         
         
 //        setActiveSection(.measuring)
+        
+        Shaper.shared.drawXSeparator(shape: topSeparator,
+                                     view: self.view,
+                                     x: 0,
+                                     y: 170,
+                                     length:
+                                     UIScreen.main.bounds.width,
+                                     color: .lightGray)
     }
     
     //MARK: - SetButtons
@@ -183,6 +204,11 @@ class SettingsVC: UIViewController {
             visualEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             visualEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
+            topTitle.leadingAnchor.constraint(equalTo: visualEffectView.leadingAnchor,
+                                            constant: 25),
+            topTitle.topAnchor.constraint(equalTo: visualEffectView.topAnchor,
+                                            constant: 15),
+            
             sectionStack.widthAnchor.constraint(equalToConstant:
                                            (CGFloat(sectionStack.subviews.count) *
                                             CGFloat.iconSide) +
@@ -207,7 +233,7 @@ class SettingsVC: UIViewController {
                                             view.leadingAnchor),
             tableView.topAnchor.constraint(equalTo:
                                             view.topAnchor,
-                                            constant: 100),
+                                            constant: 170),
             tableView.trailingAnchor.constraint(equalTo:
                                             view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo:
@@ -217,10 +243,10 @@ class SettingsVC: UIViewController {
             hideButton.heightAnchor.constraint(equalToConstant: 42),
             hideButton.topAnchor.constraint(equalTo: 
                                             visualEffectView.topAnchor,
-                                            constant: 10),
+                                            constant: 15),
             hideButton.trailingAnchor.constraint(equalTo:
                                             visualEffectView.trailingAnchor,
-                                            constant: -10)
+                                            constant: -15)
         ])
     }
 }

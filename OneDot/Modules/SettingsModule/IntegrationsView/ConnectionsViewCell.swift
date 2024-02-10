@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ConnectionsViewCell: ToolsBarCellBase {
+class ConnectionsViewCell: UITableViewCell {
     
     private let mainSeparator: CAShapeLayer = CAShapeLayer()
     
@@ -51,6 +51,9 @@ class ConnectionsViewCell: ToolsBarCellBase {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.backgroundColor = .clear
+        backgroundColor = .clear
+        selectionStyle = .none
         
         setViews()
         setConstraints()

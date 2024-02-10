@@ -15,7 +15,7 @@ class TrackerBarGPS: UIView {
         let label = UILabel()
         label.textColor = .gray
         label.text = "GPS"
-        label.font = UIFont.systemFont(ofSize: 6, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 10, weight: .medium, width: .compressed)
         return label
     }()
     
@@ -49,13 +49,18 @@ class TrackerBarGPS: UIView {
         
         NSLayoutConstraint.activate([
             
-            label.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 11),
-            label.centerXAnchor.constraint(equalTo: satelliteIcon.centerXAnchor),
+//            label.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 11),
+//            label.centerXAnchor.constraint(equalTo: satelliteIcon.centerXAnchor),
+            
+            
             
             satelliteIcon.widthAnchor.constraint(equalToConstant: 12),
             satelliteIcon.heightAnchor.constraint(equalToConstant: 12),
-            satelliteIcon.centerXAnchor.constraint(equalTo: centerXAnchor),
-            satelliteIcon.centerYAnchor.constraint(equalTo: centerYAnchor)
+            satelliteIcon.topAnchor.constraint(equalTo: topAnchor),
+            satelliteIcon.leadingAnchor.constraint(equalTo: leadingAnchor),
+            
+            label.leadingAnchor.constraint(equalTo: satelliteIcon.trailingAnchor, constant: 5),
+            label.centerYAnchor.constraint(equalTo: satelliteIcon.centerYAnchor, constant: 0)
         ])
     }
     

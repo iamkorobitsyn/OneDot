@@ -13,7 +13,97 @@ class UserDefaultsManager {
     
     let userDefaults = UserDefaults.standard
     
-    private init() {}
+    private init() {
+    }
+
+    
+    //MARK: - GETSET
+    
+    func getInteger(forKey: String, defaultValue: Int) -> Int {
+        UserDefaults.standard.value(forKey: forKey) as? Int ?? defaultValue
+    }
+    
+    func setInteger(value: Int, forKey: String) {
+        UserDefaults.standard.setValue(value, forKey: forKey)
+    }
+    
+    
+    //MARK: - Metronome
+    
+    var bpmState: Int {
+        get { getInteger(forKey: "bpmState", defaultValue: 150) }
+        set { setInteger(value: newValue, forKey: "bpmState") }
+    }
+    
+    var beatState: Int {
+        get { getInteger(forKey: "beatState", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "beatState") }
+    }
+    
+    //MARK: Calculations
+    
+    var distance: Int {
+        get { getInteger(forKey: "distance", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "distance") }
+    }
+    
+    var distanceDecimal: Int {
+        get { getInteger(forKey: "distanceDecimal", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "distanceDecimal") }
+    }
+    
+    var speed: Int {
+        get { getInteger(forKey: "speed", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "speed") }
+    }
+    
+    var speedDecimal: Int {
+        get { getInteger(forKey: "speedDecimal", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "speedDecimal") }
+    }
+    
+    var paceMin: Int {
+        get { getInteger(forKey: "paceMin", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "paceMin") }
+    }
+    
+    var paceSec: Int {
+        get { getInteger(forKey: "paceSec", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "paceSec") }
+    }
+    
+    var timeH: Int {
+        get { getInteger(forKey: "timeH", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "timeH") }
+    }
+    
+    var timeMin: Int {
+        get { getInteger(forKey: "timeMin", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "timeMin") }
+    }
+    
+    var timeSec: Int {
+        get { getInteger(forKey: "timeSec", defaultValue: 0) }
+        set { setInteger(value: newValue, forKey: "timeSec") }
+    }
+    
+    //MARK: ToolsStatus
+    
+    var calculationsStatus: Int {
+        get {
+            return userDefaults.value(forKey: "calculationsState") as? Int ?? 0
+        } set {
+            userDefaults.setValue(newValue, forKey: "calculationsState")
+        }
+    }
+    
+    var themesStatus: Int {
+        get {
+            return userDefaults.value(forKey: "themesStatus") as? Int ?? 0
+        } set {
+            userDefaults.setValue(newValue, forKey: "themesStatus")
+        }
+    }
     
     //MARK: - UserIndoor&ExersiseStatus
     
@@ -73,18 +163,6 @@ class UserDefaultsManager {
             userDefaults.synchronize()
         }
     }
-    
-//    func countDownLoad() -> String {
-//        if let value = userDefaults.value(forKey: countDownKey) as? String {
-//            return value
-//        } else {
-//            return "3"
-//        }
-//    }
-//    
-//    func countDownSave(_ value: String) {
-//        userDefaults.setValue(value, forKey: countDownKey)
-//    }
     
     func autopauseLoad() -> Bool {
         if let value = userDefaults.value(forKey: autopauseKey) as? Bool {

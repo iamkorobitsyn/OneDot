@@ -17,6 +17,7 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
                                       for: .normal)
         return button
     }()
+
     
     let calcuatorVC: CalculatorVC = CalculatorVC()
     let soundVC: SoundVC = SoundVC()
@@ -73,6 +74,9 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
             calcuatorVC.view.isHidden = false
             soundVC.view.isHidden = true
             themesVC.view.isHidden = true
+
+            let section = UserDefaultsManager.shared.calculationsStatus
+            calcuatorVC.setActiveSection(section: section)
         case .sound:
             soundVC.view.isHidden = false
             themesVC.view.isHidden = true
@@ -81,6 +85,8 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
             themesVC.view.isHidden = false
             calcuatorVC.view.isHidden = true
             soundVC.view.isHidden = true
+            let section = UserDefaultsManager.shared.themesStatus
+            themesVC.setActiveSection(section: section)
         }
     }
     

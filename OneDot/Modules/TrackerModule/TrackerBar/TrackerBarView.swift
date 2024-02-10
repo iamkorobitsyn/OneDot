@@ -18,6 +18,13 @@ class TrackerBarView: UIView {
     private let exercises = FactoryExercises()
     private var currentExercise: Exercise?
     
+    let bpmLight: CAShapeLayer = CAShapeLayer()
+    private let bpmContainer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private let visualEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView()
         view.effect = UIBlurEffect(style: .light)
@@ -51,19 +58,11 @@ class TrackerBarView: UIView {
         stack.layer.cornerRadius = CGFloat.iconSide / 2
         return stack
     }()
-
-    private let locationTitle: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .gray
-        return label
-    }()
     
-    private let toolsTitle: UILabel = {
+    let toolsTitle: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 15, weight: .medium, width: .compressed)
         label.textColor = .gray
         return label
     }()
@@ -87,8 +86,7 @@ class TrackerBarView: UIView {
         view.backgroundColor = .none
         return view
     }()
-    
-    private let pickerSeparator: CAShapeLayer = CAShapeLayer()
+
     
     let outdoorButton: TrackerBarButton = TrackerBarButton()
     let indoorButton: TrackerBarButton = TrackerBarButton()
@@ -107,6 +105,12 @@ class TrackerBarView: UIView {
         setViews()
         setConstraints()
         didBecomeObserver()
+        
+        Shaper.shared.drawBpmLight(shape: bpmLight,
+                                   view: bpmContainer,
+                                   x: 1,
+                                   y: 5)
+        bpmLight.isHidden = true
         
         setExerciseState(indoor: UserDefaultsManager.shared.userIndoorStatus)
         
@@ -130,7 +134,6 @@ class TrackerBarView: UIView {
         if locations != false {
             outdoorButton.setInactiveState(.outdoor)
             indoorButton.setInactiveState(.indoor)
-            locationTitle.text = ""
         }
         if tools != false {
             calculatorButton.setInactiveState(.calculator)
@@ -166,25 +169,23 @@ class TrackerBarView: UIView {
     @objc private func buttonTapped() {
         
         if calculatorButton.isTouchInside {
-            completionForActiveButton?(calculatorButton)
-            
+
             statesRefresh(locations: false, tools: true)
             calculatorButton.setActiveState(.calculator)
-            toolsTitle.text = "Calculator"
+            completionForActiveButton?(calculatorButton)
  
         } else if  soundButton.isTouchInside {
             completionForActiveButton?(soundButton)
             
             statesRefresh(locations: false, tools: true)
             soundButton.setActiveState(.sound)
-            toolsTitle.text = "Sound"
+            toolsTitle.text = "MUSIC"
 
         } else if  themesButton.isTouchInside {
-            completionForActiveButton?(themesButton)
             
             statesRefresh(locations: false, tools: true)
             themesButton.setActiveState(.themes)
-            toolsTitle.text = "Themes"
+            completionForActiveButton?(themesButton)
 
         } else if settingsButton.isTouchInside {
             completionForActiveButton?(settingsButton)
@@ -215,7 +216,6 @@ class TrackerBarView: UIView {
             statesRefresh(locations: true, tools: false)
             indoorButton.setActiveState(.indoor)
             notesButton.setActiveState(.notesIndoor)
-            locationTitle.text = "Indoor"
             UserDefaultsManager.shared.userIndoorStatus = true
             
             let row = UserDefaultsManager.shared.pickerRowIndoor
@@ -230,8 +230,6 @@ class TrackerBarView: UIView {
             statesRefresh(locations: true, tools: false)
             outdoorButton.setActiveState(.outdoor)
             notesButton.setInactiveState(.notesIndoor)
-            locationTitle.text = "Outdoor"
-            
             
             UserDefaultsManager.shared.userIndoorStatus = false
             
@@ -267,17 +265,11 @@ class TrackerBarView: UIView {
         addSubview(settingsButton)
         
         addSubview(toolsTitle)
-        addSubview(locationTitle)
+        addSubview(bpmContainer)
     
         addSubview(pickerView)
+        
 
-        Shaper.shared.drawCenterXSeparator(shape: pickerSeparator,
-                                           view: self,
-                                           xMove: -CGFloat.barWidth / 3.1,
-                                           xAdd: -CGFloat.barWidth / 5,
-                                           y: 115,
-                                           lineWidth: 0.7,
-                                           color: .lightGray)
     }
     
     //MARK: - NavigationControllerObserver
@@ -335,18 +327,19 @@ class TrackerBarView: UIView {
                                             constant: 3),
             toolsTitle.centerXAnchor.constraint(equalTo:
                                             toolsStack.centerXAnchor),
+            bpmContainer.widthAnchor.constraint(equalToConstant: 10),
+            bpmContainer.heightAnchor.constraint(equalToConstant: 10),
+            bpmContainer.trailingAnchor.constraint(equalTo:
+                                            toolsStack.leadingAnchor,
+                                            constant: 0),
+            bpmContainer.centerYAnchor.constraint(equalTo:
+                                            toolsStack.centerYAnchor),
             
-            locationTitle.topAnchor.constraint(equalTo: 
-                                            locationStack.bottomAnchor,
-                                            constant: 3),
-            locationTitle.centerXAnchor.constraint(equalTo:
-                                            locationStack.centerXAnchor),
-            
-            gpsView.centerYAnchor.constraint(equalTo: locationStack.centerYAnchor,
-                                            constant: 15),
-            gpsView.trailingAnchor.constraint(equalTo: locationStack.leadingAnchor),
+            gpsView.topAnchor.constraint(equalTo: locationStack.bottomAnchor,
+                                            constant: 5),
+            gpsView.leadingAnchor.constraint(equalTo: locationStack.leadingAnchor, constant: 13),
             gpsView.widthAnchor.constraint(equalToConstant: 30),
-            gpsView.heightAnchor.constraint(equalToConstant: 30)
+            gpsView.heightAnchor.constraint(equalToConstant: 12)
         ])
     }
     

@@ -20,6 +20,8 @@ class TrackerBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
     let title: UILabel = UILabel()
     let titleView: UIImageView = UIImageView()
     
+    private let pickerSeparator: CAShapeLayer = CAShapeLayer()
+    
     
     //MARK: - Metrics
     
@@ -33,6 +35,13 @@ class TrackerBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
         
         setViews()
         setConstraints()
+        
+        Shaper.shared.drawYSeparator(shape: pickerSeparator,
+                                              view: picker,
+                                              x: 1,
+                                              y: 30,
+                                              length: 90,
+                                              color: .lightGray)
     }
     
         

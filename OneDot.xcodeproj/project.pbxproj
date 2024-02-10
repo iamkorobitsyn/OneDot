@@ -21,7 +21,6 @@
 		651E21552B148D8500658CA6 /* SoundVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E21542B148D8500658CA6 /* SoundVC.swift */; };
 		651E21572B148F9B00658CA6 /* ThemesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E21562B148F9B00658CA6 /* ThemesVC.swift */; };
 		651E21592B14971200658CA6 /* StoriesThemesViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E21582B14971200658CA6 /* StoriesThemesViewCell.swift */; };
-		651E215B2B1497AF00658CA6 /* WidgetsThemeViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E215A2B1497AF00658CA6 /* WidgetsThemeViewCell.swift */; };
 		651E215D2B1497E000658CA6 /* ColorThemeViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E215C2B1497E000658CA6 /* ColorThemeViewCell.swift */; };
 		6521308C2AC46F400056DEA5 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6521308B2AC46F400056DEA5 /* SplashScreen.swift */; };
 		6521308E2AC587210056DEA5 /* Aimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6521308D2AC587210056DEA5 /* Aimator.swift */; };
@@ -31,6 +30,10 @@
 		65551C792AC60F5A00CE3309 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */; };
 		65551C7C2AC61E4100CE3309 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65551C7B2AC61E4100CE3309 /* SettingsVC.swift */; };
 		655B53902B2139470020FF32 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655B538F2B2139470020FF32 /* CoreDataManager.swift */; };
+		656469632B502F25006AC14F /* CalculationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469622B502F25006AC14F /* CalculationsViewCell.swift */; };
+		656469652B502F47006AC14F /* HeartZonesViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469642B502F47006AC14F /* HeartZonesViewCell.swift */; };
+		656469672B5031A2006AC14F /* appleMusicViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469662B5031A2006AC14F /* appleMusicViewCell.swift */; };
+		656469692B5031B8006AC14F /* MetronomeViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469682B5031B8006AC14F /* MetronomeViewCell.swift */; };
 		65657FBA2AD415920081F5D7 /* MeasuringButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */; };
 		65657FC02AD5D5B60081F5D7 /* NotificationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FBF2AD5D5B60081F5D7 /* NotificationsViewCell.swift */; };
 		657D66252AA8693400397427 /* gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 657D66242AA8693400397427 /* gitignore */; };
@@ -42,8 +45,46 @@
 		6589BFDF2ADAC27700DE4E97 /* ConnectionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6589BFDE2ADAC27700DE4E97 /* ConnectionsViewCell.swift */; };
 		659879222AB48BBD004F6E2D /* TrackerBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659879212AB48BBD004F6E2D /* TrackerBarButton.swift */; };
 		659B0B772B1DFA69006E52A8 /* NotesTableViewEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659B0B762B1DFA69006E52A8 /* NotesTableViewEditCell.swift */; };
-		65C82A052AEAC3220022C69B /* ToolsBarCellBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C82A042AEAC3220022C69B /* ToolsBarCellBase.swift */; };
 		65C8CF102AD2241A00BDC35D /* MeasuringViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C8CF0F2AD2241A00BDC35D /* MeasuringViewCell.swift */; };
+		65D082A52B5CADB4005D09A9 /* KORG - Clave.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0827F2B5CADB2005D09A9 /* KORG - Clave.wav */; };
+		65D082A62B5CADB4005D09A9 /* KORG - Bongo 01.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082802B5CADB2005D09A9 /* KORG - Bongo 01.wav */; };
+		65D082A72B5CADB4005D09A9 /* KAWAI - SnareDrum.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082812B5CADB2005D09A9 /* KAWAI - SnareDrum.wav */; };
+		65D082A82B5CADB4005D09A9 /* KORG - Stick.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082822B5CADB2005D09A9 /* KORG - Stick.wav */; };
+		65D082A92B5CADB4005D09A9 /* NOVATION - 808CongaMid.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082832B5CADB2005D09A9 /* NOVATION - 808CongaMid.wav */; };
+		65D082AA2B5CADB4005D09A9 /* KORG - Bongo 03.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082842B5CADB2005D09A9 /* KORG - Bongo 03.wav */; };
+		65D082AB2B5CADB4005D09A9 /* NOVATION - 808Rimshot.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082852B5CADB2005D09A9 /* NOVATION - 808Rimshot.wav */; };
+		65D082AC2B5CADB4005D09A9 /* AKAI - Snare Lo.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082862B5CADB2005D09A9 /* AKAI - Snare Lo.wav */; };
+		65D082AD2B5CADB4005D09A9 /* NOVATION - 808TomLo.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082872B5CADB2005D09A9 /* NOVATION - 808TomLo.wav */; };
+		65D082AE2B5CADB4005D09A9 /* KORG - Bongo 02.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082882B5CADB3005D09A9 /* KORG - Bongo 02.wav */; };
+		65D082AF2B5CADB4005D09A9 /* AKAI - Clave.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082892B5CADB3005D09A9 /* AKAI - Clave.wav */; };
+		65D082B02B5CADB4005D09A9 /* NOVATION - 808TomMid.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0828A2B5CADB3005D09A9 /* NOVATION - 808TomMid.wav */; };
+		65D082B12B5CADB4005D09A9 /* AKAI - Bongo Hi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0828B2B5CADB3005D09A9 /* AKAI - Bongo Hi.wav */; };
+		65D082B22B5CADB4005D09A9 /* AKAI - Hat Closed.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0828C2B5CADB3005D09A9 /* AKAI - Hat Closed.wav */; };
+		65D082B32B5CADB4005D09A9 /* KORG - Rimshot.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0828D2B5CADB3005D09A9 /* KORG - Rimshot.wav */; };
+		65D082B42B5CADB4005D09A9 /* NOVATION - 808TomHi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0828E2B5CADB3005D09A9 /* NOVATION - 808TomHi.wav */; };
+		65D082B52B5CADB4005D09A9 /* KORG - Metronome 02.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0828F2B5CADB3005D09A9 /* KORG - Metronome 02.wav */; };
+		65D082B62B5CADB4005D09A9 /* KAWAI - Snap.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082902B5CADB3005D09A9 /* KAWAI - Snap.wav */; };
+		65D082B72B5CADB4005D09A9 /* AKAI - Agogo Hi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082912B5CADB3005D09A9 /* AKAI - Agogo Hi.wav */; };
+		65D082B82B5CADB4005D09A9 /* NOVATION - 808CongaHi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082922B5CADB3005D09A9 /* NOVATION - 808CongaHi.wav */; };
+		65D082B92B5CADB4005D09A9 /* KORG - 808 Kick.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082932B5CADB3005D09A9 /* KORG - 808 Kick.wav */; };
+		65D082BA2B5CADB4005D09A9 /* KORG - Pluck.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082942B5CADB3005D09A9 /* KORG - Pluck.wav */; };
+		65D082BB2B5CADB4005D09A9 /* NOVATION - 808CongaLo.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082952B5CADB3005D09A9 /* NOVATION - 808CongaLo.wav */; };
+		65D082BC2B5CADB4005D09A9 /* NOVATION - 808Maracas.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082962B5CADB3005D09A9 /* NOVATION - 808Maracas.wav */; };
+		65D082BD2B5CADB4005D09A9 /* KAWAI - Click.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082972B5CADB3005D09A9 /* KAWAI - Click.wav */; };
+		65D082BE2B5CADB4005D09A9 /* AKAI - Conga Mute.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082982B5CADB3005D09A9 /* AKAI - Conga Mute.wav */; };
+		65D082BF2B5CADB4005D09A9 /* NOVATION - 808Hat.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082992B5CADB3005D09A9 /* NOVATION - 808Hat.wav */; };
+		65D082C02B5CADB4005D09A9 /* KORG - Hat Closed 02.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0829A2B5CADB3005D09A9 /* KORG - Hat Closed 02.wav */; };
+		65D082C12B5CADB4005D09A9 /* KORG - Conga.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0829B2B5CADB3005D09A9 /* KORG - Conga.wav */; };
+		65D082C22B5CADB4005D09A9 /* KORG - Rim.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0829C2B5CADB3005D09A9 /* KORG - Rim.wav */; };
+		65D082C32B5CADB4005D09A9 /* AKAI - Conga Hi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0829D2B5CADB3005D09A9 /* AKAI - Conga Hi.wav */; };
+		65D082C42B5CADB4005D09A9 /* AKAI - Cowbell.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0829E2B5CADB4005D09A9 /* AKAI - Cowbell.wav */; };
+		65D082C52B5CADB4005D09A9 /* KORG - Metronome 01.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D0829F2B5CADB4005D09A9 /* KORG - Metronome 01.wav */; };
+		65D082C62B5CADB4005D09A9 /* KORG - Hat Closed 01.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082A02B5CADB4005D09A9 /* KORG - Hat Closed 01.wav */; };
+		65D082C72B5CADB4005D09A9 /* NOVATION - 808Clave.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082A12B5CADB4005D09A9 /* NOVATION - 808Clave.wav */; };
+		65D082C82B5CADB4005D09A9 /* AKAI - Conga Op.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082A22B5CADB4005D09A9 /* AKAI - Conga Op.wav */; };
+		65D082C92B5CADB4005D09A9 /* KORG - Maracas.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082A32B5CADB4005D09A9 /* KORG - Maracas.wav */; };
+		65D082CA2B5CADB4005D09A9 /* KAWAI - BassDrum.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082A42B5CADB4005D09A9 /* KAWAI - BassDrum.wav */; };
+		65D1C1C92B5D249F004B17B4 /* MetronomeBeatsSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D1C1C82B5D249F004B17B4 /* MetronomeBeatsSet.swift */; };
 		65D473712AC2E2A700551E66 /* TrackerBarGPS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D473702AC2E2A700551E66 /* TrackerBarGPS.swift */; };
 		65E060342AC0E62800AD5DD6 /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E060332AC0E62800AD5DD6 /* NavigationVC.swift */; };
 		65EC20772AEEBD3800410905 /* CGFloat + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */; };
@@ -95,7 +136,6 @@
 		651E21542B148D8500658CA6 /* SoundVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundVC.swift; sourceTree = "<group>"; };
 		651E21562B148F9B00658CA6 /* ThemesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesVC.swift; sourceTree = "<group>"; };
 		651E21582B14971200658CA6 /* StoriesThemesViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesThemesViewCell.swift; sourceTree = "<group>"; };
-		651E215A2B1497AF00658CA6 /* WidgetsThemeViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetsThemeViewCell.swift; sourceTree = "<group>"; };
 		651E215C2B1497E000658CA6 /* ColorThemeViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorThemeViewCell.swift; sourceTree = "<group>"; };
 		6521308B2AC46F400056DEA5 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		6521308D2AC587210056DEA5 /* Aimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aimator.swift; sourceTree = "<group>"; };
@@ -105,6 +145,10 @@
 		65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		65551C7B2AC61E4100CE3309 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		655B538F2B2139470020FF32 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		656469622B502F25006AC14F /* CalculationsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculationsViewCell.swift; sourceTree = "<group>"; };
+		656469642B502F47006AC14F /* HeartZonesViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartZonesViewCell.swift; sourceTree = "<group>"; };
+		656469662B5031A2006AC14F /* appleMusicViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleMusicViewCell.swift; sourceTree = "<group>"; };
+		656469682B5031B8006AC14F /* MetronomeViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeViewCell.swift; sourceTree = "<group>"; };
 		65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuringButtonView.swift; sourceTree = "<group>"; };
 		65657FBF2AD5D5B60081F5D7 /* NotificationsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewCell.swift; sourceTree = "<group>"; };
 		657D66242AA8693400397427 /* gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gitignore; sourceTree = "<group>"; };
@@ -116,8 +160,46 @@
 		6589BFDE2ADAC27700DE4E97 /* ConnectionsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsViewCell.swift; sourceTree = "<group>"; };
 		659879212AB48BBD004F6E2D /* TrackerBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerBarButton.swift; sourceTree = "<group>"; };
 		659B0B762B1DFA69006E52A8 /* NotesTableViewEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesTableViewEditCell.swift; sourceTree = "<group>"; };
-		65C82A042AEAC3220022C69B /* ToolsBarCellBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsBarCellBase.swift; sourceTree = "<group>"; };
 		65C8CF0F2AD2241A00BDC35D /* MeasuringViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuringViewCell.swift; sourceTree = "<group>"; };
+		65D0827F2B5CADB2005D09A9 /* KORG - Clave.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Clave.wav"; sourceTree = "<group>"; };
+		65D082802B5CADB2005D09A9 /* KORG - Bongo 01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Bongo 01.wav"; sourceTree = "<group>"; };
+		65D082812B5CADB2005D09A9 /* KAWAI - SnareDrum.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KAWAI - SnareDrum.wav"; sourceTree = "<group>"; };
+		65D082822B5CADB2005D09A9 /* KORG - Stick.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Stick.wav"; sourceTree = "<group>"; };
+		65D082832B5CADB2005D09A9 /* NOVATION - 808CongaMid.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808CongaMid.wav"; sourceTree = "<group>"; };
+		65D082842B5CADB2005D09A9 /* KORG - Bongo 03.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Bongo 03.wav"; sourceTree = "<group>"; };
+		65D082852B5CADB2005D09A9 /* NOVATION - 808Rimshot.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808Rimshot.wav"; sourceTree = "<group>"; };
+		65D082862B5CADB2005D09A9 /* AKAI - Snare Lo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Snare Lo.wav"; sourceTree = "<group>"; };
+		65D082872B5CADB2005D09A9 /* NOVATION - 808TomLo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808TomLo.wav"; sourceTree = "<group>"; };
+		65D082882B5CADB3005D09A9 /* KORG - Bongo 02.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Bongo 02.wav"; sourceTree = "<group>"; };
+		65D082892B5CADB3005D09A9 /* AKAI - Clave.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Clave.wav"; sourceTree = "<group>"; };
+		65D0828A2B5CADB3005D09A9 /* NOVATION - 808TomMid.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808TomMid.wav"; sourceTree = "<group>"; };
+		65D0828B2B5CADB3005D09A9 /* AKAI - Bongo Hi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Bongo Hi.wav"; sourceTree = "<group>"; };
+		65D0828C2B5CADB3005D09A9 /* AKAI - Hat Closed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Hat Closed.wav"; sourceTree = "<group>"; };
+		65D0828D2B5CADB3005D09A9 /* KORG - Rimshot.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Rimshot.wav"; sourceTree = "<group>"; };
+		65D0828E2B5CADB3005D09A9 /* NOVATION - 808TomHi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808TomHi.wav"; sourceTree = "<group>"; };
+		65D0828F2B5CADB3005D09A9 /* KORG - Metronome 02.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Metronome 02.wav"; sourceTree = "<group>"; };
+		65D082902B5CADB3005D09A9 /* KAWAI - Snap.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KAWAI - Snap.wav"; sourceTree = "<group>"; };
+		65D082912B5CADB3005D09A9 /* AKAI - Agogo Hi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Agogo Hi.wav"; sourceTree = "<group>"; };
+		65D082922B5CADB3005D09A9 /* NOVATION - 808CongaHi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808CongaHi.wav"; sourceTree = "<group>"; };
+		65D082932B5CADB3005D09A9 /* KORG - 808 Kick.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - 808 Kick.wav"; sourceTree = "<group>"; };
+		65D082942B5CADB3005D09A9 /* KORG - Pluck.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Pluck.wav"; sourceTree = "<group>"; };
+		65D082952B5CADB3005D09A9 /* NOVATION - 808CongaLo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808CongaLo.wav"; sourceTree = "<group>"; };
+		65D082962B5CADB3005D09A9 /* NOVATION - 808Maracas.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808Maracas.wav"; sourceTree = "<group>"; };
+		65D082972B5CADB3005D09A9 /* KAWAI - Click.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KAWAI - Click.wav"; sourceTree = "<group>"; };
+		65D082982B5CADB3005D09A9 /* AKAI - Conga Mute.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Conga Mute.wav"; sourceTree = "<group>"; };
+		65D082992B5CADB3005D09A9 /* NOVATION - 808Hat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808Hat.wav"; sourceTree = "<group>"; };
+		65D0829A2B5CADB3005D09A9 /* KORG - Hat Closed 02.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Hat Closed 02.wav"; sourceTree = "<group>"; };
+		65D0829B2B5CADB3005D09A9 /* KORG - Conga.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Conga.wav"; sourceTree = "<group>"; };
+		65D0829C2B5CADB3005D09A9 /* KORG - Rim.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Rim.wav"; sourceTree = "<group>"; };
+		65D0829D2B5CADB3005D09A9 /* AKAI - Conga Hi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Conga Hi.wav"; sourceTree = "<group>"; };
+		65D0829E2B5CADB4005D09A9 /* AKAI - Cowbell.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Cowbell.wav"; sourceTree = "<group>"; };
+		65D0829F2B5CADB4005D09A9 /* KORG - Metronome 01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Metronome 01.wav"; sourceTree = "<group>"; };
+		65D082A02B5CADB4005D09A9 /* KORG - Hat Closed 01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Hat Closed 01.wav"; sourceTree = "<group>"; };
+		65D082A12B5CADB4005D09A9 /* NOVATION - 808Clave.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "NOVATION - 808Clave.wav"; sourceTree = "<group>"; };
+		65D082A22B5CADB4005D09A9 /* AKAI - Conga Op.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Conga Op.wav"; sourceTree = "<group>"; };
+		65D082A32B5CADB4005D09A9 /* KORG - Maracas.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Maracas.wav"; sourceTree = "<group>"; };
+		65D082A42B5CADB4005D09A9 /* KAWAI - BassDrum.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KAWAI - BassDrum.wav"; sourceTree = "<group>"; };
+		65D1C1C82B5D249F004B17B4 /* MetronomeBeatsSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeBeatsSet.swift; sourceTree = "<group>"; };
 		65D473702AC2E2A700551E66 /* TrackerBarGPS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerBarGPS.swift; sourceTree = "<group>"; };
 		65E060332AC0E62800AD5DD6 /* NavigationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
 		65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat + Extansions.swift"; sourceTree = "<group>"; };
@@ -241,6 +323,7 @@
 		6502D6DD2A595384000F96E0 /* Recourses */ = {
 			isa = PBXGroup;
 			children = (
+				654B751A2B59505B009378E9 /* MetronomeClicks */,
 				6502D6B82A595316000F96E0 /* Info.plist */,
 				6502D6B32A595316000F96E0 /* Assets.xcassets */,
 			);
@@ -252,6 +335,7 @@
 			children = (
 				65FF25F02AFB70320008F492 /* ColorSet */,
 				65EDA5832AEA9437007B6AE5 /* Exercises */,
+				65D1C1C82B5D249F004B17B4 /* MetronomeBeatsSet.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -260,10 +344,10 @@
 			isa = PBXGroup;
 			children = (
 				65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */,
+				655B538F2B2139470020FF32 /* CoreDataManager.swift */,
 				650DD1E92AFDB7C8009AAD2D /* TraitCollectionManager.swift */,
 				6521308D2AC587210056DEA5 /* Aimator.swift */,
 				65551C762AC5D8CF00CE3309 /* Shaper.swift */,
-				655B538F2B2139470020FF32 /* CoreDataManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -322,6 +406,51 @@
 				653A88102ADBC629007EDD97 /* NotificationButtonView.swift */,
 			);
 			path = NotificationsView;
+			sourceTree = "<group>";
+		};
+		654B751A2B59505B009378E9 /* MetronomeClicks */ = {
+			isa = PBXGroup;
+			children = (
+				65D082912B5CADB3005D09A9 /* AKAI - Agogo Hi.wav */,
+				65D0828B2B5CADB3005D09A9 /* AKAI - Bongo Hi.wav */,
+				65D082892B5CADB3005D09A9 /* AKAI - Clave.wav */,
+				65D0829D2B5CADB3005D09A9 /* AKAI - Conga Hi.wav */,
+				65D082982B5CADB3005D09A9 /* AKAI - Conga Mute.wav */,
+				65D082A22B5CADB4005D09A9 /* AKAI - Conga Op.wav */,
+				65D0829E2B5CADB4005D09A9 /* AKAI - Cowbell.wav */,
+				65D0828C2B5CADB3005D09A9 /* AKAI - Hat Closed.wav */,
+				65D082862B5CADB2005D09A9 /* AKAI - Snare Lo.wav */,
+				65D082A42B5CADB4005D09A9 /* KAWAI - BassDrum.wav */,
+				65D082972B5CADB3005D09A9 /* KAWAI - Click.wav */,
+				65D082902B5CADB3005D09A9 /* KAWAI - Snap.wav */,
+				65D082812B5CADB2005D09A9 /* KAWAI - SnareDrum.wav */,
+				65D082932B5CADB3005D09A9 /* KORG - 808 Kick.wav */,
+				65D082802B5CADB2005D09A9 /* KORG - Bongo 01.wav */,
+				65D082882B5CADB3005D09A9 /* KORG - Bongo 02.wav */,
+				65D082842B5CADB2005D09A9 /* KORG - Bongo 03.wav */,
+				65D0827F2B5CADB2005D09A9 /* KORG - Clave.wav */,
+				65D0829B2B5CADB3005D09A9 /* KORG - Conga.wav */,
+				65D082A02B5CADB4005D09A9 /* KORG - Hat Closed 01.wav */,
+				65D0829A2B5CADB3005D09A9 /* KORG - Hat Closed 02.wav */,
+				65D082A32B5CADB4005D09A9 /* KORG - Maracas.wav */,
+				65D0829F2B5CADB4005D09A9 /* KORG - Metronome 01.wav */,
+				65D0828F2B5CADB3005D09A9 /* KORG - Metronome 02.wav */,
+				65D082942B5CADB3005D09A9 /* KORG - Pluck.wav */,
+				65D0829C2B5CADB3005D09A9 /* KORG - Rim.wav */,
+				65D0828D2B5CADB3005D09A9 /* KORG - Rimshot.wav */,
+				65D082822B5CADB2005D09A9 /* KORG - Stick.wav */,
+				65D082A12B5CADB4005D09A9 /* NOVATION - 808Clave.wav */,
+				65D082922B5CADB3005D09A9 /* NOVATION - 808CongaHi.wav */,
+				65D082952B5CADB3005D09A9 /* NOVATION - 808CongaLo.wav */,
+				65D082832B5CADB2005D09A9 /* NOVATION - 808CongaMid.wav */,
+				65D082992B5CADB3005D09A9 /* NOVATION - 808Hat.wav */,
+				65D082962B5CADB3005D09A9 /* NOVATION - 808Maracas.wav */,
+				65D082852B5CADB2005D09A9 /* NOVATION - 808Rimshot.wav */,
+				65D0828E2B5CADB3005D09A9 /* NOVATION - 808TomHi.wav */,
+				65D082872B5CADB2005D09A9 /* NOVATION - 808TomLo.wav */,
+				65D0828A2B5CADB3005D09A9 /* NOVATION - 808TomMid.wav */,
+			);
+			path = MetronomeClicks;
 			sourceTree = "<group>";
 		};
 		65551C7A2AC61DF800CE3309 /* SettingsModule */ = {
@@ -390,6 +519,9 @@
 			isa = PBXGroup;
 			children = (
 				6585863D2B13D60300BE9D28 /* CalculatorVC.swift */,
+				656469622B502F25006AC14F /* CalculationsViewCell.swift */,
+				656469642B502F47006AC14F /* HeartZonesViewCell.swift */,
+				656469682B5031B8006AC14F /* MetronomeViewCell.swift */,
 			);
 			path = CalculatorModule;
 			sourceTree = "<group>";
@@ -398,6 +530,7 @@
 			isa = PBXGroup;
 			children = (
 				651E21542B148D8500658CA6 /* SoundVC.swift */,
+				656469662B5031A2006AC14F /* appleMusicViewCell.swift */,
 			);
 			path = SoundModule;
 			sourceTree = "<group>";
@@ -407,7 +540,6 @@
 			children = (
 				651E21562B148F9B00658CA6 /* ThemesVC.swift */,
 				651E21582B14971200658CA6 /* StoriesThemesViewCell.swift */,
-				651E215A2B1497AF00658CA6 /* WidgetsThemeViewCell.swift */,
 				651E215C2B1497E000658CA6 /* ColorThemeViewCell.swift */,
 			);
 			path = ThemesModule;
@@ -428,7 +560,6 @@
 			isa = PBXGroup;
 			children = (
 				6585863B2B13D40E00BE9D28 /* ToolsBarView.swift */,
-				65C82A042AEAC3220022C69B /* ToolsBarCellBase.swift */,
 				6585863A2B13D2BE00BE9D28 /* CalculatorModule */,
 				6585863F2B13DDBA00BE9D28 /* SoundModule */,
 				658586402B13DDDA00BE9D28 /* ThemesModule */,
@@ -562,8 +693,46 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65D082B32B5CADB4005D09A9 /* KORG - Rimshot.wav in Resources */,
+				65D082A72B5CADB4005D09A9 /* KAWAI - SnareDrum.wav in Resources */,
+				65D082BD2B5CADB4005D09A9 /* KAWAI - Click.wav in Resources */,
+				65D082A52B5CADB4005D09A9 /* KORG - Clave.wav in Resources */,
+				65D082A82B5CADB4005D09A9 /* KORG - Stick.wav in Resources */,
+				65D082C12B5CADB4005D09A9 /* KORG - Conga.wav in Resources */,
+				65D082B62B5CADB4005D09A9 /* KAWAI - Snap.wav in Resources */,
+				65D082C52B5CADB4005D09A9 /* KORG - Metronome 01.wav in Resources */,
+				65D082B72B5CADB4005D09A9 /* AKAI - Agogo Hi.wav in Resources */,
+				65D082B02B5CADB4005D09A9 /* NOVATION - 808TomMid.wav in Resources */,
+				65D082AB2B5CADB4005D09A9 /* NOVATION - 808Rimshot.wav in Resources */,
+				65D082CA2B5CADB4005D09A9 /* KAWAI - BassDrum.wav in Resources */,
+				65D082BC2B5CADB4005D09A9 /* NOVATION - 808Maracas.wav in Resources */,
+				65D082C72B5CADB4005D09A9 /* NOVATION - 808Clave.wav in Resources */,
+				65D082B92B5CADB4005D09A9 /* KORG - 808 Kick.wav in Resources */,
+				65D082C92B5CADB4005D09A9 /* KORG - Maracas.wav in Resources */,
+				65D082B52B5CADB4005D09A9 /* KORG - Metronome 02.wav in Resources */,
+				65D082C82B5CADB4005D09A9 /* AKAI - Conga Op.wav in Resources */,
+				65D082A62B5CADB4005D09A9 /* KORG - Bongo 01.wav in Resources */,
+				65D082BA2B5CADB4005D09A9 /* KORG - Pluck.wav in Resources */,
+				65D082B42B5CADB4005D09A9 /* NOVATION - 808TomHi.wav in Resources */,
+				65D082A92B5CADB4005D09A9 /* NOVATION - 808CongaMid.wav in Resources */,
+				65D082B12B5CADB4005D09A9 /* AKAI - Bongo Hi.wav in Resources */,
+				65D082C22B5CADB4005D09A9 /* KORG - Rim.wav in Resources */,
+				65D082C62B5CADB4005D09A9 /* KORG - Hat Closed 01.wav in Resources */,
+				65D082C42B5CADB4005D09A9 /* AKAI - Cowbell.wav in Resources */,
+				65D082AE2B5CADB4005D09A9 /* KORG - Bongo 02.wav in Resources */,
+				65D082AD2B5CADB4005D09A9 /* NOVATION - 808TomLo.wav in Resources */,
 				6502D6B42A595316000F96E0 /* Assets.xcassets in Resources */,
+				65D082BB2B5CADB4005D09A9 /* NOVATION - 808CongaLo.wav in Resources */,
+				65D082BF2B5CADB4005D09A9 /* NOVATION - 808Hat.wav in Resources */,
+				65D082C32B5CADB4005D09A9 /* AKAI - Conga Hi.wav in Resources */,
+				65D082B22B5CADB4005D09A9 /* AKAI - Hat Closed.wav in Resources */,
 				657D66252AA8693400397427 /* gitignore in Resources */,
+				65D082AF2B5CADB4005D09A9 /* AKAI - Clave.wav in Resources */,
+				65D082AC2B5CADB4005D09A9 /* AKAI - Snare Lo.wav in Resources */,
+				65D082AA2B5CADB4005D09A9 /* KORG - Bongo 03.wav in Resources */,
+				65D082B82B5CADB4005D09A9 /* NOVATION - 808CongaHi.wav in Resources */,
+				65D082BE2B5CADB4005D09A9 /* AKAI - Conga Mute.wav in Resources */,
+				65D082C02B5CADB4005D09A9 /* KORG - Hat Closed 02.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -591,26 +760,27 @@
 				651E215D2B1497E000658CA6 /* ColorThemeViewCell.swift in Sources */,
 				650DD1EA2AFDB7C8009AAD2D /* TraitCollectionManager.swift in Sources */,
 				6589BFDF2ADAC27700DE4E97 /* ConnectionsViewCell.swift in Sources */,
+				656469692B5031B8006AC14F /* MetronomeViewCell.swift in Sources */,
 				65EDA5802AEA3E0B007B6AE5 /* TrackerBarPickerView.swift in Sources */,
 				65FF25F62AFB78190008F492 /* FactoryColorSet.swift in Sources */,
 				65FF25F22AFB70440008F492 /* ColorSetProtocol.swift in Sources */,
 				659B0B772B1DFA69006E52A8 /* NotesTableViewEditCell.swift in Sources */,
-				651E215B2B1497AF00658CA6 /* WidgetsThemeViewCell.swift in Sources */,
 				655B53902B2139470020FF32 /* CoreDataManager.swift in Sources */,
 				653A88112ADBC629007EDD97 /* NotificationButtonView.swift in Sources */,
 				6521308E2AC587210056DEA5 /* Aimator.swift in Sources */,
 				651E21552B148D8500658CA6 /* SoundVC.swift in Sources */,
 				65C8CF102AD2241A00BDC35D /* MeasuringViewCell.swift in Sources */,
+				656469672B5031A2006AC14F /* appleMusicViewCell.swift in Sources */,
 				65657FBA2AD415920081F5D7 /* MeasuringButtonView.swift in Sources */,
 				654893992AAE8099005039DF /* TrackerBarView.swift in Sources */,
 				6585863E2B13D60300BE9D28 /* CalculatorVC.swift in Sources */,
 				6584A5B12ADBC710003C97CF /* IntegrationsButtonView.swift in Sources */,
 				65EDA58F2AEA952E007B6AE5 /* OnTheStreetExercises.swift in Sources */,
 				6585863C2B13D40E00BE9D28 /* ToolsBarView.swift in Sources */,
-				65C82A052AEAC3220022C69B /* ToolsBarCellBase.swift in Sources */,
 				65EC20772AEEBD3800410905 /* CGFloat + Extansions.swift in Sources */,
 				65551C772AC5D8CF00CE3309 /* Shaper.swift in Sources */,
 				65FF25EF2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift in Sources */,
+				656469632B502F25006AC14F /* CalculationsViewCell.swift in Sources */,
 				6502D6B22A595315000F96E0 /* OneDot.xcdatamodeld in Sources */,
 				6502D6EC2A59A517000F96E0 /* UIColor + Extansions.swift in Sources */,
 				65FF25F42AFB718D0008F492 /* ColorSetCollection.swift in Sources */,
@@ -631,8 +801,10 @@
 				651E21592B14971200658CA6 /* StoriesThemesViewCell.swift in Sources */,
 				659879222AB48BBD004F6E2D /* TrackerBarButton.swift in Sources */,
 				65EDA58D2AEA951D007B6AE5 /* ExerciseProtocol.swift in Sources */,
+				656469652B502F47006AC14F /* HeartZonesViewCell.swift in Sources */,
 				6502D6AC2A595315000F96E0 /* MainVC.swift in Sources */,
 				6502D6A82A595315000F96E0 /* AppDelegate.swift in Sources */,
+				65D1C1C92B5D249F004B17B4 /* MetronomeBeatsSet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -799,6 +971,7 @@
 				DEVELOPMENT_TEAM = XSJLPH4XDX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OneDot/Recourses/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -826,6 +999,7 @@
 				DEVELOPMENT_TEAM = XSJLPH4XDX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OneDot/Recourses/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";

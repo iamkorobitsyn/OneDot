@@ -38,6 +38,8 @@ class MainVC: UIViewController {
         setConstraints()
         setupLocationManager()
         checkLocationEnabled()
+        
+        
 
 
         trackerBar.completionForActiveButton = { [weak self] button in
@@ -68,12 +70,38 @@ class MainVC: UIViewController {
         }
         
         getLocationState(indoorIs: UserDefaultsManager.shared.userIndoorStatus)
+        
+        toolsBar.calcuatorVC.titleCompletion = { [weak self] title in
+            guard let self else {return}
+            trackerBar.toolsTitle.text = title
+        }
+        
+        toolsBar.themesVC.titleCompletion = { [weak self] title in
+            guard let self else {return}
+            trackerBar.toolsTitle.text = title
+        }
+        
+        toolsBar.calcuatorVC.metronomeCell.mainVCBPMCompletion = { [weak self] isActive in
+            guard let self else {return}
+            if toolsBar.isHidden == false, toolsBar.soundVC.view.isHidden == false {
+                trackerBar.bpmLight.isHidden = false
+                Animator.shared.pillingBPM(trackerBar.bpmLight)
+            } else if toolsBar.isHidden == false, toolsBar.themesVC.view.isHidden == false  {
+                trackerBar.bpmLight.isHidden = false
+                Animator.shared.pillingBPM(trackerBar.bpmLight)
+            } else if toolsBar.isHidden == false, toolsBar.calcuatorVC.view.isHidden == false {
+                trackerBar.bpmLight.isHidden = true
+            } else if toolsBar.isHidden == true {
+                trackerBar.bpmLight.isHidden = false
+                Animator.shared.pillingBPM(trackerBar.bpmLight)
+            }
+        }
     }
     
     private func getLocationState(indoorIs: Bool) {
 
         if indoorIs == true {
-            title = "NOTES"
+            title = "ROOM"
             notesBarView.isHidden = false
             notesBarView.setState(state: .indoor)
         } else {
@@ -99,8 +127,8 @@ class MainVC: UIViewController {
             notesBarView.isHidden = false
             
         case .calculator:
-            
             toolsBar.showVC(.calculator)
+
             toolsBar.skipButton.isHidden = false
             guard toolsBar.isHidden == true else {return}
             toolsBar.isHidden = false
@@ -308,6 +336,8 @@ extension MainVC {
 extension MainVC: MainVCColorSetProtocol {
     func update(_ set: ColorSetProtocol, _ barBGIsHidden: Bool) {
         trackerBar.updateColors(set)
+        toolsBar.calcuatorVC.metronomeCell.updateColors(set: set)
+        toolsBar.calcuatorVC.calculationsCell.updateColors(set: set)
     }
 }
 

@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "toolBarCheckMarkIcon.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

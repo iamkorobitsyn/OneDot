@@ -41,7 +41,7 @@ class SplashScreen: UIView {
         logoContainer.backgroundColor = .none
         
         logoContainer.addSubview(launchLogo)
-        launchLogo.image = UIImage(named: "launchScreenLogo")
+        launchLogo.image = UIImage(named: "screenLogo")
     }
     
     //MARK: - SetConstraints

@@ -28,20 +28,19 @@ class TabBar: UIView {
     
     private let separator: CAShapeLayer = CAShapeLayer()
     
-    //MARK: - Metrics
-    
-    let tabBarWidth: CGFloat = UIScreen.main.bounds.width / 1.05
-    let tabBarHeight: CGFloat = 95
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setViews()
         setConstraints()
         setButtons()
-        Shaper.shared.drawTabBarSeparator(separator,
-                                        self,
-                                          tabBarWidth,
-                                          tabBarHeight)
+        
+        Shaper.shared.drawYSeparator(shape: separator,
+                                             view: self,
+                                             x: CGFloat.barWidth / 2,
+                                             y: 15,
+                                             length: 65,
+                                             color: .white)
     }
     
     
@@ -155,7 +154,7 @@ class TabBar: UIView {
     //MARK: - SetViews
     
     private func setViews() {
-        layer.cornerRadius = 30
+        layer.cornerRadius = CGFloat.barCorner
         layer.cornerCurve = .continuous
         addSubview(prepareButton)
         addSubview(startButton)
@@ -219,8 +218,8 @@ class TabBar: UIView {
     
     private func setConstraintsForLeftButton(_ button: UIButton) {
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: tabBarWidth / 2),
-            button.heightAnchor.constraint(equalToConstant: tabBarHeight),
+            button.widthAnchor.constraint(equalToConstant: CGFloat.barWidth / 2),
+            button.heightAnchor.constraint(equalToConstant: 95),
             button.leadingAnchor.constraint(equalTo: leadingAnchor),
             button.topAnchor.constraint(equalTo: topAnchor)
             ])
@@ -228,8 +227,8 @@ class TabBar: UIView {
     
     private func setConstraintsForRightButton(_ button: UIButton) {
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: tabBarWidth / 2),
-            button.heightAnchor.constraint(equalToConstant: tabBarHeight),
+            button.widthAnchor.constraint(equalToConstant: CGFloat.barWidth / 2),
+            button.heightAnchor.constraint(equalToConstant: 95),
             button.topAnchor.constraint(equalTo: topAnchor),
             button.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
@@ -239,7 +238,7 @@ class TabBar: UIView {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: centerXAnchor,
-                                               constant: -tabBarWidth / 4),
+                                               constant: -CGFloat.barWidth / 4),
             imageView.centerYAnchor.constraint(equalTo: centerYAnchor)
             ])
     }

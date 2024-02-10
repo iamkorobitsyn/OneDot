@@ -9,130 +9,111 @@ import UIKit
 
 class ThemesVC: UIViewController {
     
-    let storiesSectionButton: UIButton = UIButton()
-    let widgetsSectionButton: UIButton = UIButton()
-    let colorThemesSectionButton: UIButton = UIButton()
-    var sectionButtonList: [UIButton] = [UIButton]()
-    var sectionStack: UIStackView = UIStackView()
-    
-    let sectionTitle: UILabel = UILabel()
-    
-    enum CurrentSection {
-        case stories,
-             widgets,
-             colorThemes
-    }
+    private let storiesShowButton: UIButton = UIButton()
+    private let colorThemesShowButton: UIButton = UIButton()
+    private var buttonList: [UIButton] = [UIButton]()
     
     let storiesCell = StoriesThemesViewCell()
-    let widgetsCell = WidgetsThemeViewCell()
     let colorThemesCell = ColorThemeViewCell()
     
-    var currentRows: [ToolsBarCellBase] = []
+    private var currentRows: [UITableViewCell] = []
     
-    private let tableView: UITableView = UITableView()
-
+    var titleCompletion: ((String) -> ())?
+    
+    private var buttonsStack: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        return stack
+    }()
+    
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.backgroundColor = .none
+        tableView.separatorStyle = .none
+        tableView.layer.borderWidth = 0.3
+        tableView.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
+        return tableView
+    }()
+    
+    
+    enum CurrentSection: Int {
+        case stories = 0,
+             colorThemes = 1
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        sectionTitle.text = "THEMES"
         setViews()
         setConstraints()
-        
     }
     
     //MARK: - SetViews
     
     private func setViews() {
-        sectionButtonList.append(contentsOf: [storiesSectionButton,
-                                              widgetsSectionButton,
-                                              colorThemesSectionButton])
-        sectionStack = UIStackView(arrangedSubviews: sectionButtonList)
-        sectionStack.axis = .horizontal
-        sectionStack.distribution = .fillEqually
-        sectionStack.spacing = 0
-        sectionStack.layer.cornerRadius = CGFloat.iconSide / 2
-        view.addSubview(sectionStack)
+        buttonList.append(contentsOf: [storiesShowButton,
+                                       colorThemesShowButton])
         
-        view.addSubview(sectionTitle)
-        sectionTitle.textColor = .gray
-        sectionTitle.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        
+        buttonList.forEach { selector in
+            buttonsStack.addArrangedSubview(selector)
+            selector.addTarget(self, action: #selector(buttonTapped), 
+                               for: .touchUpInside)
+        }
+
+        view.addSubview(buttonsStack)
         view.addSubview(tableView)
+        
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self,
-                           forCellReuseIdentifier: "cell")
-        tableView.backgroundColor = .none
-        tableView.separatorStyle = .none
-        tableView.layer.borderWidth = 0.3
-        tableView.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         
-        storiesSectionButton.addTarget(self,
-                                         action: #selector(buttonTapt),
-                                         for: .touchUpInside)
-        widgetsSectionButton.addTarget(self,
-                                             action: #selector(buttonTapt),
-                                             for: .touchUpInside)
-        colorThemesSectionButton.addTarget(self,
-                                             action: #selector(buttonTapt),
-                                             for: .touchUpInside)
-        
-        setActiveSection(.stories)
     }
     
     
     //MARK: - SetButtons
     
-    @objc private func buttonTapt() {
-        if storiesSectionButton.isTouchInside {
-            setActiveSection(.stories)
-        } else if widgetsSectionButton.isTouchInside {
-            setActiveSection(.widgets)
-        } else if colorThemesSectionButton.isTouchInside {
-            setActiveSection(.colorThemes)
+    @objc private func buttonTapped() {
+        
+        for i in 0..<buttonList.count {
+            if buttonList[i].isTouchInside {
+                setActiveSection(section: i)
+            }
         }
     }
 
-    private func setActiveSection(_ section: CurrentSection) {
+    func setActiveSection(section: CurrentSection.RawValue) {
         switch section {
             
-        case .stories:
-            setImage(storiesSectionButton,
+        case 0:
+            setImage(storiesShowButton,
                      named: "themesStoriesIconFill")
-            setImage(widgetsSectionButton,
-                     named: "themesWidgetsIconStroke")
-            setImage(colorThemesSectionButton,
+            setImage(colorThemesShowButton,
                      named: "themesColorIconStroke")
-            sectionTitle.text = "Stories"
-            
+
             currentRows.removeAll()
             currentRows.append(storiesCell)
             tableView.reloadData()
-        case .widgets:
-            setImage(widgetsSectionButton,
-                     named: "themesWidgetsIconFill")
-            setImage(colorThemesSectionButton,
-                     named: "themesColorIconStroke")
-            setImage(storiesSectionButton,
-                     named: "themesStoriesIconStroke")
-            sectionTitle.text = "Widgets"
             
-            currentRows.removeAll()
-            currentRows.append(widgetsCell)
-            tableView.reloadData()
-            
-        case .colorThemes:
-            setImage(colorThemesSectionButton,
+            titleCompletion?("STORIES THEMES")
+            UserDefaultsManager.shared.themesStatus = section
+
+        case 1:
+            setImage(colorThemesShowButton,
                      named: "themesColorIconFill")
-            setImage(storiesSectionButton,
+            setImage(storiesShowButton,
                      named: "themesStoriesIconStroke")
-            setImage(widgetsSectionButton,
-                     named: "themesWidgetsIconStroke")
-            sectionTitle.text = "Colors"
-            
+
             currentRows.removeAll()
             currentRows.append(colorThemesCell)
             tableView.reloadData()
             
+            titleCompletion?("COLOR THEMES")
+            UserDefaultsManager.shared.themesStatus = section
+            
+        default:
+            break
         }
     }
     
@@ -146,39 +127,27 @@ class ThemesVC: UIViewController {
     
     private func setConstraints() {
         
-        
-        sectionStack.translatesAutoresizingMaskIntoConstraints = false
-        sectionTitle.translatesAutoresizingMaskIntoConstraints = false
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        
         NSLayoutConstraint.activate([
             
-            sectionStack.widthAnchor.constraint(equalToConstant:
-                                           (CGFloat(sectionStack.subviews.count) *
+            buttonsStack.widthAnchor.constraint(equalToConstant:
+                                           (CGFloat(buttonsStack.subviews.count) *
                                             CGFloat.iconSide) +
-                                           (CGFloat(sectionStack.subviews.count) *
+                                           (CGFloat(buttonsStack.subviews.count) *
                                             0) -
                                             0),
-            sectionStack.heightAnchor.constraint(equalToConstant:
+            buttonsStack.heightAnchor.constraint(equalToConstant:
                                             CGFloat.iconSide),
-            sectionStack.centerXAnchor.constraint(equalTo:
+            buttonsStack.centerXAnchor.constraint(equalTo:
                                             view.centerXAnchor),
-            sectionStack.topAnchor.constraint(equalTo:
+            buttonsStack.topAnchor.constraint(equalTo:
                                             view.topAnchor,
-                                            constant: 20),
-            
-            sectionTitle.centerXAnchor.constraint(equalTo:
-                                            sectionStack.centerXAnchor),
-            sectionTitle.topAnchor.constraint(equalTo:
-                                            sectionStack.bottomAnchor,
-                                            constant: 5),
+                                            constant: 10),
             
             tableView.leadingAnchor.constraint(equalTo:
                                             view.leadingAnchor,
                                             constant: -0.5),
             tableView.topAnchor.constraint(equalTo:
-                                            sectionTitle.bottomAnchor,
+                                            buttonsStack.bottomAnchor,
                                             constant: 10),
             tableView.trailingAnchor.constraint(equalTo:
                                             view.trailingAnchor,

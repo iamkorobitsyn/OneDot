@@ -14,5 +14,8 @@ extension CGFloat {
     static let barWidth: CGFloat = .init(UIScreen.main.bounds.width / 1.05)
     static let barCorner: CGFloat = .init(30)
     
+    static let toolwidth: CGFloat = .init(UIScreen.main.bounds.width / 1.20)
+    static let toolCorner: CGFloat = .init(30)
+    
     static let iconSide: CGFloat = .init(42)
 }

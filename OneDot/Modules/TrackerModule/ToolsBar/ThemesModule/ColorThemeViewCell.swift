@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ColorThemeViewCell: ToolsBarCellBase {
+class ColorThemeViewCell: UITableViewCell {
     
     var navigationVCColorSetDelegate: NavigationVCColorSetProtocol?
     var mainVCColorSetDelegate: MainVCColorSetProtocol?
@@ -31,7 +31,9 @@ class ColorThemeViewCell: ToolsBarCellBase {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        contentView.backgroundColor = .clear
+        backgroundColor = .clear
+        selectionStyle = .none
         
         picker.delegate = self
         picker.dataSource = self
@@ -43,11 +45,6 @@ class ColorThemeViewCell: ToolsBarCellBase {
         
         registerForTraitChanges([UITraitUserInterfaceStyle.self],
                                 action: #selector(changeUserInterfaceStyle))
-    }
-    
-    deinit {
-        navigationVCColorSetDelegate = nil
-        mainVCColorSetDelegate = nil
     }
     
     //MARK: - SetCurrentStates
@@ -134,13 +131,12 @@ class ColorThemeViewCell: ToolsBarCellBase {
                                             width: .compressed)
         colorTitle.textColor = .gray
         
-        Shaper.shared.drawCenterXSeparator(shape: pickerSeparator,
-                                                      view: self,
-                                                      xMove: -41,
-                                                      xAdd: 21,
-                                                      y: 310,
-                                                      lineWidth: 0.7,
-                                                      color: .lightGray)
+        Shaper.shared.drawXSeparator(shape: pickerSeparator,
+                                     view: self,
+                                     x: UIScreen.main.bounds.width / 2 - 60,
+                                     y: 310,
+                                     length: 100,
+                                     color: .lightGray)
  
     }
     
@@ -318,9 +314,4 @@ extension ColorThemeViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
         }
   
     }
-    
-    
-
-    
-
 }
