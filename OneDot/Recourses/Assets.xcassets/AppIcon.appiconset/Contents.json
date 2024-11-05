@@ -1,7 +1,31 @@
 {
   "images" : [
     {
-      "filename" : "AppIcon.png",
+      "filename" : "APPICON.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "APPICON 1.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "tinted"
+        }
+      ],
+      "filename" : "APPICON 2.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
