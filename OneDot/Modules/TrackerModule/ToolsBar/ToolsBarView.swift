@@ -20,10 +20,7 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
 
     
     let calcuatorVC: CalculatorVC = CalculatorVC()
-    let soundVC: SoundVC = SoundVC()
-    let themesVC: ThemesVC = ThemesVC()
-    
-    
+
     var showTabBarCompletion: ((Bool) -> ())?
     
     enum VCCases {
@@ -55,13 +52,6 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
         calcuatorVC.view.frame = self.frame
         calcuatorVC.view.isHidden = true
         
-        contentView.addSubview(soundVC.view)
-        soundVC.view.frame = self.frame
-        soundVC.view.isHidden = true
-        
-        contentView.addSubview(themesVC.view)
-        themesVC.view.frame = self.frame
-        themesVC.view.isHidden = true
 
         contentView.addSubview(skipButton)
         skipButton.addTarget(self, action: #selector(skip), for: .touchUpInside)
@@ -72,21 +62,14 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
             
         case .calculator:
             calcuatorVC.view.isHidden = false
-            soundVC.view.isHidden = true
-            themesVC.view.isHidden = true
 
             let section = UserDefaultsManager.shared.calculationsStatus
             calcuatorVC.setActiveSection(section: section)
         case .sound:
-            soundVC.view.isHidden = false
-            themesVC.view.isHidden = true
             calcuatorVC.view.isHidden = true
         case .themes:
-            themesVC.view.isHidden = false
             calcuatorVC.view.isHidden = true
-            soundVC.view.isHidden = true
             let section = UserDefaultsManager.shared.themesStatus
-            themesVC.setActiveSection(section: section)
         }
     }
     

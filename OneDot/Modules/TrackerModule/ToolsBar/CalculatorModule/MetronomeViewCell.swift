@@ -26,7 +26,7 @@ class MetronomeViewCell: UITableViewCell {
     private let topView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.currentColorSet.mainSelectorColor
+        view.backgroundColor = UIColor.black
         view.layer.cornerRadius = CGFloat.toolCorner
         view.layer.cornerCurve = .continuous
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -36,7 +36,7 @@ class MetronomeViewCell: UITableViewCell {
     private let sliderContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.currentColorSet.mainSelectorColor
+        view.backgroundColor = UIColor.black
         return view
     }()
     
@@ -56,7 +56,7 @@ class MetronomeViewCell: UITableViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "soundBpmAwayIcon"), for: .normal)
         button.setImage(UIImage(named: "soundBpmAwayIcon"), for: .highlighted)
-        button.backgroundColor = UIColor.currentColorSet.mainSelectorColor
+        button.backgroundColor = UIColor.black
         return button
     }()
     
@@ -65,7 +65,7 @@ class MetronomeViewCell: UITableViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "soundBpmAddIcon"), for: .normal)
         button.setImage(UIImage(named: "soundBpmAddIcon"), for: .highlighted)
-        button.backgroundColor = UIColor.currentColorSet.mainSelectorColor
+        button.backgroundColor = UIColor.black
         return button
     }()
     
@@ -74,7 +74,7 @@ class MetronomeViewCell: UITableViewCell {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.distribution = .fillEqually
-        stack.backgroundColor = UIColor.currentColorSet.mainSelectorColor
+        stack.backgroundColor = UIColor.black
         stack.layer.cornerRadius = CGFloat.toolCorner
         stack.layer.cornerCurve = .continuous
         stack.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
@@ -275,17 +275,6 @@ class MetronomeViewCell: UITableViewCell {
         endEditing(true)
     }
 
-    
-    //MARK: UpdateColors
-    
-    func updateColors(set: ColorSetProtocol) {
-        topView.backgroundColor = set.mainSelectorColor
-        sliderContainerView.backgroundColor = set.mainSelectorColor
-        bpmMinusButton.backgroundColor = set.mainSelectorColor
-        bpmPlusButton.backgroundColor = set.mainSelectorColor
-        bottomButtonsStack.backgroundColor = set.mainSelectorColor
-    }
-    
     //MARK: - SetViews
     
     private func setViews() {

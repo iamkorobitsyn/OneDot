@@ -14,9 +14,6 @@ extension UIColor {
     }
 
     
-    static let colorList = FactoryColorSet.shared.get()
-    static var currentColorSet = colorList[ColorIndexManager.shared.colorIndex ?? 0]
-    
     //MARK: - GrayMoon
     
     static let grayMoonMainDynamic = UIColor { traitCollection in

@@ -13,10 +13,9 @@ class MainVC: UIViewController {
     let mapView: MKMapView = MKMapView()
     let locationManager: CLLocationManager = CLLocationManager()
     
-    let notesBarView: NotesBarView = NotesBarView()
-    
     let trackerBar: TrackerBarView = TrackerBarView()
-    let toolsBar: ToolsBarView = ToolsBarView()
+    let notesBarView: NotesBarView = NotesBarView()
+    let toolsBarView: ToolsBarView = ToolsBarView()
     
     var tabBarCompletion: ((Bool)->())?
     
@@ -62,8 +61,6 @@ class MainVC: UIViewController {
             }
         }
         
-        toolsBar.themesVC.colorThemesCell.mainVCColorSetDelegate = self
-        
         notesBarView.completionOfHide = { [weak self] in
             guard let self else {return}
             trackerBar.notesButton.setInactiveState(.notesIndoor)
@@ -71,27 +68,19 @@ class MainVC: UIViewController {
         
         getLocationState(indoorIs: UserDefaultsManager.shared.userIndoorStatus)
         
-        toolsBar.calcuatorVC.titleCompletion = { [weak self] title in
+        toolsBarView.calcuatorVC.titleCompletion = { [weak self] title in
             guard let self else {return}
             trackerBar.toolsTitle.text = title
         }
         
-        toolsBar.themesVC.titleCompletion = { [weak self] title in
+        toolsBarView.calcuatorVC.metronomeCell.mainVCBPMCompletion = { [weak self] isActive in
             guard let self else {return}
-            trackerBar.toolsTitle.text = title
-        }
-        
-        toolsBar.calcuatorVC.metronomeCell.mainVCBPMCompletion = { [weak self] isActive in
-            guard let self else {return}
-            if toolsBar.isHidden == false, toolsBar.soundVC.view.isHidden == false {
+            if toolsBarView.isHidden == false{
                 trackerBar.bpmLight.isHidden = false
                 Animator.shared.pillingBPM(trackerBar.bpmLight)
-            } else if toolsBar.isHidden == false, toolsBar.themesVC.view.isHidden == false  {
-                trackerBar.bpmLight.isHidden = false
-                Animator.shared.pillingBPM(trackerBar.bpmLight)
-            } else if toolsBar.isHidden == false, toolsBar.calcuatorVC.view.isHidden == false {
+            } else if toolsBarView.isHidden == false, toolsBarView.calcuatorVC.view.isHidden == false {
                 trackerBar.bpmLight.isHidden = true
-            } else if toolsBar.isHidden == true {
+            } else if toolsBarView.isHidden == true {
                 trackerBar.bpmLight.isHidden = false
                 Animator.shared.pillingBPM(trackerBar.bpmLight)
             }
@@ -127,31 +116,31 @@ class MainVC: UIViewController {
             notesBarView.isHidden = false
             
         case .calculator:
-            toolsBar.showVC(.calculator)
+            toolsBarView.showVC(.calculator)
 
-            toolsBar.skipButton.isHidden = false
-            guard toolsBar.isHidden == true else {return}
-            toolsBar.isHidden = false
+            toolsBarView.skipButton.isHidden = false
+            guard toolsBarView.isHidden == true else {return}
+            toolsBarView.isHidden = false
 //            Animator.shared.toolsBarShow(toolsBar)
-            toolsBar.showTabBarCompletion?(false)
+            toolsBarView.showTabBarCompletion?(false)
             
         case .sound:
             
-            toolsBar.showVC(.sound)
-            toolsBar.skipButton.isHidden = false
-            guard toolsBar.isHidden == true else {return}
-            toolsBar.isHidden = false
+            toolsBarView.showVC(.sound)
+            toolsBarView.skipButton.isHidden = false
+            guard toolsBarView.isHidden == true else {return}
+            toolsBarView.isHidden = false
 //            Animator.shared.toolsBarShow(toolsBar)
-            toolsBar.showTabBarCompletion?(false)
+            toolsBarView.showTabBarCompletion?(false)
             
         case .themes:
             
-            toolsBar.showVC(.themes)
-            toolsBar.skipButton.isHidden = false
-            guard toolsBar.isHidden == true else {return}
-            toolsBar.isHidden = false
+            toolsBarView.showVC(.themes)
+            toolsBarView.skipButton.isHidden = false
+            guard toolsBarView.isHidden == true else {return}
+            toolsBarView.isHidden = false
 //            Animator.shared.toolsBarShow(toolsBar)
-            toolsBar.showTabBarCompletion?(false)
+            toolsBarView.showTabBarCompletion?(false)
             
         case .settings:
             let settingsVC: SettingsVC = SettingsVC()
@@ -251,7 +240,7 @@ extension MainVC {
         
         
         view.addSubview(trackerBar)
-        view.addSubview(toolsBar)
+        view.addSubview(toolsBarView)
 
         setMapGradient()
     }
@@ -261,7 +250,7 @@ extension MainVC {
     private func setConstraints() {
         mapView.translatesAutoresizingMaskIntoConstraints = false
         trackerBar.translatesAutoresizingMaskIntoConstraints = false
-        toolsBar.translatesAutoresizingMaskIntoConstraints = false
+        toolsBarView.translatesAutoresizingMaskIntoConstraints = false
         notesBarView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
@@ -282,10 +271,10 @@ extension MainVC {
             trackerBar.widthAnchor.constraint(equalToConstant:
                                             CGFloat.barWidth),
             
-            toolsBar.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
-            toolsBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
-            toolsBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            toolsBar.topAnchor.constraint(equalTo: trackerBar.bottomAnchor,
+            toolsBarView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            toolsBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            toolsBarView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            toolsBarView.topAnchor.constraint(equalTo: trackerBar.bottomAnchor,
                                             constant: 10),
             
             notesBarView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
@@ -330,14 +319,6 @@ extension MainVC {
         mapView.layer.addSublayer(topGradient)
         mapView.layer.addSublayer(bottomGradient)
 
-    }
-}
-
-extension MainVC: MainVCColorSetProtocol {
-    func update(_ set: ColorSetProtocol, _ barBGIsHidden: Bool) {
-        trackerBar.updateColors(set)
-        toolsBar.calcuatorVC.metronomeCell.updateColors(set: set)
-        toolsBar.calcuatorVC.calculationsCell.updateColors(set: set)
     }
 }
 

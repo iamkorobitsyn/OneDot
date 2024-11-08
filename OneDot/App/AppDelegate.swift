@@ -16,9 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         
-        window?.overrideUserInterfaceStyle =
-        TraitCollectionManager.shared.theme.getUserInterfaceStyle()
-        
         let rootViewController = MainVC()
         let navigationController = NavigationVC()
         navigationController.pushViewController(rootViewController, animated: true)

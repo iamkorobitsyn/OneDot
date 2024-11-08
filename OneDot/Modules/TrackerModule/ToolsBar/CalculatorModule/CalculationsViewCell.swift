@@ -181,7 +181,6 @@ class CalculationsViewCell: UITableViewCell {
         
         setViews()
         setConstraints()
-        updateColors(set: UIColor.currentColorSet)
         
         Shaper.shared.drawYSeparator(shape: leftSeparator,
                                      view: containerView,
@@ -199,10 +198,7 @@ class CalculationsViewCell: UITableViewCell {
         
         updateValues()
     }
-    
-    func updateColors(set: ColorSetProtocol) {
-        containerView.backgroundColor = set.mainSelectorColor
-    }
+
     
     //MARK: - Calculations
     

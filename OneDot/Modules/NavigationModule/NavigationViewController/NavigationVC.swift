@@ -9,8 +9,6 @@ import UIKit
 
 class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAnimationDelegate {
     
-    
-    let themesVC = ThemesVC()
     let test = MainVC()
     
     
@@ -35,7 +33,6 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
                                           splashScreen.gradientLayer,
                                              delegate: splashScreen)
         setViews()
-        getCurrentUserInterfaceStyle()
         setConstraints()
         
     }
@@ -45,7 +42,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
     override func viewDidAppear(_ animated: Bool) {
         for vc in viewControllers {
             if let main = vc as? MainVC {
-                main.toolsBar.themesVC.colorThemesCell.navigationVCColorSetDelegate = self
+//                main.toolsBarView.themesVC.colorThemesCell.navigationVCColorSetDelegate = self
             }
         }
         
@@ -53,7 +50,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
         
         for vc in viewControllers {
             if let main = vc as? MainVC {
-                main.toolsBar.showTabBarCompletion = { [weak self] show in
+                main.toolsBarView.showTabBarCompletion = { [weak self] show in
                     guard let self else {return}
                     if show == true {
                         Animator.shared.tabBarShow(tabBar)
@@ -77,7 +74,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
         view.addSubview(splashScreen)
         
         
-        tabBar.backgroundColor = .currentColorSet.tabBarColor
+        tabBar.backgroundColor = .blue
         
         
 
@@ -104,35 +101,6 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
     
     
     //MARK: - SetNavigationBar
-    
-    private func getCurrentUserInterfaceStyle() {
-        let i = TraitCollectionManager.shared.theme.getUserInterfaceStyle().rawValue
-        print(i)
-        if i == 1 {
-            setNavigationBar(true,
-                .currentColorSet.mainDynamicColor,
-                .currentColorSet.titleDynamicColor,
-                .label)
-        } else if i == 2 {
-            setNavigationBar(false,
-                .currentColorSet.mainDynamicColor,
-                .currentColorSet.titleDynamicColor,
-                .label)
-        } else if i == 0 {
-            if traitCollection.userInterfaceStyle == .light {
-                setNavigationBar(true,
-                    .currentColorSet.mainDynamicColor,
-                    .currentColorSet.titleDynamicColor,
-                    .label)
-            } else if traitCollection.userInterfaceStyle == .dark {
-                setNavigationBar(false,
-                    .currentColorSet.mainDynamicColor,
-                    .currentColorSet.titleDynamicColor,
-                    .label)
-            }
-        }
-        
-    }
     
     private func setNavigationBar(_ backgroundIsHidden: Bool,
                                   _ backgroundColor: UIColor,
@@ -204,13 +172,4 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
     }
 }
 
-
-extension NavigationVC: NavigationVCColorSetProtocol {
-    func update(_ set: ColorSetProtocol, _ barBGIsHidden: Bool) {
-        tabBar.backgroundColor = set.tabBarColor
-        setNavigationBar(barBGIsHidden, set.mainDynamicColor, set.titleDynamicColor, set.titleDynamicColor)
-    }
-    
-
-}
 

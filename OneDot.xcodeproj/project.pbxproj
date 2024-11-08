@@ -17,11 +17,6 @@
 		6502D6E52A595AC6000F96E0 /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502D6E42A595AC6000F96E0 /* ProfileVC.swift */; };
 		6502D6EC2A59A517000F96E0 /* UIColor + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502D6EB2A59A517000F96E0 /* UIColor + Extansions.swift */; };
 		6502D6F02A5C9A1F000F96E0 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6502D6EF2A5C9A1F000F96E0 /* TabBar.swift */; };
-		650DD1EA2AFDB7C8009AAD2D /* TraitCollectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650DD1E92AFDB7C8009AAD2D /* TraitCollectionManager.swift */; };
-		651E21552B148D8500658CA6 /* SoundVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E21542B148D8500658CA6 /* SoundVC.swift */; };
-		651E21572B148F9B00658CA6 /* ThemesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E21562B148F9B00658CA6 /* ThemesVC.swift */; };
-		651E21592B14971200658CA6 /* StoriesThemesViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E21582B14971200658CA6 /* StoriesThemesViewCell.swift */; };
-		651E215D2B1497E000658CA6 /* ColorThemeViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E215C2B1497E000658CA6 /* ColorThemeViewCell.swift */; };
 		6521308C2AC46F400056DEA5 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6521308B2AC46F400056DEA5 /* SplashScreen.swift */; };
 		6521308E2AC587210056DEA5 /* Aimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6521308D2AC587210056DEA5 /* Aimator.swift */; };
 		653A88112ADBC629007EDD97 /* NotificationButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653A88102ADBC629007EDD97 /* NotificationButtonView.swift */; };
@@ -32,7 +27,6 @@
 		655B53902B2139470020FF32 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655B538F2B2139470020FF32 /* CoreDataManager.swift */; };
 		656469632B502F25006AC14F /* CalculationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469622B502F25006AC14F /* CalculationsViewCell.swift */; };
 		656469652B502F47006AC14F /* HeartZonesViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469642B502F47006AC14F /* HeartZonesViewCell.swift */; };
-		656469672B5031A2006AC14F /* appleMusicViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469662B5031A2006AC14F /* appleMusicViewCell.swift */; };
 		656469692B5031B8006AC14F /* MetronomeViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469682B5031B8006AC14F /* MetronomeViewCell.swift */; };
 		65657FBA2AD415920081F5D7 /* MeasuringButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */; };
 		65657FC02AD5D5B60081F5D7 /* NotificationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FBF2AD5D5B60081F5D7 /* NotificationsViewCell.swift */; };
@@ -94,10 +88,6 @@
 		65EDA58B2AEA950F007B6AE5 /* FactoryExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA58A2AEA950F007B6AE5 /* FactoryExercises.swift */; };
 		65EDA58D2AEA951D007B6AE5 /* ExerciseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA58C2AEA951D007B6AE5 /* ExerciseProtocol.swift */; };
 		65EDA58F2AEA952E007B6AE5 /* OnTheStreetExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA58E2AEA952E007B6AE5 /* OnTheStreetExercises.swift */; };
-		65FF25EF2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25EE2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift */; };
-		65FF25F22AFB70440008F492 /* ColorSetProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25F12AFB70440008F492 /* ColorSetProtocol.swift */; };
-		65FF25F42AFB718D0008F492 /* ColorSetCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25F32AFB718D0008F492 /* ColorSetCollection.swift */; };
-		65FF25F62AFB78190008F492 /* FactoryColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF25F52AFB78190008F492 /* FactoryColorSet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,11 +122,6 @@
 		6502D6E42A595AC6000F96E0 /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
 		6502D6EB2A59A517000F96E0 /* UIColor + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + Extansions.swift"; sourceTree = "<group>"; };
 		6502D6EF2A5C9A1F000F96E0 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
-		650DD1E92AFDB7C8009AAD2D /* TraitCollectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitCollectionManager.swift; sourceTree = "<group>"; };
-		651E21542B148D8500658CA6 /* SoundVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundVC.swift; sourceTree = "<group>"; };
-		651E21562B148F9B00658CA6 /* ThemesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesVC.swift; sourceTree = "<group>"; };
-		651E21582B14971200658CA6 /* StoriesThemesViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesThemesViewCell.swift; sourceTree = "<group>"; };
-		651E215C2B1497E000658CA6 /* ColorThemeViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorThemeViewCell.swift; sourceTree = "<group>"; };
 		6521308B2AC46F400056DEA5 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		6521308D2AC587210056DEA5 /* Aimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aimator.swift; sourceTree = "<group>"; };
 		653A88102ADBC629007EDD97 /* NotificationButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationButtonView.swift; sourceTree = "<group>"; };
@@ -147,7 +132,6 @@
 		655B538F2B2139470020FF32 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		656469622B502F25006AC14F /* CalculationsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculationsViewCell.swift; sourceTree = "<group>"; };
 		656469642B502F47006AC14F /* HeartZonesViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartZonesViewCell.swift; sourceTree = "<group>"; };
-		656469662B5031A2006AC14F /* appleMusicViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appleMusicViewCell.swift; sourceTree = "<group>"; };
 		656469682B5031B8006AC14F /* MetronomeViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeViewCell.swift; sourceTree = "<group>"; };
 		65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuringButtonView.swift; sourceTree = "<group>"; };
 		65657FBF2AD5D5B60081F5D7 /* NotificationsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewCell.swift; sourceTree = "<group>"; };
@@ -209,10 +193,6 @@
 		65EDA58A2AEA950F007B6AE5 /* FactoryExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactoryExercises.swift; sourceTree = "<group>"; };
 		65EDA58C2AEA951D007B6AE5 /* ExerciseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseProtocol.swift; sourceTree = "<group>"; };
 		65EDA58E2AEA952E007B6AE5 /* OnTheStreetExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnTheStreetExercises.swift; sourceTree = "<group>"; };
-		65FF25EE2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSetUpdateProtocol.swift; sourceTree = "<group>"; };
-		65FF25F12AFB70440008F492 /* ColorSetProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSetProtocol.swift; sourceTree = "<group>"; };
-		65FF25F32AFB718D0008F492 /* ColorSetCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSetCollection.swift; sourceTree = "<group>"; };
-		65FF25F52AFB78190008F492 /* FactoryColorSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactoryColorSet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -333,7 +313,6 @@
 		6502D6DE2A595731000F96E0 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				65FF25F02AFB70320008F492 /* ColorSet */,
 				65EDA5832AEA9437007B6AE5 /* Exercises */,
 				65D1C1C82B5D249F004B17B4 /* MetronomeBeatsSet.swift */,
 			);
@@ -345,7 +324,6 @@
 			children = (
 				65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */,
 				655B538F2B2139470020FF32 /* CoreDataManager.swift */,
-				650DD1E92AFDB7C8009AAD2D /* TraitCollectionManager.swift */,
 				6521308D2AC587210056DEA5 /* Aimator.swift */,
 				65551C762AC5D8CF00CE3309 /* Shaper.swift */,
 			);
@@ -355,7 +333,7 @@
 		6502D6E02A595A3E000F96E0 /* TrackerModule */ = {
 			isa = PBXGroup;
 			children = (
-				65657FBC2AD5D46C0081F5D7 /* TrackerViewController */,
+				65657FBC2AD5D46C0081F5D7 /* MainViewController */,
 				658F7A4D2AF46AA300FF087F /* TrackerBar */,
 				658037372B1D420E00856C03 /* NotesBar */,
 				65C517002AF01F0400095AFE /* ToolsBar */,
@@ -472,12 +450,12 @@
 			path = NavigationViewController;
 			sourceTree = "<group>";
 		};
-		65657FBC2AD5D46C0081F5D7 /* TrackerViewController */ = {
+		65657FBC2AD5D46C0081F5D7 /* MainViewController */ = {
 			isa = PBXGroup;
 			children = (
 				6502D6AB2A595315000F96E0 /* MainVC.swift */,
 			);
-			path = TrackerViewController;
+			path = MainViewController;
 			sourceTree = "<group>";
 		};
 		65657FBD2AD5D4EA0081F5D7 /* ProfileViewController */ = {
@@ -526,25 +504,6 @@
 			path = CalculatorModule;
 			sourceTree = "<group>";
 		};
-		6585863F2B13DDBA00BE9D28 /* SoundModule */ = {
-			isa = PBXGroup;
-			children = (
-				651E21542B148D8500658CA6 /* SoundVC.swift */,
-				656469662B5031A2006AC14F /* appleMusicViewCell.swift */,
-			);
-			path = SoundModule;
-			sourceTree = "<group>";
-		};
-		658586402B13DDDA00BE9D28 /* ThemesModule */ = {
-			isa = PBXGroup;
-			children = (
-				651E21562B148F9B00658CA6 /* ThemesVC.swift */,
-				651E21582B14971200658CA6 /* StoriesThemesViewCell.swift */,
-				651E215C2B1497E000658CA6 /* ColorThemeViewCell.swift */,
-			);
-			path = ThemesModule;
-			sourceTree = "<group>";
-		};
 		658F7A4D2AF46AA300FF087F /* TrackerBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -561,8 +520,6 @@
 			children = (
 				6585863B2B13D40E00BE9D28 /* ToolsBarView.swift */,
 				6585863A2B13D2BE00BE9D28 /* CalculatorModule */,
-				6585863F2B13DDBA00BE9D28 /* SoundModule */,
-				658586402B13DDDA00BE9D28 /* ThemesModule */,
 			);
 			path = ToolsBar;
 			sourceTree = "<group>";
@@ -576,17 +533,6 @@
 				65EDA58A2AEA950F007B6AE5 /* FactoryExercises.swift */,
 			);
 			path = Exercises;
-			sourceTree = "<group>";
-		};
-		65FF25F02AFB70320008F492 /* ColorSet */ = {
-			isa = PBXGroup;
-			children = (
-				65FF25F12AFB70440008F492 /* ColorSetProtocol.swift */,
-				65FF25F32AFB718D0008F492 /* ColorSetCollection.swift */,
-				65FF25EE2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift */,
-				65FF25F52AFB78190008F492 /* FactoryColorSet.swift */,
-			);
-			path = ColorSet;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -757,20 +703,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				651E215D2B1497E000658CA6 /* ColorThemeViewCell.swift in Sources */,
-				650DD1EA2AFDB7C8009AAD2D /* TraitCollectionManager.swift in Sources */,
 				6589BFDF2ADAC27700DE4E97 /* ConnectionsViewCell.swift in Sources */,
 				656469692B5031B8006AC14F /* MetronomeViewCell.swift in Sources */,
 				65EDA5802AEA3E0B007B6AE5 /* TrackerBarPickerView.swift in Sources */,
-				65FF25F62AFB78190008F492 /* FactoryColorSet.swift in Sources */,
-				65FF25F22AFB70440008F492 /* ColorSetProtocol.swift in Sources */,
 				659B0B772B1DFA69006E52A8 /* NotesTableViewEditCell.swift in Sources */,
 				655B53902B2139470020FF32 /* CoreDataManager.swift in Sources */,
 				653A88112ADBC629007EDD97 /* NotificationButtonView.swift in Sources */,
 				6521308E2AC587210056DEA5 /* Aimator.swift in Sources */,
-				651E21552B148D8500658CA6 /* SoundVC.swift in Sources */,
 				65C8CF102AD2241A00BDC35D /* MeasuringViewCell.swift in Sources */,
-				656469672B5031A2006AC14F /* appleMusicViewCell.swift in Sources */,
 				65657FBA2AD415920081F5D7 /* MeasuringButtonView.swift in Sources */,
 				654893992AAE8099005039DF /* TrackerBarView.swift in Sources */,
 				6585863E2B13D60300BE9D28 /* CalculatorVC.swift in Sources */,
@@ -779,11 +719,9 @@
 				6585863C2B13D40E00BE9D28 /* ToolsBarView.swift in Sources */,
 				65EC20772AEEBD3800410905 /* CGFloat + Extansions.swift in Sources */,
 				65551C772AC5D8CF00CE3309 /* Shaper.swift in Sources */,
-				65FF25EF2AFAE39F0008F492 /* ColorSetUpdateProtocol.swift in Sources */,
 				656469632B502F25006AC14F /* CalculationsViewCell.swift in Sources */,
 				6502D6B22A595315000F96E0 /* OneDot.xcdatamodeld in Sources */,
 				6502D6EC2A59A517000F96E0 /* UIColor + Extansions.swift in Sources */,
-				65FF25F42AFB718D0008F492 /* ColorSetCollection.swift in Sources */,
 				6502D6E52A595AC6000F96E0 /* ProfileVC.swift in Sources */,
 				65D473712AC2E2A700551E66 /* TrackerBarGPS.swift in Sources */,
 				65EC20792AEF008500410905 /* SettingsBaseButton.swift in Sources */,
@@ -795,10 +733,8 @@
 				657D66272AA86D7000397427 /* AlertController.swift in Sources */,
 				65EDA58B2AEA950F007B6AE5 /* FactoryExercises.swift in Sources */,
 				65551C792AC60F5A00CE3309 /* UserDefaultsManager.swift in Sources */,
-				651E21572B148F9B00658CA6 /* ThemesVC.swift in Sources */,
 				658037392B1D444000856C03 /* NotesBarView.swift in Sources */,
 				65657FC02AD5D5B60081F5D7 /* NotificationsViewCell.swift in Sources */,
-				651E21592B14971200658CA6 /* StoriesThemesViewCell.swift in Sources */,
 				659879222AB48BBD004F6E2D /* TrackerBarButton.swift in Sources */,
 				65EDA58D2AEA951D007B6AE5 /* ExerciseProtocol.swift in Sources */,
 				656469652B502F47006AC14F /* HeartZonesViewCell.swift in Sources */,

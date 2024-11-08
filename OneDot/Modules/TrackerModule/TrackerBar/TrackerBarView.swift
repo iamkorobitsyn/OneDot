@@ -11,8 +11,7 @@ import AudioToolbox
 class TrackerBarView: UIView {
     
     var completionForActiveButton: ((UIButton)->())?
-    
-    private let colorSet = UIColor.currentColorSet
+
     private let feedbackGen = UISelectionFeedbackGenerator()
 
     private let exercises = FactoryExercises()
@@ -40,7 +39,7 @@ class TrackerBarView: UIView {
     private let locationStack: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.backgroundColor = .currentColorSet.additionalSelectorColor
+        stack.backgroundColor = .black
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 0
@@ -51,7 +50,7 @@ class TrackerBarView: UIView {
     private let toolsStack: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.backgroundColor = .currentColorSet.mainSelectorColor
+        stack.backgroundColor = .black
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 0
@@ -120,13 +119,7 @@ class TrackerBarView: UIView {
             print(exercise.titleName)
         }
     }
-    
-    //MARK: - UpdateColors
-    
-    func updateColors(_ set: ColorSetProtocol) {
-        toolsStack.backgroundColor = set.mainSelectorColor
-        locationStack.backgroundColor = set.additionalSelectorColor
-    }
+
     
     //MARK: - RefreshButtons
     

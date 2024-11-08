@@ -34,8 +34,8 @@ class SplashScreen: UIView {
                                      width: UIScreen.main.bounds.width,
                                      height: UIScreen.main.bounds.height)
         gradientLayer.colors =
-        [UIColor.currentColorSet.mainDynamicColor.cgColor,
-         UIColor.currentColorSet.tabBarColor.cgColor]
+        [UIColor.red,
+         UIColor.blue]
         
         addSubview(logoContainer)
         logoContainer.backgroundColor = .none
