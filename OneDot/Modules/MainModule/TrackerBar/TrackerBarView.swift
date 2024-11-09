@@ -11,8 +11,7 @@ import AudioToolbox
 class TrackerBarView: UIView {
     
     var completionForActiveButton: ((UIButton)->())?
-    
-    private let colorSet = UIColor.currentColorSet
+
     private let feedbackGen = UISelectionFeedbackGenerator()
 
     private let exercises = FactoryExercises()
@@ -29,10 +28,10 @@ class TrackerBarView: UIView {
         let view = UIVisualEffectView()
         view.effect = UIBlurEffect(style: .light)
         view.frame = CGRect(x: 0, y: 0,
-                                        width: CGFloat.barWidth,
-                                        height: CGFloat.headerBarHeight)
+                                        width: CGFloat.trackerBarWidth,
+                                        height: CGFloat.trackerBarHeight)
         view.clipsToBounds = true
-        view.layer.cornerRadius = CGFloat.barCorner
+        view.layer.cornerRadius = CGFloat.trackerBarCorner
         view.layer.cornerCurve = .continuous
         return view
     }()
@@ -40,7 +39,7 @@ class TrackerBarView: UIView {
     private let locationStack: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.backgroundColor = .currentColorSet.additionalSelectorColor
+        stack.backgroundColor = .myPaletteGold
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 0
@@ -51,7 +50,7 @@ class TrackerBarView: UIView {
     private let toolsStack: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.backgroundColor = .currentColorSet.mainSelectorColor
+        stack.backgroundColor = .black
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 0
@@ -120,13 +119,7 @@ class TrackerBarView: UIView {
             print(exercise.titleName)
         }
     }
-    
-    //MARK: - UpdateColors
-    
-    func updateColors(_ set: ColorSetProtocol) {
-        toolsStack.backgroundColor = set.mainSelectorColor
-        locationStack.backgroundColor = set.additionalSelectorColor
-    }
+
     
     //MARK: - RefreshButtons
     
@@ -244,7 +237,7 @@ class TrackerBarView: UIView {
     
     //MARK: - SetViews
     private func setViews() {
-        layer.cornerRadius = CGFloat.barCorner
+        layer.cornerRadius = CGFloat.trackerBarCorner
         layer.cornerCurve = .continuous
         layer.borderWidth = 0.3
         layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
@@ -298,7 +291,7 @@ class TrackerBarView: UIView {
             locationStack.topAnchor.constraint(equalTo: topAnchor,
                                             constant: 15),
             locationStack.centerXAnchor.constraint(equalTo: centerXAnchor,
-                                            constant: -CGFloat.barWidth / 4 + 5),
+                                            constant: -CGFloat.trackerBarWidth / 4 + 5),
             
             toolsStack.widthAnchor.constraint(equalToConstant:
                                             42 * CGFloat(toolsStack.subviews.count)),
@@ -316,11 +309,11 @@ class TrackerBarView: UIView {
                                             constant: -10),
             
             pickerView.widthAnchor.constraint(equalToConstant:
-                                            CGFloat.barWidth),
+                                            CGFloat.trackerBarWidth),
             pickerView.heightAnchor.constraint(equalToConstant: 50),
             pickerView.centerXAnchor.constraint(equalTo: centerXAnchor),
             pickerView.centerYAnchor.constraint(equalTo: centerYAnchor,
-                                            constant: CGFloat.headerBarHeight / 4),
+                                            constant: CGFloat.trackerBarHeight / 4),
             
             toolsTitle.topAnchor.constraint(equalTo: 
                                             toolsStack.bottomAnchor,

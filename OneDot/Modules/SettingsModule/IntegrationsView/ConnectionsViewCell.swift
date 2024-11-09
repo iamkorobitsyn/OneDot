@@ -71,16 +71,6 @@ class ConnectionsViewCell: UITableViewCell {
     }
     
     
-    //MARK: UpdateColors
-    
-    func updateColors(_ set: ColorSetProtocol) {
-        appleWatchStack.backgroundColor = set.mainSelectorColor
-        garminStack.backgroundColor = set.mainSelectorColor
-        fitbitStack.backgroundColor = set.mainSelectorColor
-        appleMusicStack.backgroundColor = set.mainSelectorColor
-        spotifyStack.backgroundColor = set.mainSelectorColor
-    }
-    
     
     //MARK: - SetViews
     
@@ -131,7 +121,7 @@ class ConnectionsViewCell: UITableViewCell {
         stackView.axis = .horizontal
         stackView.spacing = stackSpacing
         stackView.distribution = .fillEqually
-        stackView.backgroundColor = .currentColorSet.mainSelectorColor
+        stackView.backgroundColor = .black
         stackView.layer.cornerRadius = selectorStackSide / 2
         stackView.layer.cornerCurve = .continuous
         addSubview(stackView)

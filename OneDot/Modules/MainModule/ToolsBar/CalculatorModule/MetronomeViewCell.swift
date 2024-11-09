@@ -26,8 +26,8 @@ class MetronomeViewCell: UITableViewCell {
     private let topView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.currentColorSet.mainSelectorColor
-        view.layer.cornerRadius = CGFloat.toolCorner
+        view.backgroundColor = UIColor.black
+        view.layer.cornerRadius = CGFloat.toolBarCorner
         view.layer.cornerCurve = .continuous
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return view
@@ -36,7 +36,7 @@ class MetronomeViewCell: UITableViewCell {
     private let sliderContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.currentColorSet.mainSelectorColor
+        view.backgroundColor = UIColor.black
         return view
     }()
     
@@ -56,7 +56,7 @@ class MetronomeViewCell: UITableViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "soundBpmAwayIcon"), for: .normal)
         button.setImage(UIImage(named: "soundBpmAwayIcon"), for: .highlighted)
-        button.backgroundColor = UIColor.currentColorSet.mainSelectorColor
+        button.backgroundColor = UIColor.black
         return button
     }()
     
@@ -65,7 +65,7 @@ class MetronomeViewCell: UITableViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "soundBpmAddIcon"), for: .normal)
         button.setImage(UIImage(named: "soundBpmAddIcon"), for: .highlighted)
-        button.backgroundColor = UIColor.currentColorSet.mainSelectorColor
+        button.backgroundColor = UIColor.black
         return button
     }()
     
@@ -74,8 +74,8 @@ class MetronomeViewCell: UITableViewCell {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.distribution = .fillEqually
-        stack.backgroundColor = UIColor.currentColorSet.mainSelectorColor
-        stack.layer.cornerRadius = CGFloat.toolCorner
+        stack.backgroundColor = UIColor.black
+        stack.layer.cornerRadius = CGFloat.toolBarCorner
         stack.layer.cornerCurve = .continuous
         stack.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         return stack
@@ -92,7 +92,7 @@ class MetronomeViewCell: UITableViewCell {
         view.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 250)
         view.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
         view.clipsToBounds = true
-        view.layer.cornerRadius = CGFloat.barCorner
+        view.layer.cornerRadius = CGFloat.trackerBarCorner
         view.layer.cornerCurve = .continuous
         view.layer.borderWidth = 0.3
         view.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
@@ -275,17 +275,6 @@ class MetronomeViewCell: UITableViewCell {
         endEditing(true)
     }
 
-    
-    //MARK: UpdateColors
-    
-    func updateColors(set: ColorSetProtocol) {
-        topView.backgroundColor = set.mainSelectorColor
-        sliderContainerView.backgroundColor = set.mainSelectorColor
-        bpmMinusButton.backgroundColor = set.mainSelectorColor
-        bpmPlusButton.backgroundColor = set.mainSelectorColor
-        bottomButtonsStack.backgroundColor = set.mainSelectorColor
-    }
-    
     //MARK: - SetViews
     
     private func setViews() {
@@ -324,14 +313,14 @@ class MetronomeViewCell: UITableViewCell {
         
         Shaper.shared.drawYSeparator(shape: leftSeparator,
                                      view: bottomButtonsStack,
-                                     x: CGFloat.toolwidth / 3,
+                                     x: CGFloat.toolBarWidth / 3,
                                      y: 15,
                                      length: 30,
                                      color: .white)
         
         Shaper.shared.drawYSeparator(shape: rightSeparator,
                                      view: bottomButtonsStack,
-                                     x: CGFloat.toolwidth / 3 * 2,
+                                     x: CGFloat.toolBarWidth / 3 * 2,
                                      y: 15,
                                      length: 30,
                                      color: .white)
@@ -346,14 +335,14 @@ class MetronomeViewCell: UITableViewCell {
             
             topView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 50),
             topView.widthAnchor.constraint(equalToConstant:
-                                            CGFloat.toolwidth),
+                                            CGFloat.toolBarWidth),
             topView.heightAnchor.constraint(equalToConstant: 60),
             topView.centerXAnchor.constraint(equalTo:
                                             sliderContainerView.centerXAnchor),
             
             
             sliderContainerView.widthAnchor.constraint(equalToConstant:
-                                            CGFloat.toolwidth - 120),
+                                            CGFloat.toolBarWidth - 120),
             sliderContainerView.heightAnchor.constraint(equalToConstant: 60),
             sliderContainerView.centerXAnchor.constraint(equalTo:
                                             contentView.centerXAnchor),
@@ -365,7 +354,7 @@ class MetronomeViewCell: UITableViewCell {
             bpmTitle.centerYAnchor.constraint(equalTo:
                                                 topView.centerYAnchor),
             
-            slider.widthAnchor.constraint(equalToConstant: CGFloat.toolwidth - 130),
+            slider.widthAnchor.constraint(equalToConstant: CGFloat.toolBarWidth - 130),
             slider.centerXAnchor.constraint(equalTo:
                                             sliderContainerView.centerXAnchor),
             slider.centerYAnchor.constraint(equalTo:
@@ -384,7 +373,7 @@ class MetronomeViewCell: UITableViewCell {
                                             sliderContainerView.trailingAnchor),
             
             bottomButtonsStack.widthAnchor.constraint(equalToConstant: 
-                                            CGFloat.toolwidth),
+                                            CGFloat.toolBarWidth),
             bottomButtonsStack.heightAnchor.constraint(equalToConstant: 60),
             bottomButtonsStack.centerXAnchor.constraint(equalTo:
                                             sliderContainerView.centerXAnchor),

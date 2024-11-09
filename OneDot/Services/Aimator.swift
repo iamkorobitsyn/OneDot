@@ -31,7 +31,7 @@ class Animator {
         let test = CABasicAnimation(keyPath: "opacity")
         test.duration = 1.5
         test.fromValue = 1
-        test.toValue = 1
+        test.toValue = 0
         test.delegate = delegate
         
         logo.layer.add(test, forKey: nil)

@@ -10,12 +10,17 @@ import UIKit
 
 extension CGFloat {
     
-    static let headerBarHeight: CGFloat = .init(130)
-    static let barWidth: CGFloat = .init(UIScreen.main.bounds.width / 1.05)
-    static let barCorner: CGFloat = .init(30)
+    static let trackerBarHeight: CGFloat = .init(130)
+    static let trackerBarWidth: CGFloat = .init(UIScreen.main.bounds.width / 1.05)
+    static let trackerBarCorner: CGFloat = .init(30)
     
-    static let toolwidth: CGFloat = .init(UIScreen.main.bounds.width / 1.20)
-    static let toolCorner: CGFloat = .init(30)
+    static let toolBarWidth: CGFloat = .init(UIScreen.main.bounds.width / 1.20)
+    static let toolBarCorner: CGFloat = .init(30)
+    
+    static let tabBarWidth: CGFloat = .init(UIScreen.main.bounds.width / 1.05)
+    static let tabBarHeight: CGFloat = .init(95)
+    static let tabBarCorner: CGFloat = .init(30)
     
     static let iconSide: CGFloat = .init(42)
+    static let iconCorner: CGFloat = .init(21)
 }

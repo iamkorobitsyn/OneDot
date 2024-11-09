@@ -15,7 +15,7 @@ class ProfileVC: UIViewController {
         super.viewDidLoad()
         title = "PROFILE"
 
-        view.backgroundColor = UIColor.sunriseDeepColor
+        view.backgroundColor = UIColor.myPaletteRed
         
     }
 }

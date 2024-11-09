@@ -33,7 +33,7 @@ class CalculationsViewCell: UITableViewCell {
         view.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 250)
         view.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
         view.clipsToBounds = true
-        view.layer.cornerRadius = CGFloat.barCorner
+        view.layer.cornerRadius = CGFloat.trackerBarCorner
         view.layer.cornerCurve = .continuous
         view.layer.borderWidth = 0.3
         view.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
@@ -181,28 +181,24 @@ class CalculationsViewCell: UITableViewCell {
         
         setViews()
         setConstraints()
-        updateColors(set: UIColor.currentColorSet)
         
         Shaper.shared.drawYSeparator(shape: leftSeparator,
                                      view: containerView,
-                                     x: (CGFloat.toolwidth - 100) / 2,
+                                     x: (CGFloat.toolBarWidth - 100) / 2,
                                      y: 20,
                                      length: 80,
                                      color: .white)
         
         Shaper.shared.drawYSeparator(shape: rightSeparator,
                                      view: containerView,
-                                     x: (CGFloat.toolwidth - 100) / 2 + 100,
+                                     x: (CGFloat.toolBarWidth - 100) / 2 + 100,
                                      y: 20,
                                      length: 80,
                                      color: .white)
         
         updateValues()
     }
-    
-    func updateColors(set: ColorSetProtocol) {
-        containerView.backgroundColor = set.mainSelectorColor
-    }
+
     
     //MARK: - Calculations
     
@@ -393,7 +389,7 @@ class CalculationsViewCell: UITableViewCell {
     private func setConstraints() {
         NSLayoutConstraint.activate([
             containerView.widthAnchor.constraint(equalToConstant: 
-                                            CGFloat.toolwidth),
+                                            CGFloat.toolBarWidth),
             containerView.heightAnchor.constraint(equalToConstant: 120),
             containerView.centerXAnchor.constraint(equalTo: 
                                             contentView.centerXAnchor),
@@ -428,7 +424,7 @@ class CalculationsViewCell: UITableViewCell {
                                                     topButton.leadingAnchor),
             leftButton.heightAnchor.constraint(equalToConstant: 120),
             leftButton.widthAnchor.constraint(equalToConstant:
-                                            (CGFloat.toolwidth - 100) / 2),
+                                            (CGFloat.toolBarWidth - 100) / 2),
             
             rightButton.topAnchor.constraint(equalTo:
                                             containerView.topAnchor),
@@ -436,7 +432,7 @@ class CalculationsViewCell: UITableViewCell {
                                                         topButton.trailingAnchor),
             rightButton.heightAnchor.constraint(equalToConstant: 120),
             rightButton.widthAnchor.constraint(equalToConstant:
-                                            (CGFloat.toolwidth - 100) / 2),
+                                            (CGFloat.toolBarWidth - 100) / 2),
             
             doneButton.widthAnchor.constraint(equalToConstant: 50),
             doneButton.heightAnchor.constraint(equalToConstant: 50),

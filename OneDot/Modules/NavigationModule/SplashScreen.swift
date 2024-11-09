@@ -27,15 +27,17 @@ class SplashScreen: UIView {
     private func setViews() {
         backgroundColor = .black
         
-        layer.addSublayer(gradientLayer)
         gradientLayer.locations = [0.0, 1.0]
         gradientLayer.frame = CGRect(x: 0,
                                      y: 0,
                                      width: UIScreen.main.bounds.width,
                                      height: UIScreen.main.bounds.height)
-        gradientLayer.colors =
-        [UIColor.currentColorSet.mainDynamicColor.cgColor,
-         UIColor.currentColorSet.tabBarColor.cgColor]
+        
+        gradientLayer.colors = [UIColor.myPaletteBlue.cgColor, UIColor.myPaletteBlue.cgColor]
+        
+        layer.insertSublayer(gradientLayer, at: 0)
+        
+        
         
         addSubview(logoContainer)
         logoContainer.backgroundColor = .none

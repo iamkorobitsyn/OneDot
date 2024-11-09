@@ -9,22 +9,12 @@ import UIKit
 
 class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAnimationDelegate {
     
-    
-    let themesVC = ThemesVC()
-    let test = MainVC()
-    
-    
     let splashScreen: SplashScreen = SplashScreen()
     let tabBar: TabBar = TabBar()
     
     let profileVC: ProfileVC = ProfileVC()
     let settingsVC: SettingsVC = SettingsVC()
     
-    
-    //MARK: - Metrics
-    
-    let tabBarWidth: CGFloat = UIScreen.main.bounds.width / 1.05
-    let tabBarHeight: CGFloat = 95
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +25,6 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
                                           splashScreen.gradientLayer,
                                              delegate: splashScreen)
         setViews()
-        getCurrentUserInterfaceStyle()
         setConstraints()
         
     }
@@ -45,7 +34,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
     override func viewDidAppear(_ animated: Bool) {
         for vc in viewControllers {
             if let main = vc as? MainVC {
-                main.toolsBar.themesVC.colorThemesCell.navigationVCColorSetDelegate = self
+//                main.toolsBarView.themesVC.colorThemesCell.navigationVCColorSetDelegate = self
             }
         }
         
@@ -53,7 +42,7 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
         
         for vc in viewControllers {
             if let main = vc as? MainVC {
-                main.toolsBar.showTabBarCompletion = { [weak self] show in
+                main.toolsBarView.showTabBarCompletion = { [weak self] show in
                     guard let self else {return}
                     if show == true {
                         Animator.shared.tabBarShow(tabBar)
@@ -76,11 +65,8 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
         view.addSubview(tabBar)
         view.addSubview(splashScreen)
         
+        tabBar.backgroundColor = .myPaletteBlue
         
-        tabBar.backgroundColor = .currentColorSet.tabBarColor
-        
-        
-
         tabBar.profileButton.addTarget(self,
                                        action: #selector(presentProfile), 
                                        for: .touchUpInside)
@@ -104,35 +90,6 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
     
     
     //MARK: - SetNavigationBar
-    
-    private func getCurrentUserInterfaceStyle() {
-        let i = TraitCollectionManager.shared.theme.getUserInterfaceStyle().rawValue
-        print(i)
-        if i == 1 {
-            setNavigationBar(true,
-                .currentColorSet.mainDynamicColor,
-                .currentColorSet.titleDynamicColor,
-                .label)
-        } else if i == 2 {
-            setNavigationBar(false,
-                .currentColorSet.mainDynamicColor,
-                .currentColorSet.titleDynamicColor,
-                .label)
-        } else if i == 0 {
-            if traitCollection.userInterfaceStyle == .light {
-                setNavigationBar(true,
-                    .currentColorSet.mainDynamicColor,
-                    .currentColorSet.titleDynamicColor,
-                    .label)
-            } else if traitCollection.userInterfaceStyle == .dark {
-                setNavigationBar(false,
-                    .currentColorSet.mainDynamicColor,
-                    .currentColorSet.titleDynamicColor,
-                    .label)
-            }
-        }
-        
-    }
     
     private func setNavigationBar(_ backgroundIsHidden: Bool,
                                   _ backgroundColor: UIColor,
@@ -195,8 +152,8 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
             splashScreen.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             splashScreen.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            tabBar.widthAnchor.constraint(equalToConstant: tabBarWidth),
-            tabBar.heightAnchor.constraint(equalToConstant: tabBarHeight),
+            tabBar.widthAnchor.constraint(equalToConstant: .tabBarWidth),
+            tabBar.heightAnchor.constraint(equalToConstant: .tabBarHeight),
             tabBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             tabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, 
                                             constant: -20)
@@ -204,13 +161,4 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
     }
 }
 
-
-extension NavigationVC: NavigationVCColorSetProtocol {
-    func update(_ set: ColorSetProtocol, _ barBGIsHidden: Bool) {
-        tabBar.backgroundColor = set.tabBarColor
-        setNavigationBar(barBGIsHidden, set.mainDynamicColor, set.titleDynamicColor, set.titleDynamicColor)
-    }
-    
-
-}
 

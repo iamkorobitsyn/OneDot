@@ -252,29 +252,29 @@ class HeartZonesViewCell: UITableViewCell {
     private func setConstraints() {
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 50),
-            containerView.widthAnchor.constraint(equalToConstant: CGFloat.toolwidth),
+            containerView.widthAnchor.constraint(equalToConstant: CGFloat.toolBarWidth),
             containerView.heightAnchor.constraint(equalToConstant: 354),
             containerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             
             hRStackView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             hRStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             hRStackView.heightAnchor.constraint(equalToConstant: 354),
-            hRStackView.widthAnchor.constraint(equalToConstant: CGFloat.toolwidth / 3 * 2),
+            hRStackView.widthAnchor.constraint(equalToConstant: CGFloat.toolBarWidth / 3 * 2),
             
             leftCenterView.centerYAnchor.constraint(equalTo: hRStackView.centerYAnchor),
             leftCenterView.trailingAnchor.constraint(equalTo: hRStackView.leadingAnchor, constant: -1),
             leftCenterView.heightAnchor.constraint(equalToConstant: 212),
-            leftCenterView.widthAnchor.constraint(equalToConstant: CGFloat.toolwidth / 3),
+            leftCenterView.widthAnchor.constraint(equalToConstant: CGFloat.toolBarWidth / 3),
             
             leftTopView.topAnchor.constraint(equalTo: containerView.topAnchor),
             leftTopView.trailingAnchor.constraint(equalTo: hRStackView.leadingAnchor, constant: -1),
             leftTopView.heightAnchor.constraint(equalToConstant: 141),
-            leftTopView.widthAnchor.constraint(equalToConstant: CGFloat.toolwidth / 3 - 20),
+            leftTopView.widthAnchor.constraint(equalToConstant: CGFloat.toolBarWidth / 3 - 20),
             
             leftBottomView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             leftBottomView.trailingAnchor.constraint(equalTo: hRStackView.leadingAnchor, constant: -1),
             leftBottomView.heightAnchor.constraint(equalToConstant: 141),
-            leftBottomView.widthAnchor.constraint(equalToConstant: CGFloat.toolwidth / 3 - 20),
+            leftBottomView.widthAnchor.constraint(equalToConstant: CGFloat.toolBarWidth / 3 - 20),
             
             leftTopIcon.widthAnchor.constraint(equalToConstant: 50),
             leftTopIcon.heightAnchor.constraint(equalToConstant: 50),

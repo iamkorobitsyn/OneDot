@@ -76,15 +76,6 @@ class MeasuringViewCell: UITableViewCell {
                                               color: .lightGray)
     }
     
-    //MARK: UpdateColors
-    
-    func updateColors(_ set: ColorSetProtocol) {
-        countDownStack.backgroundColor = set.mainSelectorColor
-        autopauseStack.backgroundColor = set.mainSelectorColor
-        unitStack.backgroundColor = set.mainSelectorColor
-        temperatureStack.backgroundColor = set.mainSelectorColor
-    }
-    
     
     //MARK: - SetViews
     
@@ -132,7 +123,7 @@ class MeasuringViewCell: UITableViewCell {
         stackView.axis = .horizontal
         stackView.spacing = 2
         stackView.distribution = .fillEqually
-        stackView.backgroundColor = .currentColorSet.mainSelectorColor
+        stackView.backgroundColor = .black
         stackView.layer.cornerRadius = selectorStackSide / 2
         stackView.layer.cornerCurve = .continuous
         addSubview(stackView)

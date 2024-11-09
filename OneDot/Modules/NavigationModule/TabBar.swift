@@ -37,7 +37,7 @@ class TabBar: UIView {
         
         Shaper.shared.drawYSeparator(shape: separator,
                                              view: self,
-                                             x: CGFloat.barWidth / 2,
+                                             x: CGFloat.trackerBarWidth / 2,
                                              y: 15,
                                              length: 65,
                                              color: .white)
@@ -154,7 +154,7 @@ class TabBar: UIView {
     //MARK: - SetViews
     
     private func setViews() {
-        layer.cornerRadius = CGFloat.barCorner
+        layer.cornerRadius = .tabBarCorner
         layer.cornerCurve = .continuous
         addSubview(prepareButton)
         addSubview(startButton)
@@ -218,7 +218,7 @@ class TabBar: UIView {
     
     private func setConstraintsForLeftButton(_ button: UIButton) {
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: CGFloat.barWidth / 2),
+            button.widthAnchor.constraint(equalToConstant: CGFloat.trackerBarWidth / 2),
             button.heightAnchor.constraint(equalToConstant: 95),
             button.leadingAnchor.constraint(equalTo: leadingAnchor),
             button.topAnchor.constraint(equalTo: topAnchor)
@@ -227,7 +227,7 @@ class TabBar: UIView {
     
     private func setConstraintsForRightButton(_ button: UIButton) {
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: CGFloat.barWidth / 2),
+            button.widthAnchor.constraint(equalToConstant: CGFloat.trackerBarWidth / 2),
             button.heightAnchor.constraint(equalToConstant: 95),
             button.topAnchor.constraint(equalTo: topAnchor),
             button.trailingAnchor.constraint(equalTo: trailingAnchor)
@@ -238,7 +238,7 @@ class TabBar: UIView {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: centerXAnchor,
-                                               constant: -CGFloat.barWidth / 4),
+                                               constant: -CGFloat.trackerBarWidth / 4),
             imageView.centerYAnchor.constraint(equalTo: centerYAnchor)
             ])
     }

@@ -65,13 +65,6 @@ class NotificationsViewCell: UITableViewCell {
                                      color: .lightGray)
     }
     
-    //MARK: UpdateColors
-    
-    func updateColors(_ set: ColorSetProtocol) {
-        weeklyReportStack.backgroundColor = set.mainSelectorColor
-        achievingGoalsStack.backgroundColor = set.mainSelectorColor
-    }
-    
     
     //MARK: - SetViews
     
@@ -114,7 +107,7 @@ class NotificationsViewCell: UITableViewCell {
         stackView.axis = .horizontal
         stackView.spacing = stackSpacing
         stackView.distribution = .fillEqually
-        stackView.backgroundColor = .currentColorSet.mainSelectorColor
+        stackView.backgroundColor = .black
         stackView.layer.cornerRadius = selectorStackSide / 2
         stackView.layer.cornerCurve = .continuous
         addSubview(stackView)
