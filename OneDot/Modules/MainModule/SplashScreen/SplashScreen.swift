@@ -19,13 +19,20 @@ class SplashScreen: UIView {
         
         setViews()
         setConstraints()
-    
+        
     }
     
     //MARK: - SetViews
     
     private func setViews() {
+        
         backgroundColor = .none
+        
+        gradientBackLayer.locations = [0.0, 1.0]
+        gradientBackLayer.frame = CGRect(x: 0,
+                                         y: 0,
+                                         width: UIScreen.main.bounds.width,
+                                         height: UIScreen.main.bounds.height)
         
         frontLayer.backgroundColor = UIColor.black.cgColor
         frontLayer.frame = CGRect(x: 0,
@@ -33,23 +40,15 @@ class SplashScreen: UIView {
                                   width: UIScreen.main.bounds.width,
                                   height: UIScreen.main.bounds.height)
         
-        gradientBackLayer.locations = [0.0, 1.0]
-        gradientBackLayer.frame = CGRect(x: 0,
-                                     y: 0,
-                                     width: UIScreen.main.bounds.width,
-                                     height: UIScreen.main.bounds.height)
-        
         gradientBackLayer.colors = [UIColor.myPaletteGray.cgColor,
                                     UIColor.myPaletteBlue.cgColor]
         
+        launchLogo.image = UIImage(named: "screenLogo")
+        
         layer.insertSublayer(gradientBackLayer, at: 0)
         layer.insertSublayer(frontLayer, at: 1)
-        
-        
-        
         addSubview(launchLogo)
         
-        launchLogo.image = UIImage(named: "screenLogo")
     }
     
     //MARK: - SetConstraints
@@ -62,20 +61,9 @@ class SplashScreen: UIView {
             launchLogo.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
-
-extension SplashScreen: CAAnimationDelegate {
-    
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        Animator.shared.splashScreenDamping(self)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
-            self.alpha = 0
-        }
-    }
-    
-}

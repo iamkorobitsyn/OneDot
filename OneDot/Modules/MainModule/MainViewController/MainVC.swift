@@ -9,15 +9,16 @@ import UIKit
 import MapKit
 
 class MainVC: UIViewController, CAAnimationDelegate {
-    
-    let splashScreen: SplashScreen = SplashScreen()
-    
+
     let mapView: MKMapView = MKMapView()
     let locationManager: CLLocationManager = CLLocationManager()
     
     let trackerBar: TrackerBarView = TrackerBarView()
     let notesBarView: NotesBarView = NotesBarView()
     let toolsBarView: ToolsBarView = ToolsBarView()
+    let tabBar: TabBar = TabBar()
+    
+    let splashScreen: SplashScreen = SplashScreen()
     
     var tabBarCompletion: ((Bool)->())?
     
@@ -31,18 +32,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case settings
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        Animator.shared.splashScreenAnimate(splashScreen.launchLogo,
-                                            splashScreen.frontLayer,
-                                            splashScreen.gradientBackLayer,
-                                            delegate: self)
-    }
-    
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        if flag {
-            splashScreen.alpha = 0
-        }
-    }
+    //MARK: - ViewDidLoad
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,8 +43,10 @@ class MainVC: UIViewController, CAAnimationDelegate {
         setupLocationManager()
         checkLocationEnabled()
         
-        
-
+        tabBar.profileCompletion = {
+            let profileVC = ProfileVC()
+            self.present(profileVC, animated: true)
+        }
 
         trackerBar.completionForActiveButton = { [weak self] button in
             guard let self else {return}
@@ -99,6 +91,21 @@ class MainVC: UIViewController, CAAnimationDelegate {
                 trackerBar.bpmLight.isHidden = false
                 Animator.shared.pillingBPM(trackerBar.bpmLight)
             }
+        }
+    }
+    
+    //MARK: - SplashScreenAnimations
+    
+    override func viewDidAppear(_ animated: Bool) {
+        Animator.shared.splashScreenAnimate(splashScreen.frontLayer,
+                                            splashScreen.gradientBackLayer,
+                                            splashScreen.launchLogo,
+                                            delegate: self)
+    }
+    
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        if flag {
+            splashScreen.alpha = 0
         }
     }
     
@@ -245,7 +252,6 @@ extension MainVC {
     //MARK: - SetViews
     
     private func setViews() {
-        title = "MAP"
         
         view.addSubview(mapView)
         mapView.overrideUserInterfaceStyle = .light
@@ -256,6 +262,8 @@ extension MainVC {
         
         view.addSubview(trackerBar)
         view.addSubview(toolsBarView)
+        
+        view.addSubview(tabBar)
         
         view.addSubview(splashScreen)
 
@@ -269,6 +277,7 @@ extension MainVC {
         trackerBar.translatesAutoresizingMaskIntoConstraints = false
         toolsBarView.translatesAutoresizingMaskIntoConstraints = false
         notesBarView.translatesAutoresizingMaskIntoConstraints = false
+        tabBar.translatesAutoresizingMaskIntoConstraints = false
         splashScreen.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
@@ -301,6 +310,12 @@ extension MainVC {
                                             constant: CGFloat.trackerBarHeight + 20),
             notesBarView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             notesBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor, 
+                                            constant: -20),
+            
+            tabBar.widthAnchor.constraint(equalToConstant: .tabBarWidth),
+            tabBar.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            tabBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            tabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor,
                                             constant: -20),
             
             splashScreen.topAnchor.constraint(equalTo: view.topAnchor),

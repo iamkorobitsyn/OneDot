@@ -28,6 +28,8 @@ class TabBar: UIView {
     
     private let separator: CAShapeLayer = CAShapeLayer()
     
+    var profileCompletion: (() -> Void)?
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,9 +49,7 @@ class TabBar: UIView {
        //MARK: - SetButtons
        
        private func setButtons() {
-           
-           
-           
+
            startButton.isHidden = true
            pauseButton.isHidden = true
            cancelButton.isHidden = true
@@ -125,6 +125,7 @@ class TabBar: UIView {
        
        @objc private func profileButtonTapped() {
            print("profile")
+           profileCompletion?()
            
            isUserInteractionEnabled = false
            
@@ -154,6 +155,7 @@ class TabBar: UIView {
     //MARK: - SetViews
     
     private func setViews() {
+        backgroundColor = .myPaletteBlue
         layer.cornerRadius = .tabBarCorner
         layer.cornerCurve = .continuous
         addSubview(prepareButton)

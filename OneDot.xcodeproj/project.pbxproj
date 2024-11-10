@@ -337,6 +337,8 @@
 				658F7A4D2AF46AA300FF087F /* TrackerBar */,
 				658037372B1D420E00856C03 /* NotesBar */,
 				65C517002AF01F0400095AFE /* ToolsBar */,
+				6568C8B02CE0960A00993E00 /* TabBar */,
+				6568C8B12CE0961D00993E00 /* SplashScreen */,
 			);
 			path = MainModule;
 			sourceTree = "<group>";
@@ -353,8 +355,6 @@
 			isa = PBXGroup;
 			children = (
 				65E060332AC0E62800AD5DD6 /* NavigationVC.swift */,
-				6502D6EF2A5C9A1F000F96E0 /* TabBar.swift */,
-				6521308B2AC46F400056DEA5 /* SplashScreen.swift */,
 			);
 			path = NavigationModule;
 			sourceTree = "<group>";
@@ -465,6 +465,22 @@
 				65EC20782AEF008500410905 /* SettingsBaseButton.swift */,
 			);
 			path = SettingsViewController;
+			sourceTree = "<group>";
+		};
+		6568C8B02CE0960A00993E00 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				6502D6EF2A5C9A1F000F96E0 /* TabBar.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
+		6568C8B12CE0961D00993E00 /* SplashScreen */ = {
+			isa = PBXGroup;
+			children = (
+				6521308B2AC46F400056DEA5 /* SplashScreen.swift */,
+			);
+			path = SplashScreen;
 			sourceTree = "<group>";
 		};
 		658037372B1D420E00856C03 /* NotesBar */ = {

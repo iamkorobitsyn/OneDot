@@ -16,64 +16,51 @@ class Animator {
     
     //MARK: - GreetingViews
     
-    func splashScreenAnimate(_ logo: UIView,
-                             _ frontLayer: CALayer,
+    func splashScreenAnimate(_ frontLayer: CALayer,
                              _ backLayer: CAGradientLayer,
+                             _ logoLayer: UIView,
                              delegate: CAAnimationDelegate) {
         
        
         var animations: [CABasicAnimation] = []
         
-        let opacity = CABasicAnimation(keyPath: "opacity")
-        opacity.beginTime = 0
-        opacity.fromValue = 1
-        opacity.toValue = 0
-        opacity.duration = 1
+        let frontLayerOpacity = CABasicAnimation(keyPath: "opacity")
+        frontLayerOpacity.beginTime = 0
+        frontLayerOpacity.fromValue = 1
+        frontLayerOpacity.toValue = 0
+        frontLayerOpacity.duration = 1
         
-        animations.append(opacity)
+        animations.append(frontLayerOpacity)
         
-        let opacity2 = CABasicAnimation(keyPath: "opacity")
-        opacity2.beginTime = 1
-        opacity2.fromValue = 0
-        opacity2.toValue = 0
-        opacity2.duration = 0.5
+        let frontLayerDelay = CABasicAnimation(keyPath: "opacity")
+        frontLayerDelay.beginTime = 1
+        frontLayerDelay.fromValue = 0
+        frontLayerDelay.toValue = 0
+        frontLayerDelay.duration = 0.5
+        frontLayerDelay.fillMode = .forwards
+        frontLayerDelay.isRemovedOnCompletion = false
         
-        animations.append(opacity2)
+        animations.append(frontLayerDelay)
         
-        let opacity3 = CABasicAnimation(keyPath: "opacity")
-        opacity3.beginTime = CACurrentMediaTime() + 1
-        opacity3.fromValue = 1
-        opacity3.toValue = 0
-        opacity3.duration = 0.55
-        backLayer.add(opacity3, forKey: "")
-        logo.layer.add(opacity3, forKey: "")
+        let backLayerOpacity = CABasicAnimation(keyPath: "opacity")
+        backLayerOpacity.beginTime = CACurrentMediaTime() + 1
+        backLayerOpacity.fromValue = 1
+        backLayerOpacity.toValue = 0
+        backLayerOpacity.duration = 0.50
+        backLayerOpacity.fillMode = .forwards
+        backLayerOpacity.isRemovedOnCompletion = false
         
+        let frontLayerAnimationGroup = CAAnimationGroup()
+        frontLayerAnimationGroup.animations = animations
+        frontLayerAnimationGroup.duration = 1.5
+        frontLayerAnimationGroup.fillMode = .forwards
+        frontLayerAnimationGroup.isRemovedOnCompletion = false
+        frontLayerAnimationGroup.delegate = delegate
+
+        frontLayer.add(frontLayerAnimationGroup, forKey: "opacityAnimations")
+        backLayer.add(backLayerOpacity, forKey: "")
+        logoLayer.layer.add(backLayerOpacity, forKey: "")
         
-        
-        
-        
-        // Группа анимаций (если нужно выполнить их параллельно)
-        let group = CAAnimationGroup()
-        group.animations = animations
-        group.duration = 1.5  // Общая длительность (для всех анимаций)
-        group.fillMode = .forwards
-        group.isRemovedOnCompletion = false
-        
-        group.delegate = delegate
-        
-        // Применяем группу анимаций к frontLayer
-        frontLayer.add(group, forKey: "opacityAnimations")
-        
-    }
-    
-    func splashScreenDamping(_ view: UIView) {
-        let opacity = CABasicAnimation(keyPath: "opacity")
-        
-        opacity.fromValue = 1
-        opacity.toValue = 0
-        opacity.duration = 0.2
-        
-        view.layer.add(opacity, forKey: nil)
     }
     
     //MARK: - TabBarView
