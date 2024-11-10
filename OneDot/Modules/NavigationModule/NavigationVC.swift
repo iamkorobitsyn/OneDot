@@ -22,7 +22,8 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
         delegate = self
 
         Animator.shared.splashScreenAnimate(splashScreen.launchLogo,
-                                          splashScreen.gradientLayer,
+                                          splashScreen.gradientBackLayer,
+                                            splashScreen.gradientBackLayer,
                                              delegate: splashScreen)
         setViews()
         setConstraints()

@@ -32,9 +32,16 @@ class MainVC: UIViewController, CAAnimationDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-//        Animator.shared.splashScreenAnimate(splashScreen.launchLogo,
-//                                          splashScreen.gradientLayer,
-//                                             delegate: splashScreen)
+        Animator.shared.splashScreenAnimate(splashScreen.launchLogo,
+                                            splashScreen.frontLayer,
+                                            splashScreen.gradientBackLayer,
+                                            delegate: self)
+    }
+    
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        if flag {
+            splashScreen.alpha = 0
+        }
     }
 
     override func viewDidLoad() {

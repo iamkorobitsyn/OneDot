@@ -10,9 +10,9 @@ import UIKit
 
 class SplashScreen: UIView {
     
+    let frontLayer: CALayer = CALayer()
+    let gradientBackLayer: CAGradientLayer = CAGradientLayer()
     let launchLogo: UIImageView = UIImageView()
-    let logoContainer: UIView = UIView()
-    let gradientLayer: CAGradientLayer = CAGradientLayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,24 +25,30 @@ class SplashScreen: UIView {
     //MARK: - SetViews
     
     private func setViews() {
-        backgroundColor = .black
+        backgroundColor = .none
         
-        gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.frame = CGRect(x: 0,
+        frontLayer.backgroundColor = UIColor.black.cgColor
+        frontLayer.frame = CGRect(x: 0,
+                                  y: 0,
+                                  width: UIScreen.main.bounds.width,
+                                  height: UIScreen.main.bounds.height)
+        
+        gradientBackLayer.locations = [0.0, 1.0]
+        gradientBackLayer.frame = CGRect(x: 0,
                                      y: 0,
                                      width: UIScreen.main.bounds.width,
                                      height: UIScreen.main.bounds.height)
         
-        gradientLayer.colors = [UIColor.myPaletteBlue.cgColor, UIColor.myPaletteBlue.cgColor]
+        gradientBackLayer.colors = [UIColor.myPaletteGray.cgColor,
+                                    UIColor.myPaletteBlue.cgColor]
         
-        layer.insertSublayer(gradientLayer, at: 0)
+        layer.insertSublayer(gradientBackLayer, at: 0)
+        layer.insertSublayer(frontLayer, at: 1)
         
         
         
-        addSubview(logoContainer)
-        logoContainer.backgroundColor = .none
+        addSubview(launchLogo)
         
-        logoContainer.addSubview(launchLogo)
         launchLogo.image = UIImage(named: "screenLogo")
     }
     
@@ -50,18 +56,10 @@ class SplashScreen: UIView {
     
     private func setConstraints() {
         launchLogo.translatesAutoresizingMaskIntoConstraints = false
-        logoContainer.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             launchLogo.centerXAnchor.constraint(equalTo: centerXAnchor),
             launchLogo.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
-            logoContainer.widthAnchor.constraint(equalToConstant: 100),
-            logoContainer.heightAnchor.constraint(equalToConstant: 100),
-            logoContainer.topAnchor.constraint(equalTo: topAnchor,
-                                                constant: UIScreen.main.bounds.height / 2 ),
-            logoContainer.leadingAnchor.constraint(equalTo: leadingAnchor,
-                                                  constant: UIScreen.main.bounds.width / 2)
         ])
     }
 

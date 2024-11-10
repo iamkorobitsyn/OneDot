@@ -17,31 +17,52 @@ class Animator {
     //MARK: - GreetingViews
     
     func splashScreenAnimate(_ logo: UIView,
-                           _ gradient: CAGradientLayer,
-                              delegate: CAAnimationDelegate) {
+                             _ frontLayer: CALayer,
+                             _ backLayer: CAGradientLayer,
+                             delegate: CAAnimationDelegate) {
         
-        let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
-        rotation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        rotation.duration = 1.5
-        rotation.repeatCount = 1
-        rotation.fromValue = 0
-        rotation.toValue = .pi * 2.0
-        rotation.delegate = delegate
-        
-        let test = CABasicAnimation(keyPath: "opacity")
-        test.duration = 1.5
-        test.fromValue = 1
-        test.toValue = 0
-        test.delegate = delegate
-        
-        logo.layer.add(test, forKey: nil)
+       
+        var animations: [CABasicAnimation] = []
         
         let opacity = CABasicAnimation(keyPath: "opacity")
-        opacity.fromValue = 0
-        opacity.toValue = 1
-        opacity.duration = 1.5
+        opacity.beginTime = 0
+        opacity.fromValue = 1
+        opacity.toValue = 0
+        opacity.duration = 1
         
-        gradient.add(opacity, forKey: nil)
+        animations.append(opacity)
+        
+        let opacity2 = CABasicAnimation(keyPath: "opacity")
+        opacity2.beginTime = 1
+        opacity2.fromValue = 0
+        opacity2.toValue = 0
+        opacity2.duration = 0.5
+        
+        animations.append(opacity2)
+        
+        let opacity3 = CABasicAnimation(keyPath: "opacity")
+        opacity3.beginTime = CACurrentMediaTime() + 1
+        opacity3.fromValue = 1
+        opacity3.toValue = 0
+        opacity3.duration = 0.55
+        backLayer.add(opacity3, forKey: "")
+        logo.layer.add(opacity3, forKey: "")
+        
+        
+        
+        
+        
+        // Группа анимаций (если нужно выполнить их параллельно)
+        let group = CAAnimationGroup()
+        group.animations = animations
+        group.duration = 1.5  // Общая длительность (для всех анимаций)
+        group.fillMode = .forwards
+        group.isRemovedOnCompletion = false
+        
+        group.delegate = delegate
+        
+        // Применяем группу анимаций к frontLayer
+        frontLayer.add(group, forKey: "opacityAnimations")
         
     }
     
