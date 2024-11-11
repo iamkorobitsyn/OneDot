@@ -63,10 +63,10 @@ class NavigationVC: UINavigationController, UINavigationControllerDelegate, CAAn
         view.addSubview(splashScreen)
         
         tabBar.backgroundColor = .myPaletteBlue
-        
-        tabBar.profileButton.addTarget(self,
-                                       action: #selector(presentProfile), 
-                                       for: .touchUpInside)
+//        
+//        tabBar.profileButton.addTarget(self,
+//                                       action: #selector(presentProfile), 
+//                                       for: .touchUpInside)
     }
     
     @objc private func presentSettings() {

@@ -334,11 +334,7 @@
 			isa = PBXGroup;
 			children = (
 				65657FBC2AD5D46C0081F5D7 /* MainViewController */,
-				658F7A4D2AF46AA300FF087F /* TrackerBar */,
-				658037372B1D420E00856C03 /* NotesBar */,
-				65C517002AF01F0400095AFE /* ToolsBar */,
-				6568C8B02CE0960A00993E00 /* TabBar */,
-				6568C8B12CE0961D00993E00 /* SplashScreen */,
+				6568C8B22CE173BF00993E00 /* Subviews */,
 			);
 			path = MainModule;
 			sourceTree = "<group>";
@@ -481,6 +477,18 @@
 				6521308B2AC46F400056DEA5 /* SplashScreen.swift */,
 			);
 			path = SplashScreen;
+			sourceTree = "<group>";
+		};
+		6568C8B22CE173BF00993E00 /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				658F7A4D2AF46AA300FF087F /* TrackerBar */,
+				658037372B1D420E00856C03 /* NotesBar */,
+				65C517002AF01F0400095AFE /* ToolsBar */,
+				6568C8B02CE0960A00993E00 /* TabBar */,
+				6568C8B12CE0961D00993E00 /* SplashScreen */,
+			);
+			path = Subviews;
 			sourceTree = "<group>";
 		};
 		658037372B1D420E00856C03 /* NotesBar */ = {
