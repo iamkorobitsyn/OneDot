@@ -28,8 +28,8 @@ class TrackerBarView: UIView {
         let view = UIVisualEffectView()
         view.effect = UIBlurEffect(style: .light)
         view.frame = CGRect(x: 0, y: 0,
-                                        width: CGFloat.trackerBarWidth,
-                                        height: CGFloat.trackerBarHeight)
+                            width: CGFloat.trackerBarWidth,
+                            height: CGFloat.trackerBarHeight)
         view.clipsToBounds = true
         view.layer.cornerRadius = CGFloat.trackerBarCorner
         view.layer.cornerCurve = .continuous

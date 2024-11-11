@@ -30,6 +30,7 @@
 		656469692B5031B8006AC14F /* MetronomeViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469682B5031B8006AC14F /* MetronomeViewCell.swift */; };
 		65657FBA2AD415920081F5D7 /* MeasuringButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */; };
 		65657FC02AD5D5B60081F5D7 /* NotificationsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65657FBF2AD5D5B60081F5D7 /* NotificationsViewCell.swift */; };
+		6568C8B42CE20E4200993E00 /* UIView + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */; };
 		657D66252AA8693400397427 /* gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 657D66242AA8693400397427 /* gitignore */; };
 		657D66272AA86D7000397427 /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657D66262AA86D7000397427 /* AlertController.swift */; };
 		658037392B1D444000856C03 /* NotesBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658037382B1D444000856C03 /* NotesBarView.swift */; };
@@ -135,6 +136,7 @@
 		656469682B5031B8006AC14F /* MetronomeViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeViewCell.swift; sourceTree = "<group>"; };
 		65657FB92AD415920081F5D7 /* MeasuringButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasuringButtonView.swift; sourceTree = "<group>"; };
 		65657FBF2AD5D5B60081F5D7 /* NotificationsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewCell.swift; sourceTree = "<group>"; };
+		6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + Extansions.swift"; sourceTree = "<group>"; };
 		657D66242AA8693400397427 /* gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gitignore; sourceTree = "<group>"; };
 		657D66262AA86D7000397427 /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
 		658037382B1D444000856C03 /* NotesBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesBarView.swift; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 			children = (
 				6502D6EB2A59A517000F96E0 /* UIColor + Extansions.swift */,
 				65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */,
+				6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */,
 			);
 			path = Extansions;
 			sourceTree = "<group>";
@@ -732,6 +735,7 @@
 				6585863E2B13D60300BE9D28 /* CalculatorVC.swift in Sources */,
 				6584A5B12ADBC710003C97CF /* IntegrationsButtonView.swift in Sources */,
 				65EDA58F2AEA952E007B6AE5 /* OnTheStreetExercises.swift in Sources */,
+				6568C8B42CE20E4200993E00 /* UIView + Extansions.swift in Sources */,
 				6585863C2B13D40E00BE9D28 /* ToolsBarView.swift in Sources */,
 				65EC20772AEEBD3800410905 /* CGFloat + Extansions.swift in Sources */,
 				65551C772AC5D8CF00CE3309 /* Shaper.swift in Sources */,

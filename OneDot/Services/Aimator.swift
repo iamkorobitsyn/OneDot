@@ -14,7 +14,7 @@ class Animator {
     
     private init() {}
     
-    //MARK: - GreetingViews
+    //MARK: - SplashScreen
     
     func splashScreenAnimate(_ frontLayer: CALayer,
                              _ backLayer: CAGradientLayer,
@@ -65,13 +65,13 @@ class Animator {
     
     //MARK: - TabBarView
     
-    func AnimateStartButton(_ imageView: UIImageView) {
+    func AnimateStartIcon(_ layer: CALayer) {
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.fromValue = 1
         animation.toValue = 0
-        animation.duration = 1
+        animation.duration = 0.7
         animation.repeatCount = .infinity
-        imageView.layer.add(animation, forKey: nil)
+        layer.add(animation, forKey: nil)
     }
     
     func tabBarHide(_ view: UIView, _ delegate: CAAnimationDelegate) {

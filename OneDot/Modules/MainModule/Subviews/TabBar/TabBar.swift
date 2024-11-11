@@ -9,37 +9,31 @@ import UIKit
 
 class TabBar: UIView {
     
-    let feedbackGen = UISelectionFeedbackGenerator()
+    private let feedbackGen = UISelectionFeedbackGenerator()
     
-    enum TabBarStatus {
+    private let leftButton: UIButton = UIButton()
+    private let rightButton: UIButton = UIButton()
+    private let separator: CAShapeLayer = CAShapeLayer()
+    
+    private enum TabBarStatus {
         case prepare
         case prepareToStart
         case tracking
     }
     
-    var currentStatus: TabBarStatus = .prepare
+    private var currentStatus: TabBarStatus = .prepare
 
-    
-    let leftButton: UIButton = UIButton()
-    let rightButton: UIButton = UIButton()
-    
-    private let separator: CAShapeLayer = CAShapeLayer()
-    
-    var profileCompletion: (() -> Void)?
-    
-    
+    var showProfile: (() -> Void)?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         setViews()
         setConstraints()
-        
-        Shaper.shared.drawYSeparator(shape: separator,
-                                             view: self,
-                                             x: CGFloat.trackerBarWidth / 2,
-                                             y: 15,
-                                             length: 65,
-                                             color: .white)
+    
     }
+    
+    //MARK: - ButtonMethods
     
     @objc private func leftTapped() {
         feedbackGen.selectionChanged()
@@ -47,13 +41,16 @@ class TabBar: UIView {
         switch currentStatus {
         case .prepare:
             currentStatus = .prepareToStart
-            setImageList("tabBarStartIconRed", "tabBarCancelIcon")
+            updateButtonImages(status: .prepareToStart)
+            Animator.shared.AnimateStartIcon(leftButton.layer)
         case .prepareToStart:
             currentStatus = .tracking
-            setImageList("tabBarPauseIcon", "tabBarStopIcon")
+            updateButtonImages(status: .tracking)
+            leftButton.layer.removeAllAnimations()
         case .tracking:
             currentStatus = .prepareToStart
-            setImageList("tabBarStartIconRed", "tabBarCancelIcon")
+            updateButtonImages(status: .prepareToStart)
+            Animator.shared.AnimateStartIcon(leftButton.layer)
         }
     }
     
@@ -62,19 +59,33 @@ class TabBar: UIView {
         
         switch currentStatus {
         case .prepare:
-            profileCompletion?()
+            showProfile?()
         case .prepareToStart, .tracking:
             currentStatus = .prepare
-            setImageList("tabBarStartIcon", "tabBarProfileIcon")
+            updateButtonImages(status: .prepare)
+            leftButton.layer.removeAllAnimations()
         }
     }
     
-    
-    private func setImageList(_ leftImageNamed: String, _ rightImageNamed: String) {
-        leftButton.setImage(UIImage(named: leftImageNamed), for: .normal)
-        leftButton.setImage(UIImage(named: leftImageNamed), for: .highlighted)
-        rightButton.setImage(UIImage(named: rightImageNamed), for: .normal)
-        rightButton.setImage(UIImage(named: rightImageNamed), for: .highlighted)
+    private func updateButtonImages(status: TabBarStatus) {
+        switch status {
+            
+        case .prepare:
+            leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
+            leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
+            rightButton.setImage(UIImage(named: "TBProfile"), for: .normal)
+            rightButton.setImage(UIImage(named: "TBProfile"), for: .highlighted)
+        case .prepareToStart:
+            leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
+            leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
+            rightButton.setImage(UIImage(named: "TBCancel"), for: .normal)
+            rightButton.setImage(UIImage(named: "TBCancel"), for: .highlighted)
+        case .tracking:
+            leftButton.setImage(UIImage(named: "TBPause"), for: .normal)
+            leftButton.setImage(UIImage(named: "TBPause"), for: .highlighted)
+            rightButton.setImage(UIImage(named: "TBStop"), for: .normal)
+            rightButton.setImage(UIImage(named: "TBStop"), for: .highlighted)
+        }
     }
     
     
@@ -88,10 +99,12 @@ class TabBar: UIView {
         addSubview(leftButton)
         addSubview(rightButton)
         
-        setImageList("tabBarStartIcon", "tabBarProfileIcon")
+        updateButtonImages(status: .prepare)
         
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
+        
+        Shaper.shared.drawTabBarSeparator(shape: separator, view: self)
     }
     
     

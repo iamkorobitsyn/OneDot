@@ -43,7 +43,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         setupLocationManager()
         checkLocationEnabled()
         
-        tabBar.profileCompletion = {
+        tabBar.showProfile = {
             let profileVC = ProfileVC()
             self.present(profileVC, animated: true)
         }
