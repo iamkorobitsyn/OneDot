@@ -16,8 +16,8 @@ class Shaper {
     
     func drawTabBarSeparator(shape: CAShapeLayer, view: UIView) {
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: CGFloat.trackerBarWidth / 2, y: 15))
-        path.addLine(to: CGPoint(x: CGFloat.trackerBarWidth / 2 , y: 15 + 65))
+        path.move(to: CGPoint(x: CGFloat.barWidth / 2, y: 15))
+        path.addLine(to: CGPoint(x: CGFloat.barWidth / 2 , y: 15 + 65))
         shape.path = path.cgPath
         shape.lineWidth = 0.5
         shape.lineCap = .round

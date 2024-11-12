@@ -75,23 +75,11 @@ class MainVC: UIViewController, CAAnimationDelegate {
         
         getLocationState(indoorIs: UserDefaultsManager.shared.userIndoorStatus)
         
-        toolsBarView.calcuatorVC.titleCompletion = { [weak self] title in
-            guard let self else {return}
-            trackerBar.toolsTitle.text = title
-        }
+//        toolsBarView.calcuatorVC.titleCompletion = { [weak self] title in
+//            guard let self else {return}
+//            trackerBar.toolsTitle.text = title
+//        }
         
-        toolsBarView.calcuatorVC.metronomeCell.mainVCBPMCompletion = { [weak self] isActive in
-            guard let self else {return}
-            if toolsBarView.isHidden == false{
-                trackerBar.bpmLight.isHidden = false
-                Animator.shared.pillingBPM(trackerBar.bpmLight)
-            } else if toolsBarView.isHidden == false, toolsBarView.calcuatorVC.view.isHidden == false {
-                trackerBar.bpmLight.isHidden = true
-            } else if toolsBarView.isHidden == true {
-                trackerBar.bpmLight.isHidden = false
-                Animator.shared.pillingBPM(trackerBar.bpmLight)
-            }
-        }
     }
     
     //MARK: - SplashScreenAnimations
@@ -296,15 +284,15 @@ extension MainVC {
             trackerBar.heightAnchor.constraint(equalToConstant:
                                             CGFloat.trackerBarHeight),
             trackerBar.widthAnchor.constraint(equalToConstant:
-                                            CGFloat.trackerBarWidth),
+                                            CGFloat.barWidth),
             
-            toolsBarView.widthAnchor.constraint(equalToConstant: CGFloat.trackerBarWidth),
+            toolsBarView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             toolsBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             toolsBarView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             toolsBarView.topAnchor.constraint(equalTo: trackerBar.bottomAnchor,
                                             constant: 10),
             
-            notesBarView.widthAnchor.constraint(equalToConstant: CGFloat.trackerBarWidth),
+            notesBarView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             notesBarView.topAnchor.constraint(equalTo:
                                             view.safeAreaLayoutGuide.topAnchor,
                                             constant: CGFloat.trackerBarHeight + 20),
@@ -312,7 +300,7 @@ extension MainVC {
             notesBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor, 
                                             constant: -20),
             
-            tabBar.widthAnchor.constraint(equalToConstant: .tabBarWidth),
+            tabBar.widthAnchor.constraint(equalToConstant: .barWidth),
             tabBar.heightAnchor.constraint(equalToConstant: .tabBarHeight),
             tabBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             tabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor,

@@ -93,7 +93,7 @@ class TabBar: UIView {
     
     private func setViews() {
         backgroundColor = .myPaletteBlue
-        layer.cornerRadius = .tabBarCorner
+        layer.cornerRadius = .barCorner
         layer.cornerCurve = .continuous
         
         addSubview(leftButton)
@@ -115,12 +115,12 @@ class TabBar: UIView {
         rightButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            leftButton.widthAnchor.constraint(equalToConstant: .tabBarWidth / 2),
+            leftButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
             leftButton.heightAnchor.constraint(equalToConstant: .tabBarHeight),
             leftButton.leftAnchor.constraint(equalTo: leftAnchor),
             leftButton.topAnchor.constraint(equalTo: topAnchor),
             
-            rightButton.widthAnchor.constraint(equalToConstant: .tabBarWidth / 2),
+            rightButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
             rightButton.heightAnchor.constraint(equalToConstant: .tabBarHeight),
             rightButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             rightButton.topAnchor.constraint(equalTo: topAnchor),

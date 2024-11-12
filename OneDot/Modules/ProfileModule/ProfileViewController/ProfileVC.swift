@@ -13,6 +13,8 @@ class ProfileVC: UIViewController {
     private let blurEffectView: UIVisualEffectView = {
         let effect = UIVisualEffectView(effect: UIBlurEffect(style: .light))
         effect.disableAutoresizingMask()
+        effect.layer.masksToBounds = true
+        effect.layer.cornerRadius = .barCorner
         return effect
     }()
     
@@ -28,7 +30,6 @@ class ProfileVC: UIViewController {
         
         setViews()
         setConstraints()
-
     }
     
     @objc private func dismissProfile() {

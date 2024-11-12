@@ -19,7 +19,7 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
     }()
 
     
-    let calcuatorVC: CalculatorVC = CalculatorVC()
+    let calcuatorVC: CalculationsView = CalculationsView()
 
     var showTabBarCompletion: ((Bool) -> ())?
     
@@ -48,9 +48,9 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
         layer.cornerRadius = 30
         layer.cornerCurve = .continuous
 
-        contentView.addSubview(calcuatorVC.view)
-        calcuatorVC.view.frame = self.frame
-        calcuatorVC.view.isHidden = true
+        contentView.addSubview(calcuatorVC)
+        calcuatorVC.frame = self.frame
+        calcuatorVC.isHidden = true
         
 
         contentView.addSubview(skipButton)
@@ -61,14 +61,14 @@ class ToolsBarView: UIVisualEffectView, CAAnimationDelegate {
         switch VCCase {
             
         case .calculator:
-            calcuatorVC.view.isHidden = false
+            calcuatorVC.isHidden = false
 
             let section = UserDefaultsManager.shared.calculationsStatus
-            calcuatorVC.setActiveSection(section: section)
+//            calcuatorVC.setActiveSection(section: section)
         case .sound:
-            calcuatorVC.view.isHidden = true
+            calcuatorVC.isHidden = true
         case .themes:
-            calcuatorVC.view.isHidden = true
+            calcuatorVC.isHidden = true
             let section = UserDefaultsManager.shared.themesStatus
         }
     }

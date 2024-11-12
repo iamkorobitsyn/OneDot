@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CalculationsViewCell: UITableViewCell {
+class CalculationsView: UIView {
     
     typealias UD = UserDefaultsManager
     
@@ -33,7 +33,7 @@ class CalculationsViewCell: UITableViewCell {
         view.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 250)
         view.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
         view.clipsToBounds = true
-        view.layer.cornerRadius = CGFloat.trackerBarCorner
+        view.layer.cornerRadius = CGFloat.barCorner
         view.layer.cornerCurve = .continuous
         view.layer.borderWidth = 0.3
         view.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
@@ -170,11 +170,9 @@ class CalculationsViewCell: UITableViewCell {
     
     //MARK: - Init
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = .clear
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         backgroundColor = .clear
-        selectionStyle = .none
         
         picker.delegate = self
         picker.dataSource = self
@@ -184,21 +182,24 @@ class CalculationsViewCell: UITableViewCell {
         
         Shaper.shared.drawYSeparator(shape: leftSeparator,
                                      view: containerView,
-                                     x: (CGFloat.toolBarWidth - 100) / 2,
+                                     x: (.barWidth - 100) / 2,
                                      y: 20,
                                      length: 80,
                                      color: .white)
         
         Shaper.shared.drawYSeparator(shape: rightSeparator,
                                      view: containerView,
-                                     x: (CGFloat.toolBarWidth - 100) / 2 + 100,
+                                     x: (.barWidth - 100) / 2 + 100,
                                      y: 20,
                                      length: 80,
                                      color: .white)
         
         updateValues()
     }
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: - Calculations
     
@@ -318,7 +319,7 @@ class CalculationsViewCell: UITableViewCell {
     
     private func setViews() {
         
-        contentView.addSubview(containerView)
+        addSubview(containerView)
         
         containerView.addSubview(textfield)
         textfield.inputView = UIView()
@@ -343,7 +344,7 @@ class CalculationsViewCell: UITableViewCell {
    
     
     private func setButton(button: UIButton) {
-        contentView.addSubview(button)
+        addSubview(button)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
     
@@ -380,7 +381,7 @@ class CalculationsViewCell: UITableViewCell {
     }
     
     @objc private func donePressed() {
-        endEditing(true)
+//        endEditing(true)
     }
     
     
@@ -388,14 +389,10 @@ class CalculationsViewCell: UITableViewCell {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            containerView.widthAnchor.constraint(equalToConstant: 
-                                            CGFloat.toolBarWidth),
+            containerView.widthAnchor.constraint(equalToConstant: .barWidth),
             containerView.heightAnchor.constraint(equalToConstant: 120),
-            containerView.centerXAnchor.constraint(equalTo: 
-                                            contentView.centerXAnchor),
-            containerView.topAnchor.constraint(equalTo: 
-                                            contentView.topAnchor,
-                                            constant: 50),
+            containerView.centerXAnchor.constraint(equalTo:centerXAnchor),
+            containerView.topAnchor.constraint(equalTo: topAnchor, constant: 50),
             
             textfield.centerXAnchor.constraint(equalTo: 
                                             containerView.centerXAnchor),
@@ -424,7 +421,7 @@ class CalculationsViewCell: UITableViewCell {
                                                     topButton.leadingAnchor),
             leftButton.heightAnchor.constraint(equalToConstant: 120),
             leftButton.widthAnchor.constraint(equalToConstant:
-                                            (CGFloat.toolBarWidth - 100) / 2),
+                                            (.barWidth - 100) / 2),
             
             rightButton.topAnchor.constraint(equalTo:
                                             containerView.topAnchor),
@@ -432,7 +429,7 @@ class CalculationsViewCell: UITableViewCell {
                                                         topButton.trailingAnchor),
             rightButton.heightAnchor.constraint(equalToConstant: 120),
             rightButton.widthAnchor.constraint(equalToConstant:
-                                            (CGFloat.toolBarWidth - 100) / 2),
+                                            (.barWidth - 100) / 2),
             
             doneButton.widthAnchor.constraint(equalToConstant: 50),
             doneButton.heightAnchor.constraint(equalToConstant: 50),
@@ -477,14 +474,11 @@ class CalculationsViewCell: UITableViewCell {
         ])
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
 
 //MARK: - PickerViewDelegate&Datasource
 
-extension CalculationsViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
+extension CalculationsView: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         switch currentStateOfPicker {
             

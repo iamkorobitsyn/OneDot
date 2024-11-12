@@ -17,21 +17,14 @@ class TrackerBarView: UIView {
     private let exercises = FactoryExercises()
     private var currentExercise: Exercise?
     
-    let bpmLight: CAShapeLayer = CAShapeLayer()
-    private let bpmContainer: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     private let visualEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView()
         view.effect = UIBlurEffect(style: .light)
         view.frame = CGRect(x: 0, y: 0,
-                            width: CGFloat.trackerBarWidth,
+                            width: CGFloat.barWidth,
                             height: CGFloat.trackerBarHeight)
         view.clipsToBounds = true
-        view.layer.cornerRadius = CGFloat.trackerBarCorner
+        view.layer.cornerRadius = CGFloat.barCorner
         view.layer.cornerCurve = .continuous
         return view
     }()
@@ -104,12 +97,6 @@ class TrackerBarView: UIView {
         setViews()
         setConstraints()
         didBecomeObserver()
-        
-        Shaper.shared.drawBpmLight(shape: bpmLight,
-                                   view: bpmContainer,
-                                   x: 1,
-                                   y: 5)
-        bpmLight.isHidden = true
         
         setExerciseState(indoor: UserDefaultsManager.shared.userIndoorStatus)
         
@@ -237,7 +224,7 @@ class TrackerBarView: UIView {
     
     //MARK: - SetViews
     private func setViews() {
-        layer.cornerRadius = CGFloat.trackerBarCorner
+        layer.cornerRadius = CGFloat.barCorner
         layer.cornerCurve = .continuous
         layer.borderWidth = 0.3
         layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
@@ -258,7 +245,6 @@ class TrackerBarView: UIView {
         addSubview(settingsButton)
         
         addSubview(toolsTitle)
-        addSubview(bpmContainer)
     
         addSubview(pickerView)
         
@@ -291,7 +277,7 @@ class TrackerBarView: UIView {
             locationStack.topAnchor.constraint(equalTo: topAnchor,
                                             constant: 15),
             locationStack.centerXAnchor.constraint(equalTo: centerXAnchor,
-                                            constant: -CGFloat.trackerBarWidth / 4 + 5),
+                                            constant: -CGFloat.barWidth / 4 + 5),
             
             toolsStack.widthAnchor.constraint(equalToConstant:
                                             42 * CGFloat(toolsStack.subviews.count)),
@@ -309,7 +295,7 @@ class TrackerBarView: UIView {
                                             constant: -10),
             
             pickerView.widthAnchor.constraint(equalToConstant:
-                                            CGFloat.trackerBarWidth),
+                                            CGFloat.barWidth),
             pickerView.heightAnchor.constraint(equalToConstant: 50),
             pickerView.centerXAnchor.constraint(equalTo: centerXAnchor),
             pickerView.centerYAnchor.constraint(equalTo: centerYAnchor,
@@ -320,13 +306,6 @@ class TrackerBarView: UIView {
                                             constant: 3),
             toolsTitle.centerXAnchor.constraint(equalTo:
                                             toolsStack.centerXAnchor),
-            bpmContainer.widthAnchor.constraint(equalToConstant: 10),
-            bpmContainer.heightAnchor.constraint(equalToConstant: 10),
-            bpmContainer.trailingAnchor.constraint(equalTo:
-                                            toolsStack.leadingAnchor,
-                                            constant: 0),
-            bpmContainer.centerYAnchor.constraint(equalTo:
-                                            toolsStack.centerYAnchor),
             
             gpsView.topAnchor.constraint(equalTo: locationStack.bottomAnchor,
                                             constant: 5),
