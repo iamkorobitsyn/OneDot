@@ -14,9 +14,10 @@ class MainVC: UIViewController, CAAnimationDelegate {
     let locationManager: CLLocationManager = CLLocationManager()
     
     let trackerBar: TrackerBarView = TrackerBarView()
-    let notesBarView: NotesBarView = NotesBarView()
-    let toolsBarView: ToolsBarView = ToolsBarView()
     let tabBar: TabBar = TabBar()
+    
+    let notesView: NotesView = NotesView()
+    let calculationsView: CalculationsView = CalculationsView()
     
     let splashScreen: SplashScreen = SplashScreen()
     
@@ -36,6 +37,10 @@ class MainVC: UIViewController, CAAnimationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        calculationsView.completion = { c in
+            self.tabBar.test(cases: c)
+        }
 
         setViews()
         
@@ -68,7 +73,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
             }
         }
         
-        notesBarView.completionOfHide = { [weak self] in
+        notesView.completionOfHide = { [weak self] in
             guard let self else {return}
             trackerBar.notesButton.setInactiveState(.notesIndoor)
         }
@@ -101,12 +106,12 @@ class MainVC: UIViewController, CAAnimationDelegate {
 
         if indoorIs == true {
             title = "ROOM"
-            notesBarView.isHidden = false
-            notesBarView.setState(state: .indoor)
+            notesView.isHidden = false
+            notesView.setState(state: .indoor)
         } else {
             title = "MAP"
-            notesBarView.isHidden = true
-            notesBarView.setState(state: .outdoor)
+            notesView.isHidden = true
+            notesView.setState(state: .outdoor)
         }
     }
     
@@ -123,34 +128,19 @@ class MainVC: UIViewController, CAAnimationDelegate {
 
         case .notes:
             
-            notesBarView.isHidden = false
+            notesView.isHidden = false
             
         case .calculator:
-            toolsBarView.showVC(.calculator)
-
-            toolsBarView.skipButton.isHidden = false
-            guard toolsBarView.isHidden == true else {return}
-            toolsBarView.isHidden = false
-//            Animator.shared.toolsBarShow(toolsBar)
-            toolsBarView.showTabBarCompletion?(false)
+            print("calcul")
+            calculationsView.isHidden = false
             
         case .sound:
-            
-            toolsBarView.showVC(.sound)
-            toolsBarView.skipButton.isHidden = false
-            guard toolsBarView.isHidden == true else {return}
-            toolsBarView.isHidden = false
-//            Animator.shared.toolsBarShow(toolsBar)
-            toolsBarView.showTabBarCompletion?(false)
+            print("")
+           
             
         case .themes:
-            
-            toolsBarView.showVC(.themes)
-            toolsBarView.skipButton.isHidden = false
-            guard toolsBarView.isHidden == true else {return}
-            toolsBarView.isHidden = false
-//            Animator.shared.toolsBarShow(toolsBar)
-            toolsBarView.showTabBarCompletion?(false)
+            print("")
+          
             
         case .settings:
             let settingsVC: SettingsVC = SettingsVC()
@@ -243,13 +233,15 @@ extension MainVC {
         
         view.addSubview(mapView)
         mapView.overrideUserInterfaceStyle = .light
-        view.addSubview(notesBarView)
-        notesBarView.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
-        notesBarView.clipsToBounds = true
+        view.addSubview(notesView)
+        notesView.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        notesView.clipsToBounds = true
         
         
         view.addSubview(trackerBar)
-        view.addSubview(toolsBarView)
+        view.addSubview(calculationsView)
+        calculationsView.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        calculationsView.clipsToBounds = true
         
         view.addSubview(tabBar)
         
@@ -263,8 +255,8 @@ extension MainVC {
     private func setConstraints() {
         mapView.translatesAutoresizingMaskIntoConstraints = false
         trackerBar.translatesAutoresizingMaskIntoConstraints = false
-        toolsBarView.translatesAutoresizingMaskIntoConstraints = false
-        notesBarView.translatesAutoresizingMaskIntoConstraints = false
+        calculationsView.translatesAutoresizingMaskIntoConstraints = false
+        notesView.translatesAutoresizingMaskIntoConstraints = false
         tabBar.translatesAutoresizingMaskIntoConstraints = false
         splashScreen.translatesAutoresizingMaskIntoConstraints = false
 
@@ -286,18 +278,18 @@ extension MainVC {
             trackerBar.widthAnchor.constraint(equalToConstant:
                                             CGFloat.barWidth),
             
-            toolsBarView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
-            toolsBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
-            toolsBarView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            toolsBarView.topAnchor.constraint(equalTo: trackerBar.bottomAnchor,
+            calculationsView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            calculationsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            calculationsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            calculationsView.topAnchor.constraint(equalTo: trackerBar.bottomAnchor,
                                             constant: 10),
             
-            notesBarView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
-            notesBarView.topAnchor.constraint(equalTo:
+            notesView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            notesView.topAnchor.constraint(equalTo:
                                             view.safeAreaLayoutGuide.topAnchor,
                                             constant: CGFloat.trackerBarHeight + 20),
-            notesBarView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            notesBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor, 
+            notesView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            notesView.bottomAnchor.constraint(equalTo: view.bottomAnchor,
                                             constant: -20),
             
             tabBar.widthAnchor.constraint(equalToConstant: .barWidth),

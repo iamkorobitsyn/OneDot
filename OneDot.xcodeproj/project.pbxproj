@@ -31,9 +31,8 @@
 		6568C8B42CE20E4200993E00 /* UIView + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */; };
 		657D66252AA8693400397427 /* gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 657D66242AA8693400397427 /* gitignore */; };
 		657D66272AA86D7000397427 /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657D66262AA86D7000397427 /* AlertController.swift */; };
-		658037392B1D444000856C03 /* NotesBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658037382B1D444000856C03 /* NotesBarView.swift */; };
+		658037392B1D444000856C03 /* NotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658037382B1D444000856C03 /* NotesView.swift */; };
 		6584A5B12ADBC710003C97CF /* IntegrationsButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6584A5B02ADBC710003C97CF /* IntegrationsButtonView.swift */; };
-		6585863C2B13D40E00BE9D28 /* ToolsBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6585863B2B13D40E00BE9D28 /* ToolsBarView.swift */; };
 		6589BFDF2ADAC27700DE4E97 /* ConnectionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6589BFDE2ADAC27700DE4E97 /* ConnectionsViewCell.swift */; };
 		659879222AB48BBD004F6E2D /* TrackerBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659879212AB48BBD004F6E2D /* TrackerBarButton.swift */; };
 		659B0B772B1DFA69006E52A8 /* NotesTableViewEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659B0B762B1DFA69006E52A8 /* NotesTableViewEditCell.swift */; };
@@ -132,9 +131,8 @@
 		6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + Extansions.swift"; sourceTree = "<group>"; };
 		657D66242AA8693400397427 /* gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gitignore; sourceTree = "<group>"; };
 		657D66262AA86D7000397427 /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
-		658037382B1D444000856C03 /* NotesBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesBarView.swift; sourceTree = "<group>"; };
+		658037382B1D444000856C03 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
 		6584A5B02ADBC710003C97CF /* IntegrationsButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationsButtonView.swift; sourceTree = "<group>"; };
-		6585863B2B13D40E00BE9D28 /* ToolsBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsBarView.swift; sourceTree = "<group>"; };
 		6589BFDE2ADAC27700DE4E97 /* ConnectionsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionsViewCell.swift; sourceTree = "<group>"; };
 		659879212AB48BBD004F6E2D /* TrackerBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerBarButton.swift; sourceTree = "<group>"; };
 		659B0B762B1DFA69006E52A8 /* NotesTableViewEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesTableViewEditCell.swift; sourceTree = "<group>"; };
@@ -467,20 +465,20 @@
 			isa = PBXGroup;
 			children = (
 				658F7A4D2AF46AA300FF087F /* TrackerBar */,
-				658037372B1D420E00856C03 /* NotesBar */,
-				65C517002AF01F0400095AFE /* ToolsBar */,
 				6568C8B02CE0960A00993E00 /* TabBar */,
+				658037372B1D420E00856C03 /* NotesView */,
+				65C517002AF01F0400095AFE /* СalculationsView */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
 		};
-		658037372B1D420E00856C03 /* NotesBar */ = {
+		658037372B1D420E00856C03 /* NotesView */ = {
 			isa = PBXGroup;
 			children = (
-				658037382B1D444000856C03 /* NotesBarView.swift */,
+				658037382B1D444000856C03 /* NotesView.swift */,
 				659B0B762B1DFA69006E52A8 /* NotesTableViewEditCell.swift */,
 			);
-			path = NotesBar;
+			path = NotesView;
 			sourceTree = "<group>";
 		};
 		6584A5B22ADBC716003C97CF /* IntegrationsView */ = {
@@ -490,14 +488,6 @@
 				6584A5B02ADBC710003C97CF /* IntegrationsButtonView.swift */,
 			);
 			path = IntegrationsView;
-			sourceTree = "<group>";
-		};
-		6585863A2B13D2BE00BE9D28 /* Сalculations */ = {
-			isa = PBXGroup;
-			children = (
-				656469622B502F25006AC14F /* СalculationsView.swift */,
-			);
-			path = "Сalculations";
 			sourceTree = "<group>";
 		};
 		658F7A4D2AF46AA300FF087F /* TrackerBar */ = {
@@ -511,13 +501,12 @@
 			path = TrackerBar;
 			sourceTree = "<group>";
 		};
-		65C517002AF01F0400095AFE /* ToolsBar */ = {
+		65C517002AF01F0400095AFE /* СalculationsView */ = {
 			isa = PBXGroup;
 			children = (
-				6585863B2B13D40E00BE9D28 /* ToolsBarView.swift */,
-				6585863A2B13D2BE00BE9D28 /* Сalculations */,
+				656469622B502F25006AC14F /* СalculationsView.swift */,
 			);
-			path = ToolsBar;
+			path = "СalculationsView";
 			sourceTree = "<group>";
 		};
 		65EDA5832AEA9437007B6AE5 /* Exercises */ = {
@@ -711,7 +700,6 @@
 				6584A5B12ADBC710003C97CF /* IntegrationsButtonView.swift in Sources */,
 				65EDA58F2AEA952E007B6AE5 /* OnTheStreetExercises.swift in Sources */,
 				6568C8B42CE20E4200993E00 /* UIView + Extansions.swift in Sources */,
-				6585863C2B13D40E00BE9D28 /* ToolsBarView.swift in Sources */,
 				65EC20772AEEBD3800410905 /* CGFloat + Extansions.swift in Sources */,
 				65551C772AC5D8CF00CE3309 /* Shaper.swift in Sources */,
 				656469632B502F25006AC14F /* СalculationsView.swift in Sources */,
@@ -727,7 +715,7 @@
 				657D66272AA86D7000397427 /* AlertController.swift in Sources */,
 				65EDA58B2AEA950F007B6AE5 /* FactoryExercises.swift in Sources */,
 				65551C792AC60F5A00CE3309 /* UserDefaultsManager.swift in Sources */,
-				658037392B1D444000856C03 /* NotesBarView.swift in Sources */,
+				658037392B1D444000856C03 /* NotesView.swift in Sources */,
 				65657FC02AD5D5B60081F5D7 /* NotificationsViewCell.swift in Sources */,
 				659879222AB48BBD004F6E2D /* TrackerBarButton.swift in Sources */,
 				65EDA58D2AEA951D007B6AE5 /* ExerciseProtocol.swift in Sources */,

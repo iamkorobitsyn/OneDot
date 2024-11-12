@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class NotesBarView: UIVisualEffectView {
+class NotesView: UIVisualEffectView {
     
     enum State {
         case outdoor,
@@ -284,7 +284,7 @@ class NotesBarView: UIVisualEffectView {
 
 //MARK: - UITableViewDataSource
 
-extension NotesBarView: UITableViewDataSource {
+extension NotesView: UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -359,7 +359,7 @@ extension NotesBarView: UITableViewDataSource {
 
 //MARK: - UITableViewDelegate
 
-extension NotesBarView: UITableViewDelegate   {
+extension NotesView: UITableViewDelegate   {
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         return indexPath.section == 0 ? true : false
