@@ -38,8 +38,12 @@ class MainVC: UIViewController, CAAnimationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        calculationsView.completion = { c in
-            self.tabBar.test(cases: c)
+        calculationsView.pickerStateHandler = { state in
+            self.tabBar.calculationPickerStateHandler(state: state)
+        }
+        
+        tabBar.updatePickerForState = { state in
+            self.calculationsView.updatePickerForState(state: state)
         }
 
         setViews()

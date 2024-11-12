@@ -17,25 +17,25 @@ class TabBar: UIView {
     private let rightButton: UIButton = UIButton()
     private let separator: CAShapeLayer = CAShapeLayer()
     
-    private let picker: UIPickerView = UIPickerView()
-
-    
-    private enum TabBarStatus {
+    private enum TabBarState {
         case prepare
         case prepareToStart
         case tracking
     }
     
-    private enum StateOfPicker {
+    private let picker: UIPickerView = UIPickerView()
+
+    var updatePickerForState: ((PickerState) -> ())?
+    
+    enum PickerState {
         case distance,
              speed,
              pace,
              time
     }
-    
-    private var currentStateOfPicker: StateOfPicker?
-    
-    private var currentStatus: TabBarStatus = .prepare
+
+    private var currentPickerState: PickerState?
+    private var currentTabBarState: TabBarState = .prepare
 
     var showProfile: (() -> Void)?
 
@@ -47,8 +47,6 @@ class TabBar: UIView {
         
         picker.delegate = self
         picker.dataSource = self
-        
-        currentStateOfPicker = .distance
     }
     
     //MARK: - ButtonMethods
@@ -56,17 +54,17 @@ class TabBar: UIView {
     @objc private func leftTapped() {
         feedbackGen.selectionChanged()
         
-        switch currentStatus {
+        switch currentTabBarState {
         case .prepare:
-            currentStatus = .prepareToStart
+            currentTabBarState = .prepareToStart
             updateButtonImages(status: .prepareToStart)
             Animator.shared.AnimateStartIcon(leftButton.layer)
         case .prepareToStart:
-            currentStatus = .tracking
+            currentTabBarState = .tracking
             updateButtonImages(status: .tracking)
             leftButton.layer.removeAllAnimations()
         case .tracking:
-            currentStatus = .prepareToStart
+            currentTabBarState = .prepareToStart
             updateButtonImages(status: .prepareToStart)
             Animator.shared.AnimateStartIcon(leftButton.layer)
         }
@@ -75,17 +73,17 @@ class TabBar: UIView {
     @objc private func rightTapped() {
         feedbackGen.selectionChanged()
         
-        switch currentStatus {
+        switch currentTabBarState {
         case .prepare:
             showProfile?()
         case .prepareToStart, .tracking:
-            currentStatus = .prepare
+            currentTabBarState = .prepare
             updateButtonImages(status: .prepare)
             leftButton.layer.removeAllAnimations()
         }
     }
     
-    private func updateButtonImages(status: TabBarStatus) {
+    private func updateButtonImages(status: TabBarState) {
         switch status {
             
         case .prepare:
@@ -106,25 +104,25 @@ class TabBar: UIView {
         }
     }
     
-    func test(cases: CalculationsView.StateOfPicker) {
-        switch cases {
+    func calculationPickerStateHandler(state: CalculationsView.PickerState) {
+        switch state {
         case .distance:
-            currentStateOfPicker = .distance
+            currentPickerState = .distance
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.distance, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.distanceDecimal, inComponent: 1, animated: true)
         case .speed:
-            currentStateOfPicker = .speed
+            currentPickerState = .speed
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.speed, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.speedDecimal, inComponent: 1, animated: true)
         case .pace:
-            currentStateOfPicker = .pace
+            currentPickerState = .pace
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.paceMin, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.paceSec, inComponent: 1, animated: true)
         case .time:
-            currentStateOfPicker = .time
+            currentPickerState = .time
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.timeH, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.timeMin, inComponent: 1, animated: true)
@@ -191,7 +189,7 @@ class TabBar: UIView {
 
 extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        switch currentStateOfPicker {
+        switch currentPickerState {
             
         case .speed:
             return 2
@@ -209,7 +207,7 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
-        switch currentStateOfPicker {
+        switch currentPickerState {
             
         case .speed:
             if component == 0 {
@@ -225,6 +223,7 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
                 return 60
             }
         case .distance:
+            
             if component == 0 {
                 return 100
             } else if component == 1 {
@@ -256,7 +255,7 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 30, weight: .medium, width: .compressed)
         
-        switch currentStateOfPicker {
+        switch currentPickerState {
             
         case .speed:
             label.text = String(row)
@@ -283,52 +282,42 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        switch currentStateOfPicker {
+        switch currentPickerState {
             
         case .speed:
-            
             if component == 0 {
                 UD.shared.speed = row
-//                calculateSpeed()
-//                updateValues()
+                updatePickerForState?(.speed)
             } else if component == 1 {
                 UD.shared.speedDecimal = row
-//                calculateSpeed()
-//                updateValues()
+                updatePickerForState?(.speed)
             }
         case .pace:
             if component == 0 {
                 UD.shared.paceMin = row
-//                calculatePace()
-//                updateValues()
+                updatePickerForState?(.pace)
             } else if component == 1 {
                 UD.shared.paceSec = row
-//                calculatePace()
-//                updateValues()
+                updatePickerForState?(.pace)
             }
         case .distance:
             if component == 0 {
                 UD.shared.distance = row
-//                calculateDistance()
-//                updateValues()
+                updatePickerForState?(.distance)
             } else if component == 1 {
                 UD.shared.distanceDecimal = row
-//                calculateDistance()
-//                updateValues()
+                updatePickerForState?(.distance)
             }
         case .time:
             if component == 0 {
                 UD.shared.timeH = row
-//                calculateTime()
-//                updateValues()
+                updatePickerForState?(.time)
             } else if component == 1 {
                 UD.shared.timeMin = row
-//                calculateTime()
-//                updateValues()
+                updatePickerForState?(.time)
             } else if component == 2 {
                 UD.shared.timeSec = row
-//                calculateTime()
-//                updateValues()
+                updatePickerForState?(.time)
             }
         case .none:
             break

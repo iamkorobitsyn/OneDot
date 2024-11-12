@@ -11,16 +11,14 @@ class CalculationsView: UIVisualEffectView {
     
     typealias UD = UserDefaultsManager
     
-    var completion: ((StateOfPicker) -> ())?
+    var pickerStateHandler: ((PickerState) -> ())?
     
-    enum StateOfPicker {
+    enum PickerState {
         case distance,
              speed,
              pace,
              time
     }
-//    
-//    private var currentStateOfPicker: StateOfPicker?
     
     private let topButton: UIButton = UIButton()
     private let bottomButton: UIButton = UIButton()
@@ -33,56 +31,14 @@ class CalculationsView: UIVisualEffectView {
     private let paceTitle: UILabel = UILabel()
     private let metricsTitle: UILabel = UILabel()
     
-
-//    private let textfield: UITextField = {
-//        let textView = UITextField()
-//        textView.disableAutoresizingMask()
-//        return textView
-//    }()
-    
-//    private let pickerView: UIView = {
-//        let view = UIView()
-//        view.disableAutoresizingMask()
-//        view.backgroundColor = .myPaletteBlue
-//        view.layer.cornerRadius = CGFloat.barCorner
-//        return view
-//    }()
-//    
-//    private let picker: UIPickerView = {
-//        let picker = UIPickerView()
-//        picker.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 250)
-//        return picker
-//    }()
-//    
-//    private let pickerLabelSeparator: UILabel = {
-//        let label = UILabel()
-//        label.disableAutoresizingMask()
-//        label.textAlignment = .center
-//        label.font = UIFont.systemFont(ofSize: 30, weight: .medium, width: .compressed)
-//        label.textColor = .white
-//        return label
-//    }()
-
-    private let doneButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "toolBarCheckMarkIcon"), for: .normal)
-        return button
-    }()
-    
     private let leftSeparator: CAShapeLayer = CAShapeLayer()
     private let rightSeparator: CAShapeLayer = CAShapeLayer()
-    
-    
 
     
     //MARK: - Init
     
     override init(effect: UIVisualEffect?) {
         super.init(effect: effect)
-        
-//        picker.delegate = self
-//        picker.dataSource = self
         
         setViews()
         setConstraints()
@@ -92,6 +48,23 @@ class CalculationsView: UIVisualEffectView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func updatePickerForState(state: TabBar.PickerState) {
+        switch state {
+        case .distance:
+            calculateDistance()
+            updateValues()
+        case .speed:
+            calculateSpeed()
+            updateValues()
+        case .pace:
+            calculatePace()
+            updateValues()
+        case .time:
+            calculateTime()
+            updateValues()
+        }
     }
     
     //MARK: - Calculations
@@ -227,15 +200,7 @@ class CalculationsView: UIVisualEffectView {
         setTitle(label: timeTitle, titleText: "TIME")
         setTitle(label: paceTitle, titleText: "MIN / KM")
         setTitle(label: metricsTitle, titleText: "KM")
-        
-//        contentView.addSubview(textfield)
-//        textfield.inputAccessoryView = pickerView
-//        contentView.addSubview(pickerView)
-//        pickerView.addSubview(picker)
-//        picker.addSubview(pickerLabelSeparator)
-//        
-//        pickerView.addSubview(doneButton)
-        doneButton.addTarget(self, action: #selector(donePressed), for: .touchUpInside)
+
     }
     
    //MARK: - SetButton
@@ -268,37 +233,14 @@ class CalculationsView: UIVisualEffectView {
     @objc private func buttonPressed() {
         
         if topButton.isTouchInside {
-            completion?(.distance)
-//            currentStateOfPicker = .speed
-//            pickerLabelSeparator.text = "."
-//            picker.reloadAllComponents()
-//            picker.selectRow(UD.shared.speed, inComponent: 0, animated: true)
-//            picker.selectRow(UD.shared.speedDecimal, inComponent: 1, animated: true)
+            pickerStateHandler?(.speed)
         } else if bottomButton.isTouchInside {
-            completion?(.pace)
-//            currentStateOfPicker = .pace
-//            pickerLabelSeparator.text = ":"
-//            picker.reloadAllComponents()
-//            picker.selectRow(UD.shared.paceMin, inComponent: 0, animated: true)
-//            picker.selectRow(UD.shared.paceSec, inComponent: 1, animated: true)
+            pickerStateHandler?(.pace)
         } else if leftButton.isTouchInside {
-            completion?(.speed)
-//            currentStateOfPicker = .distance
-//            pickerLabelSeparator.text = "."
-//            picker.reloadAllComponents()
-//            picker.selectRow(UD.shared.distance, inComponent: 0, animated: true)
-//            picker.selectRow(UD.shared.distanceDecimal, inComponent: 1, animated: true)
+            pickerStateHandler?(.distance)
         } else if rightButton.isTouchInside {
-            completion?(.time)
-//            currentStateOfPicker = .time
-//            pickerLabelSeparator.text = ":          :"
-//            picker.reloadAllComponents()
-//            picker.selectRow(UD.shared.timeH, inComponent: 0, animated: true)
-//            picker.selectRow(UD.shared.timeMin, inComponent: 1, animated: true)
-//            picker.selectRow(UD.shared.timeSec, inComponent: 2, animated: true)
+            pickerStateHandler?(.time)
         }
-        
-//        textfield.becomeFirstResponder()
     }
     
     @objc private func donePressed() {
@@ -310,15 +252,6 @@ class CalculationsView: UIVisualEffectView {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            
-//            textfield.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-//            textfield.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-//            textfield.widthAnchor.constraint(equalToConstant: 0),
-//            textfield.heightAnchor.constraint(equalToConstant: 0),
-//            pickerView.widthAnchor.constraint(equalToConstant: .barWidth),
-//            pickerView.heightAnchor.constraint(equalToConstant: 200),
-//            pickerView.centerXAnchor.constraint(equalTo: centerXAnchor),
-//            pickerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
             
             topButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             topButton.widthAnchor.constraint(equalToConstant: 100),
@@ -340,14 +273,6 @@ class CalculationsView: UIVisualEffectView {
             rightButton.heightAnchor.constraint(equalToConstant: 120),
             rightButton.widthAnchor.constraint(equalToConstant: (.barWidth - 100) / 2),
             
-            doneButton.widthAnchor.constraint(equalToConstant: 50),
-            doneButton.heightAnchor.constraint(equalToConstant: 50),
-//            doneButton.topAnchor.constraint(equalTo: picker.topAnchor, constant: 15),
-//            doneButton.trailingAnchor.constraint(equalTo: picker.trailingAnchor, constant: -15),
-//            
-//            pickerLabelSeparator.centerXAnchor.constraint(equalTo: picker.centerXAnchor),
-//            pickerLabelSeparator.centerYAnchor.constraint(equalTo: picker.centerYAnchor, constant: -3),
-            
             distanceTitle.centerXAnchor.constraint(equalTo: leftButton.centerXAnchor),
             distanceTitle.bottomAnchor.constraint(equalTo: leftButton.topAnchor, constant: -5),
             
@@ -366,154 +291,3 @@ class CalculationsView: UIVisualEffectView {
     }
     
 }
-
-//MARK: - PickerViewDelegate&Datasource
-//
-//extension CalculationsView: UIPickerViewDelegate, UIPickerViewDataSource {
-//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-//        switch currentStateOfPicker {
-//            
-//        case .speed:
-//            return 2
-//        case .pace:
-//            return 2
-//        case .distance:
-//            return 2
-//        case .time:
-//            return 3
-//        case .none:
-//            break
-//        }
-//        return Int()
-//    }
-//    
-//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-//        
-//        switch currentStateOfPicker {
-//            
-//        case .speed:
-//            if component == 0 {
-//                return 100
-//            } else if component == 1 {
-//                return 10
-//            }
-//            
-//        case .pace:
-//            if component == 0 {
-//                return 100
-//            } else if component == 1 {
-//                return 60
-//            }
-//        case .distance:
-//            if component == 0 {
-//                return 100
-//            } else if component == 1 {
-//                return 10
-//            }
-//        case .time:
-//            if component == 0 {
-//                return 100
-//            } else if component == 1 {
-//                return 60
-//            } else if component == 2 {
-//                return 60
-//            }
-//        case .none:
-//            break
-//        }
-//        return Int()
-//        
-//    }
-//    
-//    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-//        return 50
-//    }
-//    
-//    
-//    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-//        let label = UILabel()
-//        label.textColor = .white
-//        label.textAlignment = .center
-//        label.font = UIFont.systemFont(ofSize: 30, weight: .medium, width: .compressed)
-//        
-//        switch currentStateOfPicker {
-//            
-//        case .speed:
-//            label.text = String(row)
-//            
-//        case .pace:
-//            if row < 10 {
-//                label.text = "0\(String(row))"
-//            } else {
-//                label.text = String(row)
-//            }
-//        case .distance:
-//            label.text = String(row)
-//        case .time:
-//            if row < 10 {
-//                label.text = "0\(String(row))"
-//            } else {
-//                label.text = String(row)
-//            }
-//        case .none:
-//            break
-//        }
-//       
-//        return label
-//    }
-//    
-//    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-//        switch currentStateOfPicker {
-//            
-//        case .speed:
-//            
-//            if component == 0 {
-//                UD.shared.speed = row
-//                calculateSpeed()
-//                updateValues()
-//            } else if component == 1 {
-//                UD.shared.speedDecimal = row
-//                calculateSpeed()
-//                updateValues()
-//            }
-//        case .pace:
-//            if component == 0 {
-//                UD.shared.paceMin = row
-//                calculatePace()
-//                updateValues()
-//            } else if component == 1 {
-//                UD.shared.paceSec = row
-//                calculatePace()
-//                updateValues()
-//            }
-//        case .distance:
-//            if component == 0 {
-//                UD.shared.distance = row
-//                calculateDistance()
-//                updateValues()
-//            } else if component == 1 {
-//                UD.shared.distanceDecimal = row
-//                calculateDistance()
-//                updateValues()
-//            }
-//        case .time:
-//            if component == 0 {
-//                UD.shared.timeH = row
-//                calculateTime()
-//                updateValues()
-//            } else if component == 1 {
-//                UD.shared.timeMin = row
-//                calculateTime()
-//                updateValues()
-//            } else if component == 2 {
-//                UD.shared.timeSec = row
-//                calculateTime()
-//                updateValues()
-//            }
-//        case .none:
-//            break
-//        }
-//    }
-//    
-//}
-//
