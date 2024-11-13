@@ -42,7 +42,6 @@ class CalculationsView: UIVisualEffectView {
         
         setViews()
         setConstraints()
-        
         updateValues()
     }
     
@@ -50,21 +49,20 @@ class CalculationsView: UIVisualEffectView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - updatePickerForState
+    
     func updatePickerForState(state: TabBar.PickerState) {
         switch state {
         case .distance:
             calculateDistance()
-            updateValues()
         case .speed:
             calculateSpeed()
-            updateValues()
         case .pace:
             calculatePace()
-            updateValues()
         case .time:
             calculateTime()
-            updateValues()
         }
+        updateValues()
     }
     
     //MARK: - Calculations
@@ -156,27 +154,50 @@ class CalculationsView: UIVisualEffectView {
         }
     }
     
+    //MARK: - UpdateValues
+    
     private func updateValues() {
-
-        topButton.setTitle("\(UD.shared.speed):\(UD.shared.speedDecimal)", for: .normal)
         
-        bottomButton.setTitle(
-        "\(plusZero(UD.shared.paceMin)):\(plusZero(UD.shared.paceSec))",
-        for: .normal)
+        let isDistanceCleared = UD.shared.distance == 0 && UD.shared.distanceDecimal == 0
         
-        leftButton.setTitle("\(UD.shared.distance):\(UD.shared.distanceDecimal)", for: .normal)
-        
-        rightButton.setTitle(
-        "\(plusZero(UD.shared.timeH)):\(plusZero(UD.shared.timeMin)):\(plusZero(UD.shared.timeSec))",
-        for: .normal)
-        
-        func plusZero(_ int: Int) -> String {
-            if int < 10 {
-                return "0\(int)"
-            } else {
-                return "\(int)"
-            }
+        if isDistanceCleared {
+            resetValues()
+            updateButtonStates(isEnabled: false)
+        } else {
+            updateButtonStates(isEnabled: true)
         }
+            
+        updateButtonTitles()
+    }
+    
+    private func updateButtonStates(isEnabled: Bool) {
+        let alpha: CGFloat = isEnabled ? 1 : 0.5
+        [topButton, rightButton, bottomButton].forEach {
+            $0.isUserInteractionEnabled = isEnabled
+            $0.alpha = alpha }
+    }
+    
+    private func updateButtonTitles() {
+        topButton.setTitle("\(UD.shared.speed):\(UD.shared.speedDecimal)", for: .normal)
+        bottomButton.setTitle("\(addLeadingZero(UD.shared.paceMin)):\(addLeadingZero(UD.shared.paceSec))", for: .normal)
+        leftButton.setTitle("\(UD.shared.distance):\(UD.shared.distanceDecimal)", for: .normal)
+        rightButton.setTitle("\(addLeadingZero(UD.shared.timeH)):\(addLeadingZero(UD.shared.timeMin)):\(addLeadingZero(UD.shared.timeSec))", for: .normal)
+    }
+    
+    private func resetValues() {
+        UD.shared.distance = 0
+        UD.shared.distanceDecimal = 0
+        UD.shared.speed = 0
+        UD.shared.speedDecimal = 0
+        UD.shared.paceMin = 0
+        UD.shared.paceSec = 0
+        UD.shared.timeH = 0
+        UD.shared.timeMin = 0
+        UD.shared.timeSec = 0
+    }
+    
+    private func addLeadingZero(_ int: Int) -> String {
+        return int < 10 ? "0\(int)" : "\(int)"
     }
     
     

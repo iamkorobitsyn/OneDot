@@ -9,6 +9,8 @@ import UIKit
 import MapKit
 
 class MainVC: UIViewController, CAAnimationDelegate {
+    
+    let splashScreen: SplashScreen = SplashScreen()
 
     let mapView: MKMapView = MKMapView()
     let locationManager: CLLocationManager = CLLocationManager()
@@ -19,9 +21,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
     let notesView: NotesView = NotesView()
     let calculationsView: CalculationsView = CalculationsView()
     
-    let splashScreen: SplashScreen = SplashScreen()
-    
-    var tabBarCompletion: ((Bool)->())?
+    var tabBarHandler: ((Bool)->())?
     
     enum ToolsNotesStates {
         case indoor
@@ -37,14 +37,6 @@ class MainVC: UIViewController, CAAnimationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        calculationsView.pickerStateHandler = { state in
-            self.tabBar.calculationPickerStateHandler(state: state)
-        }
-        
-        tabBar.updatePickerForState = { state in
-            self.calculationsView.updatePickerForState(state: state)
-        }
 
         setViews()
         
@@ -52,29 +44,11 @@ class MainVC: UIViewController, CAAnimationDelegate {
         setupLocationManager()
         checkLocationEnabled()
         
+        setClosures()
+        
         tabBar.showProfile = {
             let profileVC = ProfileVC()
             self.present(profileVC, animated: true)
-        }
-
-        trackerBar.completionForActiveButton = { [weak self] button in
-            guard let self else {return}
-            
-            if button == trackerBar.calculatorButton {
-                setViewsState(.calculator)
-            } else if button == trackerBar.soundButton {
-                setViewsState(.sound)
-            } else if button == trackerBar.themesButton {
-                setViewsState(.themes)
-            } else if button == trackerBar.settingsButton {
-                setViewsState(.settings)
-            } else if button == trackerBar.indoorButton {
-                setViewsState(.indoor)
-            } else if button == trackerBar.outdoorButton {
-                setViewsState(.outdoor)
-            } else if button == trackerBar.notesButton {
-                setViewsState(.notes)
-            }
         }
         
         notesView.completionOfHide = { [weak self] in
@@ -84,11 +58,43 @@ class MainVC: UIViewController, CAAnimationDelegate {
         
         getLocationState(indoorIs: UserDefaultsManager.shared.userIndoorStatus)
         
+        
+        
 //        toolsBarView.calcuatorVC.titleCompletion = { [weak self] title in
 //            guard let self else {return}
 //            trackerBar.toolsTitle.text = title
 //        }
         
+    }
+    
+    //MARK: - SetClosures
+    
+    private func setClosures() {
+        
+        trackerBar.buttonStateHandler = { [weak self] button in
+            guard let self else {return}
+            
+            if button == trackerBar.calculatorButton {
+                setViewsState(.calculator)
+            } else if button == trackerBar.settingsButton {
+                setViewsState(.themes)
+            } else if button == trackerBar.indoorButton {
+                setViewsState(.indoor)
+            } else if button == trackerBar.outdoorButton {
+                setViewsState(.outdoor)
+            } else if button == trackerBar.notesButton {
+                setViewsState(.notes)
+            }
+        }
+        
+        
+        calculationsView.pickerStateHandler = { state in
+            self.tabBar.calculationPickerStateHandler(state: state)
+        }
+        
+        tabBar.updatePickerForState = { state in
+            self.calculationsView.updatePickerForState(state: state)
+        }
     }
     
     //MARK: - SplashScreenAnimations

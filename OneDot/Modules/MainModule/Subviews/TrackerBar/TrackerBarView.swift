@@ -10,7 +10,7 @@ import AudioToolbox
 
 class TrackerBarView: UIView {
     
-    var completionForActiveButton: ((UIButton)->())?
+    var buttonStateHandler: ((UIButton)->())?
 
     private let feedbackGen = UISelectionFeedbackGenerator()
 
@@ -40,36 +40,10 @@ class TrackerBarView: UIView {
         return stack
     }()
     
-    private let toolsStack: UIStackView = {
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.backgroundColor = .black
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.spacing = 0
-        stack.layer.cornerRadius = CGFloat.iconSide / 2
-        return stack
-    }()
-    
-    let toolsTitle: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 15, weight: .medium, width: .compressed)
-        label.textColor = .gray
-        return label
-    }()
-    
     let gpsView: TrackerBarGPS = {
         let view = TrackerBarGPS()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
-    
-    let settingsButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "trackerBarSettingsIcon"), for: .normal)
-        return button
     }()
     
     let pickerView: TrackerBarPickerView = {
@@ -85,8 +59,10 @@ class TrackerBarView: UIView {
     let notesButton: TrackerBarButton = TrackerBarButton()
     
     let calculatorButton: TrackerBarButton = TrackerBarButton()
-    let soundButton: TrackerBarButton = TrackerBarButton()
-    let themesButton: TrackerBarButton = TrackerBarButton()
+    let settingsButton: TrackerBarButton = TrackerBarButton()
+    let toolsStackSeparator: CAShapeLayer = CAShapeLayer()
+    
+    
     
    
     override init(frame: CGRect) {
@@ -105,6 +81,8 @@ class TrackerBarView: UIView {
             currentExercise = exercise
             print(exercise.titleName)
         }
+        
+        Shaper.shared.drawToolsStackSeparator(shape: toolsStackSeparator, view: self)
     }
 
     
@@ -117,9 +95,7 @@ class TrackerBarView: UIView {
         }
         if tools != false {
             calculatorButton.setInactiveState(.calculator)
-            soundButton.setInactiveState(.sound)
-            themesButton.setInactiveState(.themes)
-            toolsTitle.text = ""
+            settingsButton.setInactiveState(.themes)
         }
     }
     
@@ -134,12 +110,8 @@ class TrackerBarView: UIView {
                                for: .touchUpInside)
         calculatorButton.addTarget(self, action: #selector(buttonTapped),
                                    for: .touchUpInside)
-        soundButton.addTarget(self, action: #selector(buttonTapped),
-                              for: .touchUpInside)
-        themesButton.addTarget(self, action: #selector(buttonTapped),
-                               for: .touchUpInside)
         settingsButton.addTarget(self, action: #selector(buttonTapped),
-                                 for: .touchUpInside)
+                               for: .touchUpInside)
         notesButton.addTarget(self, action: #selector(buttonTapped),
                               for: .touchUpInside)
     }
@@ -152,34 +124,24 @@ class TrackerBarView: UIView {
 
             statesRefresh(locations: false, tools: true)
             calculatorButton.setActiveState(.calculator)
-            completionForActiveButton?(calculatorButton)
+            buttonStateHandler?(calculatorButton)
  
-        } else if  soundButton.isTouchInside {
-            completionForActiveButton?(soundButton)
-            
-            statesRefresh(locations: false, tools: true)
-            soundButton.setActiveState(.sound)
-            toolsTitle.text = "MUSIC"
-
-        } else if  themesButton.isTouchInside {
-            
-            statesRefresh(locations: false, tools: true)
-            themesButton.setActiveState(.themes)
-            completionForActiveButton?(themesButton)
-
         } else if settingsButton.isTouchInside {
-            completionForActiveButton?(settingsButton)
             
+            statesRefresh(locations: false, tools: true)
+            settingsButton.setActiveState(.themes)
+            buttonStateHandler?(settingsButton)
+
         } else if outdoorButton.isTouchInside {
-            completionForActiveButton?(outdoorButton)
+            buttonStateHandler?(outdoorButton)
             setExerciseState(indoor: false)
         } else if indoorButton.isTouchInside {
-            completionForActiveButton?(indoorButton)
+            buttonStateHandler?(indoorButton)
             setExerciseState(indoor: true)
         } else if notesButton.isTouchInside {
             if gpsView.isHidden == false {
                 notesButton.setActiveState(.notesOutdoor)
-                completionForActiveButton?(notesButton)
+                buttonStateHandler?(notesButton)
             }
         }
     }
@@ -236,15 +198,10 @@ class TrackerBarView: UIView {
         locationStack.addArrangedSubview(notesButton)
         addSubview(locationStack)
         
-        toolsStack.addArrangedSubview(calculatorButton)
-        toolsStack.addArrangedSubview(soundButton)
-        toolsStack.addArrangedSubview(themesButton)
-        addSubview(toolsStack)
-        
-        addSubview(gpsView)
+        addSubview(calculatorButton)
         addSubview(settingsButton)
-        
-        addSubview(toolsTitle)
+
+        addSubview(gpsView)
     
         addSubview(pickerView)
         
@@ -270,6 +227,9 @@ class TrackerBarView: UIView {
     
     private func setConstraints() {
         
+        calculatorButton.disableAutoresizingMask()
+        settingsButton.disableAutoresizingMask()
+        
         NSLayoutConstraint.activate([
             locationStack.widthAnchor.constraint(equalToConstant:
                                             42 * CGFloat(locationStack.subviews.count)),
@@ -277,35 +237,24 @@ class TrackerBarView: UIView {
             locationStack.topAnchor.constraint(equalTo: topAnchor,
                                             constant: 15),
             locationStack.centerXAnchor.constraint(equalTo: centerXAnchor,
-                                            constant: -CGFloat.barWidth / 4 + 5),
+                                            constant: -CGFloat.barWidth / 4),
             
-            toolsStack.widthAnchor.constraint(equalToConstant:
-                                            42 * CGFloat(toolsStack.subviews.count)),
-            toolsStack.heightAnchor.constraint(equalToConstant: 42),
-            toolsStack.topAnchor.constraint(equalTo: topAnchor,
-                                            constant: 15),
-            toolsStack.leadingAnchor.constraint(equalTo: centerXAnchor),
+            calculatorButton.widthAnchor.constraint(equalToConstant: 42),
+            calculatorButton.heightAnchor.constraint(equalToConstant: 42),
+            calculatorButton.centerYAnchor.constraint(equalTo: locationStack.centerYAnchor),
+            calculatorButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4 - 42),
             
             settingsButton.widthAnchor.constraint(equalToConstant: 42),
             settingsButton.heightAnchor.constraint(equalToConstant: 42),
-            settingsButton.topAnchor.constraint(equalTo: topAnchor,
-                                            constant: 15),
-            settingsButton.trailingAnchor.constraint(equalTo:
-                                            trailingAnchor,
-                                            constant: -10),
-            
+            settingsButton.centerYAnchor.constraint(equalTo: locationStack.centerYAnchor),
+            settingsButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4 + 42),
+         
             pickerView.widthAnchor.constraint(equalToConstant:
                                             CGFloat.barWidth),
             pickerView.heightAnchor.constraint(equalToConstant: 50),
             pickerView.centerXAnchor.constraint(equalTo: centerXAnchor),
             pickerView.centerYAnchor.constraint(equalTo: centerYAnchor,
                                             constant: CGFloat.trackerBarHeight / 4),
-            
-            toolsTitle.topAnchor.constraint(equalTo: 
-                                            toolsStack.bottomAnchor,
-                                            constant: 3),
-            toolsTitle.centerXAnchor.constraint(equalTo:
-                                            toolsStack.centerXAnchor),
             
             gpsView.topAnchor.constraint(equalTo: locationStack.bottomAnchor,
                                             constant: 5),

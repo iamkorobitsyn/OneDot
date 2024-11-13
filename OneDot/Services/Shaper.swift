@@ -14,6 +14,8 @@ class Shaper {
     
     private init() {}
     
+    //MARK: - TabBar
+    
     func drawTabBarSeparator(shape: CAShapeLayer, view: UIView) {
         let path = UIBezierPath()
         path.move(to: CGPoint(x: CGFloat.barWidth / 2, y: 15))
@@ -22,6 +24,19 @@ class Shaper {
         shape.lineWidth = 0.5
         shape.lineCap = .round
         shape.strokeColor = UIColor.white.cgColor
+        view.layer.addSublayer(shape)
+    }
+    
+    //MARK: - TrackerBar
+    
+    func drawToolsStackSeparator(shape: CAShapeLayer, view: UIView) {
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: .barWidth / 2 + .barWidth / 4, y: 15))
+        path.addLine(to: CGPoint(x: .barWidth / 2 + .barWidth / 4, y: 57))
+        shape.path = path.cgPath
+        shape.lineWidth = 0.5
+        shape.lineCap = .round
+        shape.strokeColor = UIColor.myPaletteGray.cgColor
         view.layer.addSublayer(shape)
     }
     

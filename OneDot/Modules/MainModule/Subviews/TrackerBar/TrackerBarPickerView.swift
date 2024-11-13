@@ -155,12 +155,10 @@ class TrackerBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
             picker.widthAnchor.constraint(equalToConstant: pickerWidth),
             picker.heightAnchor.constraint(equalToConstant: pickerHeight),
             picker.centerYAnchor.constraint(equalTo: centerYAnchor),
-            picker.centerXAnchor.constraint(equalTo: centerXAnchor, constant:
-                                            -mainBarWidth / 4 + 5),
+            picker.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -mainBarWidth / 4),
             
             title.centerYAnchor.constraint(equalTo: centerYAnchor),
-            title.centerXAnchor.constraint(equalTo: centerXAnchor, constant:
-                                            mainBarWidth / 4 - 5),
+            title.centerXAnchor.constraint(equalTo: centerXAnchor, constant: mainBarWidth / 4),
             
             titleView.widthAnchor.constraint(equalToConstant: 25),
             titleView.heightAnchor.constraint(equalToConstant: 25),
