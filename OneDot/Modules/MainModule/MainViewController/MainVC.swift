@@ -15,7 +15,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
     let mapView: MKMapView = MKMapView()
     let locationManager: CLLocationManager = CLLocationManager()
     
-    let trackerBar: TrackerBarView = TrackerBarView()
+    let trackerBar: HeaderBarView = HeaderBarView()
     let tabBar: TabBar = TabBar()
     
     let notesView: NotesView = NotesView()
@@ -28,8 +28,6 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case outdoor
         case notes
         case calculator
-        case sound
-        case themes
         case settings
     }
     
@@ -53,7 +51,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         
         notesView.completionOfHide = { [weak self] in
             guard let self else {return}
-            trackerBar.notesButton.setInactiveState(.notesIndoor)
+//            trackerBar.notesButton.setInactiveState(.notesIndoor)
         }
         
         getLocationState(indoorIs: UserDefaultsManager.shared.userIndoorStatus)
@@ -71,22 +69,10 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     private func setClosures() {
         
-        trackerBar.buttonStateHandler = { [weak self] button in
+        trackerBar.buttonStateHandler = { [weak self] state in
             guard let self else {return}
-            
-            if button == trackerBar.calculatorButton {
-                setViewsState(.calculator)
-            } else if button == trackerBar.settingsButton {
-                setViewsState(.themes)
-            } else if button == trackerBar.indoorButton {
-                setViewsState(.indoor)
-            } else if button == trackerBar.outdoorButton {
-                setViewsState(.outdoor)
-            } else if button == trackerBar.notesButton {
-                setViewsState(.notes)
-            }
+            setViewsState(state)
         }
-        
         
         calculationsView.pickerStateHandler = { state in
             self.tabBar.calculationPickerStateHandler(state: state)
@@ -112,6 +98,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
         }
     }
     
+    //MARK: - GetLocationState
+    
     private func getLocationState(indoorIs: Bool) {
 
         if indoorIs == true {
@@ -124,6 +112,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
             notesView.setState(state: .outdoor)
         }
     }
+    
+    //MARK: - SetViews
     
     private func setViewsState(_ state: ToolsNotesStates) {
         switch state {
@@ -139,17 +129,11 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .notes:
             
             notesView.isHidden = false
+            calculationsView.isHidden = true
             
         case .calculator:
-            print("calcul")
             calculationsView.isHidden = false
-            
-        case .sound:
-            print("")
-           
-            
-        case .themes:
-            print("")
+            notesView.isHidden = true
           
             
         case .settings:
@@ -284,7 +268,7 @@ extension MainVC {
                                             view.safeAreaLayoutGuide.topAnchor,
                                             constant: 10),
             trackerBar.heightAnchor.constraint(equalToConstant:
-                                            CGFloat.trackerBarHeight),
+                                            CGFloat.headerBarHeight),
             trackerBar.widthAnchor.constraint(equalToConstant:
                                             CGFloat.barWidth),
             
@@ -297,7 +281,7 @@ extension MainVC {
             notesView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             notesView.topAnchor.constraint(equalTo:
                                             view.safeAreaLayoutGuide.topAnchor,
-                                            constant: CGFloat.trackerBarHeight + 20),
+                                            constant: CGFloat.headerBarHeight + 20),
             notesView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             notesView.bottomAnchor.constraint(equalTo: view.bottomAnchor,
                                             constant: -20),
