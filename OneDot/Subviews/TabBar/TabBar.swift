@@ -37,7 +37,7 @@ class TabBar: UIView {
     private var currentPickerState: PickerState?
     private var currentTabBarState: TabBarState = .prepare
 
-    var showProfile: (() -> Void)?
+    var previousProfileHandler: (() -> Void)?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -75,7 +75,7 @@ class TabBar: UIView {
         
         switch currentTabBarState {
         case .prepare:
-            showProfile?()
+            previousProfileHandler?()
         case .prepareToStart, .tracking:
             currentTabBarState = .prepare
             updateButtonImages(status: .prepare)

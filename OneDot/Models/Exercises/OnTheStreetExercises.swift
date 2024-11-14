@@ -12,8 +12,8 @@ class Swimming: Exercise {
     var type: String = "Swimming"
     var name: String = "Swimming"
     var titleName: String = "SWIMMING"
-    var titleIcon: String = "trackerBarWaterIcon"
-    var pickerIcon: String = "trackerBarSwimmingIcon"
+    var titleIcon: String = "AMWater"
+    var pickerIcon: String = "AOSwimming"
 }
 
 class Paddle: Exercise {
@@ -21,8 +21,8 @@ class Paddle: Exercise {
     var type: String = "Swimming"
     var name: String = "Paddle"
     var titleName: String = "PADDLE"
-    var titleIcon: String = "trackerBarWaterIcon"
-    var pickerIcon: String = "trackerBarPaddleIcon"
+    var titleIcon: String = "AMWater"
+    var pickerIcon: String = "AOPaddle"
 }
 
 class Hiking: Exercise {
@@ -30,8 +30,8 @@ class Hiking: Exercise {
     var type: String = "Сardio workout"
     var name: String = "Hiking"
     var titleName: String = "HIKING"
-    var titleIcon: String = "trackerBarRoadIcon"
-    var pickerIcon: String = "trackerBarHikingIcon"
+    var titleIcon: String = "AMRoad"
+    var pickerIcon: String = "AOHiking"
 }
 
 class Running: Exercise {
@@ -39,8 +39,8 @@ class Running: Exercise {
     var type: String = "Сardio workout"
     var name: String = "Running"
     var titleName: String = "RUNNING"
-    var titleIcon: String = "trackerBarRoadIcon"
-    var pickerIcon: String = "trackerBarRunningIcon"
+    var titleIcon: String = "AMRoad"
+    var pickerIcon: String = "AORunning"
 }
 
 class Bicycle: Exercise {
@@ -48,8 +48,8 @@ class Bicycle: Exercise {
     var type: String = "Сardio workout"
     var name: String = "Bicycle"
     var titleName: String = "BICYCLE"
-    var titleIcon: String = "trackerBarRoadIcon"
-    var pickerIcon: String = "trackerBarBicycleIcon"
+    var titleIcon: String = "AMRoad"
+    var pickerIcon: String = "AOBicycle"
 }
 
 class Board: Exercise {
@@ -57,8 +57,8 @@ class Board: Exercise {
     var type: String = "Сardio workout"
     var name: String = "Board"
     var titleName: String = "BOARD"
-    var titleIcon: String = "trackerBarRoadIcon"
-    var pickerIcon: String = "trackerBarBoardIcon"
+    var titleIcon: String = "AMRoad"
+    var pickerIcon: String = "AOBoard"
 }
 
 class RollerSkates: Exercise {
@@ -66,8 +66,8 @@ class RollerSkates: Exercise {
     var type: String = "Сardio workout"
     var name: String = "Roller skates"
     var titleName: String = "ROLLER SKATES"
-    var titleIcon: String = "trackerBarRoadIcon"
-    var pickerIcon: String = "trackerBarRollerSkatesIcon"
+    var titleIcon: String = "AMRoad"
+    var pickerIcon: String = "AORollerSkates"
 }
 
 class Skates: Exercise {
@@ -75,8 +75,8 @@ class Skates: Exercise {
     var type: String = "Сardio workout"
     var name: String = "Skates"
     var titleName: String = "SKATES"
-    var titleIcon: String = "trackerBarWinterIcon"
-    var pickerIcon: String = "trackerBarSkatesIcon"
+    var titleIcon: String = "AMWinter"
+    var pickerIcon: String = "AOSkates"
 }
 
 class Skis: Exercise {
@@ -84,8 +84,8 @@ class Skis: Exercise {
     var type: String = "Сardio workout"
     var name: String = "Skis"
     var titleName: String = "SKIS"
-    var titleIcon: String = "trackerBarWinterIcon"
-    var pickerIcon: String = "trackerBarSkisIcon"
+    var titleIcon: String = "AMWinter"
+    var pickerIcon: String = "AOSkis"
 }
 
 class Snowboard: Exercise {
@@ -93,6 +93,6 @@ class Snowboard: Exercise {
     var type: String = "Сardio workout"
     var name: String = "Snowboard"
     var titleName: String = "SNOWBOARD"
-    var titleIcon: String = "trackerBarWinterIcon"
-    var pickerIcon: String = "trackerBarSnowboardIcon"
+    var titleIcon: String = "AMWinter"
+    var pickerIcon: String = "AOSnowboard"
 }

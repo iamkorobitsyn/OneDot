@@ -17,35 +17,35 @@ class NotesView: UIVisualEffectView {
              inactive
     }
     
+    var notesScreenHideHandler: (() -> Void)?
+    
     private var notes: [Note] = []
     
     private let addNoteCellID = "addNoteCell"
     private let editNoteCellID = "editNoteCell"
     private var bottomIndentHeight: CGFloat = 100
     
-    var completionOfHide: (() -> Void)?
-    
     private let topRightButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "additionalHideIcon"),
+        button.setBackgroundImage(UIImage(named: "SSHide"),
                                   for: .normal)
         return button
     }()
     
     private let bottomRightButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "notesAddIcon"),
+        button.setBackgroundImage(UIImage(named: "SSAdd"),
                                   for: .normal)
-        button.setBackgroundImage(UIImage(named: "notesAddIcon"),
+        button.setBackgroundImage(UIImage(named: "SSAdd"),
                                   for: .highlighted)
         return button
     }()
     
     private let topLeftButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "notesSettingsIcon"),
+        button.setBackgroundImage(UIImage(named: "SSNotesSettings"),
                                   for: .normal)
-        button.setBackgroundImage(UIImage(named: "notesSettingsIcon"),
+        button.setBackgroundImage(UIImage(named: "SSNotesSettings"),
                                   for: .highlighted)
         return button
     }()
@@ -53,12 +53,11 @@ class NotesView: UIVisualEffectView {
     private let topCenterButton: UIButton = {
         let button = UIButton()
         button.isHidden = true
-        button.setImage(UIImage(named: "notesCheckMarkIcon"),
+        button.setImage(UIImage(named: "SSCheckMark"),
                                   for: .normal)
-        button.setImage(UIImage(named: "notesCheckMarkIcon"),
+        button.setImage(UIImage(named: "SSCheckMark"),
                                   for: .highlighted)
         button.layer.borderWidth = 0.5
-//        button.layer.cornerRadius = 30
         button.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.5).cgColor
         button.clipsToBounds = true
         return button
@@ -77,14 +76,16 @@ class NotesView: UIVisualEffectView {
     
     override init(effect: UIVisualEffect?) {
         super.init(effect: effect)
-        fetchNotes()
         
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(NotesTableViewEditCell.self,
                            forCellReuseIdentifier: editNoteCellID)
-
         
+        
+        
+        
+        fetchNotes()
         setViews()
         setConstraints()
         
@@ -223,7 +224,7 @@ class NotesView: UIVisualEffectView {
     
     @objc private func hideNotes() {
         self.isHidden = true
-        completionOfHide?()
+        notesScreenHideHandler?()
     }
 
     //MARK: - SetConstraints
@@ -335,9 +336,9 @@ extension NotesView: UITableViewDataSource {
                 cell.placeholderState(notes[indexPath.row].editing)
                 
                 if UserDefaultsManager.shared.userIndoorStatus == false {
-                    setState(state: .indoor)
-                } else {
                     setState(state: .outdoor)
+                } else {
+                    setState(state: .indoor)
                 }
                 
                 tableView.endUpdates()
@@ -377,9 +378,9 @@ extension NotesView: UITableViewDelegate   {
         refreshNotesIndex()
         
         if UserDefaultsManager.shared.userIndoorStatus == false {
-            setState(state: .indoor)
-        } else {
             setState(state: .outdoor)
+        } else {
+            setState(state: .indoor)
         }
         
         self.tableView.isUserInteractionEnabled = true

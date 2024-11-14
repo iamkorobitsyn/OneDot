@@ -10,7 +10,7 @@ import AudioToolbox
 
 class HeaderBarView: UIView {
     
-    var buttonStateHandler: ((MainVC.ToolsNotesStates)->())?
+    var buttonStateHandler: ((MainVC.ViewsState)->())?
 
     private let feedbackGen = UISelectionFeedbackGenerator()
 
@@ -87,7 +87,7 @@ class HeaderBarView: UIView {
 
     }
     
-    func clearButtonStates() {
+    private func clearButtonStates() {
             outdoorButton.setInactiveState(.outdoor)
             indoorButton.setInactiveState(.indoor)
             notesButton.setInactiveState(.notesOutdoor)
@@ -112,7 +112,7 @@ class HeaderBarView: UIView {
         }
     }
     
-    private func activateOutdoorMode() {
+    func activateOutdoorMode() {
         clearButtonStates()
         outdoorButton.setActiveState(.outdoor)
         notesButton.isUserInteractionEnabled = true
@@ -153,6 +153,7 @@ class HeaderBarView: UIView {
         clearButtonStates()
         outdoorButton.setActiveState(.outdoor)
         notesButton.setActiveState(.notesOutdoor)
+        buttonStateHandler?(.notes)
     }
     
     private func activateCalculatorMode() {

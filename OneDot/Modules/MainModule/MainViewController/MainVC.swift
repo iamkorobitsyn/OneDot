@@ -15,7 +15,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
     let mapView: MKMapView = MKMapView()
     let locationManager: CLLocationManager = CLLocationManager()
     
-    let trackerBar: HeaderBarView = HeaderBarView()
+    let headerBar: HeaderBarView = HeaderBarView()
     let tabBar: TabBar = TabBar()
     
     let notesView: NotesView = NotesView()
@@ -23,7 +23,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     var tabBarHandler: ((Bool)->())?
     
-    enum ToolsNotesStates {
+    enum ViewsState {
         case indoor
         case outdoor
         case notes
@@ -44,24 +44,9 @@ class MainVC: UIViewController, CAAnimationDelegate {
         
         setClosures()
         
-        tabBar.showProfile = {
-            let profileVC = ProfileVC()
-            self.present(profileVC, animated: true)
-        }
         
-        notesView.completionOfHide = { [weak self] in
-            guard let self else {return}
-//            trackerBar.notesButton.setInactiveState(.notesIndoor)
-        }
         
         getLocationState(indoorIs: UserDefaultsManager.shared.userIndoorStatus)
-        
-        
-        
-//        toolsBarView.calcuatorVC.titleCompletion = { [weak self] title in
-//            guard let self else {return}
-//            trackerBar.toolsTitle.text = title
-//        }
         
     }
     
@@ -69,17 +54,28 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     private func setClosures() {
         
-        trackerBar.buttonStateHandler = { [weak self] state in
+        headerBar.buttonStateHandler = { [weak self] state in
             guard let self else {return}
             setViewsState(state)
         }
         
-        calculationsView.pickerStateHandler = { state in
-            self.tabBar.calculationPickerStateHandler(state: state)
+        notesView.notesScreenHideHandler = { [weak self] in
+            guard let self else {return}
+            headerBar.activateOutdoorMode()}
+        
+        calculationsView.pickerStateHandler = { [weak self] state in
+            guard let self else {return}
+            tabBar.calculationPickerStateHandler(state: state)
         }
         
-        tabBar.updatePickerForState = { state in
-            self.calculationsView.updatePickerForState(state: state)
+        tabBar.updatePickerForState = { [weak self] state in
+            guard let self else {return}
+            calculationsView.updatePickerForState(state: state)
+        }
+        
+        tabBar.previousProfileHandler = {
+            let profileVC = ProfileVC()
+            self.present(profileVC, animated: true)
         }
     }
     
@@ -103,19 +99,17 @@ class MainVC: UIViewController, CAAnimationDelegate {
     private func getLocationState(indoorIs: Bool) {
 
         if indoorIs == true {
-            title = "ROOM"
             notesView.isHidden = false
             notesView.setState(state: .indoor)
         } else {
-            title = "MAP"
             notesView.isHidden = true
             notesView.setState(state: .outdoor)
         }
     }
     
-    //MARK: - SetViews
+    //MARK: - SetViewsState
     
-    private func setViewsState(_ state: ToolsNotesStates) {
+    private func setViewsState(_ state: ViewsState) {
         switch state {
             
         case .indoor:
@@ -125,9 +119,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .outdoor:
             getLocationState(indoorIs: false)
             UserDefaultsManager.shared.userIndoorStatus = false
-
+   
         case .notes:
-            
             notesView.isHidden = false
             calculationsView.isHidden = true
             
@@ -232,10 +225,11 @@ extension MainVC {
         notesView.clipsToBounds = true
         
         
-        view.addSubview(trackerBar)
+        view.addSubview(headerBar)
         view.addSubview(calculationsView)
         calculationsView.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
         calculationsView.clipsToBounds = true
+        calculationsView.isHidden = true
         
         view.addSubview(tabBar)
         
@@ -248,7 +242,7 @@ extension MainVC {
     
     private func setConstraints() {
         mapView.translatesAutoresizingMaskIntoConstraints = false
-        trackerBar.translatesAutoresizingMaskIntoConstraints = false
+        headerBar.translatesAutoresizingMaskIntoConstraints = false
         calculationsView.translatesAutoresizingMaskIntoConstraints = false
         notesView.translatesAutoresizingMaskIntoConstraints = false
         tabBar.translatesAutoresizingMaskIntoConstraints = false
@@ -263,19 +257,19 @@ extension MainVC {
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            trackerBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            trackerBar.topAnchor.constraint(equalTo: 
+            headerBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            headerBar.topAnchor.constraint(equalTo: 
                                             view.safeAreaLayoutGuide.topAnchor,
                                             constant: 10),
-            trackerBar.heightAnchor.constraint(equalToConstant:
+            headerBar.heightAnchor.constraint(equalToConstant:
                                             CGFloat.headerBarHeight),
-            trackerBar.widthAnchor.constraint(equalToConstant:
+            headerBar.widthAnchor.constraint(equalToConstant:
                                             CGFloat.barWidth),
             
             calculationsView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             calculationsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             calculationsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            calculationsView.topAnchor.constraint(equalTo: trackerBar.bottomAnchor,
+            calculationsView.topAnchor.constraint(equalTo: headerBar.bottomAnchor,
                                             constant: 10),
             
             notesView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
