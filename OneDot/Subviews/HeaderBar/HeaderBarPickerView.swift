@@ -15,13 +15,11 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
     let exercises = FactoryExercises()
     var completion: ((Exercise) -> ())?
 
-    
     let picker: UIPickerView = UIPickerView()
     let title: UILabel = UILabel()
-    let titleView: UIImageView = UIImageView()
     
-    private let pickerSeparator: CAShapeLayer = CAShapeLayer()
-    
+    private let lineSeparator: CAShapeLayer = CAShapeLayer()
+    private let dotSeparator: CAShapeLayer = CAShapeLayer()
     
     //MARK: - Metrics
     
@@ -36,12 +34,8 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         setViews()
         setConstraints()
         
-        Shaper.shared.drawYSeparator(shape: pickerSeparator,
-                                              view: picker,
-                                              x: 1,
-                                              y: 30,
-                                              length: 90,
-                                              color: .lightGray)
+        Shaper.shared.drawPickerViewLineSeparator(shape: lineSeparator, view: picker)
+        Shaper.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }
     
         
@@ -68,8 +62,6 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
                 if row == index {
                     UserDefaultsManager.shared.pickerRowIndoor = row
                     title.text = exercises.get(.room)[row].titleName
-                    titleView.image = UIImage(named:
-                    exercises.get(.room)[row].titleIcon)
                     completion?(exercises.get(.room)[row])
                 }
             }
@@ -80,8 +72,6 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
                     if row == index {
                         UserDefaultsManager.shared.pickerRowOutdoor = row
                         title.text = exercises.get(.street)[row].titleName
-                        titleView.image = UIImage(named:
-                        exercises.get(.street)[row].titleIcon)
                         completion?(exercises.get(.street)[row]) 
                 }
             }
@@ -141,15 +131,12 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         title.clipsToBounds = true
         title.font = UIFont.systemFont(ofSize: 20, weight: .medium, width: .compressed)
         title.textColor = .myPaletteGray
-        
-        addSubview(titleView)
-        titleView.contentMode = .scaleAspectFit
+
     }
     
     private func setConstraints() {
         picker.translatesAutoresizingMaskIntoConstraints = false
         title.translatesAutoresizingMaskIntoConstraints = false
-        titleView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             picker.widthAnchor.constraint(equalToConstant: pickerWidth),
@@ -158,12 +145,7 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
             picker.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -mainBarWidth / 4),
             
             title.centerYAnchor.constraint(equalTo: centerYAnchor),
-            title.centerXAnchor.constraint(equalTo: centerXAnchor, constant: mainBarWidth / 4),
-            
-            titleView.widthAnchor.constraint(equalToConstant: 25),
-            titleView.heightAnchor.constraint(equalToConstant: 25),
-            titleView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            titleView.centerYAnchor.constraint(equalTo: centerYAnchor)
+            title.centerXAnchor.constraint(equalTo: centerXAnchor, constant: mainBarWidth / 4)
         ])
     }
     

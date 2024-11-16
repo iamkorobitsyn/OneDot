@@ -11,6 +11,5 @@ protocol Exercise {
     var type: String {get}
     var name: String {get}
     var titleName: String {get}
-    var titleIcon: String {get}
     var pickerIcon: String {get}
 }

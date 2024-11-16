@@ -260,7 +260,7 @@ extension MainVC {
             headerBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             headerBar.topAnchor.constraint(equalTo: 
                                             view.safeAreaLayoutGuide.topAnchor,
-                                            constant: 10),
+                                            constant: 60),
             headerBar.heightAnchor.constraint(equalToConstant:
                                             CGFloat.headerBarHeight),
             headerBar.widthAnchor.constraint(equalToConstant:
@@ -275,7 +275,7 @@ extension MainVC {
             notesView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             notesView.topAnchor.constraint(equalTo:
                                             view.safeAreaLayoutGuide.topAnchor,
-                                            constant: CGFloat.headerBarHeight + 20),
+                                            constant: CGFloat.headerBarHeight + 70),
             notesView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             notesView.bottomAnchor.constraint(equalTo: view.bottomAnchor,
                                             constant: -20),

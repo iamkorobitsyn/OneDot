@@ -105,14 +105,7 @@ class SettingsVC: UIViewController {
         
         
 //        setActiveSection(.measuring)
-        
-        Shaper.shared.drawXSeparator(shape: topSeparator,
-                                     view: self.view,
-                                     x: 0,
-                                     y: 170,
-                                     length:
-                                     UIScreen.main.bounds.width,
-                                     color: .lightGray)
+
     }
     
     //MARK: - SetButtons

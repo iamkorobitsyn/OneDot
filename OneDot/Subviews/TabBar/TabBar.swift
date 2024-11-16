@@ -33,6 +33,8 @@ class TabBar: UIView {
              pace,
              time
     }
+    
+    private var pickerIsHidden: Bool = false
 
     private var currentPickerState: PickerState?
     private var currentTabBarState: TabBarState = .prepare
@@ -47,6 +49,7 @@ class TabBar: UIView {
         
         picker.delegate = self
         picker.dataSource = self
+        setPickerIsHidden(isHidden: true)
     }
     
     //MARK: - ButtonMethods
@@ -107,27 +110,42 @@ class TabBar: UIView {
     func calculationPickerStateHandler(state: CalculationsView.PickerState) {
         switch state {
         case .distance:
+            setPickerIsHidden(isHidden: false)
             currentPickerState = .distance
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.distance, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.distanceDecimal, inComponent: 1, animated: true)
         case .speed:
+            setPickerIsHidden(isHidden: false)
             currentPickerState = .speed
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.speed, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.speedDecimal, inComponent: 1, animated: true)
         case .pace:
+            setPickerIsHidden(isHidden: false)
             currentPickerState = .pace
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.paceMin, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.paceSec, inComponent: 1, animated: true)
         case .time:
+            setPickerIsHidden(isHidden: false)
             currentPickerState = .time
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.timeH, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.timeMin, inComponent: 1, animated: true)
             picker.selectRow(UD.shared.timeSec, inComponent: 2, animated: true)
+        case .hide:
+            setPickerIsHidden(isHidden: true)
         }
+    }
+    
+    //MARK: - SetPickerPrevious
+    
+    private func setPickerIsHidden(isHidden: Bool) {
+        picker.isHidden = isHidden
+        leftButton.isHidden = !isHidden
+        rightButton.isHidden = !isHidden
+        pickerIsHidden = isHidden
     }
 
     

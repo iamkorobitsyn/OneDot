@@ -75,7 +75,6 @@
 		65D082C82B5CADB4005D09A9 /* AKAI - Conga Op.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082A22B5CADB4005D09A9 /* AKAI - Conga Op.wav */; };
 		65D082C92B5CADB4005D09A9 /* KORG - Maracas.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082A32B5CADB4005D09A9 /* KORG - Maracas.wav */; };
 		65D082CA2B5CADB4005D09A9 /* KAWAI - BassDrum.wav in Resources */ = {isa = PBXBuildFile; fileRef = 65D082A42B5CADB4005D09A9 /* KAWAI - BassDrum.wav */; };
-		65D473712AC2E2A700551E66 /* HeaderBarGPS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D473702AC2E2A700551E66 /* HeaderBarGPS.swift */; };
 		65EC20772AEEBD3800410905 /* CGFloat + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */; };
 		65EC20792AEF008500410905 /* SettingsBaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC20782AEF008500410905 /* SettingsBaseButton.swift */; };
 		65EDA5802AEA3E0B007B6AE5 /* HeaderBarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA57F2AEA3E0B007B6AE5 /* HeaderBarPickerView.swift */; };
@@ -175,7 +174,6 @@
 		65D082A22B5CADB4005D09A9 /* AKAI - Conga Op.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "AKAI - Conga Op.wav"; sourceTree = "<group>"; };
 		65D082A32B5CADB4005D09A9 /* KORG - Maracas.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KORG - Maracas.wav"; sourceTree = "<group>"; };
 		65D082A42B5CADB4005D09A9 /* KAWAI - BassDrum.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "KAWAI - BassDrum.wav"; sourceTree = "<group>"; };
-		65D473702AC2E2A700551E66 /* HeaderBarGPS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderBarGPS.swift; sourceTree = "<group>"; };
 		65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat + Extansions.swift"; sourceTree = "<group>"; };
 		65EC20782AEF008500410905 /* SettingsBaseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBaseButton.swift; sourceTree = "<group>"; };
 		65EDA57F2AEA3E0B007B6AE5 /* HeaderBarPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderBarPickerView.swift; sourceTree = "<group>"; };
@@ -496,7 +494,6 @@
 				654893982AAE8099005039DF /* HeaderBarView.swift */,
 				659879212AB48BBD004F6E2D /* HeaderBarButton.swift */,
 				65EDA57F2AEA3E0B007B6AE5 /* HeaderBarPickerView.swift */,
-				65D473702AC2E2A700551E66 /* HeaderBarGPS.swift */,
 			);
 			path = HeaderBar;
 			sourceTree = "<group>";
@@ -706,7 +703,6 @@
 				6502D6B22A595315000F96E0 /* OneDot.xcdatamodeld in Sources */,
 				6502D6EC2A59A517000F96E0 /* UIColor + Extansions.swift in Sources */,
 				6502D6E52A595AC6000F96E0 /* ProfileVC.swift in Sources */,
-				65D473712AC2E2A700551E66 /* HeaderBarGPS.swift in Sources */,
 				65EC20792AEF008500410905 /* SettingsBaseButton.swift in Sources */,
 				65EDA5872AEA948D007B6AE5 /* InTheRoomExercises.swift in Sources */,
 				65551C7C2AC61E4100CE3309 /* SettingsVC.swift in Sources */,

@@ -66,14 +66,6 @@ class MeasuringViewCell: UITableViewCell {
         getTemperatureStates()
         
 
-        
-        Shaper.shared.drawXSeparator(shape: separatorLine,
-                                              view: self,
-                                              x: 100,
-                                              y: heightForRow,
-                                              length:
-                                              UIScreen.main.bounds.width - 200,
-                                              color: .lightGray)
     }
     
     

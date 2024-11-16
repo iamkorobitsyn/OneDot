@@ -31,26 +31,13 @@ class HeaderBarView: UIView {
     
     private let locationStack: UIStackView = {
         let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.disableAutoresizingMask()
         stack.backgroundColor = .myPaletteGold
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 0
         stack.layer.cornerRadius = CGFloat.iconSide / 2
         return stack
-    }()
-    
-    let gpsView: HeaderBarGPS = {
-        let view = HeaderBarGPS()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    let pickerView: HeaderBarPickerView = {
-        let view = HeaderBarPickerView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .none
-        return view
     }()
 
     private let outdoorButton: HeaderBarButton = HeaderBarButton()
@@ -60,6 +47,13 @@ class HeaderBarView: UIView {
     private let calculatorButton: HeaderBarButton = HeaderBarButton()
     private let settingsButton: HeaderBarButton = HeaderBarButton()
     private let toolsStackSeparator: CAShapeLayer = CAShapeLayer()
+    
+    let pickerView = HeaderBarPickerView()
+    
+    let locatorView = UIView()
+    private let locatorDotShape: CAShapeLayer = CAShapeLayer()
+    private let locatorFirstCircleShape: CAShapeLayer = CAShapeLayer()
+    private let locatorSecondCircleShape: CAShapeLayer = CAShapeLayer()
    
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -127,7 +121,6 @@ class HeaderBarView: UIView {
         pickerView.picker.selectRow(row, inComponent: 0, animated: true)
         currentExercise = exercises.get(.street)[row]
         pickerView.title.text = currentExercise?.titleName
-        pickerView.titleView.image = UIImage(named: currentExercise?.titleIcon ?? "")
     }
     
     private func activateIndoorMode() {
@@ -146,7 +139,6 @@ class HeaderBarView: UIView {
         currentExercise = nil
         currentExercise = exercises.get(.room)[row]
         pickerView.title.text = currentExercise?.titleName
-        pickerView.titleView.image = UIImage(named: currentExercise?.titleIcon ?? "")
     }
     
     private func activateNotesMode() {
@@ -216,12 +208,15 @@ class HeaderBarView: UIView {
         
         addSubview(calculatorButton)
         addSubview(settingsButton)
-        addSubview(gpsView)
+        addSubview(locatorView)
         addSubview(pickerView)
         
         setButtonTargets()
         
         Shaper.shared.drawToolsStackSeparator(shape: toolsStackSeparator, view: self)
+        Shaper.shared.drawLocatorDotShape(shape: locatorDotShape, view: locatorView)
+        Shaper.shared.drawLocatorFirstSircleShape(shape: locatorFirstCircleShape, view: locatorView)
+        Shaper.shared.drawLocatorSecondSircleShape(shape: locatorSecondCircleShape, view: locatorView)
     }
     
     //MARK: - NavigationControllerObserver
@@ -236,7 +231,7 @@ class HeaderBarView: UIView {
     //MARK: - ObserverAnimation
     
     @objc private func animations() {
-        Animator.shared.animateGPSCursor(gpsView.satelliteIcon)
+        Animator.shared.animateLocator(locatorFirstCircleShape, locatorSecondCircleShape)
     }
     
     //MARK: - SetConstraints
@@ -245,6 +240,8 @@ class HeaderBarView: UIView {
         
         calculatorButton.disableAutoresizingMask()
         settingsButton.disableAutoresizingMask()
+        locatorView.disableAutoresizingMask()
+        pickerView.disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
             locationStack.widthAnchor.constraint(equalToConstant: 42 * CGFloat(locationStack.subviews.count)),
@@ -267,10 +264,10 @@ class HeaderBarView: UIView {
             pickerView.centerXAnchor.constraint(equalTo: centerXAnchor),
             pickerView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: CGFloat.headerBarHeight / 4),
             
-            gpsView.topAnchor.constraint(equalTo: locationStack.bottomAnchor, constant: 5),
-            gpsView.leadingAnchor.constraint(equalTo: locationStack.leadingAnchor, constant: 13),
-            gpsView.widthAnchor.constraint(equalToConstant: 30),
-            gpsView.heightAnchor.constraint(equalToConstant: 12)
+            locatorView.centerYAnchor.constraint(equalTo: locationStack.centerYAnchor),
+            locatorView.trailingAnchor.constraint(equalTo: locationStack.leadingAnchor, constant: -8),
+            locatorView.widthAnchor.constraint(equalToConstant: 12),
+            locatorView.heightAnchor.constraint(equalToConstant: 12)
         ])
     }
     

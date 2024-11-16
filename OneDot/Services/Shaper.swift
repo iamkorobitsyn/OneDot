@@ -27,7 +27,7 @@ class Shaper {
         view.layer.addSublayer(shape)
     }
     
-    //MARK: - TrackerBar
+    //MARK: - HeaderBar
     
     func drawToolsStackSeparator(shape: CAShapeLayer, view: UIView) {
         let path = UIBezierPath()
@@ -36,55 +36,71 @@ class Shaper {
         shape.path = path.cgPath
         shape.lineWidth = 0.5
         shape.lineCap = .round
-        shape.strokeColor = UIColor.myPaletteGray.cgColor
+        shape.strokeColor = UIColor.black.cgColor
         view.layer.addSublayer(shape)
     }
     
-    func drawYSeparator(shape: CAShapeLayer,
-                        view: UIView,
-                        x: CGFloat,
-                        y: CGFloat,
-                        length: CGFloat,
-                        color: UIColor) {
+    //MARK: - HeaderBarPickerView
+    
+    func drawPickerViewLineSeparator(shape: CAShapeLayer, view: UIView) {
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: x, y: y))
-        path.addLine(to: CGPoint(x: x , y: y + length))
+        path.move(to: CGPoint(x: 1, y: 30))
+        path.addLine(to: CGPoint(x: 1 , y: 30 + 90))
         shape.path = path.cgPath
         shape.lineWidth = 0.5
         shape.lineCap = .round
-        shape.strokeColor = color.cgColor
+        shape.strokeColor = UIColor.black.cgColor
         view.layer.addSublayer(shape)
     }
     
-    func drawXSeparator(shape: CAShapeLayer,
-                        view: UIView,
-                        x: CGFloat,
-                        y: CGFloat,
-                        length: CGFloat,
-                        color: UIColor) {
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: x, y: y))
-        path.addLine(to: CGPoint(x: x + length, y: y))
-        shape.path = path.cgPath
-        shape.lineWidth = 0.5
-        shape.lineCap = .round
-        shape.strokeColor = color.cgColor
-        view.layer.addSublayer(shape)
-    }
-    
-    func drawBpmLight(shape: CAShapeLayer,
-                            view: UIView,
-                            x: CGFloat,
-                            y: CGFloat) {
-        
-        let path = UIBezierPath(arcCenter: CGPoint(x: x, y: y),
-                                radius: 2.5,
+    func drawPickerViewDotSeparator(shape: CAShapeLayer, view: UIView) {
+        let path = UIBezierPath(arcCenter: CGPoint(x: .barWidth / 2, y: 25),
+                                radius: 3,
                                 startAngle: 0,
-                                endAngle: Double.pi * 2,
+                                endAngle: .pi * 2,
                                 clockwise: true)
-        
         shape.path = path.cgPath
-        shape.fillColor = UIColor.red.cgColor
+        shape.fillColor = UIColor.myPaletteGold.cgColor
         view.layer.addSublayer(shape)
     }
+    
+    //MARK: - HeaderBarLocator
+    
+    func drawLocatorDotShape(shape: CAShapeLayer, view: UIView) {
+        let path = UIBezierPath(arcCenter: CGPoint(x: 6, y: 6),
+                                radius: 1.5,
+                                startAngle: 0,
+                                endAngle: .pi * 2,
+                                clockwise: true)
+        shape.path = path.cgPath
+        shape.fillColor = UIColor.green.cgColor
+        view.layer.addSublayer(shape)
+    }
+    
+    func drawLocatorFirstSircleShape(shape: CAShapeLayer, view: UIView) {
+        let path = UIBezierPath(arcCenter: CGPoint(x: 6, y: 6),
+                                radius: 6,
+                                startAngle: 0,
+                                endAngle: .pi * 2,
+                                clockwise: true)
+        shape.path = path.cgPath
+        shape.fillColor = .none
+        shape.lineWidth = 0.5
+        shape.strokeColor = UIColor.green.cgColor
+        view.layer.addSublayer(shape)
+    }
+    
+    func drawLocatorSecondSircleShape(shape: CAShapeLayer, view: UIView) {
+        let path = UIBezierPath(arcCenter: CGPoint(x: 6, y: 6),
+                                radius: 9,
+                                startAngle: 0,
+                                endAngle: .pi * 2,
+                                clockwise: true)
+        shape.path = path.cgPath
+        shape.fillColor = .none
+        shape.lineWidth = 0.5
+        shape.strokeColor = UIColor.green.withAlphaComponent(0.5).cgColor
+        view.layer.addSublayer(shape)
+    }
+    
 }

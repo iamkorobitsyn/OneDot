@@ -110,24 +110,33 @@ class Animator {
     
     //MARK: - GPSView
     
-        func animateGPSCursor(_ shape: UIImageView) {
-            let animation = CABasicAnimation(keyPath: "opacity")
-            animation.duration = 1.5
-            animation.fromValue = 0.6
-            animation.toValue = 1
-            animation.repeatCount = .infinity
-            shape.layer.add(animation, forKey: nil)
-        }
-    
-    //MARK: - MetronomePillinbg
-    
-    
-    func pillingBPM(_ shape: CAShapeLayer) {
-        let animation = CABasicAnimation(keyPath: "opacity")
-        animation.duration = 0.35
-        animation.fromValue = 1
-        animation.toValue = 0
-        shape.add(animation, forKey: nil)
+    func animateLocator(_ firstShape: CAShapeLayer, _ secondShape: CAShapeLayer) {
+        
+        let animationGroup = CAAnimationGroup()
+        animationGroup.duration = 2.5
+        animationGroup.repeatCount = .infinity
+        
+        let firstShapeAnimationStart = CABasicAnimation(keyPath: "opacity")
+        firstShapeAnimationStart.beginTime = 0
+        firstShapeAnimationStart.duration = 1.5
+        firstShapeAnimationStart.fromValue = 0.0
+        firstShapeAnimationStart.toValue = 1
+        
+        let firstShapeAnimationFinish = CABasicAnimation(keyPath: "opacity")
+        firstShapeAnimationFinish.beginTime = 1.5
+        firstShapeAnimationFinish.duration = 1
+        firstShapeAnimationFinish.fromValue = 1
+        firstShapeAnimationFinish.toValue = 1
+        
+        animationGroup.animations = [firstShapeAnimationStart, firstShapeAnimationFinish]
+        firstShape.add(animationGroup, forKey: "")
+        
+        let secondShapeAnimation = CABasicAnimation(keyPath: "opacity")
+        secondShapeAnimation.duration = 2.5
+        secondShapeAnimation.fromValue = 0.0
+        secondShapeAnimation.toValue = 1
+        secondShapeAnimation.repeatCount = .infinity
+        secondShape.add(secondShapeAnimation, forKey: "")
     }
     
 }

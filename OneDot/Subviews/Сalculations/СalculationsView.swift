@@ -17,13 +17,15 @@ class CalculationsView: UIVisualEffectView {
         case distance,
              speed,
              pace,
-             time
+             time,
+             hide
     }
     
     private let topButton: UIButton = UIButton()
     private let bottomButton: UIButton = UIButton()
     private let leftButton: UIButton = UIButton()
     private let rightButton: UIButton = UIButton()
+    private let hideButton: UIButton = UIButton()
     
     private let distanceTitle: UILabel = UILabel()
     private let speedTitle: UILabel = UILabel()
@@ -215,6 +217,7 @@ class CalculationsView: UIVisualEffectView {
         setButton(button: bottomButton, titleColor: .myPaletteGold)
         setButton(button: leftButton, titleColor: .myPaletteBlue)
         setButton(button: rightButton, titleColor: .myPaletteBlue)
+        setButton(button: hideButton, titleColor: .clear)
 
         setTitle(label: distanceTitle, titleText: "DISTANCE")
         setTitle(label: speedTitle, titleText: "KM / H")
@@ -236,6 +239,8 @@ class CalculationsView: UIVisualEffectView {
                                                     weight: .heavy,
                                                     width: .compressed)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        
+        hideButton.setImage(UIImage(named: "SSHide"), for: .normal)
     }
     
     //MARK: - SetTitle
@@ -261,6 +266,9 @@ class CalculationsView: UIVisualEffectView {
             pickerStateHandler?(.distance)
         } else if rightButton.isTouchInside {
             pickerStateHandler?(.time)
+        } else if hideButton.isTouchInside {
+            pickerStateHandler?(.hide)
+            self.isHidden = true
         }
     }
     
@@ -293,6 +301,11 @@ class CalculationsView: UIVisualEffectView {
             rightButton.leadingAnchor.constraint(equalTo: topButton.trailingAnchor),
             rightButton.heightAnchor.constraint(equalToConstant: 120),
             rightButton.widthAnchor.constraint(equalToConstant: (.barWidth - 100) / 2),
+            
+            hideButton.widthAnchor.constraint(equalToConstant: .iconSide),
+            hideButton.heightAnchor.constraint(equalToConstant: .iconSide),
+            hideButton.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            hideButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
             distanceTitle.centerXAnchor.constraint(equalTo: leftButton.centerXAnchor),
             distanceTitle.bottomAnchor.constraint(equalTo: leftButton.topAnchor, constant: -5),
