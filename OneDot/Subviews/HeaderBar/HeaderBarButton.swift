@@ -13,9 +13,7 @@ class HeaderBarButton: UIButton {
         case outdoor,
              indoor,
              notesIndoor,
-             notesOutdoor,
-             calculator,
-             settings
+             notesOutdoor
     }
     
     override init(frame: CGRect) {
@@ -26,17 +24,13 @@ class HeaderBarButton: UIButton {
         switch state {
             
         case .outdoor:
-            setImage("HBSOutdoorActive")
+            setImage("DSOutdoorActive")
         case .indoor:
-            setImage("HBSIndoorActive")
+            setImage("DSIndoorActive")
         case .notesIndoor:
-            setImage("HBSNoteIndoorActive")
+            setImage("DSNoteIndoorActive")
         case .notesOutdoor:
-            setImage("HBSNoteOutdoorActive")
-        case .calculator:
-            setImage("HBSCalculatorActive")
-        case .settings:
-            setImage("HBSSettingsActive")
+            setImage("DSNoteOutdoorActive")
         }
     }
     
@@ -44,17 +38,13 @@ class HeaderBarButton: UIButton {
         switch state {
             
         case .outdoor:
-            setImage("HBSOutdoorInactive")
+            setImage("DSOutdoorInactive")
         case .indoor:
-            setImage("HBSIndoorInactive")
+            setImage("DSIndoorInactive")
         case .notesIndoor:
-            setImage("HBSNoteIndoorInactive")
+            setImage("DSNoteIndoorInactive")
         case .notesOutdoor:
-            setImage("HBSNoteOutdoorInactive")
-        case .calculator:
-            setImage("HBSCalculatorInactive")
-        case .settings:
-            setImage("HBSSettingsInactive")
+            setImage("DSNoteOutdoorInactive")
         }
     }
     

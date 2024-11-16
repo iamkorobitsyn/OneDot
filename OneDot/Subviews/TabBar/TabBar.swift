@@ -24,6 +24,7 @@ class TabBar: UIView {
     }
     
     private let picker: UIPickerView = UIPickerView()
+    private let hidePickerButton: UIButton = UIButton()
 
     var updatePickerForState: ((PickerState) -> ())?
     
@@ -145,7 +146,15 @@ class TabBar: UIView {
         picker.isHidden = isHidden
         leftButton.isHidden = !isHidden
         rightButton.isHidden = !isHidden
+        hidePickerButton.isHidden = isHidden
         pickerIsHidden = isHidden
+    }
+    
+    
+    //MARK: - HidePicker
+    
+    @objc private func hidePicker() {
+        setPickerIsHidden(isHidden: true)
     }
 
     
@@ -161,6 +170,10 @@ class TabBar: UIView {
         addSubview(rightButton)
         
         addSubview(picker)
+        addSubview(hidePickerButton)
+        hidePickerButton.setImage(UIImage(named: "SSHideWhite"), for: .normal)
+        hidePickerButton.setImage(UIImage(named: "SSHideWhite"), for: .highlighted)
+        hidePickerButton.addTarget(self, action: #selector(hidePicker), for: .touchUpInside)
         
         updateButtonImages(status: .prepare)
         
@@ -177,6 +190,7 @@ class TabBar: UIView {
         leftButton.disableAutoresizingMask()
         rightButton.disableAutoresizingMask()
         picker.disableAutoresizingMask()
+        hidePickerButton.disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
             leftButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
@@ -192,7 +206,13 @@ class TabBar: UIView {
             picker.topAnchor.constraint(equalTo: topAnchor),
             picker.trailingAnchor.constraint(equalTo: trailingAnchor),
             picker.bottomAnchor.constraint(equalTo: bottomAnchor),
-            picker.leadingAnchor.constraint(equalTo: leadingAnchor)
+            picker.leadingAnchor.constraint(equalTo: leadingAnchor),
+            
+            hidePickerButton.widthAnchor.constraint(equalToConstant: 42),
+            hidePickerButton.heightAnchor.constraint(equalToConstant: 42),
+            hidePickerButton.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            hidePickerButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
+            
             ])
     }
 

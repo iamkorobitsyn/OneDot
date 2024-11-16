@@ -240,7 +240,7 @@ class CalculationsView: UIVisualEffectView {
                                                     width: .compressed)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         
-        hideButton.setImage(UIImage(named: "SSHide"), for: .normal)
+        hideButton.setImage(UIImage(named: "SSHideGray"), for: .normal)
     }
     
     //MARK: - SetTitle

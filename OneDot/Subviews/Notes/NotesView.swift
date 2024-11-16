@@ -27,7 +27,7 @@ class NotesView: UIVisualEffectView {
     
     private let topRightButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "SSHide"),
+        button.setBackgroundImage(UIImage(named: "SSHideGray"),
                                   for: .normal)
         return button
     }()

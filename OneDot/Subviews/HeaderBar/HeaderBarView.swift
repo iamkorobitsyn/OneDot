@@ -85,8 +85,8 @@ class HeaderBarView: UIView {
             outdoorButton.setInactiveState(.outdoor)
             indoorButton.setInactiveState(.indoor)
             notesButton.setInactiveState(.notesOutdoor)
-            calculatorButton.setInactiveState(.calculator)
-            settingsButton.setInactiveState(.settings)
+            calculatorButton.setImage(UIImage(named: "SSCalculator"), for: .normal)
+            settingsButton.setImage(UIImage(named: "SSSettings"), for: .normal)
     }
 
     @objc private func buttonTapped() {
@@ -149,14 +149,10 @@ class HeaderBarView: UIView {
     }
     
     private func activateCalculatorMode() {
-        calculatorButton.setActiveState(.calculator)
-        settingsButton.setInactiveState(.settings)
         buttonStateHandler?(.calculator)
     }
     
     private func activateSettingsMode() {
-        settingsButton.setActiveState(.settings)
-        calculatorButton.setInactiveState(.calculator)
         buttonStateHandler?(.settings)
     }
     
