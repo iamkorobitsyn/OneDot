@@ -143,6 +143,7 @@ class TabBar: UIView {
     //MARK: - SetPickerPrevious
     
     private func setPickerIsHidden(isHidden: Bool) {
+        feedbackGen.selectionChanged()
         picker.isHidden = isHidden
         leftButton.isHidden = !isHidden
         rightButton.isHidden = !isHidden
@@ -171,8 +172,8 @@ class TabBar: UIView {
         
         addSubview(picker)
         addSubview(hidePickerButton)
-        hidePickerButton.setImage(UIImage(named: "SSHideWhite"), for: .normal)
-        hidePickerButton.setImage(UIImage(named: "SSHideWhite"), for: .highlighted)
+        hidePickerButton.setImage(UIImage(named: "TBHide"), for: .normal)
+        hidePickerButton.setImage(UIImage(named: "TBHide"), for: .highlighted)
         hidePickerButton.addTarget(self, action: #selector(hidePicker), for: .touchUpInside)
         
         updateButtonImages(status: .prepare)
@@ -203,15 +204,15 @@ class TabBar: UIView {
             rightButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             rightButton.topAnchor.constraint(equalTo: topAnchor),
             
+            picker.widthAnchor.constraint(equalToConstant: .barWidth / 2),
+            picker.heightAnchor.constraint(equalToConstant: .tabBarHeight),
             picker.topAnchor.constraint(equalTo: topAnchor),
-            picker.trailingAnchor.constraint(equalTo: trailingAnchor),
-            picker.bottomAnchor.constraint(equalTo: bottomAnchor),
             picker.leadingAnchor.constraint(equalTo: leadingAnchor),
             
             hidePickerButton.widthAnchor.constraint(equalToConstant: 42),
             hidePickerButton.heightAnchor.constraint(equalToConstant: 42),
-            hidePickerButton.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            hidePickerButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
+            hidePickerButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            hidePickerButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4)
             
             ])
     }
@@ -288,10 +289,15 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
     
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+ 
+        pickerView.subviews.forEach {
+            $0.backgroundColor = .clear
+        }
+        
         let label = UILabel()
         label.textColor = .white
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 30, weight: .medium, width: .compressed)
+        label.font = UIFont.systemFont(ofSize: 30, weight: .light)
         
         switch currentPickerState {
             

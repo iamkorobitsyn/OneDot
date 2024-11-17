@@ -235,12 +235,11 @@ class CalculationsView: UIVisualEffectView {
         button.disableAutoresizingMask()
         button.setTitleColor(titleColor, for: .normal)
         button.titleLabel?.textAlignment = .center
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 30,
-                                                    weight: .heavy,
-                                                    width: .compressed)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 25,
+                                                    weight: .medium)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         
-        hideButton.setImage(UIImage(named: "SSHideGray"), for: .normal)
+        hideButton.setImage(UIImage(named: "SSHide"), for: .normal)
     }
     
     //MARK: - SetTitle
