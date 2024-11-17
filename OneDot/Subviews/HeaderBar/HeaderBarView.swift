@@ -87,6 +87,7 @@ class HeaderBarView: UIView {
             notesButton.setInactiveState(.notesOutdoor)
             calculatorButton.setImage(UIImage(named: "SSCalculator"), for: .normal)
             settingsButton.setImage(UIImage(named: "SSSettings"), for: .normal)
+        
     }
 
     @objc private func buttonTapped() {

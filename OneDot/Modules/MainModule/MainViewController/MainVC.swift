@@ -115,20 +115,22 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .indoor:
             getLocationState(indoorIs: true)
             UserDefaultsManager.shared.userIndoorStatus = true
+            tabBar.hidePicker()
 
         case .outdoor:
             getLocationState(indoorIs: false)
             UserDefaultsManager.shared.userIndoorStatus = false
+            tabBar.hidePicker()
    
         case .notes:
             notesView.isHidden = false
             calculationsView.isHidden = true
+            tabBar.hidePicker()
             
         case .calculator:
             calculationsView.isHidden = false
             notesView.isHidden = true
           
-            
         case .settings:
             let settingsVC: SettingsVC = SettingsVC()
             present(settingsVC, animated: true) 

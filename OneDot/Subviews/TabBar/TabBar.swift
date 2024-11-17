@@ -111,24 +111,28 @@ class TabBar: UIView {
     func calculationPickerStateHandler(state: CalculationsView.PickerState) {
         switch state {
         case .distance:
+            Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .doublePickerState)
             setPickerIsHidden(isHidden: false)
             currentPickerState = .distance
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.distance, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.distanceDecimal, inComponent: 1, animated: true)
         case .speed:
+            Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .doublePickerState)
             setPickerIsHidden(isHidden: false)
             currentPickerState = .speed
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.speed, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.speedDecimal, inComponent: 1, animated: true)
         case .pace:
+            Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .doublePickerState)
             setPickerIsHidden(isHidden: false)
             currentPickerState = .pace
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.paceMin, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.paceSec, inComponent: 1, animated: true)
         case .time:
+            Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .triplePickerState)
             setPickerIsHidden(isHidden: false)
             currentPickerState = .time
             picker.reloadAllComponents()
@@ -154,8 +158,9 @@ class TabBar: UIView {
     
     //MARK: - HidePicker
     
-    @objc private func hidePicker() {
+    @objc func hidePicker() {
         setPickerIsHidden(isHidden: true)
+        Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .defaultState)
     }
 
     
@@ -181,7 +186,7 @@ class TabBar: UIView {
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
         
-        Shaper.shared.drawTabBarSeparator(shape: separator, view: self)
+        Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .defaultState)
     }
     
     
@@ -284,7 +289,7 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-        return 50
+        return .barWidth / 6.5
     }
     
     

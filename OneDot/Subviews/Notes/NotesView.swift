@@ -27,7 +27,7 @@ class NotesView: UIVisualEffectView {
     
     private let topRightButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "SSHideGray"),
+        button.setBackgroundImage(UIImage(named: "SSHide"),
                                   for: .normal)
         return button
     }()
@@ -222,7 +222,7 @@ class NotesView: UIVisualEffectView {
         topCenterButton.isHidden = true
     }
     
-    @objc private func hideNotes() {
+    @objc func hideNotes() {
         self.isHidden = true
         notesScreenHideHandler?()
     }
