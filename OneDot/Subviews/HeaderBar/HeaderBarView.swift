@@ -10,12 +10,9 @@ import AudioToolbox
 
 class HeaderBarView: UIView {
     
-    var buttonStateHandler: ((MainVC.ViewsState)->())?
+    var buttonStateHandler: ((MainVC.Mode)->())?
 
     private let feedbackGen = UISelectionFeedbackGenerator()
-
-    private let exercises = FactoryExercises()
-    private var currentExercise: Exercise?
     
     private let visualEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView()
@@ -54,6 +51,15 @@ class HeaderBarView: UIView {
     private let locatorDotShape: CAShapeLayer = CAShapeLayer()
     private let locatorFirstCircleShape: CAShapeLayer = CAShapeLayer()
     private let locatorSecondCircleShape: CAShapeLayer = CAShapeLayer()
+    
+    enum Mode {
+        case outdoor
+        case outdoorNotes
+        case indoor
+        case calculations
+        case settings
+        
+    }
    
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -62,131 +68,68 @@ class HeaderBarView: UIView {
         setConstraints()
         didBecomeObserver()
 
-        pickerView.completion = { [weak self] exercise in
-            guard let self else { return }
-            currentExercise = exercise
-            print(exercise.titleName)
-        }
-        
-        UserDefaultsManager.shared.userIndoorStatus ? activateIndoorMode() : activateOutdoorMode()
-    }
-    
-    //MARK: - SetButtons
-    
-    private func setButtonTargets() {
-        
-        [outdoorButton, indoorButton, notesButton, calculatorButton, settingsButton].forEach {
-            $0.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        }
-
-    }
-    
-    private func clearButtonStates() {
-            outdoorButton.setInactiveState(.outdoor)
-            indoorButton.setInactiveState(.indoor)
-            notesButton.setInactiveState(.notesOutdoor)
-            calculatorButton.setImage(UIImage(named: "SSCalculator"), for: .normal)
-            settingsButton.setImage(UIImage(named: "SSSettings"), for: .normal)
+//        pickerView.completion = { [weak self] exercise in
+//            guard let self else { return }
+//            currentExercise = exercise
+//            print(exercise.titleName)
+//        }
+//        
         
     }
 
     @objc private func buttonTapped() {
         switch true {
         case outdoorButton.isTouchInside:
-            activateOutdoorMode()
+            buttonStateHandler?(.outdoor)
         case indoorButton.isTouchInside:
-            activateIndoorMode()
+            buttonStateHandler?(.indoor)
         case notesButton.isTouchInside:
-            activateNotesMode()
+            buttonStateHandler?(.outdoorNotes)
         case calculatorButton.isTouchInside:
-            activateCalculatorMode()
+            buttonStateHandler?(.calculator)
         case settingsButton.isTouchInside:
-            activateSettingsMode()
+            buttonStateHandler?(.settings)
         default:
             break
         }
     }
     
-    func activateOutdoorMode() {
-        clearButtonStates()
-        outdoorButton.setActiveState(.outdoor)
-        notesButton.isUserInteractionEnabled = true
-        buttonStateHandler?(.outdoor)
-        
-        pickerView.currentLocation = "street"
-        pickerView.picker.reloadAllComponents()
-        
-        UserDefaultsManager.shared.userIndoorStatus = false
-        
-        let row = UserDefaultsManager.shared.pickerRowOutdoor
-        pickerView.picker.selectRow(row, inComponent: 0, animated: true)
-        currentExercise = exercises.get(.street)[row]
-        pickerView.title.text = currentExercise?.titleName
+    func activateMode(mode: Mode) {
+        switch mode {
+            
+        case .outdoor:
+            outdoorButton.setActiveState(.outdoor)
+            outdoorButton.isUserInteractionEnabled = false
+            indoorButton.setInactiveState(.indoor)
+            indoorButton.isUserInteractionEnabled = true
+            notesButton.setInactiveState(.notesOutdoor)
+            notesButton.isUserInteractionEnabled = true
+
+            pickerView.updatePicker(outdoor: true, row: UserDefaultsManager.shared.pickerRowOutdoor)
+            
+        case .outdoorNotes:
+            outdoorButton.setActiveState(.outdoor)
+            outdoorButton.isUserInteractionEnabled = false
+            notesButton.setActiveState(.notesOutdoor)
+            notesButton.isUserInteractionEnabled = false
+            
+        case .indoor:
+            indoorButton.setActiveState(.indoor)
+            notesButton.setActiveState(.notesIndoor)
+            indoorButton.isUserInteractionEnabled = false
+            notesButton.isUserInteractionEnabled = false
+            outdoorButton.setInactiveState(.outdoor)
+            outdoorButton.isUserInteractionEnabled = true
+            
+            pickerView.updatePicker(outdoor: false, row: UserDefaultsManager.shared.pickerRowIndoor)
+
+        case .calculations:
+            print("work")
+        case .settings:
+            print("work")
+            
+        }
     }
-    
-    private func activateIndoorMode() {
-        clearButtonStates()
-        indoorButton.setActiveState(.indoor)
-        notesButton.setActiveState(.notesIndoor)
-        notesButton.isUserInteractionEnabled = false
-        buttonStateHandler?(.indoor)
-        
-        pickerView.currentLocation = "room"
-        pickerView.picker.reloadAllComponents()
-        UserDefaultsManager.shared.userIndoorStatus = true
-        
-        let row = UserDefaultsManager.shared.pickerRowIndoor
-        pickerView.picker.selectRow(row, inComponent: 0, animated: true)
-        currentExercise = nil
-        currentExercise = exercises.get(.room)[row]
-        pickerView.title.text = currentExercise?.titleName
-    }
-    
-    private func activateNotesMode() {
-        clearButtonStates()
-        outdoorButton.setActiveState(.outdoor)
-        notesButton.setActiveState(.notesOutdoor)
-        buttonStateHandler?(.notes)
-    }
-    
-    private func activateCalculatorMode() {
-        buttonStateHandler?(.calculator)
-    }
-    
-    private func activateSettingsMode() {
-        buttonStateHandler?(.settings)
-    }
-    
-    //MARK: - ExerciseStates
-    
-//    private func setExerciseState(indoor: Bool) {
-//        feedbackGen.selectionChanged()
-//        gpsView.isHidden = indoor
-//        
-//        if indoor == true {
-//            pickerView.currentLocation = "room"
-//            pickerView.picker.reloadAllComponents()
-//            UserDefaultsManager.shared.userIndoorStatus = true
-//            
-//            let row = UserDefaultsManager.shared.pickerRowIndoor
-//            pickerView.picker.selectRow(row, inComponent: 0, animated: true)
-//            currentExercise = nil
-//            currentExercise = exercises.get(.room)[row]
-//            pickerView.title.text = currentExercise?.titleName
-//            pickerView.titleView.image = UIImage(named: currentExercise?.titleIcon ?? "")
-//        } else {
-//            pickerView.currentLocation = "street"
-//            pickerView.picker.reloadAllComponents()
-//            
-//            UserDefaultsManager.shared.userIndoorStatus = false
-//            
-//            let row = UserDefaultsManager.shared.pickerRowOutdoor
-//            pickerView.picker.selectRow(row, inComponent: 0, animated: true)
-//            currentExercise = exercises.get(.street)[row]
-//            pickerView.title.text = currentExercise?.titleName
-//            pickerView.titleView.image = UIImage(named: currentExercise?.titleIcon ?? "")
-//        }
-//    }
     
     
     //MARK: - SetViews
@@ -208,7 +151,12 @@ class HeaderBarView: UIView {
         addSubview(locatorView)
         addSubview(pickerView)
         
-        setButtonTargets()
+        [outdoorButton, indoorButton, notesButton, calculatorButton, settingsButton].forEach {
+            $0.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        }
+        
+        calculatorButton.setImage(UIImage(named: "SSCalculator"), for: .normal)
+        settingsButton.setImage(UIImage(named: "SSSettings"), for: .normal)
         
         Shaper.shared.drawToolsStackSeparator(shape: toolsStackSeparator, view: self)
         Shaper.shared.drawLocatorDotShape(shape: locatorDotShape, view: locatorView)

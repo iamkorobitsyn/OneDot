@@ -107,11 +107,11 @@ class UserDefaultsManager {
     
     //MARK: - UserIndoor&ExersiseStatus
     
-    var userIndoorStatus: Bool {
+    var outdoorStatus: Bool {
         get {
-            return userDefaults.value(forKey: "userIndoorStatus") as? Bool ?? false
+            return userDefaults.value(forKey: "outdoorStatus") as? Bool ?? false
         } set {
-            userDefaults.setValue(newValue, forKey: "userIndoorStatus")
+            userDefaults.setValue(newValue, forKey: "outdoorStatus")
             userDefaults.synchronize()
         }
     }

@@ -23,10 +23,10 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     var tabBarHandler: ((Bool)->())?
     
-    enum ViewsState {
-        case indoor
+    enum Mode {
         case outdoor
-        case notes
+        case outdoorNotes
+        case indoor
         case calculator
         case settings
     }
@@ -43,10 +43,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
         checkLocationEnabled()
         
         setClosures()
-        
-        
-        
-        getLocationState(indoorIs: UserDefaultsManager.shared.userIndoorStatus)
+ 
+        UserDefaultsManager.shared.outdoorStatus ? activateMode(mode: .indoor) : activateMode(mode: .outdoor)
         
     }
     
@@ -54,14 +52,14 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     private func setClosures() {
         
-        headerBar.buttonStateHandler = { [weak self] state in
+        headerBar.buttonStateHandler = { [weak self] mode in
             guard let self else {return}
-            setViewsState(state)
+            activateMode(mode: mode)
         }
         
-        notesView.notesScreenHideHandler = { [weak self] in
-            guard let self else {return}
-            headerBar.activateOutdoorMode()}
+//        notesView.notesScreenHideHandler = { [weak self] in
+//            guard let self else {return}
+//            headerBar.activateOutdoorMode()}
         
         calculationsView.pickerStateHandler = { [weak self] state in
             guard let self else {return}
@@ -94,39 +92,33 @@ class MainVC: UIViewController, CAAnimationDelegate {
         }
     }
     
-    //MARK: - GetLocationState
-    
-    private func getLocationState(indoorIs: Bool) {
-
-        if indoorIs == true {
-            notesView.isHidden = false
-            notesView.setState(state: .indoor)
-        } else {
-            notesView.isHidden = true
-            notesView.setState(state: .outdoor)
-        }
-    }
-    
     //MARK: - SetViewsState
     
-    private func setViewsState(_ state: ViewsState) {
-        switch state {
+    private func activateMode(mode: Mode) {
+        switch mode {
             
-        case .indoor:
-            getLocationState(indoorIs: true)
-            UserDefaultsManager.shared.userIndoorStatus = true
-            tabBar.hidePicker()
-
         case .outdoor:
-            getLocationState(indoorIs: false)
-            UserDefaultsManager.shared.userIndoorStatus = false
+            UserDefaultsManager.shared.outdoorStatus = true
+            headerBar.activateMode(mode: .outdoor)
             tabBar.hidePicker()
+            
+            notesView.isHidden = true
+            notesView.setState(state: .outdoor)
    
-        case .notes:
+        case .outdoorNotes:
+            headerBar.activateMode(mode: .outdoorNotes)
             notesView.isHidden = false
             calculationsView.isHidden = true
             tabBar.hidePicker()
             
+        case .indoor:
+            UserDefaultsManager.shared.outdoorStatus = false
+            headerBar.activateMode(mode: .indoor)
+            tabBar.hidePicker()
+            
+            notesView.isHidden = false
+            notesView.setState(state: .indoor)
+
         case .calculator:
             calculationsView.isHidden = false
             notesView.isHidden = true

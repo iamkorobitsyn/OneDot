@@ -213,7 +213,7 @@ class NotesView: UIVisualEffectView {
         tableView.isEditing = false
         tableView.transform.ty = 0
         
-        if UserDefaultsManager.shared.userIndoorStatus == false {
+        if UserDefaultsManager.shared.outdoorStatus == false {
             setState(state: .indoor)
         } else {
             setState(state: .outdoor)
@@ -335,7 +335,7 @@ extension NotesView: UITableViewDataSource {
                 
                 cell.placeholderState(notes[indexPath.row].editing)
                 
-                if UserDefaultsManager.shared.userIndoorStatus == false {
+                if UserDefaultsManager.shared.outdoorStatus == false {
                     setState(state: .outdoor)
                 } else {
                     setState(state: .indoor)
@@ -377,7 +377,7 @@ extension NotesView: UITableViewDelegate   {
     func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
         refreshNotesIndex()
         
-        if UserDefaultsManager.shared.userIndoorStatus == false {
+        if UserDefaultsManager.shared.outdoorStatus == false {
             setState(state: .outdoor)
         } else {
             setState(state: .indoor)

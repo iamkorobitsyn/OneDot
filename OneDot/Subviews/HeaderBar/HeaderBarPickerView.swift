@@ -10,7 +10,7 @@ import UIKit
 
 class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
     
-    var currentLocation: String = ""
+    var outdoorLocation: Bool = true
     
     let exercises = FactoryExercises()
     var completion: ((Exercise) -> ())?
@@ -31,11 +31,29 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        picker.dataSource = self
+        picker.delegate = self
+        
         setViews()
         setConstraints()
+
+    }
+    
+    func updatePicker(outdoor: Bool, row: Int) {
+        picker.reloadAllComponents()
+
+        if outdoor {
+            outdoorLocation = outdoor
+            picker.selectRow(row, inComponent: 0, animated: true)
+            let currentExercise = exercises.get(.street)[row]
+            title.text = currentExercise.titleName
+        } else {
+            outdoorLocation = outdoor
+            picker.selectRow(row, inComponent: 0, animated: true)
+            let currentExercise = exercises.get(.room)[row]
+            title.text = currentExercise.titleName
+        }
         
-        Shaper.shared.drawPickerViewLineSeparator(shape: lineSeparator, view: picker)
-        Shaper.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }
     
         
@@ -46,18 +64,17 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
-        if currentLocation == "room" {
+        if outdoorLocation {
             return exercises.get(.room).count
-        }
-        if currentLocation == "street" {
+        } else {
             return exercises.get(.street).count
         }
-            return 0
+
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        if currentLocation == "room" {
+        if outdoorLocation == false {
             for index in 0..<exercises.get(.room).count {
                 if row == index {
                     UserDefaultsManager.shared.pickerRowIndoor = row
@@ -67,7 +84,7 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
             }
         }
         
-        if currentLocation == "street" {
+        if outdoorLocation == true {
                 for index in 0..<exercises.get(.street).count {
                     if row == index {
                         UserDefaultsManager.shared.pickerRowOutdoor = row
@@ -93,7 +110,7 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         
         
         
-        if currentLocation == "room" {
+        if outdoorLocation == false {
             let imageView = UIImageView()
             imageView.image = UIImage(named:
                                         exercises.get(.room)[row].pickerIcon)
@@ -104,7 +121,7 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
             return imageView
         }
         
-        if currentLocation == "street" {
+        if outdoorLocation == true {
             let imageView = UIImageView()
             imageView.image = UIImage(named:
                                     exercises.get(.street)[row].pickerIcon)
@@ -121,8 +138,6 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
     private func setViews() {
         addSubview(picker)
         picker.backgroundColor = .none
-        picker.dataSource = self
-        picker.delegate = self
         
         let rotationAngle: CGFloat = -90 * (.pi / 180)
         picker.transform = CGAffineTransform(rotationAngle: rotationAngle)
@@ -132,6 +147,8 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         title.font = UIFont.systemFont(ofSize: 20, weight: .medium, width: .compressed)
         title.textColor = .myPaletteGray
 
+        Shaper.shared.drawPickerViewLineSeparator(shape: lineSeparator, view: picker)
+        Shaper.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }
     
     private func setConstraints() {
