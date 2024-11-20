@@ -9,6 +9,19 @@ import UIKit
 
 class TabBar: UIView {
     
+    var buttonStateHandler: ((MainVC.Mode)->())?
+    
+    enum Mode {
+        case prepare
+        case prepareToStart
+        case tracking
+        case calculations
+    }
+    
+    var prepareState: Bool = true
+    var prepareToStartState: Bool = false
+    var trackingState: Bool = false
+    
     typealias UD = UserDefaultsManager
     
     private let feedbackGen = UISelectionFeedbackGenerator()
@@ -17,11 +30,7 @@ class TabBar: UIView {
     private let rightButton: UIButton = UIButton()
     private let separator: CAShapeLayer = CAShapeLayer()
     
-    private enum TabBarState {
-        case prepare
-        case prepareToStart
-        case tracking
-    }
+    
     
     private let picker: UIPickerView = UIPickerView()
 
@@ -37,7 +46,7 @@ class TabBar: UIView {
     private var pickerIsHidden: Bool = false
 
     private var currentPickerState: PickerState?
-    private var currentTabBarState: TabBarState = .prepare
+    private var currentTabBarState: Mode = .prepare
 
     var previousProfileHandler: (() -> Void)?
 
@@ -52,42 +61,10 @@ class TabBar: UIView {
         setPickerIsHidden(isHidden: true)
     }
     
-    //MARK: - ButtonMethods
+    //MARK: - ActivateMode
     
-    @objc private func leftTapped() {
-        feedbackGen.selectionChanged()
-        
-        switch currentTabBarState {
-        case .prepare:
-            currentTabBarState = .prepareToStart
-            updateButtonImages(status: .prepareToStart)
-            Animator.shared.AnimateStartIcon(leftButton.layer)
-        case .prepareToStart:
-            currentTabBarState = .tracking
-            updateButtonImages(status: .tracking)
-            leftButton.layer.removeAllAnimations()
-        case .tracking:
-            currentTabBarState = .prepareToStart
-            updateButtonImages(status: .prepareToStart)
-            Animator.shared.AnimateStartIcon(leftButton.layer)
-        }
-    }
-    
-    @objc private func rightTapped() {
-        feedbackGen.selectionChanged()
-        
-        switch currentTabBarState {
-        case .prepare:
-            previousProfileHandler?()
-        case .prepareToStart, .tracking:
-            currentTabBarState = .prepare
-            updateButtonImages(status: .prepare)
-            leftButton.layer.removeAllAnimations()
-        }
-    }
-    
-    private func updateButtonImages(status: TabBarState) {
-        switch status {
+    func activateMode(mode: Mode) {
+        switch mode {
             
         case .prepare:
             leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
@@ -104,6 +81,41 @@ class TabBar: UIView {
             leftButton.setImage(UIImage(named: "TBPause"), for: .highlighted)
             rightButton.setImage(UIImage(named: "TBStop"), for: .normal)
             rightButton.setImage(UIImage(named: "TBStop"), for: .highlighted)
+        case .calculations:
+            print("calc")
+        }
+    }
+    
+    //MARK: - ButtonMethods
+    
+    @objc private func leftTapped() {
+        feedbackGen.selectionChanged()
+        
+        if prepareState {
+            prepareState.toggle()
+            prepareToStartState.toggle()
+            buttonStateHandler?(.prepareToStart)
+        } else if prepareToStartState {
+            prepareToStartState.toggle()
+            trackingState.toggle()
+            buttonStateHandler?(.tracking)
+        } else if trackingState {
+            trackingState.toggle()
+            prepareToStartState.toggle()
+            buttonStateHandler?(.prepareToStart)
+        }
+    }
+    
+    @objc private func rightTapped() {
+        feedbackGen.selectionChanged()
+        
+        if prepareState {
+            previousProfileHandler?()
+        } else if prepareToStartState || trackingState {
+            prepareToStartState = false
+            trackingState = false
+            prepareState = true
+            buttonStateHandler?(.prepare)
         }
     }
     
@@ -145,12 +157,14 @@ class TabBar: UIView {
     
     //MARK: - SetPickerPrevious
     
-    private func setPickerIsHidden(isHidden: Bool) {
+    func setPickerIsHidden(isHidden: Bool) {
         feedbackGen.selectionChanged()
-        picker.isHidden = isHidden
-        leftButton.isHidden = !isHidden
-        rightButton.isHidden = !isHidden
-        pickerIsHidden = isHidden
+        
+        if isHidden {
+            backgroundColor = .red
+        } else {
+            backgroundColor = .none
+        }
     }
     
     
@@ -175,7 +189,7 @@ class TabBar: UIView {
         
         addSubview(picker)
         
-        updateButtonImages(status: .prepare)
+        activateMode(mode: .prepare)
         
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)

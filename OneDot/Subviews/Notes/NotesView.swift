@@ -10,7 +10,7 @@ import UIKit
 
 class NotesView: UIVisualEffectView {
     
-    enum State {
+    enum Mode {
         case outdoor,
              indoor,
              editRows,
@@ -25,14 +25,14 @@ class NotesView: UIVisualEffectView {
     private let editNoteCellID = "editNoteCell"
     private var bottomIndentHeight: CGFloat = 100
     
-    private let topRightButton: UIButton = {
+    private let hideButton: UIButton = {
         let button = UIButton()
         button.setBackgroundImage(UIImage(named: "SSHide"),
                                   for: .normal)
         return button
     }()
     
-    private let bottomRightButton: UIButton = {
+    private let addNoteButton: UIButton = {
         let button = UIButton()
         button.setBackgroundImage(UIImage(named: "SSAdd"),
                                   for: .normal)
@@ -41,7 +41,7 @@ class NotesView: UIVisualEffectView {
         return button
     }()
     
-    private let topLeftButton: UIButton = {
+    private let sortNoteButton: UIButton = {
         let button = UIButton()
         button.setBackgroundImage(UIImage(named: "SSNotesSettings"),
                                   for: .normal)
@@ -50,7 +50,7 @@ class NotesView: UIVisualEffectView {
         return button
     }()
     
-    private let topCenterButton: UIButton = {
+    private let checkMarkButton: UIButton = {
         let button = UIButton()
         button.isHidden = true
         button.setImage(UIImage(named: "SSCheckMark"),
@@ -91,31 +91,31 @@ class NotesView: UIVisualEffectView {
         
     }
     
-    //MARK: - SetState
+    //MARK: - ActivateMode
     
-    func setState(state: State) {
-        switch state {
+    func activateMode(mode: Mode) {
+        switch mode {
             
         case .outdoor:
-            topLeftButton.isHidden = false
-            topCenterButton.isHidden = true
-            topRightButton.isHidden = false
-            bottomRightButton.isHidden = false
+            sortNoteButton.isHidden = false
+            checkMarkButton.isHidden = true
+            hideButton.isHidden = false
+            addNoteButton.isHidden = false
         case .indoor:
-            topLeftButton.isHidden = false
-            topCenterButton.isHidden = true
-            topRightButton.isHidden = true
-            bottomRightButton.isHidden = false
+            sortNoteButton.isHidden = false
+            checkMarkButton.isHidden = true
+            hideButton.isHidden = true
+            addNoteButton.isHidden = false
         case .editRows:
-            topLeftButton.isHidden = true
-            topCenterButton.isHidden = false
-            topRightButton.isHidden = true
-            bottomRightButton.isHidden = true
+            sortNoteButton.isHidden = true
+            checkMarkButton.isHidden = false
+            hideButton.isHidden = true
+            addNoteButton.isHidden = true
         case .inactive:
-            topLeftButton.isHidden = true
-            topCenterButton.isHidden = true
-            topRightButton.isHidden = true
-            bottomRightButton.isHidden = true
+            sortNoteButton.isHidden = true
+            checkMarkButton.isHidden = true
+            hideButton.isHidden = true
+            addNoteButton.isHidden = true
         }
     }
     
@@ -159,21 +159,21 @@ class NotesView: UIVisualEffectView {
         
         contentView.addSubview(tableView)
         contentView.clipsToBounds = true
-        contentView.insertSubview(topRightButton, aboveSubview: tableView)
-        contentView.insertSubview(bottomRightButton, aboveSubview: tableView)
-        contentView.insertSubview(topLeftButton, aboveSubview: tableView)
-        contentView.insertSubview(topCenterButton, aboveSubview: tableView)
+        contentView.insertSubview(hideButton, aboveSubview: tableView)
+        contentView.insertSubview(addNoteButton, aboveSubview: tableView)
+        contentView.insertSubview(sortNoteButton, aboveSubview: tableView)
+        contentView.insertSubview(checkMarkButton, aboveSubview: tableView)
         
-        topRightButton.addTarget(self, action: #selector(hideNotes),
+        hideButton.addTarget(self, action: #selector(hideNotes),
                                  for: .touchUpInside)
         
-        bottomRightButton.addTarget(self, action: #selector(addNote),
+        addNoteButton.addTarget(self, action: #selector(addNote),
                                     for: .touchUpInside)
         
-        topLeftButton.addTarget(self, action: #selector(notesEditBegin),
+        sortNoteButton.addTarget(self, action: #selector(notesEditBegin),
                                 for: .touchUpInside)
         
-        topCenterButton.addTarget(self, action: #selector(notesEditDone),
+        checkMarkButton.addTarget(self, action: #selector(notesEditDone),
                                 for: .touchUpInside)
     }
     
@@ -205,21 +205,22 @@ class NotesView: UIVisualEffectView {
         
         tableView.transform.ty = 60
         
-        setState(state: .editRows)
-        topCenterButton.isHidden = false
+        activateMode(mode: .editRows)
+        checkMarkButton.isHidden = false
     }
     
     @objc private func notesEditDone() {
+        
         tableView.isEditing = false
         tableView.transform.ty = 0
         
-        if UserDefaultsManager.shared.outdoorStatus == false {
-            setState(state: .indoor)
+        if UserDefaultsManager.shared.outdoorStatus {
+            activateMode(mode: .outdoor)
         } else {
-            setState(state: .outdoor)
+            activateMode(mode: .indoor)
         }
         
-        topCenterButton.isHidden = true
+        checkMarkButton.isHidden = true
     }
     
     @objc func hideNotes() {
@@ -231,10 +232,10 @@ class NotesView: UIVisualEffectView {
     
     private func setConstraints() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        topRightButton.translatesAutoresizingMaskIntoConstraints = false
-        bottomRightButton.translatesAutoresizingMaskIntoConstraints = false
-        topLeftButton.translatesAutoresizingMaskIntoConstraints = false
-        topCenterButton.translatesAutoresizingMaskIntoConstraints = false
+        hideButton.translatesAutoresizingMaskIntoConstraints = false
+        addNoteButton.translatesAutoresizingMaskIntoConstraints = false
+        sortNoteButton.translatesAutoresizingMaskIntoConstraints = false
+        checkMarkButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             
@@ -243,36 +244,36 @@ class NotesView: UIVisualEffectView {
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             
-            topRightButton.widthAnchor.constraint(equalToConstant: 42),
-            topRightButton.heightAnchor.constraint(equalToConstant: 42),
-            topRightButton.topAnchor.constraint(equalTo: tableView.topAnchor,
+            hideButton.widthAnchor.constraint(equalToConstant: 42),
+            hideButton.heightAnchor.constraint(equalToConstant: 42),
+            hideButton.topAnchor.constraint(equalTo: tableView.topAnchor,
                                              constant: 10),
-            topRightButton.trailingAnchor.constraint(equalTo: tableView.trailingAnchor,
+            hideButton.trailingAnchor.constraint(equalTo: tableView.trailingAnchor,
                                                   constant: -10),
             
-            bottomRightButton.widthAnchor.constraint(equalToConstant: 42),
-            bottomRightButton.heightAnchor.constraint(equalToConstant: 42),
-            bottomRightButton.centerYAnchor.constraint(equalTo:
+            addNoteButton.widthAnchor.constraint(equalToConstant: 42),
+            addNoteButton.heightAnchor.constraint(equalToConstant: 42),
+            addNoteButton.centerYAnchor.constraint(equalTo:
                                                   tableView.centerYAnchor,
                         constant: -(UIScreen.main.bounds.height - 300) / 8),
-            bottomRightButton.trailingAnchor.constraint(equalTo: tableView.trailingAnchor,
+            addNoteButton.trailingAnchor.constraint(equalTo: tableView.trailingAnchor,
                                                   constant: -10),
             
-            topLeftButton.widthAnchor.constraint(equalToConstant: 42),
-            topLeftButton.heightAnchor.constraint(equalToConstant: 42),
-            topLeftButton.topAnchor.constraint(equalTo: tableView.topAnchor,
+            sortNoteButton.widthAnchor.constraint(equalToConstant: 42),
+            sortNoteButton.heightAnchor.constraint(equalToConstant: 42),
+            sortNoteButton.topAnchor.constraint(equalTo: tableView.topAnchor,
                                              constant: 10),
-            topLeftButton.leadingAnchor.constraint(equalTo: tableView.leadingAnchor,
+            sortNoteButton.leadingAnchor.constraint(equalTo: tableView.leadingAnchor,
                                                   constant: 10),
             
-            topCenterButton.topAnchor.constraint(equalTo: 
+            checkMarkButton.topAnchor.constraint(equalTo: 
                                             tableView.topAnchor,
                                             constant: -0.5),
-            topCenterButton.heightAnchor.constraint(equalToConstant: 60),
-            topCenterButton.leadingAnchor.constraint(equalTo:
+            checkMarkButton.heightAnchor.constraint(equalToConstant: 60),
+            checkMarkButton.leadingAnchor.constraint(equalTo:
                                             tableView.leadingAnchor,
                                             constant: -0.5),
-            topCenterButton.trailingAnchor.constraint(equalTo:
+            checkMarkButton.trailingAnchor.constraint(equalTo:
                                             tableView.trailingAnchor,
                                             constant: 0.5)
         ])
@@ -307,11 +308,11 @@ extension NotesView: UITableViewDataSource {
                 cell.textEditing = notes[indexPath.row].editing
                 cell.placeholderState(cell.textEditing)
 
-            cell.contentCompletion = { [weak self] in
+                cell.contentCompletion = { [weak self] in
                 guard let self else {return}
                 
                 tableView.beginUpdates()
-                setState(state: .inactive)
+                activateMode(mode: .inactive)
                 CoreDataManager.shared.editNote(notes[indexPath.row],
                                                 rowHeight: cell.contentHeight,
                                                 text: cell.textView.text,
@@ -322,7 +323,7 @@ extension NotesView: UITableViewDataSource {
                                       at: .top, animated: true)
             }
             
-            cell.didEndEditingCompletion = { [weak self] in
+                cell.notesEndEditingHandler = { [weak self] in
                 guard let self else {return}
                 tableView.endEditing(true)
                 tableView.beginUpdates()
@@ -335,11 +336,7 @@ extension NotesView: UITableViewDataSource {
                 
                 cell.placeholderState(notes[indexPath.row].editing)
                 
-                if UserDefaultsManager.shared.outdoorStatus == false {
-                    setState(state: .outdoor)
-                } else {
-                    setState(state: .indoor)
-                }
+                UserDefaultsManager.shared.outdoorStatus ? activateMode(mode: .outdoor) : activateMode(mode: .indoor)
                 
                 tableView.endUpdates()
             }
@@ -371,16 +368,16 @@ extension NotesView: UITableViewDelegate   {
     }
     
     func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
-        setState(state: .inactive)
+        activateMode(mode: .inactive)
     }
     
     func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
         refreshNotesIndex()
         
         if UserDefaultsManager.shared.outdoorStatus == false {
-            setState(state: .outdoor)
+            activateMode(mode: .outdoor)
         } else {
-            setState(state: .indoor)
+            activateMode(mode: .indoor)
         }
         
         self.tableView.isUserInteractionEnabled = true

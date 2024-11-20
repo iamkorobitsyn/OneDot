@@ -11,7 +11,7 @@ import UIKit
 class NotesTableViewEditCell: UITableViewCell {
     
     var contentCompletion: (() -> Void)?
-    var didEndEditingCompletion: (() -> Void)?
+    var notesEndEditingHandler: (() -> Void)?
     
     var rCounter: Int = 0
     var contentLimitHeight: CGFloat = 100
@@ -89,7 +89,7 @@ class NotesTableViewEditCell: UITableViewCell {
     }
     
     @objc private func doneTapped() {
-        didEndEditingCompletion?()
+        notesEndEditingHandler?()
     }
     
     //MARK: - SetConstraints
@@ -154,7 +154,7 @@ extension NotesTableViewEditCell: UITextViewDelegate, UITextInteractionDelegate 
             contentHeight = 100
         }
         
-        didEndEditingCompletion?()
+        notesEndEditingHandler?()
     }
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {

@@ -27,8 +27,11 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case outdoor
         case outdoorNotes
         case indoor
-        case calculator
+        case calculations
         case settings
+        case prepare
+        case prepareToStart
+        case tracking
     }
     
     //MARK: - ViewDidLoad
@@ -57,9 +60,9 @@ class MainVC: UIViewController, CAAnimationDelegate {
             activateMode(mode: mode)
         }
         
-//        notesView.notesScreenHideHandler = { [weak self] in
-//            guard let self else {return}
-//            headerBar.activateOutdoorMode()}
+        notesView.notesScreenHideHandler = { [weak self] in
+            guard let self else {return}
+            activateMode(mode: .outdoor)}
         
         calculationsView.pickerStateHandler = { [weak self] state in
             guard let self else {return}
@@ -69,6 +72,11 @@ class MainVC: UIViewController, CAAnimationDelegate {
         tabBar.updatePickerForState = { [weak self] state in
             guard let self else {return}
             calculationsView.updatePickerForState(state: state)
+        }
+        
+        tabBar.buttonStateHandler = { [weak self] mode in
+            guard let self else {return}
+            activateMode(mode: mode)
         }
         
         tabBar.previousProfileHandler = {
@@ -100,10 +108,11 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .outdoor:
             UserDefaultsManager.shared.outdoorStatus = true
             headerBar.activateMode(mode: .outdoor)
+            notesView.activateMode(mode: .outdoor)
             tabBar.hidePicker()
             
             notesView.isHidden = true
-            notesView.setState(state: .outdoor)
+            
    
         case .outdoorNotes:
             headerBar.activateMode(mode: .outdoorNotes)
@@ -114,19 +123,32 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .indoor:
             UserDefaultsManager.shared.outdoorStatus = false
             headerBar.activateMode(mode: .indoor)
+            notesView.activateMode(mode: .indoor)
             tabBar.hidePicker()
             
             notesView.isHidden = false
-            notesView.setState(state: .indoor)
+            
 
-        case .calculator:
+        case .calculations:
             calculationsView.isHidden = false
             notesView.isHidden = true
+            tabBar.setPickerIsHidden(isHidden: false)
+            print("work")
           
         case .settings:
             let settingsVC: SettingsVC = SettingsVC()
-            present(settingsVC, animated: true) 
+            present(settingsVC, animated: true)
+            
+        case .prepare:
+            tabBar.activateMode(mode: .prepare)
+            
+        case .prepareToStart:
+            tabBar.activateMode(mode: .prepareToStart)
+            
+        case .tracking:
+            tabBar.activateMode(mode: .tracking)
         }
+        
     }
     
     

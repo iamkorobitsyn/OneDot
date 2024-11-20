@@ -36,62 +36,47 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         
         setViews()
         setConstraints()
-
     }
     
-    func updatePicker(outdoor: Bool, row: Int) {
+    func updatePicker(outdoorIs: Bool, row: Int) {
+        
+        outdoorLocation = outdoorIs
         picker.reloadAllComponents()
-
-        if outdoor {
-            outdoorLocation = outdoor
-            picker.selectRow(row, inComponent: 0, animated: true)
-            let currentExercise = exercises.get(.street)[row]
-            title.text = currentExercise.titleName
-        } else {
-            outdoorLocation = outdoor
-            picker.selectRow(row, inComponent: 0, animated: true)
-            let currentExercise = exercises.get(.room)[row]
-            title.text = currentExercise.titleName
-        }
-        
+        picker.selectRow(row, inComponent: 0, animated: true)
+        getTitle(row: row)
     }
     
+    
+    private func getTitle(row: Int) {
         
+        if outdoorLocation {
+            title.text = exercises.get(.street)[row].titleName
+        } else {
+            title.text = exercises.get(.room)[row].titleName
+        }
+    }
+    
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        
         return 1
     }
     
+    
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
-        if outdoorLocation {
-            return exercises.get(.room).count
-        } else {
-            return exercises.get(.street).count
-        }
-
+        return outdoorLocation ? exercises.get(.street).count : exercises.get(.room).count
     }
+    
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        if outdoorLocation == false {
-            for index in 0..<exercises.get(.room).count {
-                if row == index {
-                    UserDefaultsManager.shared.pickerRowIndoor = row
-                    title.text = exercises.get(.room)[row].titleName
-                    completion?(exercises.get(.room)[row])
-                }
-            }
-        }
+        getTitle(row: row)
         
-        if outdoorLocation == true {
-                for index in 0..<exercises.get(.street).count {
-                    if row == index {
-                        UserDefaultsManager.shared.pickerRowOutdoor = row
-                        title.text = exercises.get(.street)[row].titleName
-                        completion?(exercises.get(.street)[row]) 
-                }
-            }
+        if outdoorLocation {
+            UserDefaultsManager.shared.pickerRowOutdoor = row
+        } else {
+            UserDefaultsManager.shared.pickerRowIndoor = row
         }
     }
     
@@ -104,43 +89,24 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
     }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        pickerView.subviews.forEach {
-            $0.backgroundColor = .clear
-        }
         
+        pickerView.subviews.forEach{$0.backgroundColor = .clear}
         
+        let imageView = UIImageView()
+        imageView.backgroundColor = .none
+        imageView.contentMode = .scaleAspectFit
+        imageView.transform = CGAffineTransform(rotationAngle: 90 * (.pi / 180))
+
+        let exerciseList = outdoorLocation ? exercises.get(.street) : exercises.get(.room)
+        imageView.image = UIImage(named: exerciseList[row].pickerIcon)
         
-        if outdoorLocation == false {
-            let imageView = UIImageView()
-            imageView.image = UIImage(named:
-                                        exercises.get(.room)[row].pickerIcon)
-            imageView.backgroundColor = .none
-            imageView.contentMode = .scaleAspectFit
-            let rotationAngle: CGFloat = 90 * (.pi / 180)
-            imageView.transform = CGAffineTransform(rotationAngle: rotationAngle)
-            return imageView
-        }
-        
-        if outdoorLocation == true {
-            let imageView = UIImageView()
-            imageView.image = UIImage(named:
-                                    exercises.get(.street)[row].pickerIcon)
-            imageView.backgroundColor = .none
-            imageView.contentMode = .scaleAspectFit
-            let rotationAngle: CGFloat = 90 * (.pi / 180)
-            imageView.transform = CGAffineTransform(rotationAngle: rotationAngle)
-            return imageView
-        }
-        
-        return UIView()
+        return imageView
     }
     
     private func setViews() {
         addSubview(picker)
         picker.backgroundColor = .none
-        
-        let rotationAngle: CGFloat = -90 * (.pi / 180)
-        picker.transform = CGAffineTransform(rotationAngle: rotationAngle)
+        picker.transform = CGAffineTransform(rotationAngle: -90 * (.pi / 180))
         
         addSubview(title)
         title.clipsToBounds = true

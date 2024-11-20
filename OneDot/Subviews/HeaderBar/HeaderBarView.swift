@@ -67,14 +67,6 @@ class HeaderBarView: UIView {
         setViews()
         setConstraints()
         didBecomeObserver()
-
-//        pickerView.completion = { [weak self] exercise in
-//            guard let self else { return }
-//            currentExercise = exercise
-//            print(exercise.titleName)
-//        }
-//        
-        
     }
 
     @objc private func buttonTapped() {
@@ -86,7 +78,7 @@ class HeaderBarView: UIView {
         case notesButton.isTouchInside:
             buttonStateHandler?(.outdoorNotes)
         case calculatorButton.isTouchInside:
-            buttonStateHandler?(.calculator)
+            buttonStateHandler?(.calculations)
         case settingsButton.isTouchInside:
             buttonStateHandler?(.settings)
         default:
@@ -105,7 +97,7 @@ class HeaderBarView: UIView {
             notesButton.setInactiveState(.notesOutdoor)
             notesButton.isUserInteractionEnabled = true
 
-            pickerView.updatePicker(outdoor: true, row: UserDefaultsManager.shared.pickerRowOutdoor)
+            pickerView.updatePicker(outdoorIs: true, row: UserDefaultsManager.shared.pickerRowOutdoor)
             
         case .outdoorNotes:
             outdoorButton.setActiveState(.outdoor)
@@ -121,7 +113,7 @@ class HeaderBarView: UIView {
             outdoorButton.setInactiveState(.outdoor)
             outdoorButton.isUserInteractionEnabled = true
             
-            pickerView.updatePicker(outdoor: false, row: UserDefaultsManager.shared.pickerRowIndoor)
+            pickerView.updatePicker(outdoorIs: false, row: UserDefaultsManager.shared.pickerRowIndoor)
 
         case .calculations:
             print("work")
