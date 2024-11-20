@@ -28,7 +28,8 @@ class TabBar: UIView {
     
     private let leftButton: UIButton = UIButton()
     private let rightButton: UIButton = UIButton()
-    private let separator: CAShapeLayer = CAShapeLayer()
+    private let buttonsSeparator: CAShapeLayer = CAShapeLayer()
+    private let topLineSeparator: CAShapeLayer = CAShapeLayer()
     
     
     
@@ -58,12 +59,15 @@ class TabBar: UIView {
         
         picker.delegate = self
         picker.dataSource = self
-        setPickerIsHidden(isHidden: true)
+        
+        calculationPickerStateHandler(state: .distance)
+        Shaper.shared.drawTabBarButtonsSeparator(shape: buttonsSeparator, view: self)
     }
     
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
+        backgroundColor = .myPaletteBlue
         switch mode {
             
         case .prepare:
@@ -71,18 +75,45 @@ class TabBar: UIView {
             leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
             rightButton.setImage(UIImage(named: "TBProfile"), for: .normal)
             rightButton.setImage(UIImage(named: "TBProfile"), for: .highlighted)
+            leftButton.layer.removeAllAnimations()
         case .prepareToStart:
             leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
             leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
             rightButton.setImage(UIImage(named: "TBCancel"), for: .normal)
             rightButton.setImage(UIImage(named: "TBCancel"), for: .highlighted)
+            Animator.shared.AnimateStartIcon(leftButton.layer)
         case .tracking:
             leftButton.setImage(UIImage(named: "TBPause"), for: .normal)
             leftButton.setImage(UIImage(named: "TBPause"), for: .highlighted)
             rightButton.setImage(UIImage(named: "TBStop"), for: .normal)
             rightButton.setImage(UIImage(named: "TBStop"), for: .highlighted)
+            leftButton.layer.removeAllAnimations()
         case .calculations:
-            print("calc")
+            configurePickerVisibility(isHidden: false)
+        }
+    }
+    
+    //MARK: - ConfigurePickerVisibility
+    
+    func configurePickerVisibility(isHidden: Bool) {
+        feedbackGen.selectionChanged()
+        
+        if isHidden {
+            picker.isHidden = true
+            leftButton.isHidden = false
+            rightButton.isHidden = false
+            backgroundColor = .myPaletteBlue
+            buttonsSeparator.isHidden = false
+            topLineSeparator.isHidden = true
+            
+        } else {
+            picker.isHidden = false
+            leftButton.isHidden = true
+            rightButton.isHidden = true
+            buttonsSeparator.isHidden = true
+            topLineSeparator.isHidden = false
+            backgroundColor = .none
+            Shaper.shared.drawTabBarTopLineSeparator(shape: topLineSeparator, view: self)
         }
     }
     
@@ -122,57 +153,42 @@ class TabBar: UIView {
     func calculationPickerStateHandler(state: CalculationsView.PickerState) {
         switch state {
         case .distance:
-            Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .doublePickerState)
-            setPickerIsHidden(isHidden: false)
+            configurePickerVisibility(isHidden: false)
             currentPickerState = .distance
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.distance, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.distanceDecimal, inComponent: 1, animated: true)
         case .speed:
-            Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .doublePickerState)
-            setPickerIsHidden(isHidden: false)
+            configurePickerVisibility(isHidden: false)
             currentPickerState = .speed
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.speed, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.speedDecimal, inComponent: 1, animated: true)
         case .pace:
-            Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .doublePickerState)
-            setPickerIsHidden(isHidden: false)
+            configurePickerVisibility(isHidden: false)
             currentPickerState = .pace
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.paceMin, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.paceSec, inComponent: 1, animated: true)
         case .time:
-            Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .triplePickerState)
-            setPickerIsHidden(isHidden: false)
+            configurePickerVisibility(isHidden: false)
             currentPickerState = .time
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.timeH, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.timeMin, inComponent: 1, animated: true)
             picker.selectRow(UD.shared.timeSec, inComponent: 2, animated: true)
         case .hide:
-            setPickerIsHidden(isHidden: true)
+            configurePickerVisibility(isHidden: true)
         }
     }
     
-    //MARK: - SetPickerPrevious
-    
-    func setPickerIsHidden(isHidden: Bool) {
-        feedbackGen.selectionChanged()
-        
-        if isHidden {
-            backgroundColor = .red
-        } else {
-            backgroundColor = .none
-        }
-    }
+   
     
     
     //MARK: - HidePicker
     
     @objc func hidePicker() {
-        setPickerIsHidden(isHidden: true)
-        Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .defaultState)
+        configurePickerVisibility(isHidden: true)
     }
 
     
@@ -193,8 +209,6 @@ class TabBar: UIView {
         
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
-        
-        Shaper.shared.drawTabBarSeparators(shape: separator, view: self, state: .defaultState)
     }
     
     
@@ -301,9 +315,9 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
         }
         
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = .myPaletteBlue
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 30, weight: .light)
+        label.font = UIFont.systemFont(ofSize: 25, weight: .medium)
         
         switch currentPickerState {
             

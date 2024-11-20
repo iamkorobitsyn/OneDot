@@ -100,7 +100,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         }
     }
     
-    //MARK: - SetViewsState
+    //MARK: - ActivateMode
     
     private func activateMode(mode: Mode) {
         switch mode {
@@ -132,8 +132,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .calculations:
             calculationsView.isHidden = false
             notesView.isHidden = true
-            tabBar.setPickerIsHidden(isHidden: false)
-            print("work")
+            tabBar.activateMode(mode: .calculations)
           
         case .settings:
             let settingsVC: SettingsVC = SettingsVC()

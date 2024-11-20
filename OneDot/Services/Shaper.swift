@@ -16,52 +16,32 @@ class Shaper {
     
     //MARK: - TabBar
     
-    enum TabBarSeparatorsState {
-        case defaultState
-        case doublePickerState
-        case triplePickerState
+    func drawTabBarButtonsSeparator(shape: CAShapeLayer, view: UIView) {
+        
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: CGFloat.barWidth / 2, y: 15))
+        path.addLine(to: CGPoint(x: CGFloat.barWidth / 2 , y: 15 + 65))
+        shape.path = path.cgPath
+        shape.lineWidth = 0.5
+        shape.lineCap = .round
+        shape.strokeColor = UIColor.white.cgColor
+        view.layer.addSublayer(shape)
+        
     }
     
-    func drawTabBarSeparators(shape: CAShapeLayer, view: UIView, state: TabBarSeparatorsState) {
-        switch state {
-            
-        case .defaultState:
-            let path = UIBezierPath()
-            path.move(to: CGPoint(x: CGFloat.barWidth / 2, y: 15))
-            path.addLine(to: CGPoint(x: CGFloat.barWidth / 2 , y: 15 + 65))
-            shape.path = path.cgPath
-            shape.lineWidth = 0.5
-            shape.lineCap = .round
-            shape.strokeColor = UIColor.white.cgColor
-            view.layer.addSublayer(shape)
-        case .doublePickerState:
-            let path = UIBezierPath()
-            path.move(to: CGPoint(x: CGFloat.barWidth / 2, y: 15))
-            path.addLine(to: CGPoint(x: CGFloat.barWidth / 2 , y: 15 + 65))
-            path.move(to: CGPoint(x: CGFloat.barWidth / 4, y: 25))
-            path.addLine(to: CGPoint(x: CGFloat.barWidth / 4 , y: 15 + 55))
-            shape.path = path.cgPath
-            shape.lineWidth = 0.5
-            shape.lineCap = .round
-            shape.strokeColor = UIColor.white.cgColor
-            view.layer.addSublayer(shape)
-        case .triplePickerState:
-            let path = UIBezierPath()
-            path.move(to: CGPoint(x: CGFloat.barWidth / 2, y: 15))
-            path.addLine(to: CGPoint(x: CGFloat.barWidth / 2 , y: 15 + 65))
-            path.move(to: CGPoint(x: CGFloat.barWidth / 6, y: 25))
-            path.addLine(to: CGPoint(x: CGFloat.barWidth / 6 , y: 15 + 55))
-            path.move(to: CGPoint(x: CGFloat.barWidth / 3, y: 25))
-            path.addLine(to: CGPoint(x: CGFloat.barWidth / 3 , y: 15 + 55))
-            shape.path = path.cgPath
-            shape.lineWidth = 0.5
-            shape.lineCap = .round
-            shape.strokeColor = UIColor.white.cgColor
-            view.layer.addSublayer(shape)
-        }
-        
-        
+    func drawTabBarTopLineSeparator(shape: CAShapeLayer, view: UIView) {
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: CGFloat.barWidth / 12, y: 0))
+        path.addLine(to: CGPoint(x: CGFloat.barWidth - CGFloat.barWidth / 12 , y: 0))
+        shape.path = path.cgPath
+        shape.lineWidth = 0.5
+        shape.lineCap = .round
+        shape.strokeColor = UIColor.myPaletteGray.withAlphaComponent(0.7).cgColor
+        view.layer.addSublayer(shape)
     }
+    
+    
+    
     
     //MARK: - HeaderBar
     
@@ -138,5 +118,6 @@ class Shaper {
         shape.strokeColor = UIColor.green.withAlphaComponent(0.5).cgColor
         view.layer.addSublayer(shape)
     }
+    
     
 }
