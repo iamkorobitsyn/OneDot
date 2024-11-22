@@ -20,6 +20,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     let notesView: NotesView = NotesView()
     let calculationsView: CalculationsView = CalculationsView()
+    let settingsView: SettingsView = SettingsView()
     
     var tabBarHandler: ((Bool)->())?
     
@@ -109,7 +110,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
             UserDefaultsManager.shared.outdoorStatus = true
             headerBar.activateMode(mode: .outdoor)
             notesView.activateMode(mode: .outdoor)
-            tabBar.hidePicker()
+            tabBar.configurePickerVisibility(isHidden: true)
             
             notesView.isHidden = true
             
@@ -118,13 +119,13 @@ class MainVC: UIViewController, CAAnimationDelegate {
             headerBar.activateMode(mode: .outdoorNotes)
             notesView.isHidden = false
             calculationsView.isHidden = true
-            tabBar.hidePicker()
+            tabBar.configurePickerVisibility(isHidden: true)
             
         case .indoor:
             UserDefaultsManager.shared.outdoorStatus = false
             headerBar.activateMode(mode: .indoor)
             notesView.activateMode(mode: .indoor)
-            tabBar.hidePicker()
+            tabBar.configurePickerVisibility(isHidden: true)
             
             notesView.isHidden = false
             
@@ -132,12 +133,13 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .calculations:
             calculationsView.isHidden = false
             notesView.isHidden = true
+            settingsView.isHidden = true
             tabBar.activateMode(mode: .calculations)
           
         case .settings:
-            let settingsVC: SettingsVC = SettingsVC()
-            present(settingsVC, animated: true)
-            
+            calculationsView.isHidden = true
+            notesView.isHidden = true
+            settingsView.isHidden = false
         case .prepare:
             tabBar.activateMode(mode: .prepare)
             
@@ -242,9 +244,7 @@ extension MainVC {
         
         view.addSubview(headerBar)
         view.addSubview(calculationsView)
-        calculationsView.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
-        calculationsView.clipsToBounds = true
-        calculationsView.isHidden = true
+        view.addSubview(settingsView)
         
         view.addSubview(tabBar)
         
@@ -259,6 +259,7 @@ extension MainVC {
         mapView.translatesAutoresizingMaskIntoConstraints = false
         headerBar.translatesAutoresizingMaskIntoConstraints = false
         calculationsView.translatesAutoresizingMaskIntoConstraints = false
+        settingsView.translatesAutoresizingMaskIntoConstraints = false
         notesView.translatesAutoresizingMaskIntoConstraints = false
         tabBar.translatesAutoresizingMaskIntoConstraints = false
         splashScreen.translatesAutoresizingMaskIntoConstraints = false
@@ -285,6 +286,12 @@ extension MainVC {
             calculationsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             calculationsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             calculationsView.topAnchor.constraint(equalTo: headerBar.bottomAnchor,
+                                            constant: 10),
+            
+            settingsView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            settingsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            settingsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            settingsView.topAnchor.constraint(equalTo: headerBar.bottomAnchor,
                                             constant: 10),
             
             notesView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),

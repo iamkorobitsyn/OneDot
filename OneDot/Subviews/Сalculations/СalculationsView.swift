@@ -180,9 +180,9 @@ class CalculationsView: UIVisualEffectView {
     }
     
     private func updateButtonTitles() {
-        topButton.setTitle("\(UD.shared.speed):\(UD.shared.speedDecimal)", for: .normal)
+        topButton.setTitle("\(UD.shared.speed).\(UD.shared.speedDecimal)", for: .normal)
         bottomButton.setTitle("\(addLeadingZero(UD.shared.paceMin)):\(addLeadingZero(UD.shared.paceSec))", for: .normal)
-        leftButton.setTitle("\(UD.shared.distance):\(UD.shared.distanceDecimal)", for: .normal)
+        leftButton.setTitle("\(UD.shared.distance).\(UD.shared.distanceDecimal)", for: .normal)
         rightButton.setTitle("\(addLeadingZero(UD.shared.timeH)):\(addLeadingZero(UD.shared.timeMin)):\(addLeadingZero(UD.shared.timeSec))", for: .normal)
     }
     
@@ -208,6 +208,10 @@ class CalculationsView: UIVisualEffectView {
     
     private func setViews() {
         
+        effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        clipsToBounds = true
+        isHidden = true
+        
         layer.cornerRadius = 30
         layer.cornerCurve = .continuous
         layer.borderWidth = 0.3
@@ -231,14 +235,12 @@ class CalculationsView: UIVisualEffectView {
     
     private func setButton(button: UIButton, titleColor: UIColor) {
         contentView.addSubview(button)
-        button.backgroundColor = .clear
         button.disableAutoresizingMask()
+        button.backgroundColor = .clear
         button.setTitleColor(titleColor, for: .normal)
         button.titleLabel?.textAlignment = .center
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 25,
-                                                    weight: .medium)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .bold)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        
         hideButton.setImage(UIImage(named: "SSHide"), for: .normal)
     }
     
@@ -248,7 +250,7 @@ class CalculationsView: UIVisualEffectView {
         contentView.addSubview(label)
         label.disableAutoresizingMask()
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 15, weight: .medium, width: .compressed)
+        label.font = UIFont.systemFont(ofSize: 15, weight: .light, width: .compressed)
         label.textColor = .myPaletteGray
         label.text = titleText
     }
