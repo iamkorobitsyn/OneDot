@@ -12,13 +12,17 @@ class TabBar: UIView {
     private typealias UD = UserDefaultsManager
     private let feedbackGen = UISelectionFeedbackGenerator()
     
-    var buttonStateHandler: ((MainVC.Mode)->())?
+    var buttonStateHandler: ((MainVC.MainVCMode)->())?
     
-    enum Mode {
+    enum TabBarMode {
         case prepare
         case prepareToStart
         case tracking
-        case calculations
+        case distance
+        case speed
+        case pace
+        case time
+        case hide
     }
     
     private var prepareState: Bool = true
@@ -33,16 +37,7 @@ class TabBar: UIView {
 
     private let picker: UIPickerView = UIPickerView()
 
-    var updatePickerForState: ((PickerState) -> ())?
-    
-    enum PickerState {
-        case distance,
-             speed,
-             pace,
-             time
-    }
-
-    private var currentPickerState: PickerState?
+    private var currentPickerState: TabBarMode?
 
     var previousProfileHandler: (() -> Void)?
 
@@ -55,54 +50,11 @@ class TabBar: UIView {
         picker.delegate = self
         picker.dataSource = self
         
-    }
-    
-    //MARK: - ActivateMode
-    
-    func activateMode(mode: Mode) {
-        backgroundColor = .myPaletteBlue
-        switch mode {
-            
-        case .prepare:
-            leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
-            leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
-            rightButton.setImage(UIImage(named: "TBProfile"), for: .normal)
-            rightButton.setImage(UIImage(named: "TBProfile"), for: .highlighted)
-            leftButton.layer.removeAllAnimations()
-        case .prepareToStart:
-            leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
-            leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
-            rightButton.setImage(UIImage(named: "TBCancel"), for: .normal)
-            rightButton.setImage(UIImage(named: "TBCancel"), for: .highlighted)
-            Animator.shared.AnimateStartIcon(leftButton.layer)
-        case .tracking:
-            leftButton.setImage(UIImage(named: "TBPause"), for: .normal)
-            leftButton.setImage(UIImage(named: "TBPause"), for: .highlighted)
-            rightButton.setImage(UIImage(named: "TBStop"), for: .normal)
-            rightButton.setImage(UIImage(named: "TBStop"), for: .highlighted)
-            leftButton.layer.removeAllAnimations()
-        case .calculations:
-            calculationPickerStateHandler(state: .distance)
-            configurePickerVisibility(isHidden: false)
-        }
-    }
-    
-    //MARK: - ConfigurePickerVisibility
-    
-    func configurePickerVisibility(isHidden: Bool) {
-        feedbackGen.selectionChanged()
-        
-        backgroundColor = isHidden ? .myPaletteBlue : .none
-        picker.isHidden = isHidden ? true : false
-        leftButton.isHidden = isHidden ? false : true
-        rightButton.isHidden = isHidden ? false : true
-        
-        buttonsLineSeparator.isHidden = isHidden ? false : true
-        topLineSeparator.isHidden = isHidden ? true : false
+        currentPickerState = .prepare
         
     }
     
-    //MARK: - ButtonMethods
+    //MARK: - MainVCHandlers
     
     @objc private func leftTapped() {
         feedbackGen.selectionChanged()
@@ -135,8 +87,30 @@ class TabBar: UIView {
         }
     }
     
-    func calculationPickerStateHandler(state: CalculationsView.PickerState) {
-        switch state {
+    //MARK: - ActivateMode
+    
+    func activateMode(mode: TabBarMode) {
+        backgroundColor = .myPaletteBlue
+        switch mode {
+            
+        case .prepare:
+            leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
+            leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
+            rightButton.setImage(UIImage(named: "TBProfile"), for: .normal)
+            rightButton.setImage(UIImage(named: "TBProfile"), for: .highlighted)
+            leftButton.layer.removeAllAnimations()
+        case .prepareToStart:
+            leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
+            leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
+            rightButton.setImage(UIImage(named: "TBCancel"), for: .normal)
+            rightButton.setImage(UIImage(named: "TBCancel"), for: .highlighted)
+            Animator.shared.AnimateStartIcon(leftButton.layer)
+        case .tracking:
+            leftButton.setImage(UIImage(named: "TBPause"), for: .normal)
+            leftButton.setImage(UIImage(named: "TBPause"), for: .highlighted)
+            rightButton.setImage(UIImage(named: "TBStop"), for: .normal)
+            rightButton.setImage(UIImage(named: "TBStop"), for: .highlighted)
+            leftButton.layer.removeAllAnimations()
         case .distance:
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             configurePickerVisibility(isHidden: false)
@@ -172,10 +146,30 @@ class TabBar: UIView {
         }
     }
     
+   
+    
+    //MARK: - ConfigurePickerVisibility
+    
+    func configurePickerVisibility(isHidden: Bool) {
+        feedbackGen.selectionChanged()
+        
+        backgroundColor = isHidden ? .myPaletteBlue : .none
+        picker.isHidden = isHidden ? true : false
+        leftButton.isHidden = isHidden ? false : true
+        rightButton.isHidden = isHidden ? false : true
+        
+        buttonsLineSeparator.isHidden = isHidden ? false : true
+        topLineSeparator.isHidden = isHidden ? true : false
+        
+    }
+ 
     
     //MARK: - SetViews
     
     private func setViews() {
+        
+        activateMode(mode: .prepare)
+        
         backgroundColor = .myPaletteBlue
         layer.cornerRadius = .barCorner
         layer.cornerCurve = .continuous
@@ -184,9 +178,7 @@ class TabBar: UIView {
         addSubview(rightButton)
         
         addSubview(picker)
-        
-        activateMode(mode: .prepare)
-        
+
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
         
@@ -275,12 +267,16 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
         switch currentPickerState {
             
         case .distance:
+            
             label.text = String(row)
         case .speed:
+
             label.text = String(row)
         case .pace:
+
             label.text = row < 10 ? "0\(String(row))" : String(row)
         case .time:
+
             label.text = row < 10 ? "0\(String(row))" : String(row)
         default:
             break
@@ -293,36 +289,36 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
         
         switch (currentPickerState, component) {
             
+        case (.distance, 0):
+            UD.shared.distance = row
+            buttonStateHandler?(.distancePicker)
+        case (.distance, 1):
+            UD.shared.distanceDecimal = row
+            buttonStateHandler?(.distancePicker)
+            
         case (.speed, 0):
             UD.shared.speed = row
-            updatePickerForState?(.speed)
+            buttonStateHandler?(.speedPicker)
         case (.speed, 1):
             UD.shared.speedDecimal = row
-            updatePickerForState?(.speed)
+            buttonStateHandler?(.speedPicker)
             
         case (.pace, 0):
             UD.shared.paceMin = row
-            updatePickerForState?(.pace)
+            buttonStateHandler?(.pacePicker)
         case (.pace, 1):
             UD.shared.paceSec = row
-            updatePickerForState?(.pace)
-            
-        case (.distance, 0):
-            UD.shared.distance = row
-            updatePickerForState?(.distance)
-        case (.distance, 1):
-            UD.shared.distanceDecimal = row
-            updatePickerForState?(.distance)
+            buttonStateHandler?(.pacePicker)
             
         case (.time, 0):
             UD.shared.timeH = row
-            updatePickerForState?(.time)
+            buttonStateHandler?(.timePicker)
         case (.time, 1):
             UD.shared.timeMin = row
-            updatePickerForState?(.time)
+            buttonStateHandler?(.timePicker)
         case (.time, 2):
             UD.shared.timeSec = row
-            updatePickerForState?(.time)
+            buttonStateHandler?(.timePicker)
         default:
             break
         }

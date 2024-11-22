@@ -24,15 +24,20 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     var tabBarHandler: ((Bool)->())?
     
-    enum Mode {
+    enum MainVCMode {
         case outdoor
         case outdoorNotes
         case indoor
         case calculations
+        case calculationsHide
         case settings
         case prepare
         case prepareToStart
         case tracking
+        case distancePicker
+        case speedPicker
+        case pacePicker
+        case timePicker
     }
     
     //MARK: - ViewDidLoad
@@ -46,7 +51,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         setupLocationManager()
         checkLocationEnabled()
         
-        setClosures()
+        activateSubviewsHandlers()
  
         UserDefaultsManager.shared.outdoorStatus ? activateMode(mode: .indoor) : activateMode(mode: .outdoor)
         
@@ -54,31 +59,24 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     //MARK: - SetClosures
     
-    private func setClosures() {
+    private func activateSubviewsHandlers() {
         
-        headerBar.buttonStateHandler = { [weak self] mode in
-            guard let self else {return}
-            activateMode(mode: mode)
-        }
+        headerBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        tabBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         
         notesView.notesScreenHideHandler = { [weak self] in
             guard let self else {return}
             activateMode(mode: .outdoor)}
         
-        calculationsView.pickerStateHandler = { [weak self] state in
+        calculationsView.buttonStateHandler = { [weak self] mode in
             guard let self else {return}
-            tabBar.calculationPickerStateHandler(state: state)
+            self.activateMode(mode: mode)
         }
         
-        tabBar.updatePickerForState = { [weak self] state in
-            guard let self else {return}
-            calculationsView.updatePickerForState(state: state)
-        }
-        
-        tabBar.buttonStateHandler = { [weak self] mode in
-            guard let self else {return}
-            activateMode(mode: mode)
-        }
+//        tabBar.updatePickerForState = { [weak self] state in
+//            guard let self else {return}
+//            calculationsView.activateCalculationsMode(state: state)
+//        }
         
         tabBar.previousProfileHandler = {
             let profileVC = ProfileVC()
@@ -103,7 +101,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     //MARK: - ActivateMode
     
-    private func activateMode(mode: Mode) {
+    private func activateMode(mode: MainVCMode) {
         switch mode {
             
         case .outdoor:
@@ -111,43 +109,54 @@ class MainVC: UIViewController, CAAnimationDelegate {
             headerBar.activateMode(mode: .outdoor)
             notesView.activateMode(mode: .outdoor)
             tabBar.configurePickerVisibility(isHidden: true)
-            
             notesView.isHidden = true
-            
-   
         case .outdoorNotes:
             headerBar.activateMode(mode: .outdoorNotes)
             notesView.isHidden = false
             calculationsView.isHidden = true
             tabBar.configurePickerVisibility(isHidden: true)
-            
         case .indoor:
             UserDefaultsManager.shared.outdoorStatus = false
             headerBar.activateMode(mode: .indoor)
             notesView.activateMode(mode: .indoor)
             tabBar.configurePickerVisibility(isHidden: true)
-            
             notesView.isHidden = false
-            
-
         case .calculations:
             calculationsView.isHidden = false
             notesView.isHidden = true
             settingsView.isHidden = true
-            tabBar.activateMode(mode: .calculations)
-          
+            calculationsView.activateMode(mode: .distance)
+            tabBar.activateMode(mode: .distance)
+        case .calculationsHide:
+            tabBar.activateMode(mode: .hide)
+            calculationsView.activateMode(mode: .hide)
         case .settings:
             calculationsView.isHidden = true
             notesView.isHidden = true
             settingsView.isHidden = false
         case .prepare:
             tabBar.activateMode(mode: .prepare)
-            
         case .prepareToStart:
             tabBar.activateMode(mode: .prepareToStart)
-            
         case .tracking:
             tabBar.activateMode(mode: .tracking)
+        case .distancePicker:
+            calculationsView.activateMode(mode: .distance)
+            tabBar.activateMode(mode: .distance)
+            
+        case .speedPicker:
+            calculationsView.activateMode(mode: .speed)
+            tabBar.activateMode(mode: .speed)
+            
+        case .pacePicker:
+            calculationsView.activateMode(mode: .pace)
+            tabBar.activateMode(mode: .pace)
+            
+        case .timePicker:
+            calculationsView.activateMode(mode: .time)
+            tabBar.activateMode(mode: .time)
+            
+        
         }
         
     }

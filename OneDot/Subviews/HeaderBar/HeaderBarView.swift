@@ -10,7 +10,7 @@ import AudioToolbox
 
 class HeaderBarView: UIView {
     
-    var buttonStateHandler: ((MainVC.Mode)->())?
+    var buttonStateHandler: ((MainVC.MainVCMode)->())?
 
     private let feedbackGen = UISelectionFeedbackGenerator()
     

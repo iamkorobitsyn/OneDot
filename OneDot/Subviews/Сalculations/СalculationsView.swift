@@ -11,9 +11,9 @@ class CalculationsView: UIVisualEffectView {
     
     typealias UD = UserDefaultsManager
     
-    var pickerStateHandler: ((PickerState) -> ())?
+    var buttonStateHandler: ((MainVC.MainVCMode) -> Void)?
     
-    enum PickerState {
+    enum CalculationsMode {
         case distance,
              speed,
              pace,
@@ -32,9 +32,6 @@ class CalculationsView: UIVisualEffectView {
     private let timeTitle: UILabel = UILabel()
     private let paceTitle: UILabel = UILabel()
     private let metricsTitle: UILabel = UILabel()
-    
-    private let leftSeparator: CAShapeLayer = CAShapeLayer()
-    private let rightSeparator: CAShapeLayer = CAShapeLayer()
 
     
     //MARK: - Init
@@ -51,10 +48,28 @@ class CalculationsView: UIVisualEffectView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - updatePickerForState
     
-    func updatePickerForState(state: TabBar.PickerState) {
-        switch state {
+    //MARK: - MainVCHandlers
+    
+    @objc private func buttonPressed() {
+        
+        if topButton.isTouchInside {
+            buttonStateHandler?(.speedPicker)
+        } else if bottomButton.isTouchInside {
+            buttonStateHandler?(.pacePicker)
+        } else if leftButton.isTouchInside {
+            buttonStateHandler?(.distancePicker)
+        } else if rightButton.isTouchInside {
+            buttonStateHandler?(.timePicker)
+        } else if hideButton.isTouchInside {
+            buttonStateHandler?(.calculationsHide)
+        }
+    }
+    
+    //MARK: - ActivateMode
+    
+    func activateMode(mode: CalculationsMode) {
+        switch mode {
         case .distance:
             calculateDistance()
         case .speed:
@@ -63,6 +78,8 @@ class CalculationsView: UIVisualEffectView {
             calculatePace()
         case .time:
             calculateTime()
+        case .hide:
+            self.isHidden = true
         }
         updateValues()
     }
@@ -253,28 +270,6 @@ class CalculationsView: UIVisualEffectView {
         label.font = UIFont.systemFont(ofSize: 15, weight: .light, width: .compressed)
         label.textColor = .myPaletteGray
         label.text = titleText
-    }
-    
-    //MARK: - ButtonPressed
-    
-    @objc private func buttonPressed() {
-        
-        if topButton.isTouchInside {
-            pickerStateHandler?(.speed)
-        } else if bottomButton.isTouchInside {
-            pickerStateHandler?(.pace)
-        } else if leftButton.isTouchInside {
-            pickerStateHandler?(.distance)
-        } else if rightButton.isTouchInside {
-            pickerStateHandler?(.time)
-        } else if hideButton.isTouchInside {
-            pickerStateHandler?(.hide)
-            self.isHidden = true
-        }
-    }
-    
-    @objc private func donePressed() {
-        endEditing(true)
     }
     
     
