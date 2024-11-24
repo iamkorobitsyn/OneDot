@@ -24,20 +24,22 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     var tabBarHandler: ((Bool)->())?
     
-    enum MainVCMode {
+    enum Mode {
         case outdoor
         case outdoorNotes
         case indoor
+        case notesHide
         case calculations
         case calculationsHide
         case settings
         case prepare
         case prepareToStart
         case tracking
-        case distancePicker
-        case speedPicker
-        case pacePicker
-        case timePicker
+        case pickerDistance
+        case pickerSpeed
+        case pickerPace
+        case pickerTime
+        case transitionToProfile
     }
     
     //MARK: - ViewDidLoad
@@ -63,25 +65,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
         
         headerBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         tabBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        
-        notesView.notesScreenHideHandler = { [weak self] in
-            guard let self else {return}
-            activateMode(mode: .outdoor)}
-        
-        calculationsView.buttonStateHandler = { [weak self] mode in
-            guard let self else {return}
-            self.activateMode(mode: mode)
-        }
-        
-//        tabBar.updatePickerForState = { [weak self] state in
-//            guard let self else {return}
-//            calculationsView.activateCalculationsMode(state: state)
-//        }
-        
-        tabBar.previousProfileHandler = {
-            let profileVC = ProfileVC()
-            self.present(profileVC, animated: true)
-        }
+        calculationsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        notesView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
     }
     
     //MARK: - SplashScreenAnimations
@@ -101,7 +86,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     //MARK: - ActivateMode
     
-    private func activateMode(mode: MainVCMode) {
+    private func activateMode(mode: Mode) {
         switch mode {
             
         case .outdoor:
@@ -120,15 +105,17 @@ class MainVC: UIViewController, CAAnimationDelegate {
             headerBar.activateMode(mode: .indoor)
             notesView.activateMode(mode: .indoor)
             tabBar.configurePickerVisibility(isHidden: true)
-            notesView.isHidden = false
+        case .notesHide:
+            notesView.activateMode(mode: .hide)
+            headerBar.activateMode(mode: .outdoor)
         case .calculations:
             calculationsView.isHidden = false
             notesView.isHidden = true
             settingsView.isHidden = true
             calculationsView.activateMode(mode: .distance)
-            tabBar.activateMode(mode: .distance)
+            tabBar.activateMode(mode: .pickerDistance)
         case .calculationsHide:
-            tabBar.activateMode(mode: .hide)
+            tabBar.activateMode(mode: .pickerHide)
             calculationsView.activateMode(mode: .hide)
         case .settings:
             calculationsView.isHidden = true
@@ -140,21 +127,24 @@ class MainVC: UIViewController, CAAnimationDelegate {
             tabBar.activateMode(mode: .prepareToStart)
         case .tracking:
             tabBar.activateMode(mode: .tracking)
-        case .distancePicker:
+        case .pickerDistance:
             calculationsView.activateMode(mode: .distance)
-            tabBar.activateMode(mode: .distance)
+            tabBar.activateMode(mode: .pickerDistance)
             
-        case .speedPicker:
+        case .pickerSpeed:
             calculationsView.activateMode(mode: .speed)
-            tabBar.activateMode(mode: .speed)
+            tabBar.activateMode(mode: .pickerSpeed)
             
-        case .pacePicker:
+        case .pickerPace:
             calculationsView.activateMode(mode: .pace)
-            tabBar.activateMode(mode: .pace)
+            tabBar.activateMode(mode: .pickerPace)
             
-        case .timePicker:
+        case .pickerTime:
             calculationsView.activateMode(mode: .time)
-            tabBar.activateMode(mode: .time)
+            tabBar.activateMode(mode: .PickerTime)
+        case .transitionToProfile:
+            let profileVC = ProfileVC()
+            present(profileVC, animated: true)
             
         
         }

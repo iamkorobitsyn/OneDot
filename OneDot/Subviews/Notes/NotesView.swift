@@ -14,10 +14,11 @@ class NotesView: UIVisualEffectView {
         case outdoor,
              indoor,
              editRows,
-             inactive
+             inactive,
+             hide
     }
     
-    var notesScreenHideHandler: (() -> Void)?
+    var buttonStateHandler: ((MainVC.Mode) -> Void)?
     
     private var notes: [Note] = []
     
@@ -102,6 +103,7 @@ class NotesView: UIVisualEffectView {
             hideButton.isHidden = false
             addNoteButton.isHidden = false
         case .indoor:
+            isHidden = false
             sortNoteButton.isHidden = false
             checkMarkButton.isHidden = true
             hideButton.isHidden = true
@@ -116,6 +118,8 @@ class NotesView: UIVisualEffectView {
             checkMarkButton.isHidden = true
             hideButton.isHidden = true
             addNoteButton.isHidden = true
+        case .hide:
+            self.isHidden = true
         }
     }
     
@@ -224,8 +228,7 @@ class NotesView: UIVisualEffectView {
     }
     
     @objc func hideNotes() {
-        self.isHidden = true
-        notesScreenHideHandler?()
+        buttonStateHandler?(.notesHide)
     }
 
     //MARK: - SetConstraints

@@ -12,17 +12,17 @@ class TabBar: UIView {
     private typealias UD = UserDefaultsManager
     private let feedbackGen = UISelectionFeedbackGenerator()
     
-    var buttonStateHandler: ((MainVC.MainVCMode)->())?
+    var buttonStateHandler: ((MainVC.Mode)->())?
     
-    enum TabBarMode {
+    enum Mode {
         case prepare
         case prepareToStart
         case tracking
-        case distance
-        case speed
-        case pace
-        case time
-        case hide
+        case pickerDistance
+        case pickerSpeed
+        case pickerPace
+        case PickerTime
+        case pickerHide
     }
     
     private var prepareState: Bool = true
@@ -31,15 +31,13 @@ class TabBar: UIView {
     
     private let leftButton: UIButton = UIButton()
     private let rightButton: UIButton = UIButton()
+    
     private let buttonsLineSeparator: CAShapeLayer = CAShapeLayer()
     private let topLineSeparator: CAShapeLayer = CAShapeLayer()
     private let numbersLineSeparator: CAShapeLayer = CAShapeLayer()
 
     private let picker: UIPickerView = UIPickerView()
-
-    private var currentPickerState: TabBarMode?
-
-    var previousProfileHandler: (() -> Void)?
+    private var currentPickerState: Mode?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -49,9 +47,7 @@ class TabBar: UIView {
         
         picker.delegate = self
         picker.dataSource = self
-        
-        currentPickerState = .prepare
-        
+ 
     }
     
     //MARK: - MainVCHandlers
@@ -78,7 +74,7 @@ class TabBar: UIView {
         feedbackGen.selectionChanged()
         
         if prepareState {
-            previousProfileHandler?()
+            buttonStateHandler?(.transitionToProfile)
         } else if prepareToStartState || trackingState {
             prepareToStartState = false
             trackingState = false
@@ -89,7 +85,7 @@ class TabBar: UIView {
     
     //MARK: - ActivateMode
     
-    func activateMode(mode: TabBarMode) {
+    func activateMode(mode: Mode) {
         backgroundColor = .myPaletteBlue
         switch mode {
             
@@ -111,36 +107,36 @@ class TabBar: UIView {
             rightButton.setImage(UIImage(named: "TBStop"), for: .normal)
             rightButton.setImage(UIImage(named: "TBStop"), for: .highlighted)
             leftButton.layer.removeAllAnimations()
-        case .distance:
+        case .pickerDistance:
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             configurePickerVisibility(isHidden: false)
-            currentPickerState = .distance
+            currentPickerState = .pickerDistance
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.distance, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.distanceDecimal, inComponent: 1, animated: true)
-        case .speed:
+        case .pickerSpeed:
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             configurePickerVisibility(isHidden: false)
-            currentPickerState = .speed
+            currentPickerState = .pickerSpeed
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.speed, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.speedDecimal, inComponent: 1, animated: true)
-        case .pace:
+        case .pickerPace:
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             configurePickerVisibility(isHidden: false)
-            currentPickerState = .pace
+            currentPickerState = .pickerPace
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.paceMin, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.paceSec, inComponent: 1, animated: true)
-        case .time:
+        case .PickerTime:
             Shaper.shared.drawTabBarNumbersTwoLineSeparator(shape: numbersLineSeparator, view: self)
             configurePickerVisibility(isHidden: false)
-            currentPickerState = .time
+            currentPickerState = .PickerTime
             picker.reloadAllComponents()
             picker.selectRow(UD.shared.timeH, inComponent: 0, animated: true)
             picker.selectRow(UD.shared.timeMin, inComponent: 1, animated: true)
             picker.selectRow(UD.shared.timeSec, inComponent: 2, animated: true)
-        case .hide:
+        case .pickerHide:
             configurePickerVisibility(isHidden: true)
             numbersLineSeparator.removeFromSuperlayer()
         }
@@ -225,9 +221,9 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         
         switch currentPickerState {
-        case .speed, .pace, .distance:
+        case .pickerSpeed, .pickerPace, .pickerDistance:
             return 2
-        case .time:
+        case .PickerTime:
             return 3
         default:
             return 0
@@ -237,11 +233,11 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
         switch (currentPickerState, component) {
-        case (.speed, 0), (.pace, 0), (.distance, 0), (.time, 0):
+        case (.pickerSpeed, 0), (.pickerPace, 0), (.pickerDistance, 0), (.PickerTime, 0):
             return 100
-        case (.speed, 1), (.distance, 1):
+        case (.pickerSpeed, 1), (.pickerDistance, 1):
             return 10
-        case (.pace, 1), (.time, 1), (.time, 2):
+        case (.pickerPace, 1), (.PickerTime, 1), (.PickerTime, 2):
             return 60
         default:
             return 0
@@ -266,16 +262,16 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
         
         switch currentPickerState {
             
-        case .distance:
+        case .pickerDistance:
             
             label.text = String(row)
-        case .speed:
+        case .pickerSpeed:
 
             label.text = String(row)
-        case .pace:
+        case .pickerPace:
 
             label.text = row < 10 ? "0\(String(row))" : String(row)
-        case .time:
+        case .PickerTime:
 
             label.text = row < 10 ? "0\(String(row))" : String(row)
         default:
@@ -289,36 +285,36 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
         
         switch (currentPickerState, component) {
             
-        case (.distance, 0):
+        case (.pickerDistance, 0):
             UD.shared.distance = row
-            buttonStateHandler?(.distancePicker)
-        case (.distance, 1):
+            buttonStateHandler?(.pickerDistance)
+        case (.pickerDistance, 1):
             UD.shared.distanceDecimal = row
-            buttonStateHandler?(.distancePicker)
+            buttonStateHandler?(.pickerDistance)
             
-        case (.speed, 0):
+        case (.pickerSpeed, 0):
             UD.shared.speed = row
-            buttonStateHandler?(.speedPicker)
-        case (.speed, 1):
+            buttonStateHandler?(.pickerSpeed)
+        case (.pickerSpeed, 1):
             UD.shared.speedDecimal = row
-            buttonStateHandler?(.speedPicker)
+            buttonStateHandler?(.pickerSpeed)
             
-        case (.pace, 0):
+        case (.pickerPace, 0):
             UD.shared.paceMin = row
-            buttonStateHandler?(.pacePicker)
-        case (.pace, 1):
+            buttonStateHandler?(.pickerPace)
+        case (.pickerPace, 1):
             UD.shared.paceSec = row
-            buttonStateHandler?(.pacePicker)
+            buttonStateHandler?(.pickerPace)
             
-        case (.time, 0):
+        case (.PickerTime, 0):
             UD.shared.timeH = row
-            buttonStateHandler?(.timePicker)
-        case (.time, 1):
+            buttonStateHandler?(.pickerTime)
+        case (.PickerTime, 1):
             UD.shared.timeMin = row
-            buttonStateHandler?(.timePicker)
-        case (.time, 2):
+            buttonStateHandler?(.pickerTime)
+        case (.PickerTime, 2):
             UD.shared.timeSec = row
-            buttonStateHandler?(.timePicker)
+            buttonStateHandler?(.pickerTime)
         default:
             break
         }

@@ -11,9 +11,9 @@ class CalculationsView: UIVisualEffectView {
     
     typealias UD = UserDefaultsManager
     
-    var buttonStateHandler: ((MainVC.MainVCMode) -> Void)?
+    var buttonStateHandler: ((MainVC.Mode) -> Void)?
     
-    enum CalculationsMode {
+    enum Mode {
         case distance,
              speed,
              pace,
@@ -54,13 +54,13 @@ class CalculationsView: UIVisualEffectView {
     @objc private func buttonPressed() {
         
         if topButton.isTouchInside {
-            buttonStateHandler?(.speedPicker)
+            buttonStateHandler?(.pickerSpeed)
         } else if bottomButton.isTouchInside {
-            buttonStateHandler?(.pacePicker)
+            buttonStateHandler?(.pickerPace)
         } else if leftButton.isTouchInside {
-            buttonStateHandler?(.distancePicker)
+            buttonStateHandler?(.pickerDistance)
         } else if rightButton.isTouchInside {
-            buttonStateHandler?(.timePicker)
+            buttonStateHandler?(.pickerTime)
         } else if hideButton.isTouchInside {
             buttonStateHandler?(.calculationsHide)
         }
@@ -68,7 +68,7 @@ class CalculationsView: UIVisualEffectView {
     
     //MARK: - ActivateMode
     
-    func activateMode(mode: CalculationsMode) {
+    func activateMode(mode: Mode) {
         switch mode {
         case .distance:
             calculateDistance()
