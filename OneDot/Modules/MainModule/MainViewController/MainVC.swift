@@ -67,6 +67,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         tabBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         calculationsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         notesView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        settingsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
     }
     
     //MARK: - SplashScreenAnimations

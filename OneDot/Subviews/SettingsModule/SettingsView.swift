@@ -8,6 +8,14 @@
 import UIKit
 
 class SettingsView: UIVisualEffectView {
+    
+    var buttonStateHandler: ((MainVC.Mode) -> Void)?
+    
+    enum Mode {
+        case hide
+    }
+    
+    private let hideButton: UIButton = UIButton()
   
     
     //MARK: - Init
@@ -22,6 +30,10 @@ class SettingsView: UIVisualEffectView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    @objc private func buttonPressed() {
+        
+    }
 
 
     //MARK: - SetViews
@@ -35,8 +47,21 @@ class SettingsView: UIVisualEffectView {
         layer.cornerCurve = .continuous
         layer.borderWidth = 0.3
         layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
+        
+        contentView.addSubview(hideButton)
 
     }
     
+    private func setConstraint() {
+        hideButton.disableAutoresizingMask()
+        
+        NSLayoutConstraint.activate([
+            
+            hideButton.widthAnchor.constraint(equalToConstant: .iconSide),
+            hideButton.heightAnchor.constraint(equalToConstant: .iconSide),
+            hideButton.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            hideButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
+        ])
+    }
 }
 
