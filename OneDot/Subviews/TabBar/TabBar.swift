@@ -18,6 +18,7 @@ class TabBar: UIView {
         case prepare
         case prepareToStart
         case tracking
+        case hide
         case pickerDistance
         case pickerSpeed
         case pickerPace
@@ -95,6 +96,7 @@ class TabBar: UIView {
             rightButton.setImage(UIImage(named: "TBProfile"), for: .normal)
             rightButton.setImage(UIImage(named: "TBProfile"), for: .highlighted)
             leftButton.layer.removeAllAnimations()
+            isHidden = false
         case .prepareToStart:
             leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
             leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
@@ -107,6 +109,8 @@ class TabBar: UIView {
             rightButton.setImage(UIImage(named: "TBStop"), for: .normal)
             rightButton.setImage(UIImage(named: "TBStop"), for: .highlighted)
             leftButton.layer.removeAllAnimations()
+        case .hide:
+            self.isHidden = true
         case .pickerDistance:
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             configurePickerVisibility(isHidden: false)

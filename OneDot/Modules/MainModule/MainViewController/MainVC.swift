@@ -32,6 +32,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case calculations
         case calculationsHide
         case settings
+        case settingsHide
         case prepare
         case prepareToStart
         case tracking
@@ -122,6 +123,11 @@ class MainVC: UIViewController, CAAnimationDelegate {
             calculationsView.isHidden = true
             notesView.isHidden = true
             settingsView.isHidden = false
+            tabBar.activateMode(mode: .hide)
+        case .settingsHide:
+            settingsView.isHidden = true
+            tabBar.activateMode(mode: .prepare)
+            
         case .prepare:
             tabBar.activateMode(mode: .prepare)
         case .prepareToStart:
