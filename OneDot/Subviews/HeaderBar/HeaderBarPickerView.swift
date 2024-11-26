@@ -110,7 +110,7 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         
         addSubview(title)
         title.clipsToBounds = true
-        title.font = UIFont.systemFont(ofSize: 20, weight: .medium, width: .compressed)
+        title.font = UIFont.systemFont(ofSize: 20, weight: .light, width: .compressed)
         title.textColor = .myPaletteGray
 
         Shaper.shared.drawPickerViewLineSeparator(shape: lineSeparator, view: picker)
