@@ -97,7 +97,7 @@ class HeaderBarView: UIView {
             notesButton.setInactiveState(.notesOutdoor)
             notesButton.isUserInteractionEnabled = true
 
-            pickerView.updatePicker(outdoorIs: true, row: UserDefaultsManager.shared.pickerRowOutdoor)
+            pickerView.updatePicker(outdoorIs: true, row: UserDefaultsManager.shared.pickerRowOutdoorValue)
             
         case .outdoorNotes:
             outdoorButton.setActiveState(.outdoor)
@@ -113,7 +113,7 @@ class HeaderBarView: UIView {
             outdoorButton.setInactiveState(.outdoor)
             outdoorButton.isUserInteractionEnabled = true
             
-            pickerView.updatePicker(outdoorIs: false, row: UserDefaultsManager.shared.pickerRowIndoor)
+            pickerView.updatePicker(outdoorIs: false, row: UserDefaultsManager.shared.pickerRowIndoorValue)
 
         case .calculations:
             print("work")

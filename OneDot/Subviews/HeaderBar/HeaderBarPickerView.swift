@@ -74,9 +74,9 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         getTitle(row: row)
         
         if outdoorLocation {
-            UserDefaultsManager.shared.pickerRowOutdoor = row
+            UserDefaultsManager.shared.pickerRowOutdoorValue = row
         } else {
-            UserDefaultsManager.shared.pickerRowIndoor = row
+            UserDefaultsManager.shared.pickerRowIndoorValue = row
         }
     }
     

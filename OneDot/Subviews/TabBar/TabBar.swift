@@ -116,30 +116,30 @@ class TabBar: UIView {
             configurePickerVisibility(isHidden: false)
             currentPickerState = .pickerDistance
             picker.reloadAllComponents()
-            picker.selectRow(UD.shared.distance, inComponent: 0, animated: true)
-            picker.selectRow(UD.shared.distanceDecimal, inComponent: 1, animated: true)
+            picker.selectRow(UD.shared.calculationsDistanceValue, inComponent: 0, animated: true)
+            picker.selectRow(UD.shared.calculationsDistanceDecimalValue, inComponent: 1, animated: true)
         case .pickerSpeed:
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             configurePickerVisibility(isHidden: false)
             currentPickerState = .pickerSpeed
             picker.reloadAllComponents()
-            picker.selectRow(UD.shared.speed, inComponent: 0, animated: true)
-            picker.selectRow(UD.shared.speedDecimal, inComponent: 1, animated: true)
+            picker.selectRow(UD.shared.calculationsSpeedValue, inComponent: 0, animated: true)
+            picker.selectRow(UD.shared.calculationsSpeedDecimalValue, inComponent: 1, animated: true)
         case .pickerPace:
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             configurePickerVisibility(isHidden: false)
             currentPickerState = .pickerPace
             picker.reloadAllComponents()
-            picker.selectRow(UD.shared.paceMin, inComponent: 0, animated: true)
-            picker.selectRow(UD.shared.paceSec, inComponent: 1, animated: true)
+            picker.selectRow(UD.shared.calculationsPaceMinValue, inComponent: 0, animated: true)
+            picker.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
         case .PickerTime:
             Shaper.shared.drawTabBarNumbersTwoLineSeparator(shape: numbersLineSeparator, view: self)
             configurePickerVisibility(isHidden: false)
             currentPickerState = .PickerTime
             picker.reloadAllComponents()
-            picker.selectRow(UD.shared.timeH, inComponent: 0, animated: true)
-            picker.selectRow(UD.shared.timeMin, inComponent: 1, animated: true)
-            picker.selectRow(UD.shared.timeSec, inComponent: 2, animated: true)
+            picker.selectRow(UD.shared.calculationsTimeHValue, inComponent: 0, animated: true)
+            picker.selectRow(UD.shared.calculationsTimeMinValue, inComponent: 1, animated: true)
+            picker.selectRow(UD.shared.calculationsTimeSecValue, inComponent: 2, animated: true)
         case .pickerHide:
             configurePickerVisibility(isHidden: true)
             numbersLineSeparator.removeFromSuperlayer()
@@ -290,34 +290,34 @@ extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
         switch (currentPickerState, component) {
             
         case (.pickerDistance, 0):
-            UD.shared.distance = row
+            UD.shared.calculationsDistanceValue = row
             buttonStateHandler?(.pickerDistance)
         case (.pickerDistance, 1):
-            UD.shared.distanceDecimal = row
+            UD.shared.calculationsDistanceDecimalValue = row
             buttonStateHandler?(.pickerDistance)
             
         case (.pickerSpeed, 0):
-            UD.shared.speed = row
+            UD.shared.calculationsSpeedValue = row
             buttonStateHandler?(.pickerSpeed)
         case (.pickerSpeed, 1):
-            UD.shared.speedDecimal = row
+            UD.shared.calculationsSpeedDecimalValue = row
             buttonStateHandler?(.pickerSpeed)
             
         case (.pickerPace, 0):
-            UD.shared.paceMin = row
+            UD.shared.calculationsPaceMinValue = row
             buttonStateHandler?(.pickerPace)
         case (.pickerPace, 1):
-            UD.shared.paceSec = row
+            UD.shared.calculationsPaceSecValue = row
             buttonStateHandler?(.pickerPace)
             
         case (.PickerTime, 0):
-            UD.shared.timeH = row
+            UD.shared.calculationsTimeHValue = row
             buttonStateHandler?(.pickerTime)
         case (.PickerTime, 1):
-            UD.shared.timeMin = row
+            UD.shared.calculationsTimeMinValue = row
             buttonStateHandler?(.pickerTime)
         case (.PickerTime, 2):
-            UD.shared.timeSec = row
+            UD.shared.calculationsTimeSecValue = row
             buttonStateHandler?(.pickerTime)
         default:
             break

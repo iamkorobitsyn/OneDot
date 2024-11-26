@@ -56,7 +56,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         
         activateSubviewsHandlers()
  
-        UserDefaultsManager.shared.outdoorStatus ? activateMode(mode: .indoor) : activateMode(mode: .outdoor)
+        UserDefaultsManager.shared.outdoorStatusValue ? activateMode(mode: .indoor) : activateMode(mode: .outdoor)
         
     }
     
@@ -92,7 +92,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         switch mode {
             
         case .outdoor:
-            UserDefaultsManager.shared.outdoorStatus = true
+            UserDefaultsManager.shared.outdoorStatusValue = true
             headerBar.activateMode(mode: .outdoor)
             notesView.activateMode(mode: .outdoor)
             tabBar.configurePickerVisibility(isHidden: true)
@@ -103,7 +103,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
             calculationsView.isHidden = true
             tabBar.configurePickerVisibility(isHidden: true)
         case .indoor:
-            UserDefaultsManager.shared.outdoorStatus = false
+            UserDefaultsManager.shared.outdoorStatusValue = false
             headerBar.activateMode(mode: .indoor)
             notesView.activateMode(mode: .indoor)
             tabBar.configurePickerVisibility(isHidden: true)

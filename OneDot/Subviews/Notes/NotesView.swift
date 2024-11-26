@@ -218,7 +218,7 @@ class NotesView: UIVisualEffectView {
         tableView.isEditing = false
         tableView.transform.ty = 0
         
-        if UserDefaultsManager.shared.outdoorStatus {
+        if UserDefaultsManager.shared.outdoorStatusValue {
             activateMode(mode: .outdoor)
         } else {
             activateMode(mode: .indoor)
@@ -339,7 +339,7 @@ extension NotesView: UITableViewDataSource {
                 
                 cell.placeholderState(notes[indexPath.row].editing)
                 
-                UserDefaultsManager.shared.outdoorStatus ? activateMode(mode: .outdoor) : activateMode(mode: .indoor)
+                UserDefaultsManager.shared.outdoorStatusValue ? activateMode(mode: .outdoor) : activateMode(mode: .indoor)
                 
                 tableView.endUpdates()
             }
@@ -377,7 +377,7 @@ extension NotesView: UITableViewDelegate   {
     func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
         refreshNotesIndex()
         
-        if UserDefaultsManager.shared.outdoorStatus == false {
+        if UserDefaultsManager.shared.outdoorStatusValue == false {
             activateMode(mode: .outdoor)
         } else {
             activateMode(mode: .indoor)

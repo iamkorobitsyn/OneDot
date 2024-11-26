@@ -88,88 +88,88 @@ class CalculationsView: UIVisualEffectView {
     
     private func calculateDistance() {
         
-        let lengthOfDistance = UD.shared.distance * 1000 + UD.shared.distanceDecimal * 100
-        let paceOfSeconds = UD.shared.paceMin * 60 + UD.shared.paceSec
+        let lengthOfDistance = UD.shared.calculationsDistanceValue * 1000 + UD.shared.calculationsDistanceDecimalValue * 100
+        let paceOfSeconds = UD.shared.calculationsPaceMinValue * 60 + UD.shared.calculationsPaceSecValue
         
         let time = paceOfSeconds * lengthOfDistance / 1000
         
-        UD.shared.timeH = time / 3600
-        UD.shared.timeMin = time % 3600 / 60
-        UD.shared.timeSec = time % 3600 % 60
+        UD.shared.calculationsTimeHValue = time / 3600
+        UD.shared.calculationsTimeMinValue = time % 3600 / 60
+        UD.shared.calculationsTimeSecValue = time % 3600 % 60
     }
     
     private func calculateSpeed() {
         
         
-        let lengthOfDistance = Double(UD.shared.distance * 1000 + UD.shared.distanceDecimal * 100)
-        let distancePerSecond = Double(UD.shared.speed * 1000 + UD.shared.speedDecimal * 100) / 3600
+        let lengthOfDistance = Double(UD.shared.calculationsDistanceValue * 1000 + UD.shared.calculationsDistanceDecimalValue * 100)
+        let distancePerSecond = Double(UD.shared.calculationsSpeedValue * 1000 + UD.shared.calculationsSpeedDecimalValue * 100) / 3600
         let timeOfSeconds = lengthOfDistance / distancePerSecond
         let secondsPerDistance = timeOfSeconds / lengthOfDistance * 1000
 
-        if UD.shared.speed != 0 || UD.shared.speedDecimal != 0 {
-            UD.shared.timeH = Int(timeOfSeconds) / 3600
-            UD.shared.timeMin = Int(timeOfSeconds) % 3600 / 60
-            UD.shared.timeSec = Int(timeOfSeconds) % 3600 % 60
+        if UD.shared.calculationsSpeedValue != 0 || UD.shared.calculationsSpeedDecimalValue != 0 {
+            UD.shared.calculationsTimeHValue = Int(timeOfSeconds) / 3600
+            UD.shared.calculationsTimeMinValue = Int(timeOfSeconds) % 3600 / 60
+            UD.shared.calculationsTimeSecValue = Int(timeOfSeconds) % 3600 % 60
             
             
-            UD.shared.paceMin = Int(secondsPerDistance) / 60
-            UD.shared.paceSec = Int(secondsPerDistance) % 60
+            UD.shared.calculationsPaceMinValue = Int(secondsPerDistance) / 60
+            UD.shared.calculationsPaceSecValue = Int(secondsPerDistance) % 60
         } else {
-            UD.shared.timeH = 0
-            UD.shared.timeMin = 0
-            UD.shared.timeSec = 0
+            UD.shared.calculationsTimeHValue = 0
+            UD.shared.calculationsTimeMinValue = 0
+            UD.shared.calculationsTimeSecValue = 0
             
-            UD.shared.paceMin = 0
-            UD.shared.paceSec = 0
+            UD.shared.calculationsPaceMinValue = 0
+            UD.shared.calculationsPaceSecValue = 0
         }
     }
     
     private func calculatePace() {
         
-        let lengthOfDistance = Double(UD.shared.distance * 1000 + UD.shared.distanceDecimal * 100)
-        let secondsPerDistance = Double(UD.shared.paceMin * 60 + UD.shared.paceSec) / 1000
+        let lengthOfDistance = Double(UD.shared.calculationsDistanceValue * 1000 + UD.shared.calculationsDistanceDecimalValue * 100)
+        let secondsPerDistance = Double(UD.shared.calculationsPaceMinValue * 60 + UD.shared.calculationsPaceSecValue) / 1000
         
         let timeOfSeconds = secondsPerDistance * lengthOfDistance
         let distancePerHour = lengthOfDistance / timeOfSeconds * 60 * 60
 
-        if UD.shared.paceMin != 0 || UD.shared.paceSec != 0 {
-            UD.shared.timeH = Int(timeOfSeconds) / 3600
-            UD.shared.timeMin = Int(timeOfSeconds) % 3600 / 60
-            UD.shared.timeSec = Int(timeOfSeconds) % 3600 % 60
+        if UD.shared.calculationsPaceMinValue != 0 || UD.shared.calculationsPaceSecValue != 0 {
+            UD.shared.calculationsTimeHValue = Int(timeOfSeconds) / 3600
+            UD.shared.calculationsTimeMinValue = Int(timeOfSeconds) % 3600 / 60
+            UD.shared.calculationsTimeSecValue = Int(timeOfSeconds) % 3600 % 60
             
-            UD.shared.speed = Int(distancePerHour / 1000)
-            UD.shared.speedDecimal = Int(distancePerHour) % 1000 / 100
+            UD.shared.calculationsSpeedValue = Int(distancePerHour / 1000)
+            UD.shared.calculationsSpeedDecimalValue = Int(distancePerHour) % 1000 / 100
             
         } else {
-            UD.shared.timeH = 0
-            UD.shared.timeMin = 0
-            UD.shared.timeSec = 0
+            UD.shared.calculationsTimeHValue = 0
+            UD.shared.calculationsTimeMinValue = 0
+            UD.shared.calculationsTimeSecValue = 0
             
-            UD.shared.speed = 0
-            UD.shared.speedDecimal = 0
+            UD.shared.calculationsSpeedValue = 0
+            UD.shared.calculationsSpeedDecimalValue = 0
         }
     }
     
     private func calculateTime() {
-        let lengthOfDistance = Double(UD.shared.distance * 1000 + UD.shared.distanceDecimal * 100)
-        let timeOfSeconds = Double(UD.shared.timeH * 3600 + UD.shared.timeMin * 60 + UD.shared.timeSec)
+        let lengthOfDistance = Double(UD.shared.calculationsDistanceValue * 1000 + UD.shared.calculationsDistanceDecimalValue * 100)
+        let timeOfSeconds = Double(UD.shared.calculationsTimeHValue * 3600 + UD.shared.calculationsTimeMinValue * 60 + UD.shared.calculationsTimeSecValue)
 
         let distancePerHour = lengthOfDistance / timeOfSeconds * 60 * 60
         let secondsPerDistance = timeOfSeconds / lengthOfDistance * 1000
         
-        if UD.shared.timeH != 0 || UD.shared.timeMin != 0 || UD.shared.timeSec != 0 {
-            UD.shared.speed = Int(distancePerHour / 1000)
-            UD.shared.speedDecimal = Int(distancePerHour) % 1000 / 100
+        if UD.shared.calculationsTimeHValue != 0 || UD.shared.calculationsTimeMinValue != 0 || UD.shared.calculationsTimeSecValue != 0 {
+            UD.shared.calculationsSpeedValue = Int(distancePerHour / 1000)
+            UD.shared.calculationsSpeedDecimalValue = Int(distancePerHour) % 1000 / 100
             
-            UD.shared.paceMin = Int(secondsPerDistance) / 60
-            UD.shared.paceSec = Int(secondsPerDistance) % 60
+            UD.shared.calculationsPaceMinValue = Int(secondsPerDistance) / 60
+            UD.shared.calculationsPaceSecValue = Int(secondsPerDistance) % 60
             
         } else {
-            UD.shared.speed = 0
-            UD.shared.speedDecimal = 0
+            UD.shared.calculationsSpeedValue = 0
+            UD.shared.calculationsSpeedDecimalValue = 0
             
-            UD.shared.paceMin = 0
-            UD.shared.paceSec = 0
+            UD.shared.calculationsPaceMinValue = 0
+            UD.shared.calculationsPaceSecValue = 0
         }
     }
     
@@ -177,7 +177,7 @@ class CalculationsView: UIVisualEffectView {
     
     private func updateValues() {
         
-        let isDistanceCleared = UD.shared.distance == 0 && UD.shared.distanceDecimal == 0
+        let isDistanceCleared = UD.shared.calculationsDistanceValue == 0 && UD.shared.calculationsDistanceDecimalValue == 0
         
         if isDistanceCleared {
             resetValues()
@@ -197,22 +197,22 @@ class CalculationsView: UIVisualEffectView {
     }
     
     private func updateButtonTitles() {
-        topButton.setTitle("\(UD.shared.speed).\(UD.shared.speedDecimal)", for: .normal)
-        bottomButton.setTitle("\(addLeadingZero(UD.shared.paceMin)):\(addLeadingZero(UD.shared.paceSec))", for: .normal)
-        leftButton.setTitle("\(UD.shared.distance).\(UD.shared.distanceDecimal)", for: .normal)
-        rightButton.setTitle("\(addLeadingZero(UD.shared.timeH)):\(addLeadingZero(UD.shared.timeMin)):\(addLeadingZero(UD.shared.timeSec))", for: .normal)
+        topButton.setTitle("\(UD.shared.calculationsSpeedValue).\(UD.shared.calculationsSpeedDecimalValue)", for: .normal)
+        bottomButton.setTitle("\(addLeadingZero(UD.shared.calculationsPaceMinValue)):\(addLeadingZero(UD.shared.calculationsPaceSecValue))", for: .normal)
+        leftButton.setTitle("\(UD.shared.calculationsDistanceValue).\(UD.shared.calculationsDistanceDecimalValue)", for: .normal)
+        rightButton.setTitle("\(addLeadingZero(UD.shared.calculationsTimeHValue)):\(addLeadingZero(UD.shared.calculationsTimeMinValue)):\(addLeadingZero(UD.shared.calculationsTimeSecValue))", for: .normal)
     }
     
     private func resetValues() {
-        UD.shared.distance = 0
-        UD.shared.distanceDecimal = 0
-        UD.shared.speed = 0
-        UD.shared.speedDecimal = 0
-        UD.shared.paceMin = 0
-        UD.shared.paceSec = 0
-        UD.shared.timeH = 0
-        UD.shared.timeMin = 0
-        UD.shared.timeSec = 0
+        UD.shared.calculationsDistanceValue = 0
+        UD.shared.calculationsDistanceDecimalValue = 0
+        UD.shared.calculationsSpeedValue = 0
+        UD.shared.calculationsSpeedDecimalValue = 0
+        UD.shared.calculationsPaceMinValue = 0
+        UD.shared.calculationsPaceSecValue = 0
+        UD.shared.calculationsTimeHValue = 0
+        UD.shared.calculationsTimeMinValue = 0
+        UD.shared.calculationsTimeSecValue = 0
     }
     
     private func addLeadingZero(_ int: Int) -> String {

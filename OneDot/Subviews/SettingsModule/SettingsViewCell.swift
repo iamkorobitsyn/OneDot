@@ -10,12 +10,16 @@ import UIKit
 
 class SettingsViewCell: UITableViewCell {
     
+    typealias UD = UserDefaultsManager
+    
     enum Mode {
         case distanceSettings
         case autopauseSettings
         case countdownSettings
         case appleHealthSettings
     }
+    
+    var currentMode: Mode?
     
     let firstButton: UIButton = UIButton()
     let secondButton: UIButton = UIButton()
@@ -31,43 +35,113 @@ class SettingsViewCell: UITableViewCell {
     }
     
     func activateMode(mode: Mode) {
+        currentMode = mode
+        setViews(mode: mode)
+        setConstraints(mode: mode)
+    }
+    
+    @objc private func buttonTapped() {
+        
+        switch currentMode {
+        case .distanceSettings:
+            updateDistanceSettings()
+        case .autopauseSettings:
+            updateDistanceSettings()
+        case .countdownSettings:
+            updateDistanceSettings()
+        case .appleHealthSettings:
+            updateAppleHeathSettings()
+        default:
+            break
+        }
+    }
+    
+    private func updateDistanceSettings() {
+        let value = UD.shared.settingsDistanceValue
+        
+        if value == "ml" {
+            firstButton.setImage(UIImage(named: "DSKmActive"), for: .normal)
+            secondButton.setImage(UIImage(named: "DSMlInactive"), for: .normal)
+            UD.shared.settingsDistanceValue = "km"
+        } else if value == "km" {
+            firstButton.setImage(UIImage(named: "DSKmInactive"), for: .normal)
+            secondButton.setImage(UIImage(named: "DSMlActive"), for: .normal)
+            UD.shared.settingsDistanceValue = "ml"
+        }
+    }
+    
+    private func updateAppleHeathSettings() {
+        let value = UD.shared.settingsAppleHealthValue
+        print(value)
+        
+        if value {
+            firstButton.setImage(UIImage(named: "DSCheckMarkActive"), for: .normal)
+            secondButton.setImage(UIImage(named: "DSCancelInactive"), for: .normal)
+            UD.shared.settingsAppleHealthValue = false
+        } else {
+            firstButton.setImage(UIImage(named: "DSCheckMarkInactive"), for: .normal)
+            secondButton.setImage(UIImage(named: "DSCancelActive"), for: .normal)
+            UD.shared.settingsAppleHealthValue = true
+        }
+    }
+    
+    //MARK: - SetViews
+    
+    private func setViews(mode: Mode) {
+        
+        contentView.addSubview(titleLabel)
+        titleLabel.textAlignment = .center
+        
+        [firstButton, secondButton, thirdButton, fourthButton].forEach { button in
+            button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        }
+        
         switch mode {
             
         case .distanceSettings:
-            setViews(mode: .distanceSettings)
             titleLabel.text = "Distance"
-            firstButton.setImage(UIImage(named: "DSKmActive"), for: .normal)
-            secondButton.setImage(UIImage(named: "DSMlInactive"), for: .normal)
+            [firstButton, secondButton].forEach({contentView.addSubview($0)})
+            
+            let value = UD.shared.settingsDistanceValue
+            firstButton.setImage(UIImage(named: value == "km" ? "DSKmActive" : "DSKmInactive"), for: .normal)
+            secondButton.setImage(UIImage(named: value == "ml" ? "DSMlActive" : "DSMlInactive"), for: .normal)
+
         case .autopauseSettings:
             titleLabel.text = "Autopause"
-            firstButton.setImage(UIImage(named: "DSCheckMarkActive"), for: .normal)
-            secondButton.setImage(UIImage(named: "DSCheckMarkInactive"), for: .normal)
-            setViews(mode: .autopauseSettings)
+            [firstButton, secondButton].forEach({contentView.addSubview($0)})
+            
+            let value = UD.shared.settingsAutopauseValue
+            firstButton.setImage(UIImage(named: value ? "DSCheckMarkActive" : "DSCheckMarkInactive"), for: .normal)
+            secondButton.setImage(UIImage(named: value ? "DSCancelInactive" : "DSCancelActive"), for: .normal)
+            
         case .countdownSettings:
             titleLabel.text = "Countdown"
-            firstButton.setImage(UIImage(named: "DSCancelActive"), for: .normal)
-            secondButton.setImage(UIImage(named: "DS3Inactive"), for: .normal)
-            thirdButton.setImage(UIImage(named: "DS6Inactive"), for: .normal)
-            fourthButton.setImage(UIImage(named: "DS9Inactive"), for: .normal)
-            setViews(mode: .countdownSettings)
+            [firstButton, secondButton, thirdButton, fourthButton].forEach({contentView.addSubview($0)})
+            
+            let value = UD.shared.settingsCountdownValue
+            firstButton.setImage(UIImage(named: value == 0 ? "DSCancelActive" : "DSCancelInactive"), for: .normal)
+            secondButton.setImage(UIImage(named: value == 3 ? "DS3Active" : "DS3Inactive"), for: .normal)
+            thirdButton.setImage(UIImage(named: value == 6 ? "DS6Active" : "DS6Inactive"), for: .normal)
+            fourthButton.setImage(UIImage(named: value == 9 ? "DS9Active" : "DS9Inactive"), for: .normal)
+            
         case .appleHealthSettings:
             titleLabel.text = "AppleHealth"
-            firstButton.setImage(UIImage(named: "DSCheckMarkActive"), for: .normal)
-            secondButton.setImage(UIImage(named: "DSCheckMarkInactive"), for: .normal)
-            setViews(mode: .appleHealthSettings)
+            [firstButton, secondButton].forEach({contentView.addSubview($0)})
+            
+            let value = UD.shared.settingsAppleHealthValue
+            firstButton.setImage(UIImage(named: value ? "DSCheckMarkActive" : "DSCheckMarkInactive"), for: .normal)
+            secondButton.setImage(UIImage(named: value ? "DSCancelInactive" : "DSCancelActive"), for: .normal)
         }
-        
     }
     
-    private func setViews(mode: Mode) {
+    //MARK: - SetConstrains
+    
+    private func setConstraints(mode: Mode) {
+        
+        [titleLabel, firstButton, secondButton, thirdButton, fourthButton].forEach({$0.disableAutoresizingMask()})
+        
         switch mode {
-            
         case .distanceSettings, .autopauseSettings, .appleHealthSettings:
-            titleLabel.textAlignment = .center
-            [firstButton, secondButton, titleLabel].forEach { button in
-                addSubview(button)
-                button.disableAutoresizingMask()
-            }
             
             NSLayoutConstraint.activate([
                 titleLabel.widthAnchor.constraint(equalToConstant: 200),
@@ -84,13 +158,7 @@ class SettingsViewCell: UITableViewCell {
                 firstButton.trailingAnchor.constraint(equalTo: secondButton.leadingAnchor, constant: -20),
                 firstButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             ])
-
         case .countdownSettings:
-            titleLabel.textAlignment = .center
-            [firstButton, secondButton, thirdButton, fourthButton, titleLabel].forEach { button in
-                addSubview(button)
-                button.disableAutoresizingMask()
-            }
             
             NSLayoutConstraint.activate([
                 titleLabel.widthAnchor.constraint(equalToConstant: 200),
@@ -107,17 +175,16 @@ class SettingsViewCell: UITableViewCell {
                 firstButton.trailingAnchor.constraint(equalTo: secondButton.leadingAnchor, constant: -20),
                 firstButton.centerYAnchor.constraint(equalTo: secondButton.centerYAnchor),
                 
-                fourthButton.widthAnchor.constraint(equalToConstant: .iconSide),
-                fourthButton.heightAnchor.constraint(equalToConstant: .iconSide),
-                fourthButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -60),
-                fourthButton.topAnchor.constraint(equalTo: centerYAnchor, constant: 10),
-                
                 thirdButton.widthAnchor.constraint(equalToConstant: .iconSide),
                 thirdButton.heightAnchor.constraint(equalToConstant: .iconSide),
-                thirdButton.trailingAnchor.constraint(equalTo: fourthButton.leadingAnchor, constant: -20),
-                thirdButton.centerYAnchor.constraint(equalTo: fourthButton.centerYAnchor)
+                thirdButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -60),
+                thirdButton.topAnchor.constraint(equalTo: centerYAnchor, constant: 10),
+                
+                fourthButton.widthAnchor.constraint(equalToConstant: .iconSide),
+                fourthButton.heightAnchor.constraint(equalToConstant: .iconSide),
+                fourthButton.trailingAnchor.constraint(equalTo: thirdButton.leadingAnchor, constant: -20),
+                fourthButton.centerYAnchor.constraint(equalTo: thirdButton.centerYAnchor)
             ])
-
         }
     }
     
