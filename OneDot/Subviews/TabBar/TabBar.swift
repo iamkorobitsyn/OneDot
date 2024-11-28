@@ -37,7 +37,7 @@ class TabBar: UIView {
     private let topLineSeparator: CAShapeLayer = CAShapeLayer()
     private let numbersLineSeparator: CAShapeLayer = CAShapeLayer()
 
-    private let picker: UIPickerView = UIPickerView()
+    private let pickerView: UIPickerView = UIPickerView()
     private var currentPickerState: Mode?
 
     override init(frame: CGRect) {
@@ -46,8 +46,8 @@ class TabBar: UIView {
         setViews()
         setConstraints()
         
-        picker.delegate = self
-        picker.dataSource = self
+        pickerView.delegate = self
+        pickerView.dataSource = self
  
     }
     
@@ -91,76 +91,85 @@ class TabBar: UIView {
         switch mode {
             
         case .prepare:
-            leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
-            leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
-            rightButton.setImage(UIImage(named: "TBProfile"), for: .normal)
-            rightButton.setImage(UIImage(named: "TBProfile"), for: .highlighted)
+            configureVisibility(picker: true, bar: false)
+            setButtonImages(lButtonImg: "TBStart", rButtonImg: "TBProfile")
             leftButton.layer.removeAllAnimations()
-            isHidden = false
+            
         case .prepareToStart:
-            leftButton.setImage(UIImage(named: "TBStart"), for: .normal)
-            leftButton.setImage(UIImage(named: "TBStart"), for: .highlighted)
-            rightButton.setImage(UIImage(named: "TBCancel"), for: .normal)
-            rightButton.setImage(UIImage(named: "TBCancel"), for: .highlighted)
+            configureVisibility(picker: true, bar: false)
+            setButtonImages(lButtonImg: "TBStart", rButtonImg: "TBCancel")
             Animator.shared.AnimateStartIcon(leftButton.layer)
+            
         case .tracking:
-            leftButton.setImage(UIImage(named: "TBPause"), for: .normal)
-            leftButton.setImage(UIImage(named: "TBPause"), for: .highlighted)
-            rightButton.setImage(UIImage(named: "TBStop"), for: .normal)
-            rightButton.setImage(UIImage(named: "TBStop"), for: .highlighted)
+            configureVisibility(picker: true, bar: false)
+            setButtonImages(lButtonImg: "TBPause", rButtonImg: "TBStop")
             leftButton.layer.removeAllAnimations()
+            
         case .hide:
-            self.isHidden = true
+            configureVisibility(picker: true, bar: true)
         case .pickerDistance:
+            configureVisibility(picker: false, bar: false)
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
-            configurePickerVisibility(isHidden: false)
             currentPickerState = .pickerDistance
-            picker.reloadAllComponents()
-            picker.selectRow(UD.shared.calculationsDistanceValue, inComponent: 0, animated: true)
-            picker.selectRow(UD.shared.calculationsDistanceDecimalValue, inComponent: 1, animated: true)
+            pickerView.reloadAllComponents()
+            pickerView.selectRow(UD.shared.calculationsDistanceValue, inComponent: 0, animated: true)
+            pickerView.selectRow(UD.shared.calculationsDistanceDecimalValue, inComponent: 1, animated: true)
         case .pickerSpeed:
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
-            configurePickerVisibility(isHidden: false)
+            configureVisibility(picker: false, bar: false)
             currentPickerState = .pickerSpeed
-            picker.reloadAllComponents()
-            picker.selectRow(UD.shared.calculationsSpeedValue, inComponent: 0, animated: true)
-            picker.selectRow(UD.shared.calculationsSpeedDecimalValue, inComponent: 1, animated: true)
+            pickerView.reloadAllComponents()
+            pickerView.selectRow(UD.shared.calculationsSpeedValue, inComponent: 0, animated: true)
+            pickerView.selectRow(UD.shared.calculationsSpeedDecimalValue, inComponent: 1, animated: true)
         case .pickerPace:
             Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
-            configurePickerVisibility(isHidden: false)
+            configureVisibility(picker: false, bar: false)
             currentPickerState = .pickerPace
-            picker.reloadAllComponents()
-            picker.selectRow(UD.shared.calculationsPaceMinValue, inComponent: 0, animated: true)
-            picker.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
+            pickerView.reloadAllComponents()
+            pickerView.selectRow(UD.shared.calculationsPaceMinValue, inComponent: 0, animated: true)
+            pickerView.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
         case .PickerTime:
             Shaper.shared.drawTabBarNumbersTwoLineSeparator(shape: numbersLineSeparator, view: self)
-            configurePickerVisibility(isHidden: false)
+            configureVisibility(picker: false, bar: false)
             currentPickerState = .PickerTime
-            picker.reloadAllComponents()
-            picker.selectRow(UD.shared.calculationsTimeHValue, inComponent: 0, animated: true)
-            picker.selectRow(UD.shared.calculationsTimeMinValue, inComponent: 1, animated: true)
-            picker.selectRow(UD.shared.calculationsTimeSecValue, inComponent: 2, animated: true)
+            pickerView.reloadAllComponents()
+            pickerView.selectRow(UD.shared.calculationsTimeHValue, inComponent: 0, animated: true)
+            pickerView.selectRow(UD.shared.calculationsTimeMinValue, inComponent: 1, animated: true)
+            pickerView.selectRow(UD.shared.calculationsTimeSecValue, inComponent: 2, animated: true)
         case .pickerHide:
-            configurePickerVisibility(isHidden: true)
-            numbersLineSeparator.removeFromSuperlayer()
+            configureVisibility(picker: true, bar: false)
         }
+    }
+    
+    private func setButtonImages(lButtonImg: String, rButtonImg: String) {
+        leftButton.setImage(UIImage(named: lButtonImg), for: .normal)
+        leftButton.setImage(UIImage(named: lButtonImg), for: .highlighted)
+        rightButton.setImage(UIImage(named: rButtonImg), for: .normal)
+        rightButton.setImage(UIImage(named: rButtonImg), for: .highlighted)
     }
     
    
     
     //MARK: - ConfigurePickerVisibility
     
-    func configurePickerVisibility(isHidden: Bool) {
+    private func configureBarVisibility(hidden: Bool) {
+        self.isHidden = hidden ? true : false
+    }
+    
+    private func configureVisibility(picker: Bool, bar: Bool) {
         feedbackGen.selectionChanged()
         
-        backgroundColor = isHidden ? .myPaletteBlue : .none
-        picker.isHidden = isHidden ? true : false
-        leftButton.isHidden = isHidden ? false : true
-        rightButton.isHidden = isHidden ? false : true
+        self.isHidden = bar ? true : false
+        pickerView.isHidden = picker ? true : false
         
-        buttonsLineSeparator.isHidden = isHidden ? false : true
-        topLineSeparator.isHidden = isHidden ? true : false
+        backgroundColor = picker ? .myPaletteBlue : .none
+        leftButton.isHidden = picker ? false : true
+        rightButton.isHidden = picker ? false : true
+
+        buttonsLineSeparator.isHidden = picker ? false : true
+        topLineSeparator.isHidden = picker ? true : false
         
+        if picker {numbersLineSeparator.removeFromSuperlayer()}
     }
  
     
@@ -177,7 +186,7 @@ class TabBar: UIView {
         addSubview(leftButton)
         addSubview(rightButton)
         
-        addSubview(picker)
+        addSubview(pickerView)
 
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
@@ -192,7 +201,7 @@ class TabBar: UIView {
     private func setConstraints() {
         leftButton.disableAutoresizingMask()
         rightButton.disableAutoresizingMask()
-        picker.disableAutoresizingMask()
+        pickerView.disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
             leftButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
@@ -205,10 +214,10 @@ class TabBar: UIView {
             rightButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             rightButton.topAnchor.constraint(equalTo: topAnchor),
             
-            picker.widthAnchor.constraint(equalToConstant: .barWidth),
-            picker.heightAnchor.constraint(equalToConstant: .tabBarHeight),
-            picker.topAnchor.constraint(equalTo: topAnchor),
-            picker.leadingAnchor.constraint(equalTo: leadingAnchor)
+            pickerView.widthAnchor.constraint(equalToConstant: .barWidth),
+            pickerView.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            pickerView.topAnchor.constraint(equalTo: topAnchor),
+            pickerView.leadingAnchor.constraint(equalTo: leadingAnchor)
             ])
     }
 

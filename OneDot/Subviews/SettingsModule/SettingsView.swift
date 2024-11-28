@@ -12,6 +12,7 @@ class SettingsView: UIVisualEffectView {
     var buttonStateHandler: ((MainVC.Mode) -> Void)?
     
     enum Mode {
+        case active
         case hide
     }
     
@@ -33,9 +34,15 @@ class SettingsView: UIVisualEffectView {
 
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func activateMode(mode: Mode) {
+        switch mode {
+        case .active:
+            self.isHidden = false
+        case .hide:
+            self.isHidden = true
+        }
     }
+    
     
     @objc private func buttonPressed() {
         buttonStateHandler?(.settingsHide)
@@ -82,6 +89,11 @@ class SettingsView: UIVisualEffectView {
             hideButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
         ])
     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }
 
 extension SettingsView: UITableViewDataSource, UITableViewDelegate {

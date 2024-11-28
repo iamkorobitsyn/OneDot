@@ -123,8 +123,8 @@ class UserDefaultsManager {
         set { setValue(key: Keys.settingsAutopauseValue, value: newValue)}
     }
     
-    var settingsCountdownValue: Int {
-        get { getValue(key: Keys.settingsCountdownValue, defaultValue: 3) }
+    var settingsCountdownValue: Bool {
+        get { getValue(key: Keys.settingsCountdownValue, defaultValue: true) }
         set { setValue(key: Keys.settingsCountdownValue, value: newValue) }
     }
     

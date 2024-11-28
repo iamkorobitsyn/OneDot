@@ -94,38 +94,38 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .outdoor:
             UserDefaultsManager.shared.outdoorStatusValue = true
             headerBar.activateMode(mode: .outdoor)
-            notesView.activateMode(mode: .outdoor)
-            tabBar.configurePickerVisibility(isHidden: true)
-            notesView.isHidden = true
+            notesView.activateMode(mode: .hide)
+            calculationsView.activateMode(mode: .hide)
+            settingsView.activateMode(mode: .hide)
+            tabBar.activateMode(mode: .prepare)
         case .outdoorNotes:
             headerBar.activateMode(mode: .outdoorNotes)
-            notesView.isHidden = false
-            calculationsView.isHidden = true
-            tabBar.configurePickerVisibility(isHidden: true)
+            notesView.activateMode(mode: .outdoor)
+            calculationsView.activateMode(mode: .hide)
         case .indoor:
             UserDefaultsManager.shared.outdoorStatusValue = false
             headerBar.activateMode(mode: .indoor)
             notesView.activateMode(mode: .indoor)
-            tabBar.configurePickerVisibility(isHidden: true)
+            calculationsView.activateMode(mode: .hide)
+            settingsView.activateMode(mode: .hide)
+            tabBar.activateMode(mode: .prepare)
         case .notesHide:
             notesView.activateMode(mode: .hide)
             headerBar.activateMode(mode: .outdoor)
+            
         case .calculations:
-            calculationsView.isHidden = false
-            notesView.isHidden = true
-            settingsView.isHidden = true
             calculationsView.activateMode(mode: .distance)
+            settingsView.activateMode(mode: .hide)
             tabBar.activateMode(mode: .pickerDistance)
         case .calculationsHide:
-            tabBar.activateMode(mode: .pickerHide)
             calculationsView.activateMode(mode: .hide)
+            tabBar.activateMode(mode: .pickerHide)
         case .settings:
-            calculationsView.isHidden = true
-            notesView.isHidden = true
-            settingsView.isHidden = false
+            settingsView.activateMode(mode: .active)
+            calculationsView.activateMode(mode: .hide)
             tabBar.activateMode(mode: .hide)
         case .settingsHide:
-            settingsView.isHidden = true
+            settingsView.activateMode(mode: .hide)
             tabBar.activateMode(mode: .prepare)
             
         case .prepare:
@@ -134,26 +134,23 @@ class MainVC: UIViewController, CAAnimationDelegate {
             tabBar.activateMode(mode: .prepareToStart)
         case .tracking:
             tabBar.activateMode(mode: .tracking)
+            
         case .pickerDistance:
             calculationsView.activateMode(mode: .distance)
             tabBar.activateMode(mode: .pickerDistance)
-            
         case .pickerSpeed:
             calculationsView.activateMode(mode: .speed)
             tabBar.activateMode(mode: .pickerSpeed)
-            
         case .pickerPace:
             calculationsView.activateMode(mode: .pace)
             tabBar.activateMode(mode: .pickerPace)
-            
         case .pickerTime:
             calculationsView.activateMode(mode: .time)
             tabBar.activateMode(mode: .PickerTime)
+            
         case .transitionToProfile:
             let profileVC = ProfileVC()
             present(profileVC, animated: true)
-            
-        
         }
         
     }

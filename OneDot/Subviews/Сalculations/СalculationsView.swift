@@ -69,6 +69,7 @@ class CalculationsView: UIVisualEffectView {
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
+        self.isHidden = false
         switch mode {
         case .distance:
             calculateDistance()

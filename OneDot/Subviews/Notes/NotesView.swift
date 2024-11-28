@@ -18,6 +18,7 @@ class NotesView: UIVisualEffectView {
              hide
     }
     
+    
     var buttonStateHandler: ((MainVC.Mode) -> Void)?
     
     private var notes: [Note] = []
@@ -98,6 +99,7 @@ class NotesView: UIVisualEffectView {
         switch mode {
             
         case .outdoor:
+            isHidden = false
             sortNoteButton.isHidden = false
             checkMarkButton.isHidden = true
             hideButton.isHidden = false
@@ -119,7 +121,7 @@ class NotesView: UIVisualEffectView {
             hideButton.isHidden = true
             addNoteButton.isHidden = true
         case .hide:
-            self.isHidden = true
+            isHidden = true
         }
     }
     
@@ -378,9 +380,10 @@ extension NotesView: UITableViewDelegate   {
         refreshNotesIndex()
         
         if UserDefaultsManager.shared.outdoorStatusValue == false {
-            activateMode(mode: .outdoor)
-        } else {
             activateMode(mode: .indoor)
+        } else {
+            
+            activateMode(mode: .outdoor)
         }
         
         self.tableView.isUserInteractionEnabled = true
