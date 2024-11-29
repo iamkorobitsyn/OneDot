@@ -102,6 +102,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
             headerBar.activateMode(mode: .outdoorNotes)
             notesView.activateMode(mode: .outdoor)
             calculationsView.activateMode(mode: .hide)
+            settingsView.activateMode(mode: .hide)
         case .indoor:
             UserDefaultsManager.shared.outdoorStatusValue = false
             headerBar.activateMode(mode: .indoor)
@@ -112,6 +113,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .notesHide:
             notesView.activateMode(mode: .hide)
             headerBar.activateMode(mode: .outdoor)
+            tabBar.activateMode(mode: .prepare)
             
         case .calculations:
             calculationsView.activateMode(mode: .distance)

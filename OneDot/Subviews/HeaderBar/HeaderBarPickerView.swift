@@ -103,6 +103,8 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         return imageView
     }
     
+    //MARK: - SetViews
+    
     private func setViews() {
         addSubview(picker)
         picker.backgroundColor = .none
@@ -112,10 +114,11 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         title.clipsToBounds = true
         title.font = UIFont.systemFont(ofSize: 20, weight: .light, width: .compressed)
         title.textColor = .myPaletteGray
-
-        Shaper.shared.drawPickerViewLineSeparator(shape: lineSeparator, view: picker)
+        
         Shaper.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }
+    
+    //MARK: - SetConstraints
     
     private func setConstraints() {
         picker.translatesAutoresizingMaskIntoConstraints = false

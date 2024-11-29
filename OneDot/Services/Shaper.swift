@@ -80,19 +80,6 @@ class Shaper {
         view.layer.addSublayer(shape)
     }
     
-    //MARK: - HeaderBarPickerView
-    
-    func drawPickerViewLineSeparator(shape: CAShapeLayer, view: UIView) {
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: 1, y: 30))
-        path.addLine(to: CGPoint(x: 1 , y: 30 + 90))
-        shape.path = path.cgPath
-        shape.lineWidth = 0.5
-        shape.lineCap = .round
-        shape.strokeColor = UIColor.black.cgColor
-        view.layer.addSublayer(shape)
-    }
-    
     func drawPickerViewDotSeparator(shape: CAShapeLayer, view: UIView) {
         let path = UIBezierPath(arcCenter: CGPoint(x: .barWidth / 2, y: 25),
                                 radius: 3,
@@ -142,6 +129,4 @@ class Shaper {
         shape.strokeColor = UIColor.green.withAlphaComponent(0.5).cgColor
         view.layer.addSublayer(shape)
     }
-    
-    
 }

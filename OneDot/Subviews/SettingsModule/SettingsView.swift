@@ -131,21 +131,7 @@ extension SettingsView: UITableViewDataSource, UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        switch indexPath.row {
-        case 0:
-            return 60
-        case 1:
-            return 100
-        case 2:
-            return 100
-        case 3:
-            return 140
-        case 4:
-            return 100
-        default:
-            return 0
-        }
+        return 80
     }
     
     

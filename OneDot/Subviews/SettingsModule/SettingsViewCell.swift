@@ -21,11 +21,10 @@ class SettingsViewCell: UITableViewCell {
     
     var currentMode: Mode?
     
-    let leftButton: UIButton = UIButton()
-    let rightButton: UIButton = UIButton()
-    
     let titleLabel: UILabel = UILabel()
-    
+    let segmenter: UISegmentedControl = UISegmentedControl(items: ["km", "ml"])
+    let switcher: UISwitch = UISwitch()
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
@@ -40,124 +39,96 @@ class SettingsViewCell: UITableViewCell {
     
     //MARK: - Buttons
     
-    @objc private func buttonTapped(_ sender: UIButton) {
+    @objc private func updateMode() {
         
         switch currentMode {
         case .distanceSettings:
-            updateDistanceSettings(sender == leftButton ? true : false)
+            UD.shared.settingsDistanceValue = segmenter.selectedSegmentIndex
         case .autopauseSettings:
-            updateAutopauseSettings(sender == leftButton ? true : false)
+            UD.shared.settingsAutopauseValue = switcher.isOn
         case .countdownSettings:
-            updateCountdownSettings(sender == leftButton ? true : false)
+            UD.shared.settingsCountdownValue = switcher.isOn
         case .appleHealthSettings:
-            updateAppleHeathSettings(sender == leftButton ? true : false)
+            UD.shared.settingsAppleHealthValue = switcher.isOn
         default:
             break
         }
     }
     
-    private func updateDistanceSettings(_ bool: Bool) {
-        UD.shared.settingsDistanceValue = bool ? "km" : "ml"
-        leftButton.isUserInteractionEnabled = bool ? false : true
-        rightButton.isUserInteractionEnabled = bool ? true : false
-        leftButton.setImage(UIImage(named: bool ? "DSKmActive" : "DSKmInactive"), for: .normal)
-        rightButton.setImage(UIImage(named: bool ? "DSMlInactive" : "DSMlActive"), for: .normal)
-    }
-    
-    private func updateAutopauseSettings(_ bool: Bool) {
-        UD.shared.settingsAutopauseValue = bool ? true : false
-        leftButton.isUserInteractionEnabled = bool ? false : true
-        rightButton.isUserInteractionEnabled = bool ? true : false
-        leftButton.setImage(UIImage(named: bool ? "DSCheckMarkActive" : "DSCheckMarkInactive"), for: .normal)
-        rightButton.setImage(UIImage(named: bool ? "DSCancelInactive" : "DSCancelActive"), for: .normal)
-    }
-    
-    private func updateCountdownSettings(_ bool: Bool) {
-        UD.shared.settingsCountdownValue = bool ? true : false
-        leftButton.isUserInteractionEnabled = bool ? false : true
-        rightButton.isUserInteractionEnabled = bool ? true : false
-        leftButton.setImage(UIImage(named: bool ? "DSCheckMarkActive" : "DSCheckMarkInactive"), for: .normal)
-        rightButton.setImage(UIImage(named: bool ? "DSCancelInactive" : "DSCancelActive"), for: .normal)
-    }
-    
-    private func updateAppleHeathSettings(_ bool: Bool) {
-        UD.shared.settingsAppleHealthValue = bool ? true : false
-        leftButton.isUserInteractionEnabled = bool ? false : true
-        rightButton.isUserInteractionEnabled = bool ? true : false
-        leftButton.setImage(UIImage(named: bool ? "DSCheckMarkActive" : "DSCheckMarkInactive"), for: .normal)
-        rightButton.setImage(UIImage(named: bool ? "DSCancelInactive" : "DSCancelActive"), for: .normal)
-    }
-    
     //MARK: - SetViews
     
     private func setViews(mode: Mode) {
-        
         contentView.addSubview(titleLabel)
         titleLabel.textAlignment = .center
         titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .light, width: .compressed)
         titleLabel.textColor = .myPaletteGray
         
-        [leftButton, rightButton].forEach { button in
-            button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
-        }
-        
+        switcher.onTintColor = .myPaletteGold
+        segmenter.selectedSegmentTintColor = .myPaletteGold
+        segmenter.setTitleTextAttributes([.foregroundColor: UIColor.white,
+                                          .font: UIFont.systemFont(ofSize: 15,
+                                                                   weight: .bold,
+                                                                   width: .compressed)], for: .normal)
+
         switch mode {
             
         case .distanceSettings:
-            titleLabel.text = "Distance"
-            [leftButton, rightButton].forEach({contentView.addSubview($0)})
-            
+            setUIControl(view: segmenter, title: "Distance")
             let value = UD.shared.settingsDistanceValue
-            leftButton.setImage(UIImage(named: value == "km" ? "DSKmActive" : "DSKmInactive"), for: .normal)
-            rightButton.setImage(UIImage(named: value == "ml" ? "DSMlActive" : "DSMlInactive"), for: .normal)
+            segmenter.selectedSegmentIndex = value
 
         case .autopauseSettings:
-            titleLabel.text = "Autopause"
-            [leftButton, rightButton].forEach({contentView.addSubview($0)})
-            
+            setUIControl(view: switcher, title: "Autopause")
             let value = UD.shared.settingsAutopauseValue
-            leftButton.setImage(UIImage(named: value ? "DSCheckMarkActive" : "DSCheckMarkInactive"), for: .normal)
-            rightButton.setImage(UIImage(named: value ? "DSCancelInactive" : "DSCancelActive"), for: .normal)
+            switcher.setOn(value, animated: true)
             
         case .countdownSettings:
-            titleLabel.text = "Countdown"
-            [leftButton, rightButton].forEach({contentView.addSubview($0)})
-            
+            setUIControl(view: switcher, title: "Countdown")
             let value = UD.shared.settingsCountdownValue
-            leftButton.setImage(UIImage(named: value ? "DSCheckMarkActive" : "DSCheckMarkInactive"), for: .normal)
-            rightButton.setImage(UIImage(named: value ? "DSCancelInactive" : "DSCancelActive"), for: .normal)
+            switcher.setOn(value, animated: true)
             
         case .appleHealthSettings:
-            titleLabel.text = "AppleHealth"
-            [leftButton, rightButton].forEach({contentView.addSubview($0)})
-            
+            setUIControl(view: switcher, title: "AppleHealth")
             let value = UD.shared.settingsAppleHealthValue
-            leftButton.setImage(UIImage(named: value ? "DSCheckMarkActive" : "DSCheckMarkInactive"), for: .normal)
-            rightButton.setImage(UIImage(named: value ? "DSCancelInactive" : "DSCancelActive"), for: .normal)
+            switcher.setOn(value, animated: true)
         }
+    }
+    
+    private func setUIControl(view: UIControl, title: String) {
+        contentView.addSubview(view)
+        view.addTarget(self, action: #selector(updateMode), for: .valueChanged)
+        titleLabel.text = title
     }
     
     //MARK: - SetConstrains
     
     private func setConstraints(mode: Mode) {
         
-        [titleLabel, leftButton, rightButton].forEach({$0.disableAutoresizingMask()})
-        
-        NSLayoutConstraint.activate([
-            titleLabel.widthAnchor.constraint(equalToConstant: 200),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
-            rightButton.widthAnchor.constraint(equalToConstant: .iconSide),
-            rightButton.heightAnchor.constraint(equalToConstant: .iconSide),
-            rightButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -60),
-            rightButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
-            leftButton.widthAnchor.constraint(equalToConstant: .iconSide),
-            leftButton.heightAnchor.constraint(equalToConstant: .iconSide),
-            leftButton.trailingAnchor.constraint(equalTo: rightButton.leadingAnchor, constant: -20),
-            leftButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-        ])
+        titleLabel.disableAutoresizingMask()
+        switch mode {
+        case .autopauseSettings, .countdownSettings, .appleHealthSettings:
+            switcher.disableAutoresizingMask()
+            NSLayoutConstraint.activate([
+                titleLabel.widthAnchor.constraint(equalToConstant: 200),
+                titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+                titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+                
+                switcher.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -80),
+                switcher.centerYAnchor.constraint(equalTo: centerYAnchor)
+            ])
+        case .distanceSettings:
+            segmenter.disableAutoresizingMask()
+            NSLayoutConstraint.activate([
+                titleLabel.widthAnchor.constraint(equalToConstant: 200),
+                titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+                titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+                
+                segmenter.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50),
+                segmenter.centerYAnchor.constraint(equalTo: centerYAnchor),
+                segmenter.widthAnchor.constraint(equalToConstant: 100),
+                segmenter.heightAnchor.constraint(equalToConstant: 30)
+            ])
+        }
     }
     
     required init?(coder: NSCoder) {

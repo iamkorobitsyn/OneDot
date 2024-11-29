@@ -113,8 +113,8 @@ class UserDefaultsManager {
     
     //MARK: - Settings
     
-    var settingsDistanceValue: String {
-        get { getValue(key: Keys.settingsDistanceValue, defaultValue: "km") }
+    var settingsDistanceValue: Int {
+        get { getValue(key: Keys.settingsDistanceValue, defaultValue: 0) }
         set { setValue(key: Keys.settingsDistanceValue, value: newValue) }
     }
     
