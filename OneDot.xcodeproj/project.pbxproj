@@ -114,6 +114,7 @@
 		6521308B2AC46F400056DEA5 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		6521308D2AC587210056DEA5 /* Aimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aimator.swift; sourceTree = "<group>"; };
 		654893982AAE8099005039DF /* HeaderBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderBarView.swift; sourceTree = "<group>"; };
+		655268FB2CFA745E00611AD7 /* OneDot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneDot.entitlements; sourceTree = "<group>"; };
 		65551C762AC5D8CF00CE3309 /* Shaper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shaper.swift; sourceTree = "<group>"; };
 		65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		655B538F2B2139470020FF32 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -220,6 +221,7 @@
 		6502D6A62A595315000F96E0 /* OneDot */ = {
 			isa = PBXGroup;
 			children = (
+				655268FB2CFA745E00611AD7 /* OneDot.entitlements */,
 				6502D6DB2A59536C000F96E0 /* App */,
 				6502D6DC2A595377000F96E0 /* Modules */,
 				6568C8B22CE173BF00993E00 /* Subviews */,
@@ -822,21 +824,22 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = OneDot/OneDot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 773P6S26HM;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OneDot/Recourses/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Мы используем данные Apple Health для предоставления персонализированных спортивных рекомендаций.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ONEDOTAPP;
+				PRODUCT_BUNDLE_IDENTIFIER = OneDotTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -850,21 +853,22 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = OneDot/OneDot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 773P6S26HM;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OneDot/Recourses/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Мы используем данные Apple Health для предоставления персонализированных спортивных рекомендаций.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ONEDOTAPP;
+				PRODUCT_BUNDLE_IDENTIFIER = OneDotTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
