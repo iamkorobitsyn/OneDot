@@ -18,6 +18,7 @@ class ProfileVC: UIViewController {
         // Таблица для отображения тренировок
         let tableView: UITableView = {
             let table = UITableView()
+            table.backgroundColor = .none
             table.translatesAutoresizingMaskIntoConstraints = false
             return table
         }()
@@ -117,10 +118,10 @@ class ProfileVC: UIViewController {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
+            blurEffectView.widthAnchor.constraint(equalToConstant: .barWidth),
             blurEffectView.topAnchor.constraint(equalTo: view.topAnchor),
-            blurEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             blurEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            blurEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurEffectView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             dismissButton.widthAnchor.constraint(equalToConstant: .iconSide),
             dismissButton.heightAnchor.constraint(equalToConstant: .iconSide),
