@@ -18,7 +18,7 @@ class ProfileVC: UIViewController {
         // Таблица для отображения тренировок
         let tableView: UITableView = {
             let table = UITableView()
-            table.backgroundColor = .none
+            table.backgroundColor = .clear
             table.translatesAutoresizingMaskIntoConstraints = false
             return table
         }()
@@ -41,28 +41,13 @@ class ProfileVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
         
         setViews()
         setConstraints()
-        
-        setupTableView()
         requestHealthKitAccess()
     }
-    
-    // MARK: - Настройка таблицы
-       func setupTableView() {
-           blurEffectView.contentView.addSubview(tableView)
-           tableView.dataSource = self
-           tableView.delegate = self
-           
-           // Констрейнты для таблицы
-           NSLayoutConstraint.activate([
-               tableView.topAnchor.constraint(equalTo: view.topAnchor),
-               tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-               tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-               tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-           ])
-       }
        
        // MARK: - Запрос доступа к HealthKit
        func requestHealthKitAccess() {
@@ -107,10 +92,15 @@ class ProfileVC: UIViewController {
     //MARK: - SetViews
     
     private func setViews() {
+        
+        view.backgroundColor = .clear
         view.addSubview(blurEffectView)
         
         view.addSubview(dismissButton)
         
+        blurEffectView.contentView.addSubview(tableView)
+        
+        dismissButton.setImage(UIImage(named: "SSHide"), for: .normal)
         dismissButton.addTarget(self, action: #selector(dismissProfile), for: .touchUpInside)
     }
     
@@ -118,15 +108,20 @@ class ProfileVC: UIViewController {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            blurEffectView.widthAnchor.constraint(equalToConstant: .barWidth),
             blurEffectView.topAnchor.constraint(equalTo: view.topAnchor),
+            blurEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             blurEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            blurEffectView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            blurEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             dismissButton.widthAnchor.constraint(equalToConstant: .iconSide),
             dismissButton.heightAnchor.constraint(equalToConstant: .iconSide),
             dismissButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
-            dismissButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+            dismissButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            
+            tableView.topAnchor.constraint(equalTo: dismissButton.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
 }
@@ -141,6 +136,7 @@ extension ProfileVC: UITableViewDataSource, UITableViewDelegate {
        
        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
            let cell = tableView.dequeueReusableCell(withIdentifier: "WorkoutCell") ?? UITableViewCell(style: .subtitle, reuseIdentifier: "WorkoutCell")
+           cell.backgroundColor = .clear
            
            let workout = workouts[indexPath.row]
            cell.textLabel?.text = workout.workoutActivityType.name // Тип тренировки (название)
