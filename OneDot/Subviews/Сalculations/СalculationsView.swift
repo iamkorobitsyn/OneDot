@@ -226,7 +226,7 @@ class CalculationsView: UIVisualEffectView {
     
     private func setViews() {
         
-        effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
         clipsToBounds = true
         isHidden = true
         
@@ -241,11 +241,11 @@ class CalculationsView: UIVisualEffectView {
         setButton(button: rightButton, titleColor: .myPaletteBlue)
         setButton(button: hideButton, titleColor: .clear)
 
-        setTitle(label: distanceTitle, titleText: "DISTANCE")
-        setTitle(label: speedTitle, titleText: "KM / H")
-        setTitle(label: timeTitle, titleText: "TIME")
-        setTitle(label: paceTitle, titleText: "MIN / KM")
-        setTitle(label: metricsTitle, titleText: "KM")
+        setTitle(label: distanceTitle, titleText: "Distance")
+        setTitle(label: speedTitle, titleText: "Km / h")
+        setTitle(label: timeTitle, titleText: "Time")
+        setTitle(label: paceTitle, titleText: "Min / Km")
+        setTitle(label: metricsTitle, titleText: "Km")
 
     }
     
@@ -268,7 +268,7 @@ class CalculationsView: UIVisualEffectView {
         contentView.addSubview(label)
         label.disableAutoresizingMask()
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 15, weight: .light, width: .compressed)
+        label.font = UIFont.systemFont(ofSize: 16, weight: .light, width: .compressed)
         label.textColor = .myPaletteGray
         label.text = titleText
     }

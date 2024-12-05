@@ -129,4 +129,44 @@ class Shaper {
         shape.strokeColor = UIColor.green.withAlphaComponent(0.5).cgColor
         view.layer.addSublayer(shape)
     }
+    
+    //MARK: - MetricsPanelCell
+    
+    func drawMetricsCellSeparator(shape: CAShapeLayer, view: UIView) {
+        
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: view.frame.width / 2, y: view.frame.height / 2 - 20))
+        path.addLine(to: CGPoint(x: view.frame.width / 2 , y: view.frame.height / 2 + 20))
+        shape.path = path.cgPath
+        shape.lineWidth = 0.5
+        shape.lineCap = .round
+        shape.strokeColor = UIColor.myPaletteGray.cgColor
+        view.layer.addSublayer(shape)
+        
+    }
+    
+    //MARK: - WorkoutCell
+    
+    func drawWorkoutCellSeparators(shape: CAShapeLayer, view: UIView) {
+        let path = UIBezierPath()
+        
+        // Первая линия (слева направо, под углом 45°)
+        path.move(to: CGPoint(x: .barWidth / 2.16 - 5, y: 45)) // Начальная точка
+        path.addLine(to: CGPoint(x: .barWidth - (.barWidth / 2.16) - 5, y: 75)) // Конечная точка
+
+        // Вторая линия (справа налево, под углом -45°)
+        path.move(to: CGPoint(x: .barWidth - (.barWidth / 2.16) - 5, y: 45)) // Начальная точка
+        path.addLine(to: CGPoint(x: .barWidth / 2.16 - 5, y: 75)) // Конечная точка
+
+        // Настройка `CAShapeLayer`
+        shape.path = path.cgPath
+        shape.lineWidth = 0.5
+        shape.lineCap = .round
+        shape.strokeColor = UIColor.white.cgColor
+        
+        // Добавление слоя на переданный `view`
+        view.layer.addSublayer(shape)
+    }
+    
+    
 }

@@ -16,7 +16,7 @@ class HeaderBarView: UIView {
     
     private let visualEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView()
-        view.effect = UIBlurEffect(style: .light)
+        view.effect = UIBlurEffect(style: .extraLight)
         view.frame = CGRect(x: 0, y: 0,
                             width: CGFloat.barWidth,
                             height: CGFloat.headerBarHeight)

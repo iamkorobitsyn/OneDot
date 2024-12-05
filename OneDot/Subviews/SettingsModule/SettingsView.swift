@@ -52,7 +52,7 @@ class SettingsView: UIVisualEffectView {
     //MARK: - SetViews
     
     private func setViews() {
-        effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
         clipsToBounds = true
         isHidden = true
         

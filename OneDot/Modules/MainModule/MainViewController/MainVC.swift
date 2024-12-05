@@ -243,7 +243,7 @@ extension MainVC {
         view.addSubview(mapView)
         mapView.overrideUserInterfaceStyle = .light
         view.addSubview(notesView)
-        notesView.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        notesView.effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
         notesView.clipsToBounds = true
         
         
@@ -270,8 +270,6 @@ extension MainVC {
         splashScreen.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            
-            
             
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
             mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),

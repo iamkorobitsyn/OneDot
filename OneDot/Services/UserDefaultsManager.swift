@@ -32,6 +32,7 @@ class UserDefaultsManager {
         static let settingsAutopauseValue = "settingsAutopauseValue"
         static let settingsCountdownValue = "settingsCountdownValue"
         static let settingsAppleHealthValue = "settingsAppleHealthValue"
+        static let profileMetricsPageValue = "profileMetricsPageValue"
     }
     
     private func getValue<T> (key: String, defaultValue: T ) -> T {
@@ -131,6 +132,13 @@ class UserDefaultsManager {
     var settingsAppleHealthValue: Bool {
         get { getValue(key: Keys.settingsAppleHealthValue, defaultValue: false) }
         set { setValue(key: Keys.settingsAppleHealthValue, value: newValue) }
+    }
+    
+    //MARK: - Profile
+    
+    var profileMetricsPageValue: Int {
+        get { getValue(key: Keys.profileMetricsPageValue, defaultValue: 0) }
+        set { setValue(key: Keys.profileMetricsPageValue, value: newValue) }
     }
 
 }

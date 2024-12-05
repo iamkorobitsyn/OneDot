@@ -8,64 +8,82 @@
 import UIKit
 import HealthKit
 
-class ProfileVC: UIViewController, UIScrollViewDelegate {
+class ProfileVC: UIViewController {
     
     
     // MARK: - Properties
         let healthStore = HKHealthStore() // Для работы с HealthKit
         var workouts: [HKWorkout] = []   // Массив тренировок для отображения
         
-        // Таблица для отображения тренировок
-        let tableView: UITableView = {
-            let table = UITableView()
-            table.backgroundColor = .clear
-            table.translatesAutoresizingMaskIntoConstraints = false
-            return table
-        }()
+        
     
 
     private let blurEffectView: UIVisualEffectView = {
-        let effect = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+        let effect = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
         effect.disableAutoresizingMask()
         effect.layer.masksToBounds = true
         effect.layer.cornerRadius = .barCorner
+        effect.layer.borderWidth = 0.3
+        effect.layer.borderColor = UIColor.myPaletteGray.withAlphaComponent(0.4).cgColor
         return effect
     }()
     
     private let dismissButton: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "additionalHideIcon"), for: .normal)
+        button.setImage(UIImage(named: "SSHide"), for: .normal)
         return button
     }()
     
     private let pageControl: UIPageControl = {
-        let view = UIPageControl()
-        view.disableAutoresizingMask()
-        view.numberOfPages = 2
-        view.currentPageIndicatorTintColor = .myPaletteGold
-        return view
+        let pageControl = UIPageControl()
+        pageControl.disableAutoresizingMask()
+        pageControl.numberOfPages = 3
+        pageControl.currentPageIndicatorTintColor = .myPaletteGold
+        pageControl.pageIndicatorTintColor = .lightGray
+        pageControl.isUserInteractionEnabled = false
+        return pageControl
     }()
     
-    private let scrollView: UIScrollView = {
-        let view = UIScrollView()
-        view.disableAutoresizingMask()
-        view.showsHorizontalScrollIndicator = false
-        view.isPagingEnabled = true
-        return view
+    private let metricsPanel: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 0
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.disableAutoresizingMask()
+        collectionView.isPagingEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
+        return collectionView
+    }()
+    
+    private let workoutTable: UITableView = {
+        let tableView = UITableView()
+        tableView.disableAutoresizingMask()
+        tableView.backgroundColor = .clear
+        tableView.separatorColor = .clear
+        return tableView
     }()
     
     private let segmenter: UISegmentedControl = {
         let view = UISegmentedControl(items: ["Week", "Month", "Year", "All time"])
+        view.selectedSegmentTintColor = .myPaletteGold
+        view.selectedSegmentIndex = 1
+        view.setTitleTextAttributes([.foregroundColor: UIColor.myPaletteGray,
+                                     .font: UIFont.systemFont(ofSize: 16,
+                                                              weight: .light,
+                                                              width: .compressed)], for: .normal)
         view.disableAutoresizingMask()
         return view
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.dataSource = self
-        tableView.delegate = self
-        scrollView.delegate = self
+        workoutTable.dataSource = self
+        workoutTable.delegate = self
+        
+        metricsPanel.delegate = self
+        metricsPanel.dataSource = self
+        metricsPanel.register(MetricsPanelCell.self, forCellWithReuseIdentifier: "MetricsPanelCell")
         
         
         
@@ -73,50 +91,14 @@ class ProfileVC: UIViewController, UIScrollViewDelegate {
         setConstraints()
         requestHealthKitAccess()
         
-        scrollView.contentSize = CGSize(width: view.frame.width * 2, height: 100)
         
-        let firstPanel = createMetricPanel(time: "06:40:54", distance: "64.6 km", calories: "3568 kcal")
-                firstPanel.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 100)
-                scrollView.addSubview(firstPanel)
-                
-                // Добавление второй панели
-                let secondPanel = createMetricPanel(time: "03:20:27", distance: "32.3 km", calories: "1784 kcal")
-                secondPanel.frame = CGRect(x: view.frame.width, y: 0, width: view.frame.width, height: 100)
-                scrollView.addSubview(secondPanel)
     }
     
-    private func createMetricPanel(time: String, distance: String, calories: String) -> UIView {
-           let panel = UIView()
-           
-           let timeLabel = UILabel()
-           timeLabel.text = time
-           timeLabel.font = .systemFont(ofSize: 16, weight: .bold)
-           timeLabel.textAlignment = .center
-           
-           let distanceLabel = UILabel()
-           distanceLabel.text = distance
-           distanceLabel.font = .systemFont(ofSize: 16)
-           distanceLabel.textAlignment = .center
-           
-           let caloriesLabel = UILabel()
-           caloriesLabel.text = calories
-           caloriesLabel.font = .systemFont(ofSize: 16)
-           caloriesLabel.textAlignment = .center
-           
-           let stackView = UIStackView(arrangedSubviews: [timeLabel, distanceLabel, caloriesLabel])
-           stackView.axis = .vertical
-           stackView.alignment = .center
-           stackView.spacing = 8
-           stackView.frame = panel.bounds
-           stackView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-           
-           panel.addSubview(stackView)
-           return panel
-       }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("scroll")
+    override func viewWillAppear(_ animated: Bool) {
+        let currentMetricsPageValue = UserDefaultsManager.shared.profileMetricsPageValue
+        DispatchQueue.main.async { self.setCurrentMetricsPage(currentPage: currentMetricsPageValue) }
     }
+    
        
        // MARK: - Запрос доступа к HealthKit
        func requestHealthKitAccess() {
@@ -147,12 +129,28 @@ class ProfileVC: UIViewController, UIScrollViewDelegate {
                self?.workouts = workouts
                
                DispatchQueue.main.async {
-                   self?.tableView.reloadData()
+                   self?.workoutTable.reloadData()
                }
            }
            
            healthStore.execute(query)
        }
+    
+    //MARK: - DidScroll & CurrentMetrics
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let currentPage = Int(scrollView.contentOffset.x / view.frame.width)
+        setCurrentMetricsPage(currentPage: currentPage)
+    }
+    
+    private func setCurrentMetricsPage(currentPage: Int) {
+        pageControl.currentPage = currentPage
+        let indexPath = IndexPath(row: currentPage, section: 0)
+        metricsPanel.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        UserDefaultsManager.shared.profileMetricsPageValue = currentPage
+    }
+    
+    //MARK: - Dismiss
     
     @objc private func dismissProfile() {
         dismiss(animated: true)
@@ -161,19 +159,20 @@ class ProfileVC: UIViewController, UIScrollViewDelegate {
     //MARK: - SetViews
     
     private func setViews() {
-        
-        view.backgroundColor = .clear
+
         view.addSubview(blurEffectView)
         
-        blurEffectView.contentView.addSubview(dismissButton)
-        blurEffectView.contentView.addSubview(pageControl)
-        blurEffectView.contentView.addSubview(scrollView)
+        view.addSubview(dismissButton)
+        view.addSubview(pageControl)
+        view.addSubview(metricsPanel)
+        metricsPanel.backgroundColor = .clear
         
-        blurEffectView.contentView.addSubview(segmenter)
+        view.addSubview(segmenter)
         
-        blurEffectView.contentView.addSubview(tableView)
+        view.addSubview(workoutTable)
         
-        dismissButton.setImage(UIImage(named: "SSHide"), for: .normal)
+        workoutTable.register(WorkoutCell.self, forCellReuseIdentifier: "WorkoutCell")
+
         dismissButton.addTarget(self, action: #selector(dismissProfile), for: .touchUpInside)
     }
     
@@ -194,21 +193,39 @@ class ProfileVC: UIViewController, UIScrollViewDelegate {
             pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             pageControl.centerYAnchor.constraint(equalTo: dismissButton.centerYAnchor),
             
-            scrollView.widthAnchor.constraint(equalToConstant: .barWidth),
-            scrollView.heightAnchor.constraint(equalToConstant: 200),
-            scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            scrollView.topAnchor.constraint(equalTo: dismissButton.bottomAnchor),
+            metricsPanel.topAnchor.constraint(equalTo: dismissButton.bottomAnchor),
+            metricsPanel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            metricsPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            metricsPanel.heightAnchor.constraint(equalToConstant: 200),
             
             segmenter.widthAnchor.constraint(equalToConstant: .barWidth),
             segmenter.heightAnchor.constraint(equalToConstant: 42),
             segmenter.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            segmenter.topAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            segmenter.topAnchor.constraint(equalTo: metricsPanel.bottomAnchor),
             
-            tableView.topAnchor.constraint(equalTo: segmenter.bottomAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            workoutTable.topAnchor.constraint(equalTo: segmenter.bottomAnchor),
+            workoutTable.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            workoutTable.widthAnchor.constraint(equalToConstant: .barWidth - 10),
+            workoutTable.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+}
+
+
+extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: view.frame.width, height: 200)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = metricsPanel.dequeueReusableCell(withReuseIdentifier: "MetricsPanelCell", for: indexPath) as! MetricsPanelCell
+        cell.activateMode(mode: indexPath.row)
+        return cell
     }
 }
 
@@ -221,18 +238,44 @@ extension ProfileVC: UITableViewDataSource, UITableViewDelegate {
        }
        
        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-           let cell = tableView.dequeueReusableCell(withIdentifier: "WorkoutCell") ?? UITableViewCell(style: .subtitle, reuseIdentifier: "WorkoutCell")
-           cell.backgroundColor = .red
            
-           let workout = workouts[indexPath.row]
-           cell.textLabel?.text = workout.workoutActivityType.name // Тип тренировки (название)
+           if let cell = tableView.dequeueReusableCell(withIdentifier: "WorkoutCell") as? WorkoutCell {
+               let workout = workouts[indexPath.row]
+               
+               // Тип тренировки
+               cell.topLeadingLabel.text = workout.workoutActivityType.name
+               
+               // Длительность тренировки
+               let duration = workout.duration / 60 // в минутах
+               cell.topTrailingLabel.text = String(format: "%.1f мин", duration)
+               
+               
+               
+               // Дистанция тренировки
+               if let distance = workout.totalDistance?.doubleValue(for: .meter()) {
+                   let distanceInKm = distance / 1000 // Перевод в километры
+                   cell.bottomLeadingLabel.text = String(format: "%.2f км", distanceInKm)
+               } else {
+                   cell.bottomLeadingLabel.text = "Нет данных о дистанции"
+               }
+               
+               // Дата тренировки
+               let dateFormatter = DateFormatter()
+               dateFormatter.dateStyle = .short
+               let workoutDate = dateFormatter.string(from: workout.startDate)
+               cell.bottomTrailingLabel.text = workoutDate
+               
+               
+               
+               return cell
+           }
            
-           let duration = workout.duration / 60 // Длительность в минутах
-           let energy = workout.totalEnergyBurned?.doubleValue(for: .kilocalorie()) ?? 0 // Сожженные калории
-           
-           cell.detailTextLabel?.text = String(format: "Длительность: %.1f мин, Калории: %.0f ккал", duration, energy)
-           return cell
+           return UITableViewCell()
        }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        110
+    }
        
        // MARK: - UITableViewDelegate
        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

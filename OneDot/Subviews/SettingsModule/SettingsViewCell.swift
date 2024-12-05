@@ -60,14 +60,14 @@ class SettingsViewCell: UITableViewCell {
     private func setViews(mode: Mode) {
         contentView.addSubview(titleLabel)
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .light, width: .compressed)
+        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .light, width: .compressed)
         titleLabel.textColor = .myPaletteGray
         
         switcher.onTintColor = .myPaletteGold
         segmenter.selectedSegmentTintColor = .myPaletteGold
-        segmenter.setTitleTextAttributes([.foregroundColor: UIColor.white,
-                                          .font: UIFont.systemFont(ofSize: 15,
-                                                                   weight: .bold,
+        segmenter.setTitleTextAttributes([.foregroundColor: UIColor.myPaletteGray,
+                                          .font: UIFont.systemFont(ofSize: 16,
+                                                                   weight: .light,
                                                                    width: .compressed)], for: .normal)
 
         switch mode {
@@ -123,9 +123,9 @@ class SettingsViewCell: UITableViewCell {
                 titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
                 titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
                 
-                segmenter.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50),
+                segmenter.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
                 segmenter.centerYAnchor.constraint(equalTo: centerYAnchor),
-                segmenter.widthAnchor.constraint(equalToConstant: 100),
+                segmenter.widthAnchor.constraint(equalToConstant: 120),
                 segmenter.heightAnchor.constraint(equalToConstant: 30)
             ])
         }
