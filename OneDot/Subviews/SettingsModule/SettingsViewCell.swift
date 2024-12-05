@@ -65,6 +65,10 @@ class SettingsViewCell: UITableViewCell {
         
         switcher.onTintColor = .myPaletteGold
         segmenter.selectedSegmentTintColor = .myPaletteGold
+        segmenter.setTitleTextAttributes([.foregroundColor: UIColor.white,
+                                          .font: UIFont.systemFont(ofSize: 16,
+                                                                   weight: .medium,
+                                                                   width: .compressed)], for: .selected)
         segmenter.setTitleTextAttributes([.foregroundColor: UIColor.myPaletteGray,
                                           .font: UIFont.systemFont(ofSize: 16,
                                                                    weight: .light,

@@ -14,7 +14,7 @@ class WorkoutCell: UITableViewCell {
         let view = UIView()
         view.disableAutoresizingMask()
         view.backgroundColor = .myPaletteBlue
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = 4
         return view
     }()
     

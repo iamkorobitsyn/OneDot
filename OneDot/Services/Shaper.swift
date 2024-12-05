@@ -151,12 +151,12 @@ class Shaper {
         let path = UIBezierPath()
         
         // Первая линия (слева направо, под углом 45°)
-        path.move(to: CGPoint(x: .barWidth / 2.16 - 5, y: 45)) // Начальная точка
-        path.addLine(to: CGPoint(x: .barWidth - (.barWidth / 2.16) - 5, y: 75)) // Конечная точка
+        path.move(to: CGPoint(x: .barWidth / 2.16 - 5, y: 39)) // Начальная точка
+        path.addLine(to: CGPoint(x: .barWidth - (.barWidth / 2.16) - 5, y: 69)) // Конечная точка
 
         // Вторая линия (справа налево, под углом -45°)
-        path.move(to: CGPoint(x: .barWidth - (.barWidth / 2.16) - 5, y: 45)) // Начальная точка
-        path.addLine(to: CGPoint(x: .barWidth / 2.16 - 5, y: 75)) // Конечная точка
+        path.move(to: CGPoint(x: .barWidth - (.barWidth / 2.16) - 5, y: 39)) // Начальная точка
+        path.addLine(to: CGPoint(x: .barWidth / 2.16 - 5, y: 69)) // Конечная точка
 
         // Настройка `CAShapeLayer`
         shape.path = path.cgPath

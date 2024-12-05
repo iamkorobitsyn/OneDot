@@ -10,13 +10,20 @@ import HealthKit
 
 class ProfileVC: UIViewController {
     
+    let workout = HKWorkout(activityType: .running,
+                                start: Date(),
+                                end: Date(),
+                                workoutEvents: nil,
+                                totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: 200),
+                                totalDistance: HKQuantity(unit: .meter(), doubleValue: 5000),
+                                metadata: nil)
+    
+    let secondWorkout = HKWorkout(activityType: .running, start: Date(), end: Date(), workoutEvents: nil, totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: 200), totalDistance: HKQuantity(unit: .meter(), doubleValue: 2000), totalSwimmingStrokeCount: nil, device: .local(), metadata: nil)
+    
     
     // MARK: - Properties
         let healthStore = HKHealthStore() // Для работы с HealthKit
         var workouts: [HKWorkout] = []   // Массив тренировок для отображения
-        
-        
-    
 
     private let blurEffectView: UIVisualEffectView = {
         let effect = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -68,6 +75,10 @@ class ProfileVC: UIViewController {
         let view = UISegmentedControl(items: ["Week", "Month", "Year", "All time"])
         view.selectedSegmentTintColor = .myPaletteGold
         view.selectedSegmentIndex = 1
+        view.setTitleTextAttributes([.foregroundColor: UIColor.white,
+                                     .font: UIFont.systemFont(ofSize: 16,
+                                                              weight: .medium,
+                                                              width: .compressed)], for: .selected)
         view.setTitleTextAttributes([.foregroundColor: UIColor.myPaletteGray,
                                      .font: UIFont.systemFont(ofSize: 16,
                                                               weight: .light,
@@ -106,7 +117,9 @@ class ProfileVC: UIViewController {
            
            healthStore.requestAuthorization(toShare: nil, read: [workoutType]) { [weak self] success, error in
                if success {
-                   self?.fetchWorkouts()
+                   self?.workouts.append(self!.workout)
+                   self?.workouts.append(self!.secondWorkout)
+//                   self?.fetchWorkouts()
                    print("fetchWorkouts")
                } else {
                    print("Ошибка при запросе доступа: \(error?.localizedDescription ?? "неизвестная ошибка")")
@@ -139,7 +152,8 @@ class ProfileVC: UIViewController {
     //MARK: - DidScroll & CurrentMetrics
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let currentPage = Int(scrollView.contentOffset.x / view.frame.width)
+        if scrollView != metricsPanel { return }
+        let currentPage = Int(scrollView.contentOffset.x / scrollView.frame.width)
         setCurrentMetricsPage(currentPage: currentPage)
     }
     
@@ -274,7 +288,7 @@ extension ProfileVC: UITableViewDataSource, UITableViewDelegate {
        }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        110
+        104
     }
        
        // MARK: - UITableViewDelegate
