@@ -18,4 +18,6 @@ extension UIColor {
     static let myPaletteRed: UIColor = .init(r: 193, g: 73, b: 79, alpha: 1)
     static let myPaletteGold: UIColor = .init(r: 230, g: 166, b: 55, alpha: 1)
     
+    static let myPaletteWhiteBackground: UIColor = .init(r: 241, g: 241, b: 241, alpha: 1)
+    
 }

@@ -8,7 +8,7 @@
 import UIKit
 import HealthKit
 
-class ProfileVC: UIViewController {
+class WorkoutsListVC: UIViewController {
     
     let workout = HKWorkout(activityType: .running,
                                 start: Date(),
@@ -106,6 +106,7 @@ class ProfileVC: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = true
         let currentMetricsPageValue = UserDefaultsManager.shared.profileMetricsPageValue
         DispatchQueue.main.async { self.setCurrentMetricsPage(currentPage: currentMetricsPageValue) }
     }
@@ -173,7 +174,6 @@ class ProfileVC: UIViewController {
     //MARK: - SetViews
     
     private func setViews() {
-
         view.addSubview(blurEffectView)
         
         view.addSubview(dismissButton)
@@ -226,7 +226,7 @@ class ProfileVC: UIViewController {
 }
 
 
-extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension WorkoutsListVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: view.frame.width, height: 200)
@@ -244,7 +244,7 @@ extension ProfileVC: UICollectionViewDataSource, UICollectionViewDelegate, UICol
 }
 
 
-extension ProfileVC: UITableViewDataSource, UITableViewDelegate {
+extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource
        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -294,8 +294,18 @@ extension ProfileVC: UITableViewDataSource, UITableViewDelegate {
        // MARK: - UITableViewDelegate
        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
            tableView.deselectRow(at: indexPath, animated: true)
-           let workout = workouts[indexPath.row]
-           print("Вы выбрали тренировку: \(workout.workoutActivityType.name)")
+           // Получаем выбранную тренировку
+              let workout = workouts[indexPath.row]
+              
+              // Создаём новый ViewController
+           let workoutDetailsVC = WorkoutDetailsVC()
+           workoutDetailsVC.title = "Детали тренировки"
+              
+              // Переходим на новый ViewController через существующий navigationController
+              navigationController?.pushViewController(workoutDetailsVC, animated: true)
+              
+              // Печатаем информацию о тренировке
+              print("Вы выбрали тренировку: \(workout.workoutActivityType.name)")
        }
    }
 

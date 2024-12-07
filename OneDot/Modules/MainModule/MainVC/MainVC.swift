@@ -151,8 +151,10 @@ class MainVC: UIViewController, CAAnimationDelegate {
             tabBar.activateMode(mode: .PickerTime)
             
         case .transitionToProfile:
-            let profileVC = ProfileVC()
-            present(profileVC, animated: true)
+            let WorkoutsVC = WorkoutsListVC()
+            let navigationVC = UINavigationController(rootViewController: WorkoutsVC)
+            navigationVC.view.layer.cornerRadius = .barCorner
+            present(navigationVC, animated: true)
         }
         
     }
