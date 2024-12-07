@@ -38,7 +38,7 @@ class WorkoutsListVC: UIViewController {
     private let dismissButton: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "SSHide"), for: .normal)
+        button.setImage(UIImage(named: "DSHideGray"), for: .normal)
         return button
     }()
     

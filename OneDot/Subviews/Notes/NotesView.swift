@@ -29,7 +29,7 @@ class NotesView: UIVisualEffectView {
     
     private let hideButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "SSHide"),
+        button.setBackgroundImage(UIImage(named: "DSHideGray"),
                                   for: .normal)
         return button
     }()

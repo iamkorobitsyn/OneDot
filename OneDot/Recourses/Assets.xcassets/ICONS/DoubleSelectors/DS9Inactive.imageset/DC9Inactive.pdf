@@ -1,131 +1,0 @@
-%PDF-1.7
-
-1 0 obj
-  << /Length 2 0 R >>
-stream
-0.531000 0 0.035000 -0.009000 0.497000 0.742000 d1
-
-endstream
-endobj
-
-2 0 obj
-  51
-endobj
-
-3 0 obj
-  [ 0.531000 ]
-endobj
-
-4 0 obj
-  << /Length 5 0 R >>
-stream
-/CIDInit /ProcSet findresource begin
-12 dict begin
-begincmap
-/CIDSystemInfo
-<< /Registry (FigmaPDF)
-   /Ordering (FigmaPDF)
-   /Supplement 0
->> def
-/CMapName /A-B-C def
-/CMapType 2 def
-1 begincodespacerange
-<00> <FF>
-endcodespacerange
-1 beginbfchar
-<00> <0039>
-endbfchar
-endcmap
-CMapName currentdict /CMap defineresource pop
-end
-end
-endstream
-endobj
-
-5 0 obj
-  332
-endobj
-
-6 0 obj
-  << /Subtype /Type3
-     /CharProcs << /C0 1 0 R >>
-     /Encoding << /Type /Encoding
-                  /Differences [ 0 /C0 ]
-               >>
-     /Widths 3 0 R
-     /FontBBox [ 0.000000 0.000000 0.000000 0.000000 ]
-     /FontMatrix [ 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 ]
-     /Type /Font
-     /ToUnicode 4 0 R
-     /FirstChar 0
-     /LastChar 0
-     /Resources << >>
-  >>
-endobj
-
-7 0 obj
-  << /Font << /F1 6 0 R >> >>
-endobj
-
-8 0 obj
-  << /Filter /FlateDecode
-     /Length 9 0 R
-  >>
-stream
-x¥–;7„óùÚx|““Ê/À™íÍlG	6  Ğï×Wl’{’Bm4WÓÕ]ıœ{úùÍ§ÿïoşüíõùÓ_ÇÓã¯ûÇãÃœ¿Ó¯‡Wûi¿e?u×«¾÷çÃ»põ˜#Ü¯>ŞßëuoÒ«¼HÏÇGtiÂxÍÀ8nÛFÅì)(¤œ‚z4«ì.yìçjİ`¼°+)‡ÚuQ#PŞÔjDMÛ.ã¥eìâ’Éª¢.(*ÉC}€9OjÊN‚BvDÍËÊ?¨e
-®‹š°kÑ¨Ñ5©õòËªy 	¦&—	d5S¦¤2jUU®Ì\7t?†¦QÎ&×¶¢¨ıÌ;-ü*Q)¢Ôjô#jÁÎ t6Êä¨à ÒQ•kuØ&Ù…³º,Áƒê©ÿ€ÕóUQ«£ü#Wï¢Q›£™‚­XK¹@¢1=-¿ú• ¶À3$Ó*·ÁCD_ˆåIå/xqğÚÂº°t¾f]PNµT“RÉ;½mÃ
-‹‘/o'GÃ*ªBŠ±‚ÌEğ®™’öÖ:
-QFYRLU¡“_"jQªCÕÆ¼‰Lï‘r^ ŒÑ@¥0+“Gòª.Ë˜W¦€)‘M†GZæ+9R‘•wİT%òÃ*=6ÎÜ¹	+ôkTOÖ›êâ5‘¹4L€Õ@ñÆªØÕâ¡\}Hgw!„³^uW¤@:©‚Åë¬Óè¼6} »„•ê™,ŞFÔ‡¯1ºluá*›27´»¼êÙ‘À¸YÊærÁòk,À°º˜ aS©ˆt^kØ‹kÆšñaFùLÂâæDe6H¨ôR|@œUB1ÇªšRSLtˆ8¶.Úú#v¯õÜÍÎi2+VÅ¬”æy.B6;6EYÑ–’«ÆºJÆ€ŠN]„<Cd•HTr–8ìcêÀ1á”oh\Q¹È¢rêxmÔä’Í…>¦Á˜Ú6tç³C—MçÔúğ67~c•£?úÀi¶Ù£I–?iY-•C·rTmfIÕúGg˜OæŒv[<®ìâquÌ;©cÅÌrML™s«¾DÚêÔÆX}Ó	¢iÔ!.e*H¦³,åâLi•2+Ú€tr{M'‰®™búå]æôQŞËšuR7ï šâ‰¨A|•¥jc™oÈO|aÄ“§“±¼ÏMbo/N©êô¼Øä'¶FİŸXQTşhSÈŠü¨çF¨§xºô/°lÛ¶=ÑëÃGÿ,ñ¦*^ªêŠwY¥piÈÏra^,Õ¥Ø•eªÌ;ŸT²>ßsò¾OMíÛãıñÇwş›öúvÄmüíÃËwóÃÂ~MúíùxúUw„÷üÎÛÛãïó‡xüñü÷¼ı~ürCßg÷ìÜ
-endstream
-endobj
-
-9 0 obj
-  1041
-endobj
-
-10 0 obj
-  << /Annots []
-     /Type /Page
-     /MediaBox [ 0.000000 0.000000 42.000000 42.000000 ]
-     /Resources 7 0 R
-     /Contents 8 0 R
-     /Parent 11 0 R
-  >>
-endobj
-
-11 0 obj
-  << /Kids [ 10 0 R ]
-     /Count 1
-     /Type /Pages
-  >>
-endobj
-
-12 0 obj
-  << /Pages 11 0 R
-     /Type /Catalog
-  >>
-endobj
-
-xref
-0 13
-0000000000 65535 f
-0000000010 00000 n
-0000000117 00000 n
-0000000138 00000 n
-0000000169 00000 n
-0000000557 00000 n
-0000000579 00000 n
-0000000991 00000 n
-0000001037 00000 n
-0000002162 00000 n
-0000002185 00000 n
-0000002360 00000 n
-0000002436 00000 n
-trailer
-<< /ID [ (some) (id) ]
-   /Root 12 0 R
-   /Size 13
->>
-startxref
-2497
-%%EOF

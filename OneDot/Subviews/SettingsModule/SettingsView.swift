@@ -66,7 +66,7 @@ class SettingsView: UIVisualEffectView {
         tableView.backgroundColor = .clear
         
         contentView.addSubview(hideButton)
-        hideButton.setImage(UIImage(named: "SSHide"), for: .normal)
+        hideButton.setImage(UIImage(named: "DSHideGray"), for: .normal)
         hideButton.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
 
     }
