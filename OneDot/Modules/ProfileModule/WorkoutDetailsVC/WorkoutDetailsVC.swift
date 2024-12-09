@@ -73,6 +73,8 @@ class WorkoutDetailsVC: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
     
+    //MARK: - ButtonTapped
+    
     @objc private func buttonTapped(_ button: UIButton) {
         hapticGenerator.selectionChanged()
         
@@ -94,6 +96,8 @@ class WorkoutDetailsVC: UIViewController {
         }
     }
     
+    //MARK: - SetScreenshot
+    
     private func makeScreenShot() -> UIImage {
         backView.layer.cornerRadius = 0
         [backButton, hideButton, screenShotButton, settingsButton, appearanceButton].forEach( {$0.isHidden = true} )
@@ -108,7 +112,6 @@ class WorkoutDetailsVC: UIViewController {
         [backButton, hideButton, screenShotButton, settingsButton, appearanceButton].forEach( {$0.isHidden = false} )
         
         return screenshot
-        
     }
     
     private func saveScreenshotToGallery(image: UIImage) {
@@ -151,9 +154,9 @@ class WorkoutDetailsVC: UIViewController {
                 alert.dismiss(animated: true)
             }
         }
-        
-        
     }
+    
+    //MARK: - SetViews
     
     private func setViews() {
         view.addSubview(backView)
@@ -164,6 +167,8 @@ class WorkoutDetailsVC: UIViewController {
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
         }
     }
+    
+    //MARK: - SetConstraints
     
     private func setConstraints() {
         NSLayoutConstraint.activate([

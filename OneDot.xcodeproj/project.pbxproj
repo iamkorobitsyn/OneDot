@@ -26,7 +26,8 @@
 		654893992AAE8099005039DF /* HeaderBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654893982AAE8099005039DF /* HeaderBarView.swift */; };
 		65551C772AC5D8CF00CE3309 /* Shaper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65551C762AC5D8CF00CE3309 /* Shaper.swift */; };
 		65551C792AC60F5A00CE3309 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */; };
-		655912962D073A57008C6E95 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655912952D073A57008C6E95 /* Workout.swift */; };
+		655912962D073A57008C6E95 /* HealthKitData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655912952D073A57008C6E95 /* HealthKitData.swift */; };
+		655912982D07562F008C6E95 /* HealthKitDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655912972D07562F008C6E95 /* HealthKitDataManager.swift */; };
 		655B53902B2139470020FF32 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655B538F2B2139470020FF32 /* CoreDataManager.swift */; };
 		656469632B502F25006AC14F /* СalculationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469622B502F25006AC14F /* СalculationsView.swift */; };
 		6568C8B42CE20E4200993E00 /* UIView + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */; };
@@ -124,7 +125,8 @@
 		655268FB2CFA745E00611AD7 /* OneDot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneDot.entitlements; sourceTree = "<group>"; };
 		65551C762AC5D8CF00CE3309 /* Shaper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shaper.swift; sourceTree = "<group>"; };
 		65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
-		655912952D073A57008C6E95 /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
+		655912952D073A57008C6E95 /* HealthKitData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitData.swift; sourceTree = "<group>"; };
+		655912972D07562F008C6E95 /* HealthKitDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitDataManager.swift; sourceTree = "<group>"; };
 		655B538F2B2139470020FF32 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		656469622B502F25006AC14F /* СalculationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "СalculationsView.swift"; sourceTree = "<group>"; };
 		6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + Extansions.swift"; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 			children = (
 				65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */,
 				655B538F2B2139470020FF32 /* CoreDataManager.swift */,
+				655912972D07562F008C6E95 /* HealthKitDataManager.swift */,
 				6521308D2AC587210056DEA5 /* Aimator.swift */,
 				65551C762AC5D8CF00CE3309 /* Shaper.swift */,
 			);
@@ -480,7 +483,7 @@
 		65EDA5832AEA9437007B6AE5 /* Exercises */ = {
 			isa = PBXGroup;
 			children = (
-				655912952D073A57008C6E95 /* Workout.swift */,
+				655912952D073A57008C6E95 /* HealthKitData.swift */,
 				65EDA58C2AEA951D007B6AE5 /* ExerciseProtocol.swift */,
 				65EDA5862AEA948D007B6AE5 /* InTheRoomExercises.swift */,
 				65EDA58E2AEA952E007B6AE5 /* OnTheStreetExercises.swift */,
@@ -674,13 +677,14 @@
 				659991FF2CF0CF0600D27B44 /* SettingsView.swift in Sources */,
 				652AFE122D01CE3D00548B2E /* WorkoutCell.swift in Sources */,
 				651450732CF4A86C00610148 /* SettingsViewCell.swift in Sources */,
+				655912982D07562F008C6E95 /* HealthKitDataManager.swift in Sources */,
 				6502D6F02A5C9A1F000F96E0 /* TabBar.swift in Sources */,
 				6521308C2AC46F400056DEA5 /* SplashScreen.swift in Sources */,
 				657D66272AA86D7000397427 /* AlertController.swift in Sources */,
 				65EDA58B2AEA950F007B6AE5 /* FactoryExercises.swift in Sources */,
 				65551C792AC60F5A00CE3309 /* UserDefaultsManager.swift in Sources */,
 				652AFE102D01208900548B2E /* MetricsPanelCell.swift in Sources */,
-				655912962D073A57008C6E95 /* Workout.swift in Sources */,
+				655912962D073A57008C6E95 /* HealthKitData.swift in Sources */,
 				652AFE142D03D5E600548B2E /* WorkoutDetailsVC.swift in Sources */,
 				658037392B1D444000856C03 /* NotesView.swift in Sources */,
 				659879222AB48BBD004F6E2D /* HeaderBarButton.swift in Sources */,

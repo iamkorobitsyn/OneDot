@@ -11,20 +11,19 @@ import HealthKit
 class WorkoutsListVC: UIViewController {
     
     let workout = HKWorkout(activityType: .running,
-                                start: Date(),
-                                end: Date(),
-                                workoutEvents: nil,
-                                totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: 200),
-                                totalDistance: HKQuantity(unit: .meter(), doubleValue: 5000),
-                                metadata: nil)
+                            start: Date(),
+                            end: Date(),
+                            workoutEvents: nil,
+                            totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: 200),
+                            totalDistance: HKQuantity(unit: .meter(), doubleValue: 5000),
+                            metadata: nil)
     
     let secondWorkout = HKWorkout(activityType: .running, start: Date(), end: Date(), workoutEvents: nil, totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: 200), totalDistance: HKQuantity(unit: .meter(), doubleValue: 2000), totalSwimmingStrokeCount: nil, device: .local(), metadata: nil)
     
     
-    // MARK: - Properties
-        let healthStore = HKHealthStore() // Для работы с HealthKit
-        var workouts: [HKWorkout] = []   // Массив тренировок для отображения
-
+    let healthStore = HKHealthStore()
+    var workouts: [HealthKitData] = []
+    
     private let blurEffectView: UIVisualEffectView = {
         let effect = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
         effect.disableAutoresizingMask()
@@ -100,7 +99,8 @@ class WorkoutsListVC: UIViewController {
         
         setViews()
         setConstraints()
-        requestHealthKitAccess()
+        fetchHealthkitData()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -110,43 +110,39 @@ class WorkoutsListVC: UIViewController {
     }
     
        
-       // MARK: - Запрос доступа к HealthKit
-       func requestHealthKitAccess() {
-           let workoutType = HKObjectType.workoutType() // Тип данных - тренировки
-           
-           healthStore.requestAuthorization(toShare: nil, read: [workoutType]) { [weak self] success, error in
-               if success {
-                   self?.workouts.append(self!.workout)
-                   self?.workouts.append(self!.secondWorkout)
-//                   self?.fetchWorkouts()
-                   print("fetchWorkouts")
-               } else {
-                   print("Ошибка при запросе доступа: \(error?.localizedDescription ?? "неизвестная ошибка")")
-               }
-           }
-       }
-       
-       // MARK: - Загрузка данных о тренировках
-       func fetchWorkouts() {
-           let workoutType = HKObjectType.workoutType()
-           let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
-           
-           let query = HKSampleQuery(sampleType: workoutType, predicate: nil, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { [weak self] _, samples, error in
-               if let error = error {
-                   print("Ошибка загрузки тренировок: \(error.localizedDescription)")
-                   return
-               }
-               
-               guard let workouts = samples as? [HKWorkout] else { return }
-               self?.workouts = workouts
-               
-               DispatchQueue.main.async {
-                   self?.workoutTable.reloadData()
-               }
-           }
-           
-           healthStore.execute(query)
-       }
+    // MARK: - HealthKitRequest
+    
+    func fetchHealthkitData() {
+        
+        HealthKitDataManager.shared.fetchHealthkitData { [weak self] result in
+            switch result {
+                
+            case .success(let workouts):
+                self?.workouts = workouts
+                print(self?.workouts.count)
+                DispatchQueue.main.async {
+                    self?.workoutTable.reloadData() // Теперь вызывается на главном потоке
+                }
+                
+            case .failure(let error):
+                switch error {
+                    
+                case .notAuthorized:
+                    print("Запрещен доступ к данным HealthKit")
+                case .noHealthKitData:
+                    print("Нет данных о тренировках")
+                case .noDistanceData:
+                    print("Нет данных о дистанции")
+                case .noRouteData:
+                    print("Нет данных о маршруте")
+                case .noHeartRateData:
+                    print("Нет данных о сердечном ритме")
+                }
+            }
+        }
+    }
+    
+ 
     
     //MARK: - DidScroll & CurrentMetrics
     
@@ -255,27 +251,22 @@ extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
                let workout = workouts[indexPath.row]
                
                // Тип тренировки
-               cell.topLeadingLabel.text = workout.workoutActivityType.name
+               cell.topLeadingLabel.text = workout.workout.workoutType
                
                // Длительность тренировки
-               let duration = workout.duration / 60 // в минутах
+               let duration = workout.workout.duration / 60 // в минутах
                cell.topTrailingLabel.text = String(format: "%.1f мин", duration)
                
                
-               
-               // Дистанция тренировки
-               if let distance = workout.totalDistance?.doubleValue(for: .meter()) {
-                   let distanceInKm = distance / 1000 // Перевод в километры
-                   cell.bottomLeadingLabel.text = String(format: "%.2f км", distanceInKm)
-               } else {
-                   cell.bottomLeadingLabel.text = "Нет данных о дистанции"
-               }
+
+               cell.bottomLeadingLabel.text = "\(workout.workout.totalDistance)"
+
                
                
                // Дата тренировки
                let dateFormatter = DateFormatter()
                dateFormatter.dateStyle = .short
-               let workoutDate = dateFormatter.string(from: workout.startDate)
+               let workoutDate = dateFormatter.string(from: workout.workout.startDate)
                cell.bottomTrailingLabel.text = workoutDate
                
                
@@ -302,9 +293,7 @@ extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
               
               // Переходим на новый ViewController через существующий navigationController
               navigationController?.pushViewController(workoutDetailsVC, animated: true)
-              
-              // Печатаем информацию о тренировке
-              print("Вы выбрали тренировку: \(workout.workoutActivityType.name)")
+
        }
    }
 

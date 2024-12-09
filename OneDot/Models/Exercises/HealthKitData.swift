@@ -15,20 +15,20 @@ struct HealthKitData {
         let endDate: Date
 
         var duration: TimeInterval
-        var caloriesBurned: Double?
         var totalDistance: Double?
+        var calloriesBurned: Double
     }
     
     struct HeartRate {
-        let timestamp: Date
-        let bpm: Double
+        let timestamp: Date?
+        let bpm: Double?
     }
     
     struct Route {
-        let locations: [CLLocation]
+        let locations: [CLLocation]?
     }
     
     var workout: Workout
-    let heartRates: [HeartRate]?
+    let heartRates: HeartRate?
     let route: Route?
 }
