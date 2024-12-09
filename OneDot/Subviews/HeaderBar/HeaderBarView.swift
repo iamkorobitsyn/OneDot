@@ -11,8 +11,6 @@ import AudioToolbox
 class HeaderBarView: UIView {
     
     var buttonStateHandler: ((MainVC.Mode)->())?
-
-    private let feedbackGen = UISelectionFeedbackGenerator()
     
     private let visualEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView()

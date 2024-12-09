@@ -101,8 +101,6 @@ class WorkoutsListVC: UIViewController {
         setViews()
         setConstraints()
         requestHealthKitAccess()
-        
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -272,6 +270,7 @@ extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
                } else {
                    cell.bottomLeadingLabel.text = "Нет данных о дистанции"
                }
+               
                
                // Дата тренировки
                let dateFormatter = DateFormatter()

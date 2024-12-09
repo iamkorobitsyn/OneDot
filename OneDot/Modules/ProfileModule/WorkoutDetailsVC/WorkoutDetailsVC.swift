@@ -11,6 +11,8 @@ import Photos
 
 class WorkoutDetailsVC: UIViewController {
     
+    let hapticGenerator = UISelectionFeedbackGenerator()
+    
     let backView: UIView = {
         let view = UIView()
         view.disableAutoresizingMask()
@@ -72,6 +74,8 @@ class WorkoutDetailsVC: UIViewController {
     }
     
     @objc private func buttonTapped(_ button: UIButton) {
+        hapticGenerator.selectionChanged()
+        
         switch button {
         case backButton:
             print("work")
@@ -82,26 +86,25 @@ class WorkoutDetailsVC: UIViewController {
             self.dismiss(animated: true)
             
         case screenShotButton:
-            let screensot = makeScreenShot()!
+            let screensot = makeScreenShot()
             saveScreenshotToGallery(image: screensot)
-            
+            addScreenshotEffect()
         default:
             break
         }
     }
     
-    private func makeScreenShot() -> UIImage? {
+    private func makeScreenShot() -> UIImage {
+        backView.layer.cornerRadius = 0
         [backButton, hideButton, screenShotButton, settingsButton, appearanceButton].forEach( {$0.isHidden = true} )
         
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        
-        let bounds = UIScreen.main.bounds
-        let renderer = UIGraphicsImageRenderer(size: bounds.size)
+        let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
         
         let screenshot = renderer.image { context in
-            window.layer.render(in: context.cgContext)
+            view.layer.render(in: context.cgContext)
         }
         
+        backView.layer.cornerRadius = .barCorner
         [backButton, hideButton, screenShotButton, settingsButton, appearanceButton].forEach( {$0.isHidden = false} )
         
         return screenshot
@@ -124,6 +127,32 @@ class WorkoutDetailsVC: UIViewController {
                 print("Нет доступа к фотогалерее.")
         }
         }
+    }
+    
+    private func addScreenshotEffect() {
+        
+        let flashView = UIView()
+        flashView.frame = view.bounds
+        flashView.backgroundColor = .white
+        view.addSubview(flashView)
+        
+        let alert = UIAlertController(title: nil,
+                                      message: "\nSaved to gallery\n\n",
+                                      preferredStyle: .actionSheet)
+        
+        UIView.animate(withDuration: 0.2) {
+            flashView.alpha = 1
+        } completion: { _ in
+            UIView.animate(withDuration: 1) {
+                self.present(alert, animated: true)
+                flashView.alpha = 0
+            } completion: { _ in
+                flashView.removeFromSuperview()
+                alert.dismiss(animated: true)
+            }
+        }
+        
+        
     }
     
     private func setViews() {

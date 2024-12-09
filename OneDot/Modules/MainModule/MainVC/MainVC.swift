@@ -10,6 +10,8 @@ import MapKit
 
 class MainVC: UIViewController, CAAnimationDelegate {
     
+    let hapticGenerator = UISelectionFeedbackGenerator()
+    
     let splashScreen: SplashScreen = SplashScreen()
 
     let mapView: MKMapView = MKMapView()
@@ -89,6 +91,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
     //MARK: - ActivateMode
     
     private func activateMode(mode: Mode) {
+        hapticGenerator.selectionChanged()
         switch mode {
             
         case .outdoor:

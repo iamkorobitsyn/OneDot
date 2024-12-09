@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Мы используем данные Apple Health для предоставления персонализированных спортивных рекомендаций.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Приложению нужен доступ к вашей фото-библиотеке для загрузки изображений</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

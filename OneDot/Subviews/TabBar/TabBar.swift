@@ -10,7 +10,6 @@ import UIKit
 class TabBar: UIView {
     
     private typealias UD = UserDefaultsManager
-    private let feedbackGen = UISelectionFeedbackGenerator()
     
     var buttonStateHandler: ((MainVC.Mode)->())?
     
@@ -54,7 +53,6 @@ class TabBar: UIView {
     //MARK: - MainVCHandlers
     
     @objc private func leftTapped() {
-        feedbackGen.selectionChanged()
         
         if prepareState {
             prepareState.toggle()
@@ -72,7 +70,6 @@ class TabBar: UIView {
     }
     
     @objc private func rightTapped() {
-        feedbackGen.selectionChanged()
         
         if prepareState {
             buttonStateHandler?(.transitionToProfile)
@@ -157,7 +154,6 @@ class TabBar: UIView {
     }
     
     private func configureVisibility(picker: Bool, bar: Bool) {
-        feedbackGen.selectionChanged()
         
         self.isHidden = bar ? true : false
         pickerView.isHidden = picker ? true : false
