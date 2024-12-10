@@ -112,32 +112,47 @@ class WorkoutsListVC: UIViewController {
     // MARK: - HealthKitRequest
     
     func fetchHealthkitData() {
-        
-        HealthKitDataManager.shared.fetchHealthkitData { [weak self] result in
-            switch result {
+        Task { [weak self] in
+            
+            do {
+                guard let self else {return}
+                let workouts = try await HealthKitDataManager.shared.fetchHealthKitData()
+                self.workouts = workouts
+                self.workoutTable.reloadData()
                 
-            case .success(let workouts):
-                self?.workouts = workouts
-                print(self?.workouts.count)
-                self?.workoutTable.reloadData()
-                
-            case .failure(let error):
-                switch error {
-                    
-                case .notAuthorized:
-                    print("Запрещен доступ к данным HealthKit")
-                case .noHealthKitData:
-                    print("Нет данных о тренировках")
-                case .noDistanceData:
-                    print("Нет данных о дистанции")
-                case .noRouteData:
-                    print("Нет данных о маршруте")
-                case .noHeartRateData:
-                    print("Нет данных о сердечном ритме")
-                }
+            } catch let error as HealthKitDataManager.HealthKitError {
+                HealthKitDataManager.shared.errorHanding(error: error)
             }
         }
     }
+    
+//    func fetchHealthkitData() {
+//        
+//        HealthKitDataManager.shared.fetchHealthkitData { [weak self] result in
+//            switch result {
+//                
+//            case .success(let workouts):
+//                self?.workouts = workouts
+//                print(self?.workouts.count)
+//                self?.workoutTable.reloadData()
+//                
+//            case .failure(let error):
+//                switch error {
+//                    
+//                case .notAuthorized:
+//                    print("Запрещен доступ к данным HealthKit")
+//                case .noHealthKitData:
+//                    print("Нет данных о тренировках")
+//                case .noDistanceData:
+//                    print("Нет данных о дистанции")
+//                case .noRouteData:
+//                    print("Нет данных о маршруте")
+//                case .noHeartRateData:
+//                    print("Нет данных о сердечном ритме")
+//                }
+//            }
+//        }
+//    }
     
  
     
