@@ -14,7 +14,6 @@ class HealthKitDataManager {
     static let shared = HealthKitDataManager()
     
     private let healthStore: HKHealthStore = HKHealthStore()
-    private let workoutType: HKWorkoutType = HKWorkoutType.workoutType()
     
     private init() {}
     
@@ -28,62 +27,90 @@ class HealthKitDataManager {
     
     func fetchHealthkitData(completion: @escaping(Result<[HealthKitData], HealthKitError>) -> Void) {
         
-
-        healthStore.requestAuthorization(toShare: nil, read: [workoutType]) { success, error in
+        let workoutType: HKWorkoutType = HKWorkoutType.workoutType()
+        
+        guard let distanceType: HKObjectType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning) else {
+            completion(.failure(.noDistanceData))
+            return
+        }
+        
+        healthStore.requestAuthorization(toShare: nil, read: [workoutType, distanceType]) { success, error in
+            
             if success {
-                
-                var healthKitData: [HealthKitData] = []
                 
                 let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
                 
-                let query = HKSampleQuery(sampleType: self.workoutType,
+                let query = HKSampleQuery(sampleType: workoutType,
                                           predicate: nil,
                                           limit: HKObjectQueryNoLimit,
                                           sortDescriptors: [sortDescriptor]) { _, samples, error in
                     
                     if let error = error {
+                        print("Error: \(error.localizedDescription)")
                         completion(.failure(.noHealthKitData))
+                        return
                     }
                     
-                    guard let workouts = samples as? [HKWorkout] else { return }
+                    guard let workouts = samples as? [HKWorkout] else {
+                        completion(.failure(.noHealthKitData))
+                        return
+                    }
                     
-                    workouts.forEach { result in
+                    let dispatchGroup = DispatchGroup()
+                    var results: [HealthKitData] = []
+                    
+                    workouts.forEach { workout in
                         
-                        guard let energyType = result.totalEnergyBurned else {
-                            return
-                        }
-
-
-                        let healthRate = HealthKitData.HeartRate(timestamp: nil, bpm: nil)
-                        let route = HealthKitData.Route(locations: nil)
-                        var workout = HealthKitData.Workout(workoutType: result.workoutActivityType.name,
-                                                            startDate: result.startDate,
-                                                            endDate: result.endDate,
-                                                            duration: result.duration,
-                                                            calloriesBurned: energyType.doubleValue(for: .kilocalorie()))
                         
-                        self.fetchWorkoutDistance(for: result) { result in
-                            switch result {
+                        let workoutData = HealthKitData.Workout(workoutType: workout.workoutActivityType.name,
+                                                                startDate: workout.startDate,
+                                                                endDate: workout.endDate,
+                                                                duration: workout.duration)
+                        var distanceData = HealthKitData.Distance(totalDistance: 0)
+                        
+                        
+                        
+                        self.fetchWorkoutDistance(for: workout) { distanceResult in
+                            
+                            dispatchGroup.enter()
+                            
+                            switch distanceResult {
                                 
                             case .success(let distance):
-                                workout.totalDistance = distance
+                                distanceData.totalDistance = distance
                             case .failure(let error):
-                                print(error.localizedDescription)
+                                print("Error fetching distance: \(error.localizedDescription)")
                             }
+                            
+                            
+                            
+                            
+                            dispatchGroup.leave()
+                            print("fetchWorkoutDistance FINISHED")
                         }
                         
+                        let data = HealthKitData(workout: workoutData,
+                                                 distance: distanceData,
+                                                 route: nil,
+                                                 heartRates: nil,
+                                                 calloriesBurned: nil)
                         
-                        
-                        let dat = HealthKitData(workout: workout, heartRates: healthRate, route: route)
-                        
-                        healthKitData.append(dat)
+                        results.append(data)
                         
                         
                     }
-                    completion(.success(healthKitData))
+                    
+                    
+                    
+                    // Ждем завершения всех асинхронных операций
+                    dispatchGroup.notify(queue: .main) {
+                        print("dispatchGroup FINISHED")
+                        completion(.success(results)) // Возвращаем результат после всех операций
+                    }
+                    
                 }
-                self.healthStore.execute(query)
                 
+                self.healthStore.execute(query)
                 
             } else {
                 completion(.failure(.notAuthorized))
@@ -101,21 +128,15 @@ class HealthKitDataManager {
         
         let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate)
         
-        let query = HKStatisticsQuery(quantityType: distanceType, quantitySamplePredicate: predicate) { _, result, error in
-            if let error = error {
-                        print("Ошибка при выполнении запроса: \(error.localizedDescription)")
-                        completion(.failure(.noDistanceData))
-                        return
-                    }
-                    
-                    if let distance = result?.sumQuantity()?.doubleValue(for: HKUnit.meter()) {
-                        completion(.success(distance))
-                    } else {
-                        completion(.failure(.noDistanceData))
-                    }
+        let query = HKStatisticsQuery(quantityType: distanceType, quantitySamplePredicate: predicate) { _, result, _ in
+            
+            if let distance = result?.sumQuantity()?.doubleValue(for: HKUnit.meter()) {
+                completion(.success(distance))
+            } else {
+                completion(.failure(.noDistanceData))
+            }
         }
         
         healthStore.execute(query)
-        
     }
 }

@@ -100,7 +100,6 @@ class WorkoutsListVC: UIViewController {
         setViews()
         setConstraints()
         fetchHealthkitData()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -120,9 +119,7 @@ class WorkoutsListVC: UIViewController {
             case .success(let workouts):
                 self?.workouts = workouts
                 print(self?.workouts.count)
-                DispatchQueue.main.async {
-                    self?.workoutTable.reloadData() // Теперь вызывается на главном потоке
-                }
+                self?.workoutTable.reloadData()
                 
             case .failure(let error):
                 switch error {
@@ -259,7 +256,7 @@ extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
                
                
 
-               cell.bottomLeadingLabel.text = "\(workout.workout.totalDistance)"
+               cell.bottomLeadingLabel.text = "\(workout.distance?.totalDistance)"
 
                
                

@@ -13,10 +13,15 @@ struct HealthKitData {
         let workoutType: String
         let startDate: Date
         let endDate: Date
-
         var duration: TimeInterval
+    }
+    
+    struct Distance {
         var totalDistance: Double?
-        var calloriesBurned: Double
+    }
+    
+    struct Route {
+        let locations: [CLLocation]?
     }
     
     struct HeartRate {
@@ -24,11 +29,13 @@ struct HealthKitData {
         let bpm: Double?
     }
     
-    struct Route {
-        let locations: [CLLocation]?
+    struct CalloriesBurned {
+        var calloriesBurned: Double?
     }
     
-    var workout: Workout
-    let heartRates: HeartRate?
+    let workout: Workout
+    let distance: Distance?
     let route: Route?
+    let heartRates: HeartRate?
+    let calloriesBurned: CalloriesBurned?
 }
