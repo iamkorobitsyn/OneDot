@@ -241,8 +241,19 @@ extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
                cell.topTrailingLabel.text = String(format: "%.1f мин", duration)
                
                
+               if let distanceInMeters = workout.distance?.totalDistance {
+                   let kilometers = Int(distanceInMeters / 1000)
+                   let meters = Int(distanceInMeters.truncatingRemainder(dividingBy: 1000))
+                   
+                   cell.bottomLeadingLabel.text = "\(kilometers) km \(meters) m"
+               }
+               
+               if let coordinates = workout.route?.locations {
+                   print(coordinates.count)
+               }
+                    
 
-               cell.bottomLeadingLabel.text = "\(workout.distance?.totalDistance)"
+               
 
                
                

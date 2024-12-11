@@ -49,20 +49,24 @@ class HealthKitDataManager {
         let workoutType = HKWorkoutType.workoutType()
         guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
         else { throw HealthKitError.invalidHealthKitType }
+        let routeType = HKSeriesType.workoutRoute()
         
-        do {
-            
-            try await healthStore.requestAuthorization(toShare: [], read: [workoutType, distanceType])
-            
-            let workouts = try await fetchWorkouts(workoutType: workoutType)
-            
-            let healthKitData = try await convertWorkouts(workouts: workouts)
-            
-            return healthKitData
-            
-        } catch {
-            throw HealthKitError.notAuthorized
+        try await withCheckedThrowingContinuation { continuation in
+            healthStore.requestAuthorization(toShare: nil, read: [workoutType, distanceType, routeType]) { success, error in
+                if success {
+                    continuation.resume()
+                } else {
+                    continuation.resume(throwing: HealthKitError.notAuthorized)
+                }
+            }
         }
+        
+        let workouts = try await fetchWorkouts(workoutType: workoutType)
+        
+        let healthKitData = try await convertWorkouts(workouts: workouts)
+        
+        return healthKitData
+        
     }
     
     private func fetchWorkouts(workoutType: HKWorkoutType) async throws -> [HKWorkout] {
@@ -95,12 +99,59 @@ class HealthKitDataManager {
                 if let distance = result?.sumQuantity()?.doubleValue(for: HKUnit.meter()) {
                     continuation.resume(returning: distance)
                 } else {
-                    continuation.resume(throwing: HealthKitError.noDistanceData)
+                    continuation.resume(returning: 0.0)
                 }
             }
             healthStore.execute(query)
         }
     }
+    
+    private func fetchWorkoutRoute(workout: HKWorkout) async throws -> HKWorkoutRoute? {
+        let routeType = HKSeriesType.workoutRoute()
+        
+        let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate)
+        
+        return try await withCheckedThrowingContinuation { continuation in
+
+            let query = HKSampleQuery(sampleType: routeType, predicate: predicate, limit: 1, sortDescriptors: nil) { _, samples, _ in
+
+                if let route = samples?.first as? HKWorkoutRoute {
+                    continuation.resume(returning: route)
+                } else {
+                    continuation.resume(returning: nil)
+                }
+            }
+
+            healthStore.execute(query)
+        }
+    }
+    
+    private func fetchRouteData(for route: HKWorkoutRoute) async throws -> [CLLocation] {
+        var locations: [CLLocation] = []
+        
+        return try await withCheckedThrowingContinuation { continuation in
+
+            let query = HKWorkoutRouteQuery(route: route) { query, routeLocations, done, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                if let routeLocations = routeLocations {
+                    locations.append(contentsOf: routeLocations)
+                }
+                
+                // Если все точки загружены, завершаем выполнение
+                if done {
+                    continuation.resume(returning: locations)
+                }
+            }
+            
+            // Выполняем запрос
+            healthStore.execute(query)
+        }
+    }
+    
     
     private func convertWorkouts(workouts: [HKWorkout]) async throws -> [HealthKitData] {
         var results: [HealthKitData] = []
@@ -114,6 +165,13 @@ class HealthKitDataManager {
             let distance = try await fetchWorkoutDistance(workout: workout)
             
             let distanceData = HealthKitData.Distance(totalDistance: distance)
+            
+            if let workoutRoute = try await fetchWorkoutRoute(workout: workout) {
+                let route = try await fetchRouteData(for: workoutRoute)
+                let routeData = HealthKitData.Route(locations: route)
+            }
+            
+            
             
             let data = HealthKitData(workout: workoutData,
                                      distance: distanceData,
