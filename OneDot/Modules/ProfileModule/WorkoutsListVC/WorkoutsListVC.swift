@@ -125,35 +125,6 @@ class WorkoutsListVC: UIViewController {
             }
         }
     }
-    
-//    func fetchHealthkitData() {
-//        
-//        HealthKitDataManager.shared.fetchHealthkitData { [weak self] result in
-//            switch result {
-//                
-//            case .success(let workouts):
-//                self?.workouts = workouts
-//                print(self?.workouts.count)
-//                self?.workoutTable.reloadData()
-//                
-//            case .failure(let error):
-//                switch error {
-//                    
-//                case .notAuthorized:
-//                    print("Запрещен доступ к данным HealthKit")
-//                case .noHealthKitData:
-//                    print("Нет данных о тренировках")
-//                case .noDistanceData:
-//                    print("Нет данных о дистанции")
-//                case .noRouteData:
-//                    print("Нет данных о маршруте")
-//                case .noHeartRateData:
-//                    print("Нет данных о сердечном ритме")
-//                }
-//            }
-//        }
-//    }
-    
  
     
     //MARK: - DidScroll & CurrentMetrics
