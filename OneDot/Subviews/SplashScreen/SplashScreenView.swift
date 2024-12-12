@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class SplashScreen: UIView {
+class SplashScreenView: UIView {
     
     let frontLayer: CALayer = CALayer()
     let gradientBackLayer: CAGradientLayer = CAGradientLayer()

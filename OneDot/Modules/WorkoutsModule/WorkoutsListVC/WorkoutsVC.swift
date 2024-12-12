@@ -8,7 +8,7 @@
 import UIKit
 import HealthKit
 
-class WorkoutsListVC: UIViewController {
+class WorkoutsVC: UIViewController {
     
     let workout = HKWorkout(activityType: .running,
                             start: Date(),
@@ -93,7 +93,7 @@ class WorkoutsListVC: UIViewController {
         
         metricsPanel.delegate = self
         metricsPanel.dataSource = self
-        metricsPanel.register(MetricsPanelCell.self, forCellWithReuseIdentifier: "MetricsPanelCell")
+        metricsPanel.register(StatisticCell.self, forCellWithReuseIdentifier: "MetricsPanelCell")
         
         
         
@@ -203,7 +203,7 @@ class WorkoutsListVC: UIViewController {
 }
 
 
-extension WorkoutsListVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension WorkoutsVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: view.frame.width, height: 200)
@@ -214,14 +214,14 @@ extension WorkoutsListVC: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = metricsPanel.dequeueReusableCell(withReuseIdentifier: "MetricsPanelCell", for: indexPath) as! MetricsPanelCell
+        let cell = metricsPanel.dequeueReusableCell(withReuseIdentifier: "MetricsPanelCell", for: indexPath) as! StatisticCell
         cell.activateMode(mode: indexPath.row)
         return cell
     }
 }
 
 
-extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
+extension WorkoutsVC: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource
        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -252,11 +252,6 @@ extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
                    print(coordinates.count)
                }
                     
-
-               
-
-               
-               
                // Дата тренировки
                let dateFormatter = DateFormatter()
                dateFormatter.dateStyle = .short
@@ -282,7 +277,7 @@ extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
               let workout = workouts[indexPath.row]
               
               // Создаём новый ViewController
-           let workoutDetailsVC = WorkoutDetailsVC()
+           let workoutDetailsVC = DetailsVC()
            workoutDetailsVC.title = "Детали тренировки"
               
               // Переходим на новый ViewController через существующий navigationController

@@ -1,232 +1,117 @@
 //
-//  TrackerButton.swift
+//  CalculatorBottomBar.swift
 //  OneDot
 //
-//  Created by Александр Коробицын on 10.07.2023.
+//  Created by Александр Коробицын on 12.12.2024.
 //
 
+import Foundation
 import UIKit
 
-class TabBar: UIView {
+class CalculatorBottomBar: UIView {
     
     private typealias UD = UserDefaultsManager
     
     var buttonStateHandler: ((MainVC.Mode)->())?
     
     enum Mode {
-        case prepare
-        case prepareToStart
-        case tracking
-        case hide
         case pickerDistance
         case pickerSpeed
         case pickerPace
         case PickerTime
-        case pickerHide
+        case hide
     }
     
-    private var prepareState: Bool = true
-    private var prepareToStartState: Bool = false
-    private var trackingState: Bool = false
-    
-    private let leftButton: UIButton = UIButton()
-    private let rightButton: UIButton = UIButton()
-    
-    private let buttonsLineSeparator: CAShapeLayer = CAShapeLayer()
     private let topLineSeparator: CAShapeLayer = CAShapeLayer()
     private let numbersLineSeparator: CAShapeLayer = CAShapeLayer()
 
-    private let pickerView: UIPickerView = UIPickerView()
+    private let pickerView: UIPickerView = {
+        let view = UIPickerView()
+        view.disableAutoresizingMask()
+        return view
+    }()
     private var currentPickerState: Mode?
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        setViews()
-        setConstraints()
-        
         pickerView.delegate = self
         pickerView.dataSource = self
- 
-    }
-    
-    //MARK: - MainVCHandlers
-    
-    @objc private func leftTapped() {
-        
-        if prepareState {
-            prepareState.toggle()
-            prepareToStartState.toggle()
-            buttonStateHandler?(.prepareToStart)
-        } else if prepareToStartState {
-            prepareToStartState.toggle()
-            trackingState.toggle()
-            buttonStateHandler?(.tracking)
-        } else if trackingState {
-            trackingState.toggle()
-            prepareToStartState.toggle()
-            buttonStateHandler?(.prepareToStart)
-        }
-    }
-    
-    @objc private func rightTapped() {
-        
-        if prepareState {
-            buttonStateHandler?(.transitionToProfile)
-        } else if prepareToStartState || trackingState {
-            prepareToStartState = false
-            trackingState = false
-            prepareState = true
-            buttonStateHandler?(.prepare)
-        }
+        setViews()
+        setConstraints()
     }
     
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
-        backgroundColor = .myPaletteBlue
         switch mode {
-            
-        case .prepare:
-            configureVisibility(picker: true, bar: false)
-            setButtonImages(lButtonImg: "TBStart", rButtonImg: "TBProfile")
-            leftButton.layer.removeAllAnimations()
-            
-        case .prepareToStart:
-            configureVisibility(picker: true, bar: false)
-            setButtonImages(lButtonImg: "TBStart", rButtonImg: "TBCancel")
-            AnimationManager.shared.AnimateStartIcon(leftButton.layer)
-            
-        case .tracking:
-            configureVisibility(picker: true, bar: false)
-            setButtonImages(lButtonImg: "TBPause", rButtonImg: "TBStop")
-            leftButton.layer.removeAllAnimations()
-            
-        case .hide:
-            configureVisibility(picker: true, bar: true)
         case .pickerDistance:
-            configureVisibility(picker: false, bar: false)
+            isHidden = false
             ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             currentPickerState = .pickerDistance
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsDistanceValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsDistanceDecimalValue, inComponent: 1, animated: true)
         case .pickerSpeed:
+            isHidden = false
             ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
-            configureVisibility(picker: false, bar: false)
             currentPickerState = .pickerSpeed
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsSpeedValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsSpeedDecimalValue, inComponent: 1, animated: true)
         case .pickerPace:
+            isHidden = false
             ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
-            configureVisibility(picker: false, bar: false)
             currentPickerState = .pickerPace
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsPaceMinValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
         case .PickerTime:
+            isHidden = false
             ShapeManager.shared.drawTabBarNumbersTwoLineSeparator(shape: numbersLineSeparator, view: self)
-            configureVisibility(picker: false, bar: false)
             currentPickerState = .PickerTime
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsTimeHValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsTimeMinValue, inComponent: 1, animated: true)
             pickerView.selectRow(UD.shared.calculationsTimeSecValue, inComponent: 2, animated: true)
-        case .pickerHide:
-            configureVisibility(picker: true, bar: false)
+        case .hide:
+            isHidden = true
+            return
         }
     }
-    
-    private func setButtonImages(lButtonImg: String, rButtonImg: String) {
-        leftButton.setImage(UIImage(named: lButtonImg), for: .normal)
-        leftButton.setImage(UIImage(named: lButtonImg), for: .highlighted)
-        rightButton.setImage(UIImage(named: rButtonImg), for: .normal)
-        rightButton.setImage(UIImage(named: rButtonImg), for: .highlighted)
-    }
-    
-   
-    
-    //MARK: - ConfigurePickerVisibility
-    
-    private func configureBarVisibility(hidden: Bool) {
-        self.isHidden = hidden ? true : false
-    }
-    
-    private func configureVisibility(picker: Bool, bar: Bool) {
-        
-        self.isHidden = bar ? true : false
-        pickerView.isHidden = picker ? true : false
-        
-        backgroundColor = picker ? .myPaletteBlue : .none
-        leftButton.isHidden = picker ? false : true
-        rightButton.isHidden = picker ? false : true
-
-        buttonsLineSeparator.isHidden = picker ? false : true
-        topLineSeparator.isHidden = picker ? true : false
-        
-        if picker {numbersLineSeparator.removeFromSuperlayer()}
-    }
- 
     
     //MARK: - SetViews
     
     private func setViews() {
-        
-        activateMode(mode: .prepare)
-        
-        backgroundColor = .myPaletteBlue
         layer.cornerRadius = .barCorner
         layer.cornerCurve = .continuous
         
-        addSubview(leftButton)
-        addSubview(rightButton)
-        
         addSubview(pickerView)
-
-        leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
-        rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
-        
-        ShapeManager.shared.drawTabBarButtonsLineSeparator(shape: buttonsLineSeparator, view: self)
+    
         ShapeManager.shared.drawTabBarTopLineSeparator(shape: topLineSeparator, view: self)
     }
     
     
-    //MARK: - SetConstrains
-
+    //MARK: - SetConstraints
+    
     private func setConstraints() {
-        leftButton.disableAutoresizingMask()
-        rightButton.disableAutoresizingMask()
-        pickerView.disableAutoresizingMask()
-        
         NSLayoutConstraint.activate([
-            leftButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
-            leftButton.heightAnchor.constraint(equalToConstant: .tabBarHeight),
-            leftButton.leftAnchor.constraint(equalTo: leftAnchor),
-            leftButton.topAnchor.constraint(equalTo: topAnchor),
-            
-            rightButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
-            rightButton.heightAnchor.constraint(equalToConstant: .tabBarHeight),
-            rightButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-            rightButton.topAnchor.constraint(equalTo: topAnchor),
-            
-            pickerView.widthAnchor.constraint(equalToConstant: .barWidth),
-            pickerView.heightAnchor.constraint(equalToConstant: .tabBarHeight),
             pickerView.topAnchor.constraint(equalTo: topAnchor),
+            pickerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            pickerView.bottomAnchor.constraint(equalTo: bottomAnchor),
             pickerView.leadingAnchor.constraint(equalTo: leadingAnchor)
-            ])
+        ])
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
+
 
 
 //MARK: - PickerViewDelegate&Datasource
 
-extension TabBar: UIPickerViewDelegate, UIPickerViewDataSource {
+extension CalculatorBottomBar: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         
         switch currentPickerState {

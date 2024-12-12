@@ -166,10 +166,10 @@ class HealthKitManager {
             
             let distanceData = HealthKitData.Distance(totalDistance: distance)
             
-            if let workoutRoute = try await fetchWorkoutRoute(workout: workout) {
-                let route = try await fetchRouteData(for: workoutRoute)
-                let routeData = HealthKitData.Route(locations: route)
-            }
+//            if let workoutRoute = try await fetchWorkoutRoute(workout: workout) {
+//                let route = try await fetchRouteData(for: workoutRoute)
+//                let routeData = HealthKitData.Route(locations: route)
+//            }
             
             
             

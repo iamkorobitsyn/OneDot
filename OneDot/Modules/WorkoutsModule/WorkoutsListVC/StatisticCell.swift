@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class MetricsPanelCell: UICollectionViewCell {
+class StatisticCell: UICollectionViewCell {
     
     private let leadingTitle: UILabel = {
         let label = UILabel()

@@ -14,6 +14,39 @@ class ShapeManager {
     
     private init() {}
     
+    //MARK: - MainView
+    
+    func drawViewGradient(layer: CALayer) {
+        let topGradient = CAGradientLayer()
+        let bottomGradient = CAGradientLayer()
+        
+        topGradient.frame = CGRect(x: 0,
+                                   y: 0,
+                                   width: UIScreen.main.bounds.width ,
+                                   height: UIScreen.main.bounds.height)
+        bottomGradient.frame = CGRect(x: 0,
+                                   y: 0,
+                                      width: UIScreen.main.bounds.width,
+                                      height: UIScreen.main.bounds.height)
+        
+        
+        
+        topGradient.startPoint = CGPoint(x: 0, y: 0)
+        topGradient.endPoint = CGPoint(x: 0, y: 0.4)
+        topGradient.colors = [UIColor.white.cgColor,
+                              UIColor.white.withAlphaComponent(0).cgColor]
+        
+        
+        bottomGradient.startPoint = CGPoint(x: 0, y: 1)
+        bottomGradient.endPoint = CGPoint(x: 0, y: 0.6)
+        bottomGradient.colors = [UIColor.white.cgColor,
+                                 UIColor.white.withAlphaComponent(0).cgColor]
+        
+        
+        layer.addSublayer(topGradient)
+        layer.addSublayer(bottomGradient)
+    }
+    
     //MARK: - TabBar
     
     func drawTabBarButtonsLineSeparator(shape: CAShapeLayer, view: UIView) {
