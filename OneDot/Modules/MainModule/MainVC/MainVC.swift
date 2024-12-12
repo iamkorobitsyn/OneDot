@@ -49,13 +49,13 @@ class MainVC: UIViewController, CAAnimationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.delegate = self
+        checkLocationEnabled()
 
         setViews()
         
         setConstraints()
-        setupLocationManager()
-        checkLocationEnabled()
-        
         activateSubviewsHandlers()
  
         UserDefaultsManager.shared.outdoorStatusValue ? activateMode(mode: .indoor) : activateMode(mode: .outdoor)
@@ -65,7 +65,6 @@ class MainVC: UIViewController, CAAnimationDelegate {
     //MARK: - SetClosures
     
     private func activateSubviewsHandlers() {
-        
         headerBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         tabBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         calculationsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
@@ -76,7 +75,9 @@ class MainVC: UIViewController, CAAnimationDelegate {
     //MARK: - SplashScreenAnimations
     
     override func viewDidAppear(_ animated: Bool) {
-        Animator.shared.splashScreenAnimate(splashScreen.frontLayer,
+        
+        
+        AnimationManager.shared.splashScreenAnimate(splashScreen.frontLayer,
                                             splashScreen.gradientBackLayer,
                                             splashScreen.launchLogo,
                                             delegate: self)
@@ -85,6 +86,17 @@ class MainVC: UIViewController, CAAnimationDelegate {
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         if flag {
             splashScreen.alpha = 0
+            
+        }
+    }
+    
+    private func checkLocationEnabled() {
+        
+        Task {
+            locationManager.startUpdatingLocation()
+            if try await MapKitManager.shared.checkLocationServicesEnabled(viewController: self, maoView: mapView) {
+                mapView.showsUserLocation = true
+            }
         }
     }
     
@@ -159,65 +171,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
             navigationVC.view.layer.cornerRadius = .barCorner
             present(navigationVC, animated: true)
         }
-        
     }
-    
-    
-    //MARK: - LocationManager&Authorization
-    
-    private func setupLocationManager() {
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    }
-    
-    private func checkLocationEnabled() {
-        
-        let queue = DispatchQueue.global(qos: .userInitiated)
-        
-        queue.async {
-            if CLLocationManager.locationServicesEnabled() {
-                
-                DispatchQueue.main.async {
-                    self.checkAuthorization()
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.present(Alert(title: "У вас выключена служба геолокации",
-                                       message: "Включить?",
-                                       style: .actionSheet,
-                                       url: "App-Prefs:root=LOCATION_SEVICES"),
-                                 animated: true)
-                }
-            }
-        }
-         
-    }
-    
-    private func checkAuthorization() {
-        
-        switch locationManager.authorizationStatus {
-            
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-        case .restricted:
-            break
-        case .denied:
-            self.present(Alert(title: "Вы запретили использование местоположения",
-                               message: "Разрешить?",
-                               style: .actionSheet,
-                               url: UIApplication.openSettingsURLString),
-                         animated: true)
-        case .authorizedAlways:
-                break
-        case .authorizedWhenInUse:
-            mapView.showsUserLocation = true
-            locationManager.startUpdatingLocation()
-        @unknown default:
-            break
-        }
-    }
-
-
 }
 
 

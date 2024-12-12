@@ -95,7 +95,7 @@ class TabBar: UIView {
         case .prepareToStart:
             configureVisibility(picker: true, bar: false)
             setButtonImages(lButtonImg: "TBStart", rButtonImg: "TBCancel")
-            Animator.shared.AnimateStartIcon(leftButton.layer)
+            AnimationManager.shared.AnimateStartIcon(leftButton.layer)
             
         case .tracking:
             configureVisibility(picker: true, bar: false)
@@ -106,27 +106,27 @@ class TabBar: UIView {
             configureVisibility(picker: true, bar: true)
         case .pickerDistance:
             configureVisibility(picker: false, bar: false)
-            Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
+            ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             currentPickerState = .pickerDistance
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsDistanceValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsDistanceDecimalValue, inComponent: 1, animated: true)
         case .pickerSpeed:
-            Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
+            ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             configureVisibility(picker: false, bar: false)
             currentPickerState = .pickerSpeed
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsSpeedValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsSpeedDecimalValue, inComponent: 1, animated: true)
         case .pickerPace:
-            Shaper.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
+            ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             configureVisibility(picker: false, bar: false)
             currentPickerState = .pickerPace
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsPaceMinValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
         case .PickerTime:
-            Shaper.shared.drawTabBarNumbersTwoLineSeparator(shape: numbersLineSeparator, view: self)
+            ShapeManager.shared.drawTabBarNumbersTwoLineSeparator(shape: numbersLineSeparator, view: self)
             configureVisibility(picker: false, bar: false)
             currentPickerState = .PickerTime
             pickerView.reloadAllComponents()
@@ -187,8 +187,8 @@ class TabBar: UIView {
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
         
-        Shaper.shared.drawTabBarButtonsLineSeparator(shape: buttonsLineSeparator, view: self)
-        Shaper.shared.drawTabBarTopLineSeparator(shape: topLineSeparator, view: self)
+        ShapeManager.shared.drawTabBarButtonsLineSeparator(shape: buttonsLineSeparator, view: self)
+        ShapeManager.shared.drawTabBarTopLineSeparator(shape: topLineSeparator, view: self)
     }
     
     

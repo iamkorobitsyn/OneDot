@@ -9,9 +9,9 @@ import Foundation
 import HealthKit
 import CoreLocation
 
-class HealthKitDataManager {
+class HealthKitManager {
     
-    static let shared = HealthKitDataManager()
+    static let shared = HealthKitManager()
     
     private let healthStore: HKHealthStore = HKHealthStore()
     

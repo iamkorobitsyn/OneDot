@@ -116,12 +116,12 @@ class WorkoutsListVC: UIViewController {
             
             do {
                 guard let self else {return}
-                let workouts = try await HealthKitDataManager.shared.fetchHealthKitData()
+                let workouts = try await HealthKitManager.shared.fetchHealthKitData()
                 self.workouts = workouts
                 self.workoutTable.reloadData()
                 
-            } catch let error as HealthKitDataManager.HealthKitError {
-                HealthKitDataManager.shared.errorHanding(error: error)
+            } catch let error as HealthKitManager.HealthKitError {
+                HealthKitManager.shared.errorHanding(error: error)
             }
         }
     }

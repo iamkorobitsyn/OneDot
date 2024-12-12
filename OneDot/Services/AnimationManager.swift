@@ -8,9 +8,9 @@
 import Foundation
 import UIKit
 
-class Animator {
+class AnimationManager {
     
-    static let shared = Animator()
+    static let shared = AnimationManager()
     
     private init() {}
     

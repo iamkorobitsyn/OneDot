@@ -125,7 +125,7 @@ class MetricsPanelCell: UICollectionViewCell {
         trailingStack.addArrangedSubview(trailingIcon)
         trailingStack.addArrangedSubview(trailingValue)
         
-        Shaper.shared.drawMetricsCellSeparator(shape: separator, view: self)
+        ShapeManager.shared.drawMetricsCellSeparator(shape: separator, view: self)
     }
     
     //MARK: - SetConstraints

@@ -79,7 +79,7 @@ class WorkoutCell: UITableViewCell {
         addSubview(bottomTrailingLabel)
         addSubview(detailsImage)
         
-        Shaper.shared.drawWorkoutCellSeparators(shape: separators, view: self)
+        ShapeManager.shared.drawWorkoutCellSeparators(shape: separators, view: self)
     }
     
     private func setConstraints() {

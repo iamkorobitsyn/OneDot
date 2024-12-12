@@ -148,10 +148,10 @@ class HeaderBarView: UIView {
         calculatorButton.setImage(UIImage(named: "SSCalculator"), for: .normal)
         settingsButton.setImage(UIImage(named: "SSSettings"), for: .normal)
         
-        Shaper.shared.drawToolsStackSeparator(shape: toolsStackSeparator, view: self)
-        Shaper.shared.drawLocatorDotShape(shape: locatorDotShape, view: locatorView)
-        Shaper.shared.drawLocatorFirstSircleShape(shape: locatorFirstCircleShape, view: locatorView)
-        Shaper.shared.drawLocatorSecondSircleShape(shape: locatorSecondCircleShape, view: locatorView)
+        ShapeManager.shared.drawToolsStackSeparator(shape: toolsStackSeparator, view: self)
+        ShapeManager.shared.drawLocatorDotShape(shape: locatorDotShape, view: locatorView)
+        ShapeManager.shared.drawLocatorFirstSircleShape(shape: locatorFirstCircleShape, view: locatorView)
+        ShapeManager.shared.drawLocatorSecondSircleShape(shape: locatorSecondCircleShape, view: locatorView)
     }
     
     //MARK: - NavigationControllerObserver
@@ -166,7 +166,7 @@ class HeaderBarView: UIView {
     //MARK: - ObserverAnimation
     
     @objc private func animations() {
-        Animator.shared.animateLocator(locatorFirstCircleShape, locatorSecondCircleShape)
+        AnimationManager.shared.animateLocator(locatorFirstCircleShape, locatorSecondCircleShape)
     }
     
     //MARK: - SetConstraints

@@ -8,9 +8,9 @@
 import Foundation
 import UIKit
 
-class Shaper {
+class ShapeManager {
     
-    static let shared = Shaper()
+    static let shared = ShapeManager()
     
     private init() {}
     

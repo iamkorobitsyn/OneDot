@@ -115,7 +115,7 @@ class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         title.font = UIFont.systemFont(ofSize: 20, weight: .light, width: .compressed)
         title.textColor = .myPaletteGray
         
-        Shaper.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
+        ShapeManager.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }
     
     //MARK: - SetConstraints
