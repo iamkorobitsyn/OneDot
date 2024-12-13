@@ -47,9 +47,9 @@ class ShapeManager {
         layer.addSublayer(bottomGradient)
     }
     
-    //MARK: - TabBar
+    //MARK: - BottomBar
     
-    func drawTabBarButtonsLineSeparator(shape: CAShapeLayer, view: UIView) {
+    func drawTabBarButtonsLineSeparator(shape: CAShapeLayer, view: UIView, color: UIColor) {
         
         let path = UIBezierPath()
         path.move(to: CGPoint(x: .barWidth / 2, y: 15))
@@ -57,7 +57,7 @@ class ShapeManager {
         shape.path = path.cgPath
         shape.lineWidth = 0.5
         shape.lineCap = .round
-        shape.strokeColor = UIColor.white.cgColor
+        shape.strokeColor = color.cgColor
         view.layer.addSublayer(shape)
         
     }

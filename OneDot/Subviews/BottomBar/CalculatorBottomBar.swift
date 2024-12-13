@@ -34,6 +34,7 @@ class CalculatorBottomBar: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        isHidden = true
         pickerView.delegate = self
         pickerView.dataSource = self
         setViews()

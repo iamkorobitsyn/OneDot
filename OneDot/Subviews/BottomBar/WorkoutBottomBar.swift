@@ -112,7 +112,7 @@ class WorkoutBottomBar: UIView {
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
         
-        ShapeManager.shared.drawTabBarButtonsLineSeparator(shape: buttonsLineSeparator, view: self)
+        ShapeManager.shared.drawTabBarButtonsLineSeparator(shape: buttonsLineSeparator, view: self, color: .white)
     }
     
     

@@ -200,7 +200,6 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .transitionToProfile:
             let WorkoutsVC = WorkoutsVC()
             let navigationVC = UINavigationController(rootViewController: WorkoutsVC)
-            navigationVC.view.layer.cornerRadius = .barCorner
             present(navigationVC, animated: true)
         }
     }

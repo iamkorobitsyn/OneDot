@@ -17,6 +17,10 @@ class DetailsVC: UIViewController {
     let mapView: MKMapView = {
         let view = MKMapView()
         view.disableAutoresizingMask()
+        view.layer.cornerRadius = .barCorner
+        view.layer.cornerCurve = .continuous
+        view.layer.borderWidth = 0.3
+        view.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         return view
     }()
     
@@ -51,35 +55,17 @@ class DetailsVC: UIViewController {
                                longitude: 37.293145)
     ]
     
-    let backView: UIView = {
-        let view = UIView()
-        view.disableAutoresizingMask()
-        view.backgroundColor = .myPaletteWhiteBackground
-        view.layer.cornerRadius = .barCorner
-        return view
-    }()
-    
-    let topBlurView: UIVisualEffectView = {
+    let blurEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView()
         view.disableAutoresizingMask()
-        view.clipsToBounds = true
-        view.effect = UIBlurEffect(style: .light)
+        view.effect = UIBlurEffect(style: .extraLight)
         view.layer.cornerRadius = 10
-        view.layer.cornerCurve = .continuous
-        view.layer.borderWidth = 0.3
-        view.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         return view
     }()
     
-    let bottomBlurView: UIVisualEffectView = {
-        let view = UIVisualEffectView()
+    let screenshotBottomBar: ScreenshotBottonBar = {
+        let view = ScreenshotBottonBar()
         view.disableAutoresizingMask()
-        view.clipsToBounds = true
-        view.effect = UIBlurEffect(style: .light)
-        view.layer.cornerRadius = .barCorner
-        view.layer.cornerCurve = .continuous
-        view.layer.borderWidth = 0.3
-        view.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         return view
     }()
     
@@ -97,27 +83,6 @@ class DetailsVC: UIViewController {
         return button
     }()
     
-    private let screenShotButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "DSScreenshotGray"), for: .normal)
-        return button
-    }()
-    
-    private let settingsButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "DSSettingsGray"), for: .normal)
-        return button
-    }()
-    
-    private let appearanceButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "DSAppearanceGray"), for: .normal)
-        return button
-    }()
-    
     private let testLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
@@ -131,7 +96,7 @@ class DetailsVC: UIViewController {
  
         setViews()
         setConstraints()
-
+        
         MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates)
         MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 1.7)
     }
@@ -151,14 +116,8 @@ class DetailsVC: UIViewController {
         case backButton:
             navigationController?.popViewController(animated: true)
             backButton.isHidden = true
-            
         case hideButton:
             self.dismiss(animated: true)
-            
-        case screenShotButton:
-            let screensot = makeScreenShot()
-            saveScreenshotToGallery(image: screensot)
-            addScreenshotEffect()
         default:
             break
         }
@@ -167,8 +126,8 @@ class DetailsVC: UIViewController {
     //MARK: - SetScreenshot
     
     private func makeScreenShot() -> UIImage {
-        backView.layer.cornerRadius = 0
-        [backButton, hideButton, screenShotButton, settingsButton, appearanceButton].forEach( {$0.isHidden = true} )
+        blurEffectView.layer.cornerRadius = 0
+        [backButton, hideButton].forEach( {$0.isHidden = true} )
         
         let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
         
@@ -176,8 +135,8 @@ class DetailsVC: UIViewController {
             view.layer.render(in: context.cgContext)
         }
         
-        backView.layer.cornerRadius = .barCorner
-        [backButton, hideButton, screenShotButton, settingsButton, appearanceButton].forEach( {$0.isHidden = false} )
+        blurEffectView.layer.cornerRadius = .barCorner
+        [backButton, hideButton].forEach( {$0.isHidden = false} )
         
         return screenshot
     }
@@ -228,18 +187,14 @@ class DetailsVC: UIViewController {
     
     private func setViews() {
         
-        view.addSubview(backView)
+        view.addSubview(blurEffectView)
         view.addSubview(mapView)
-        view.addSubview(topBlurView)
-        topBlurView.contentView.addSubview(backButton)
-        topBlurView.contentView.addSubview(hideButton)
-        view.addSubview(bottomBlurView)
-        bottomBlurView.contentView.addSubview(screenShotButton)
-        bottomBlurView.contentView.addSubview(settingsButton)
-        bottomBlurView.contentView.addSubview(appearanceButton)
+        view.addSubview(backButton)
+        view.addSubview(hideButton)
+        view.addSubview(screenshotBottomBar)
         view.addSubview(testLabel)
         
-        [backButton, hideButton, screenShotButton, settingsButton, appearanceButton].forEach { button in
+        [backButton, hideButton].forEach { button in
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
         }
     }
@@ -248,50 +203,30 @@ class DetailsVC: UIViewController {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            backView.topAnchor.constraint(equalTo: view.topAnchor),
-            backView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            backView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            backView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurEffectView.topAnchor.constraint(equalTo: view.topAnchor),
+            blurEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            blurEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            blurEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mapView.topAnchor.constraint(equalTo: view.topAnchor),
-            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mapView.widthAnchor.constraint(equalToConstant: .barWidth),
+            mapView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            mapView.topAnchor.constraint(equalTo: view.topAnchor, constant: 60),
+            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
-            topBlurView.widthAnchor.constraint(equalToConstant: 250),
-            topBlurView.heightAnchor.constraint(equalToConstant: 42),
-            topBlurView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            topBlurView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
-            
-            bottomBlurView.widthAnchor.constraint(equalToConstant: .barWidth),
-            bottomBlurView.heightAnchor.constraint(equalToConstant: .tabBarHeight),
-            bottomBlurView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            bottomBlurView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            screenshotBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
+            screenshotBottomBar.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            screenshotBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            screenshotBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
             backButton.widthAnchor.constraint(equalToConstant: 42),
             backButton.heightAnchor.constraint(equalToConstant: 42),
-            backButton.centerYAnchor.constraint(equalTo: topBlurView.centerYAnchor),
-            backButton.leadingAnchor.constraint(equalTo: topBlurView.leadingAnchor, constant: 10),
+            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             
             hideButton.widthAnchor.constraint(equalToConstant: 42),
             hideButton.heightAnchor.constraint(equalToConstant: 42),
-            hideButton.centerYAnchor.constraint(equalTo: topBlurView.centerYAnchor),
-            hideButton.trailingAnchor.constraint(equalTo: topBlurView.trailingAnchor, constant: -10),
-            
-            screenShotButton.widthAnchor.constraint(equalToConstant: 42),
-            screenShotButton.heightAnchor.constraint(equalToConstant: 42),
-            screenShotButton.centerXAnchor.constraint(equalTo: bottomBlurView.centerXAnchor),
-            screenShotButton.centerYAnchor.constraint(equalTo: bottomBlurView.centerYAnchor),
-            
-            settingsButton.widthAnchor.constraint(equalToConstant: 42),
-            settingsButton.heightAnchor.constraint(equalToConstant: 42),
-            settingsButton.centerYAnchor.constraint(equalTo: bottomBlurView.centerYAnchor),
-            settingsButton.leadingAnchor.constraint(equalTo: bottomBlurView.leadingAnchor, constant: 40),
-            
-            appearanceButton.widthAnchor.constraint(equalToConstant: 42),
-            appearanceButton.heightAnchor.constraint(equalToConstant: 42),
-            appearanceButton.centerYAnchor.constraint(equalTo: bottomBlurView.centerYAnchor),
-            appearanceButton.trailingAnchor.constraint(equalTo: bottomBlurView.trailingAnchor, constant: -40),
+            hideButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            hideButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             
             testLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             testLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
@@ -303,8 +238,8 @@ class DetailsVC: UIViewController {
 extension DetailsVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(overlay: overlay)
-        renderer.strokeColor = .systemBlue
-        renderer.lineWidth = 5
+        renderer.strokeColor = .myPaletteGold
+        renderer.lineWidth = 4
         return renderer
     }
 }

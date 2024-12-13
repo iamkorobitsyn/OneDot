@@ -28,9 +28,7 @@ class WorkoutsVC: UIViewController {
         let effect = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
         effect.disableAutoresizingMask()
         effect.layer.masksToBounds = true
-        effect.layer.cornerRadius = .barCorner
-        effect.layer.borderWidth = 0.3
-        effect.layer.borderColor = UIColor.myPaletteGray.withAlphaComponent(0.4).cgColor
+        effect.layer.cornerRadius = 10
         return effect
     }()
     
