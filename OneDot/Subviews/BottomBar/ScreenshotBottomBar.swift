@@ -10,6 +10,8 @@ import UIKit
 
 class ScreenshotBottonBar: UIVisualEffectView {
     
+    var buttonStateHandler: ((DetailsVC.Mode) -> Void)?
+    
     private let screenShotButton: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
@@ -35,9 +37,9 @@ class ScreenshotBottonBar: UIVisualEffectView {
     @objc private func buttonTapped(_ button: UIButton) {
         switch button {
         case screenShotButton:
-            print("screenshot")
+            buttonStateHandler?(.screenshot)
         case settingsButton:
-            print("settings")
+            buttonStateHandler?(.settings)
         default:
             break
         }

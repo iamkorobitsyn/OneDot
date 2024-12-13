@@ -14,13 +14,16 @@ class DetailsVC: UIViewController {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
     
+    enum Mode {
+        case screenshot
+        case settings
+        case back
+        case hide
+    }
+    
     let mapView: MKMapView = {
         let view = MKMapView()
         view.disableAutoresizingMask()
-        view.layer.cornerRadius = .barCorner
-        view.layer.cornerCurve = .continuous
-        view.layer.borderWidth = 0.3
-        view.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         return view
     }()
     
@@ -96,6 +99,7 @@ class DetailsVC: UIViewController {
  
         setViews()
         setConstraints()
+        activateSubviewsHandlers()
         
         MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates)
         MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 1.7)
@@ -105,83 +109,42 @@ class DetailsVC: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
     
-
+    private func activateSubviewsHandlers() {
+        screenshotBottomBar.buttonStateHandler = { self.activateMode(mode: $0) }
+    }
+    
+    private func activateMode(mode: Mode) {
+        hapticGenerator.selectionChanged()
+        
+        switch mode {
+        case .screenshot:
+            ScreenschotHelper.shared.makeScreenShot(hiddenViews: [backButton, hideButton, screenshotBottomBar],
+                                                    viewController: self)
+        case .settings:
+            print("settings")
+        case .back:
+            navigationController?.popViewController(animated: true)
+            backButton.isHidden = true
+        case .hide:
+            self.dismiss(animated: true)
+        }
+    }
+    
     
     //MARK: - ButtonTapped
     
     @objc private func buttonTapped(_ button: UIButton) {
-        hapticGenerator.selectionChanged()
         
         switch button {
         case backButton:
-            navigationController?.popViewController(animated: true)
-            backButton.isHidden = true
+            activateMode(mode: .back)
         case hideButton:
-            self.dismiss(animated: true)
+            activateMode(mode: .hide)
         default:
             break
         }
     }
-    
-    //MARK: - SetScreenshot
-    
-    private func makeScreenShot() -> UIImage {
-        blurEffectView.layer.cornerRadius = 0
-        [backButton, hideButton].forEach( {$0.isHidden = true} )
-        
-        let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
-        
-        let screenshot = renderer.image { context in
-            view.layer.render(in: context.cgContext)
-        }
-        
-        blurEffectView.layer.cornerRadius = .barCorner
-        [backButton, hideButton].forEach( {$0.isHidden = false} )
-        
-        return screenshot
-    }
-    
-    private func saveScreenshotToGallery(image: UIImage) {
-        PHPhotoLibrary.requestAuthorization { status in
-            if status == .authorized {
-                PHPhotoLibrary.shared().performChanges({
-                    PHAssetChangeRequest.creationRequestForAsset(from: image)
-                }) { success, error in
-                    if success {
-                        print("Скриншот сохранен в галерее.")
-                    } else if let error = error {
-                        print("Ошибка при сохранении скриншота: \(error.localizedDescription)")
-                    }
-                }
-            } else {
-                print("Нет доступа к фотогалерее.")
-        }
-        }
-    }
-    
-    private func addScreenshotEffect() {
-        
-        let flashView = UIView()
-        flashView.frame = view.bounds
-        flashView.backgroundColor = .white
-        view.addSubview(flashView)
-        
-        let alert = UIAlertController(title: nil,
-                                      message: "\nSaved to gallery\n\n",
-                                      preferredStyle: .actionSheet)
-        
-        UIView.animate(withDuration: 0.2) {
-            flashView.alpha = 1
-        } completion: { _ in
-            UIView.animate(withDuration: 1) {
-                self.present(alert, animated: true)
-                flashView.alpha = 0
-            } completion: { _ in
-                flashView.removeFromSuperview()
-                alert.dismiss(animated: true)
-            }
-        }
-    }
+
     
     //MARK: - SetViews
     
@@ -197,6 +160,8 @@ class DetailsVC: UIViewController {
         [backButton, hideButton].forEach { button in
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
         }
+        
+        ShapeManager.shared.drawViewGradient(layer: mapView.layer)
     }
     
     //MARK: - SetConstraints
@@ -208,10 +173,10 @@ class DetailsVC: UIViewController {
             blurEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             blurEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            mapView.widthAnchor.constraint(equalToConstant: .barWidth),
-            mapView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            mapView.topAnchor.constraint(equalTo: view.topAnchor, constant: 60),
-            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            mapView.topAnchor.constraint(equalTo: view.topAnchor),
+            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             screenshotBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
             screenshotBottomBar.heightAnchor.constraint(equalToConstant: .tabBarHeight),
