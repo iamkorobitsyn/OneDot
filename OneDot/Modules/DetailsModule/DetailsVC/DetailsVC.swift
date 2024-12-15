@@ -90,6 +90,7 @@ class DetailsVC: UIViewController {
         let label = UILabel()
         label.disableAutoresizingMask()
         label.text = "TEST SCREENSHOT"
+        label.isHidden = true
         return label
     }()
     
