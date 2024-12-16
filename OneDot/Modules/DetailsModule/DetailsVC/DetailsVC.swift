@@ -21,9 +21,19 @@ class DetailsVC: UIViewController {
         case hide
     }
     
+    let resultHeader: WorkoutResultHeader = {
+        let header = WorkoutResultHeader()
+        header.disableAutoresizingMask()
+        return header
+    }()
+    
     let mapView: MKMapView = {
         let view = MKMapView()
         view.disableAutoresizingMask()
+//        view.layer.cornerRadius = 10
+//        view.layer.cornerCurve = .continuous
+        view.layer.borderWidth = 0.3
+        view.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         return view
     }()
     
@@ -66,8 +76,8 @@ class DetailsVC: UIViewController {
         return view
     }()
     
-    let screenshotBottomBar: ScreenshotBottonBar = {
-        let view = ScreenshotBottonBar()
+    let screenshotBottomBar: WorkoutResultFooter = {
+        let view = WorkoutResultFooter()
         view.disableAutoresizingMask()
         return view
     }()
@@ -84,14 +94,6 @@ class DetailsVC: UIViewController {
         button.disableAutoresizingMask()
         button.setImage(UIImage(named: "DSHideGray"), for: .normal)
         return button
-    }()
-    
-    private let testLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.text = "TEST SCREENSHOT"
-        label.isHidden = true
-        return label
     }()
     
     override func viewDidLoad() {
@@ -156,13 +158,14 @@ class DetailsVC: UIViewController {
         view.addSubview(backButton)
         view.addSubview(hideButton)
         view.addSubview(screenshotBottomBar)
-        view.addSubview(testLabel)
+        
+        view.addSubview(resultHeader)
         
         [backButton, hideButton].forEach { button in
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
         }
         
-        ShapeManager.shared.drawViewGradient(layer: mapView.layer)
+//        ShapeManager.shared.drawViewGradient(layer: mapView.layer)
     }
     
     //MARK: - SetConstraints
@@ -175,9 +178,9 @@ class DetailsVC: UIViewController {
             blurEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
-            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            mapView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            mapView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             screenshotBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
             screenshotBottomBar.heightAnchor.constraint(equalToConstant: .tabBarHeight),
@@ -194,8 +197,10 @@ class DetailsVC: UIViewController {
             hideButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
             hideButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             
-            testLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            testLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            resultHeader.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
+            resultHeader.heightAnchor.constraint(equalToConstant: 220),
+            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            resultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor)
             
         ])
     }

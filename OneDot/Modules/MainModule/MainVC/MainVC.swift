@@ -21,8 +21,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
         return view
     }()
     
-    let headerBar: HeaderBarView = {
-        let view = HeaderBarView()
+    let headerBar: WorkoutHeader = {
+        let view = WorkoutHeader()
         view.disableAutoresizingMask()
         return view
     }()
@@ -47,14 +47,14 @@ class MainVC: UIViewController, CAAnimationDelegate {
         return view
     }()
     
-    let workoutBottomBar: WorkoutBottomBar = {
-        let view = WorkoutBottomBar()
+    let workoutBottomBar: WorkoutFooter = {
+        let view = WorkoutFooter()
         view.disableAutoresizingMask()
         return view
     }()
     
-    let calculatorBottomBar: CalculatorBottomBar = {
-        let view = CalculatorBottomBar()
+    let calculatorBottomBar: CalculationFooter = {
+        let view = CalculationFooter()
         view.disableAutoresizingMask()
         return view
     }()

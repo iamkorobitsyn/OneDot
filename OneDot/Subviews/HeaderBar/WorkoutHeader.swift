@@ -8,21 +8,9 @@
 import UIKit
 import AudioToolbox
 
-class HeaderBarView: UIView {
+class WorkoutHeader: UIVisualEffectView {
     
     var buttonStateHandler: ((MainVC.Mode)->())?
-    
-    private let visualEffectView: UIVisualEffectView = {
-        let view = UIVisualEffectView()
-        view.effect = UIBlurEffect(style: .extraLight)
-        view.frame = CGRect(x: 0, y: 0,
-                            width: CGFloat.barWidth,
-                            height: CGFloat.headerBarHeight)
-        view.clipsToBounds = true
-        view.layer.cornerRadius = CGFloat.barCorner
-        view.layer.cornerCurve = .continuous
-        return view
-    }()
     
     private let locationStack: UIStackView = {
         let stack = UIStackView()
@@ -35,15 +23,15 @@ class HeaderBarView: UIView {
         return stack
     }()
 
-    private let outdoorButton: HeaderBarButton = HeaderBarButton()
-    private let indoorButton: HeaderBarButton = HeaderBarButton()
-    private let notesButton: HeaderBarButton = HeaderBarButton()
+    private let outdoorButton: WorkoutHeaderButton = WorkoutHeaderButton()
+    private let indoorButton: WorkoutHeaderButton = WorkoutHeaderButton()
+    private let notesButton: WorkoutHeaderButton = WorkoutHeaderButton()
     
-    private let calculatorButton: HeaderBarButton = HeaderBarButton()
-    private let settingsButton: HeaderBarButton = HeaderBarButton()
+    private let calculatorButton: WorkoutHeaderButton = WorkoutHeaderButton()
+    private let settingsButton: WorkoutHeaderButton = WorkoutHeaderButton()
     private let toolsStackSeparator: CAShapeLayer = CAShapeLayer()
     
-    let pickerView = HeaderBarPickerView()
+    let pickerView = WorkoutHeaderPicker()
     
     let locatorView = UIView()
     private let locatorDotShape: CAShapeLayer = CAShapeLayer()
@@ -58,10 +46,9 @@ class HeaderBarView: UIView {
         case settings
         
     }
-   
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
+    
+    override init(effect: UIVisualEffect?) {
+        super.init(effect: effect)
         setViews()
         setConstraints()
         didBecomeObserver()
@@ -124,22 +111,22 @@ class HeaderBarView: UIView {
     
     //MARK: - SetViews
     private func setViews() {
+        effect = UIBlurEffect(style: .extraLight)
+        clipsToBounds = true
         layer.cornerRadius = CGFloat.barCorner
         layer.cornerCurve = .continuous
         layer.borderWidth = 0.3
         layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
-        
-        addSubview(visualEffectView)
 
         locationStack.addArrangedSubview(outdoorButton)
         locationStack.addArrangedSubview(indoorButton)
         locationStack.addArrangedSubview(notesButton)
-        addSubview(locationStack)
+        contentView.addSubview(locationStack)
         
-        addSubview(calculatorButton)
-        addSubview(settingsButton)
-        addSubview(locatorView)
-        addSubview(pickerView)
+        contentView.addSubview(calculatorButton)
+        contentView.addSubview(settingsButton)
+        contentView.addSubview(locatorView)
+        contentView.addSubview(pickerView)
         
         [outdoorButton, indoorButton, notesButton, calculatorButton, settingsButton].forEach {
             $0.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)

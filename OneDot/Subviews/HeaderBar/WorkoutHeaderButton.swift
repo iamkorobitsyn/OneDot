@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HeaderBarButton: UIButton {
+class WorkoutHeaderButton: UIButton {
     
     enum State {
         case outdoor,

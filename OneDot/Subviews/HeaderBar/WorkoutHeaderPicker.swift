@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class HeaderBarPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
+class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
     
     var outdoorLocation: Bool = true
     

@@ -24,10 +24,10 @@ class ScreenschotHelper {
 
         defer { hiddenViews.forEach { $0.isHidden = false } }
 
-        let renderer = UIGraphicsImageRenderer(size: viewController.view.bounds.size)
+        let renderer = UIGraphicsImageRenderer(size: UIScreen.main.bounds.size)
 
         let screenshot = renderer.image { context in
-            viewController.view.drawHierarchy(in: viewController.view.bounds, afterScreenUpdates: true)
+            viewController.view.drawHierarchy(in: UIScreen.main.bounds, afterScreenUpdates: true)
         }
 
         saveScreenshotToGallery(image: screenshot)

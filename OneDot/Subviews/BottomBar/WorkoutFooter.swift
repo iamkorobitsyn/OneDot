@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WorkoutBottomBar: UIView {
+class WorkoutFooter: UIView {
     
     var buttonStateHandler: ((MainVC.Mode)->())?
     

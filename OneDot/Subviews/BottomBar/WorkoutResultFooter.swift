@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ScreenshotBottonBar: UIVisualEffectView {
+class WorkoutResultFooter: UIVisualEffectView {
     
     var buttonStateHandler: ((DetailsVC.Mode) -> Void)?
     
