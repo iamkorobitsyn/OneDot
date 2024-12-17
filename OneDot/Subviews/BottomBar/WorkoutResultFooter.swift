@@ -26,13 +26,36 @@ class WorkoutResultFooter: UIVisualEffectView {
         return button
     }()
     
+    private let shotLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.text = "Screenshot saved in gallery"
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 22, weight: .light, width: .compressed)
+        label.textColor = .myPaletteGray
+        return label
+    }()
+    
     let separator: CAShapeLayer = CAShapeLayer()
     
     override init(effect: UIVisualEffect?) {
         super.init(effect: effect)
         setViews()
         setConstraints()
+        activateHandlers()
     }
+    
+    private func activateHandlers() {
+        ScreenschotHelper.shared.shotStateHandler = { [weak self] shotState in
+            guard let self else {return}
+            screenShotButton.isHidden = shotState ? true : false
+            settingsButton.isHidden = shotState ? true : false
+            separator.isHidden = shotState ? true : false
+            shotLabel.isHidden = shotState ? false : true
+        }
+    }
+    
+    
     
     @objc private func buttonTapped(_ button: UIButton) {
         switch button {
@@ -48,15 +71,14 @@ class WorkoutResultFooter: UIVisualEffectView {
     private func setViews() {
         effect = UIBlurEffect(style: .light)
         clipsToBounds = true
-        layer.cornerRadius = .barCorner
-        layer.cornerCurve = .continuous
-        layer.borderWidth = 0.3
-        layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
+        layer.customBorder(bord: true, corner: .max)
         
         [screenShotButton, settingsButton].forEach { button in
             contentView.addSubview(button)
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
         }
+        contentView.addSubview(shotLabel)
+        shotLabel.isHidden = true
         
         ShapeManager.shared.drawTabBarButtonsLineSeparator(shape: separator, view: self, color: .myPaletteGray)
     }
@@ -71,7 +93,10 @@ class WorkoutResultFooter: UIVisualEffectView {
             settingsButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
             settingsButton.heightAnchor.constraint(equalToConstant: .tabBarHeight),
             settingsButton.topAnchor.constraint(equalTo: contentView.topAnchor),
-            settingsButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            settingsButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            shotLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            shotLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
     

@@ -56,10 +56,7 @@ class SettingsView: UIVisualEffectView {
         clipsToBounds = true
         isHidden = true
         
-        layer.cornerRadius = 30
-        layer.cornerCurve = .continuous
-        layer.borderWidth = 0.3
-        layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
+        layer.customBorder(bord: true, corner: .max)
         
         contentView.addSubview(tableView)
         tableView.separatorStyle = .none

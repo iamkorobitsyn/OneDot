@@ -43,27 +43,24 @@ class WorkoutResultHeader: UIVisualEffectView {
     
     private func setViewsAndConstraints(fullModeState: Bool) {
         
-//        effect = UIBlurEffect(style: .light)
-//        clipsToBounds = true
-//        layer.cornerRadius = CGFloat.barCorner
-//        layer.cornerCurve = .continuous
-//        layer.borderWidth = 0.3
-//        layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
+        effect = UIBlurEffect(style: .light)
+        clipsToBounds = true
+        layer.customBorder(bord: true, corner: .min)
         
         contentView.addSubview(topStack)
         [topLeadingModule, topCenterModule, topTrailingModule].forEach({topStack.addArrangedSubview($0)})
         
-        topLeadingModule.activateMode(mode: .totalTime, withResult: "05:45:20")
-        topCenterModule.activateMode(mode: .totalCalories, withResult: "3246")
+        topLeadingModule.activateMode(mode: .time, withResult: "05:45:20")
+        topCenterModule.activateMode(mode: .calories, withResult: "3246")
         topTrailingModule.activateMode(mode: .heartRate, withResult: "142")
         
         if fullModeState {
             contentView.addSubview(bottomStack)
             [bottomLeadingModule, bottomCenterModule, bottomTrailingModule].forEach({bottomStack.addArrangedSubview($0)})
             
-            bottomLeadingModule.activateMode(mode: .totalDistance, withResult: "54.6 km")
-            bottomCenterModule.activateMode(mode: .averagePace, withResult: "5:54 / km")
-            bottomTrailingModule.activateMode(mode: .averageCadence, withResult: "165")
+            bottomLeadingModule.activateMode(mode: .distance, withResult: "54.6 km")
+            bottomCenterModule.activateMode(mode: .pace, withResult: "5:54 / km")
+            bottomTrailingModule.activateMode(mode: .cadence, withResult: "165")
         }
         
         setConstraints(fullModeState: fullModeState)
@@ -71,18 +68,18 @@ class WorkoutResultHeader: UIVisualEffectView {
     
     private func setConstraints(fullModeState: Bool) {
         NSLayoutConstraint.activate([
-            topStack.widthAnchor.constraint(equalToConstant: .barWidth),
+            topStack.widthAnchor.constraint(equalToConstant: 330),
             topStack.heightAnchor.constraint(equalToConstant: 100),
             topStack.centerXAnchor.constraint(equalTo: centerXAnchor),
-            topStack.topAnchor.constraint(equalTo: topAnchor)
+            topStack.topAnchor.constraint(equalTo: topAnchor, constant: 120)
         ])
         
         if fullModeState {
             NSLayoutConstraint.activate([
-                bottomStack.widthAnchor.constraint(equalToConstant: .barWidth),
+                bottomStack.widthAnchor.constraint(equalToConstant: 330),
                 bottomStack.heightAnchor.constraint(equalToConstant: 100),
                 bottomStack.centerXAnchor.constraint(equalTo: centerXAnchor),
-                bottomStack.bottomAnchor.constraint(equalTo: bottomAnchor)
+                bottomStack.topAnchor.constraint(equalTo: topStack.bottomAnchor, constant: 20)
             ])
         }
     }

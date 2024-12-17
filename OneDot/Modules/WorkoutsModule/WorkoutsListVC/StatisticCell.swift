@@ -53,8 +53,8 @@ class StatisticCell: UICollectionViewCell {
             trailingResultModule.activateMode(mode: .heartRate, withResult: third)
         case .distancePaceCadence:
             leadingResultModule.activateMode(mode: .totalDistance, withResult: first)
-            centerResultModule.activateMode(mode: .averagePace, withResult: second)
-            trailingResultModule.activateMode(mode: .averageCadence, withResult: third)
+            centerResultModule.activateMode(mode: .pace, withResult: second)
+            trailingResultModule.activateMode(mode: .cadence, withResult: third)
         }
     }
     
@@ -73,17 +73,17 @@ class StatisticCell: UICollectionViewCell {
     private func setConstraints() {
         
         NSLayoutConstraint.activate([
-            centerResultModule.widthAnchor.constraint(equalToConstant: .barWidth / 3),
+            centerResultModule.widthAnchor.constraint(equalToConstant: 110),
             centerResultModule.heightAnchor.constraint(equalToConstant: 100),
             centerResultModule.centerXAnchor.constraint(equalTo: centerXAnchor),
             centerResultModule.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            leadingResultModule.widthAnchor.constraint(equalToConstant: .barWidth / 3),
+            leadingResultModule.widthAnchor.constraint(equalToConstant: 110),
             leadingResultModule.heightAnchor.constraint(equalToConstant: 100),
             leadingResultModule.centerYAnchor.constraint(equalTo: centerResultModule.centerYAnchor),
             leadingResultModule.trailingAnchor.constraint(equalTo: centerResultModule.leadingAnchor),
             
-            trailingResultModule.widthAnchor.constraint(equalToConstant: .barWidth / 3),
+            trailingResultModule.widthAnchor.constraint(equalToConstant: 110),
             trailingResultModule.heightAnchor.constraint(equalToConstant: 100),
             trailingResultModule.centerYAnchor.constraint(equalTo: centerResultModule.centerYAnchor),
             trailingResultModule.leadingAnchor.constraint(equalTo: centerResultModule.trailingAnchor)

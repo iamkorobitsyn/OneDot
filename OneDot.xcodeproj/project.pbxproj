@@ -20,6 +20,7 @@
 		65055E212D0CF80500AC14C5 /* ScreenshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65055E202D0CF80500AC14C5 /* ScreenshotHelper.swift */; };
 		65055E252D10470D00AC14C5 /* WorkoutResultHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65055E242D10470D00AC14C5 /* WorkoutResultHeader.swift */; };
 		65055E272D1049C900AC14C5 /* WorkoutResultModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65055E262D1049C900AC14C5 /* WorkoutResultModule.swift */; };
+		65055E292D10ABAE00AC14C5 /* CALayer + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65055E282D10ABAE00AC14C5 /* CALayer + Extansions.swift */; };
 		651450732CF4A86C00610148 /* SettingsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651450722CF4A86C00610148 /* SettingsViewCell.swift */; };
 		6521308C2AC46F400056DEA5 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6521308B2AC46F400056DEA5 /* SplashScreenView.swift */; };
 		6521308E2AC587210056DEA5 /* AnimationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6521308D2AC587210056DEA5 /* AnimationManager.swift */; };
@@ -123,6 +124,7 @@
 		65055E202D0CF80500AC14C5 /* ScreenshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotHelper.swift; sourceTree = "<group>"; };
 		65055E242D10470D00AC14C5 /* WorkoutResultHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutResultHeader.swift; sourceTree = "<group>"; };
 		65055E262D1049C900AC14C5 /* WorkoutResultModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutResultModule.swift; sourceTree = "<group>"; };
+		65055E282D10ABAE00AC14C5 /* CALayer + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer + Extansions.swift"; sourceTree = "<group>"; };
 		651450722CF4A86C00610148 /* SettingsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewCell.swift; sourceTree = "<group>"; };
 		6521308B2AC46F400056DEA5 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		6521308D2AC587210056DEA5 /* AnimationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationManager.swift; sourceTree = "<group>"; };
@@ -356,6 +358,7 @@
 				6502D6EB2A59A517000F96E0 /* UIColor + Extansions.swift */,
 				65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */,
 				6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */,
+				65055E282D10ABAE00AC14C5 /* CALayer + Extansions.swift */,
 			);
 			path = Extansions;
 			sourceTree = "<group>";
@@ -701,6 +704,7 @@
 				6502D6E52A595AC6000F96E0 /* WorkoutsVC.swift in Sources */,
 				65EDA5872AEA948D007B6AE5 /* InTheRoomExercises.swift in Sources */,
 				659991FF2CF0CF0600D27B44 /* SettingsView.swift in Sources */,
+				65055E292D10ABAE00AC14C5 /* CALayer + Extansions.swift in Sources */,
 				652AFE122D01CE3D00548B2E /* WorkoutCell.swift in Sources */,
 				651450732CF4A86C00610148 /* SettingsViewCell.swift in Sources */,
 				6591F0542D0B37D4006597FE /* WorkoutResultFooter.swift in Sources */,

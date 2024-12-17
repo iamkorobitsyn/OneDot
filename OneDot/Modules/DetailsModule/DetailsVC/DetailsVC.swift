@@ -30,10 +30,6 @@ class DetailsVC: UIViewController {
     let mapView: MKMapView = {
         let view = MKMapView()
         view.disableAutoresizingMask()
-//        view.layer.cornerRadius = 10
-//        view.layer.cornerCurve = .continuous
-        view.layer.borderWidth = 0.3
-        view.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         return view
     }()
     
@@ -155,11 +151,12 @@ class DetailsVC: UIViewController {
         
         view.addSubview(blurEffectView)
         view.addSubview(mapView)
+        view.addSubview(resultHeader)
         view.addSubview(backButton)
         view.addSubview(hideButton)
         view.addSubview(screenshotBottomBar)
         
-        view.addSubview(resultHeader)
+        
         
         [backButton, hideButton].forEach { button in
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
@@ -187,6 +184,11 @@ class DetailsVC: UIViewController {
             screenshotBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             screenshotBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
+            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: -0.5),
+            resultHeader.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0.5),
+            resultHeader.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -0.5),
+            resultHeader.heightAnchor.constraint(equalToConstant: 370),
+            
             backButton.widthAnchor.constraint(equalToConstant: 42),
             backButton.heightAnchor.constraint(equalToConstant: 42),
             backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
@@ -195,13 +197,7 @@ class DetailsVC: UIViewController {
             hideButton.widthAnchor.constraint(equalToConstant: 42),
             hideButton.heightAnchor.constraint(equalToConstant: 42),
             hideButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
-            hideButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            
-            resultHeader.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            resultHeader.heightAnchor.constraint(equalToConstant: 220),
-            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            resultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-            
+            hideButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
         ])
     }
 }

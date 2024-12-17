@@ -13,6 +13,8 @@ class ScreenschotHelper {
     
     static let shared = ScreenschotHelper()
     
+    var shotStateHandler: ((Bool) -> Void)?
+    
     private init() {}
     
     
@@ -24,10 +26,10 @@ class ScreenschotHelper {
 
         defer { hiddenViews.forEach { $0.isHidden = false } }
 
-        let renderer = UIGraphicsImageRenderer(size: UIScreen.main.bounds.size)
+        let renderer = UIGraphicsImageRenderer(size: viewController.view.bounds.size)
 
         let screenshot = renderer.image { context in
-            viewController.view.drawHierarchy(in: UIScreen.main.bounds, afterScreenUpdates: true)
+            viewController.view.drawHierarchy(in: viewController.view.bounds, afterScreenUpdates: true)
         }
 
         saveScreenshotToGallery(image: screenshot)
@@ -63,19 +65,16 @@ class ScreenschotHelper {
         flashView.backgroundColor = .white
         viewController.view.addSubview(flashView)
         
-        let alert = UIAlertController(title: nil,
-                                      message: "\nSaved to gallery\n\n",
-                                      preferredStyle: .actionSheet)
-        
         UIView.animate(withDuration: 0.2) {
             flashView.alpha = 1
         } completion: { _ in
-            UIView.animate(withDuration: 1) {
-                viewController.present(alert, animated: true)
+            UIView.animate(withDuration: 1.5) {
+                
+                self.shotStateHandler?(true)
                 flashView.alpha = 0
             } completion: { _ in
                 flashView.removeFromSuperview()
-                alert.dismiss(animated: true)
+                self.shotStateHandler?(false)
             }
         }
     }

@@ -42,8 +42,8 @@ class WorkoutResultModule: UIView {
         case heartRate
         case totalDistance
         case distance
-        case averagePace
-        case averageCadence
+        case pace
+        case cadence
     }
     
     override init(frame: CGRect) {
@@ -78,10 +78,10 @@ class WorkoutResultModule: UIView {
         case .distance:
             titleLabel.text = "Distance"
             iconView.image = UIImage(named: "AMRoad")
-        case .averagePace:
+        case .pace:
             titleLabel.text = "Average pace"
             iconView.image = UIImage(named: "AMPace")
-        case .averageCadence:
+        case .cadence:
             titleLabel.text = "Average cadence"
             iconView.image = UIImage(named: "AMCadence")
         }
@@ -100,12 +100,12 @@ class WorkoutResultModule: UIView {
             iconView.centerXAnchor.constraint(equalTo: centerXAnchor),
             iconView.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            titleLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            titleLabel.bottomAnchor.constraint(equalTo: iconView.topAnchor, constant: -15),
+            titleLabel.widthAnchor.constraint(equalToConstant: 100),
+            titleLabel.bottomAnchor.constraint(equalTo: iconView.topAnchor, constant: -12),
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             
-            resultLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            resultLabel.topAnchor.constraint(equalTo: iconView.bottomAnchor, constant: 15),
+            resultLabel.widthAnchor.constraint(equalToConstant: 100),
+            resultLabel.topAnchor.constraint(equalTo: iconView.bottomAnchor, constant: 12),
             resultLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
     }

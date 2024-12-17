@@ -113,10 +113,7 @@ class WorkoutHeader: UIVisualEffectView {
     private func setViews() {
         effect = UIBlurEffect(style: .extraLight)
         clipsToBounds = true
-        layer.cornerRadius = CGFloat.barCorner
-        layer.cornerCurve = .continuous
-        layer.borderWidth = 0.3
-        layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
+        layer.customBorder(bord: true, corner: .max)
 
         locationStack.addArrangedSubview(outdoorButton)
         locationStack.addArrangedSubview(indoorButton)
