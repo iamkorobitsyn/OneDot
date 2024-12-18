@@ -22,7 +22,7 @@ class WorkoutsVC: UIViewController {
     
     
     let healthStore = HKHealthStore()
-    var workouts: [HealthKitData] = []
+    var workouts: [HKWorkout] = []
     
     private let blurEffectView: UIVisualEffectView = {
         let effect = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -112,7 +112,7 @@ class WorkoutsVC: UIViewController {
             
             do {
                 guard let self else {return}
-                let workouts = try await HealthKitManager.shared.fetchHealthKitData()
+                let workouts = try await HealthKitManager.shared.fetchWorkouts()
                 self.workouts = workouts
                 self.workoutTable.reloadData()
                 
@@ -238,35 +238,9 @@ extension WorkoutsVC: UITableViewDataSource, UITableViewDelegate {
        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
            
            if let cell = tableView.dequeueReusableCell(withIdentifier: "WorkoutCell") as? WorkoutCell {
-               let workout = workouts[indexPath.row]
-               
-               // Тип тренировки
-               cell.topLeadingLabel.text = workout.workout.workoutType
-               
-               // Длительность тренировки
-               let duration = workout.workout.duration / 60 // в минутах
-               cell.topTrailingLabel.text = String(format: "%.1f мин", duration)
-               
-               
-               if let distanceInMeters = workout.distance?.totalDistance {
-                   let kilometers = Int(distanceInMeters / 1000)
-                   let meters = Int(distanceInMeters.truncatingRemainder(dividingBy: 1000))
-                   
-                   cell.bottomLeadingLabel.text = "\(kilometers) km \(meters) m"
-               }
-               
-               if let coordinates = workout.route?.locations {
-                   print(coordinates.count)
-               }
-                    
-               // Дата тренировки
-               let dateFormatter = DateFormatter()
-               dateFormatter.dateStyle = .short
-               let workoutDate = dateFormatter.string(from: workout.workout.startDate)
-               cell.bottomTrailingLabel.text = workoutDate
-               
-               
-               
+
+               cell.workout = workouts[indexPath.row]
+               cell.updateLabels()
                return cell
            }
            

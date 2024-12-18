@@ -34,6 +34,7 @@
 		655B53902B2139470020FF32 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 655B538F2B2139470020FF32 /* CoreDataManager.swift */; };
 		656469632B502F25006AC14F /* СalculationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656469622B502F25006AC14F /* СalculationsView.swift */; };
 		6568C8B42CE20E4200993E00 /* UIView + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */; };
+		65783ECD2D12C9A200B6E4C2 /* UILabel + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65783ECC2D12C9A200B6E4C2 /* UILabel + Extansions.swift */; };
 		657D66252AA8693400397427 /* gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 657D66242AA8693400397427 /* gitignore */; };
 		657D66272AA86D7000397427 /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657D66262AA86D7000397427 /* AlertController.swift */; };
 		658037392B1D444000856C03 /* NotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658037382B1D444000856C03 /* NotesView.swift */; };
@@ -139,6 +140,7 @@
 		655B538F2B2139470020FF32 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		656469622B502F25006AC14F /* СalculationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "СalculationsView.swift"; sourceTree = "<group>"; };
 		6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + Extansions.swift"; sourceTree = "<group>"; };
+		65783ECC2D12C9A200B6E4C2 /* UILabel + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel + Extansions.swift"; sourceTree = "<group>"; };
 		657D66242AA8693400397427 /* gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gitignore; sourceTree = "<group>"; };
 		657D66262AA86D7000397427 /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
 		658037382B1D444000856C03 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
@@ -359,6 +361,7 @@
 				65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */,
 				6568C8B32CE20E4200993E00 /* UIView + Extansions.swift */,
 				65055E282D10ABAE00AC14C5 /* CALayer + Extansions.swift */,
+				65783ECC2D12C9A200B6E4C2 /* UILabel + Extansions.swift */,
 			);
 			path = Extansions;
 			sourceTree = "<group>";
@@ -437,8 +440,8 @@
 			isa = PBXGroup;
 			children = (
 				6502D6E42A595AC6000F96E0 /* WorkoutsVC.swift */,
-				652AFE0F2D01208900548B2E /* StatisticCell.swift */,
 				652AFE112D01CE3D00548B2E /* WorkoutCell.swift */,
+				652AFE0F2D01208900548B2E /* StatisticCell.swift */,
 			);
 			path = WorkoutsListVC;
 			sourceTree = "<group>";
@@ -721,6 +724,7 @@
 				658037392B1D444000856C03 /* NotesView.swift in Sources */,
 				659879222AB48BBD004F6E2D /* WorkoutHeaderButton.swift in Sources */,
 				65EDA58D2AEA951D007B6AE5 /* ExerciseProtocol.swift in Sources */,
+				65783ECD2D12C9A200B6E4C2 /* UILabel + Extansions.swift in Sources */,
 				6502D6AC2A595315000F96E0 /* MainVC.swift in Sources */,
 				6502D6A82A595315000F96E0 /* AppDelegate.swift in Sources */,
 			);

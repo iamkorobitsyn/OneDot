@@ -10,11 +10,14 @@ import UIKit
 
 class WorkoutResultHeader: UIVisualEffectView {
     
-    private let workoutIcon: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        view.image = UIImage(named: "AORunning")
-        return view
+    private let workoutNameLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.textAlignment = .right
+        label.textColor = .myPaletteGold
+        label.font = UIFont.systemFont(ofSize: 18, weight: .bold, width: .compressed)
+        label.text = "RUNNING"
+        return label
     }()
     
     private let workoutDateLabel: UILabel = {
@@ -60,7 +63,7 @@ class WorkoutResultHeader: UIVisualEffectView {
         clipsToBounds = true
         layer.customBorder(bord: true, corner: .min)
         
-        contentView.addSubview(workoutIcon)
+        contentView.addSubview(workoutNameLabel)
         contentView.addSubview(workoutDateLabel)
         
         contentView.addSubview(leadingStack)
@@ -141,12 +144,11 @@ class WorkoutResultHeader: UIVisualEffectView {
         }
         
         NSLayoutConstraint.activate([
-            workoutIcon.widthAnchor.constraint(equalToConstant: .iconSide),
-            workoutIcon.heightAnchor.constraint(equalToConstant: .iconSide),
-            workoutIcon.leadingAnchor.constraint(equalTo: leadingStack.leadingAnchor, constant: -10),
-            workoutIcon.bottomAnchor.constraint(equalTo: leadingStack.topAnchor, constant: -10),
             
-            workoutDateLabel.topAnchor.constraint(equalTo: workoutIcon.topAnchor),
+            workoutNameLabel.leadingAnchor.constraint(equalTo: leadingStack.leadingAnchor),
+            workoutNameLabel.bottomAnchor.constraint(equalTo: leadingStack.topAnchor, constant: -20),
+            
+            workoutDateLabel.bottomAnchor.constraint(equalTo: workoutNameLabel.bottomAnchor),
             workoutDateLabel.trailingAnchor.constraint(equalTo: trailingStack.trailingAnchor)
             
         ])

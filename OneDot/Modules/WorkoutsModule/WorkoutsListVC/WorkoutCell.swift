@@ -7,8 +7,11 @@
 
 import Foundation
 import UIKit
+import HealthKit
 
 class WorkoutCell: UITableViewCell {
+    
+    var workout: HKWorkout?
     
     private let backView: UIView = {
         let view = UIView()
@@ -18,47 +21,39 @@ class WorkoutCell: UITableViewCell {
         return view
     }()
     
-    let topLeadingLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.textAlignment = .center
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 20, weight: .bold, width: .compressed)
-        return label
-    }()
-    
-    let topTrailingLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.textAlignment = .center
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 20, weight: .bold, width: .compressed)
-        return label
-    }()
-    
-    let bottomLeadingLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.textAlignment = .center
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 20, weight: .bold, width: .compressed)
-        return label
-    }()
-    
-    let bottomTrailingLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.textAlignment = .center
-        label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 20, weight: .bold, width: .compressed)
-        return label
-    }()
-    
     let detailsImage: UIImageView = {
         let imageView = UIImageView()
         imageView.disableAutoresizingMask()
         imageView.image = UIImage(named: "SSDetails")
         return imageView
+    }()
+    
+    let workoutTypeLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .center, font: .boldCompLarge)
+        return label
+    }()
+    
+    let workoutDurationLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .center, font: .boldCompLarge)
+        return label
+    }()
+    
+    let workoutStatisticLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .center, font: .boldCompLarge)
+        return label
+    }()
+    
+    let workoutDateLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .center, font: .boldCompLarge)
+        return label
     }()
     
     let separators: CAShapeLayer = CAShapeLayer()
@@ -73,13 +68,44 @@ class WorkoutCell: UITableViewCell {
     private func setViews() {
         backgroundColor = .clear
         contentView.addSubview(backView)
-        addSubview(topLeadingLabel)
-        addSubview(topTrailingLabel)
-        addSubview(bottomLeadingLabel)
-        addSubview(bottomTrailingLabel)
+        addSubview(workoutTypeLabel)
+        addSubview(workoutDurationLabel)
+        addSubview(workoutStatisticLabel)
+        addSubview(workoutDateLabel)
         addSubview(detailsImage)
         
         ShapeManager.shared.drawWorkoutCellSeparators(shape: separators, view: self)
+    }
+    
+    func updateLabels() {
+        
+        guard let workout else {return}
+        
+        // Тип тренировки
+        workoutTypeLabel.text = workout.workoutActivityType.name
+        
+        // Длительность тренировки
+        let duration = workout.duration / 60 // в минутах
+        workoutDurationLabel.text = String(format: "%.1f мин", duration)
+        
+        
+        
+//               if let distanceInMeters = workout.distance?.totalDistance {
+//                   let kilometers = Int(distanceInMeters / 1000)
+//                   let meters = Int(distanceInMeters.truncatingRemainder(dividingBy: 1000))
+//
+//                   cell.bottomLeadingLabel.text = "\(kilometers) km \(meters) m"
+//               }
+//
+//               if let coordinates = workout.route?.locations {
+//                   print(coordinates.count)
+//               }
+             
+        // Дата тренировки
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        let workoutDate = dateFormatter.string(from: workout.startDate)
+        workoutDateLabel.text = workoutDate
     }
     
     private func setConstraints() {
@@ -90,19 +116,19 @@ class WorkoutCell: UITableViewCell {
             backView.widthAnchor.constraint(equalToConstant: .barWidth - 10),
             backView.heightAnchor.constraint(equalToConstant: 100),
             
-            topLeadingLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            topLeadingLabel.topAnchor.constraint(equalTo: backView.topAnchor, constant: 20),
-            topLeadingLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
-            topTrailingLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            topTrailingLabel.topAnchor.constraint(equalTo: backView.topAnchor, constant: 20),
-            topTrailingLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth  / 4),
+            workoutTypeLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
+            workoutTypeLabel.topAnchor.constraint(equalTo: backView.topAnchor, constant: 20),
+            workoutTypeLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
+            workoutDurationLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
+            workoutDurationLabel.topAnchor.constraint(equalTo: backView.topAnchor, constant: 20),
+            workoutDurationLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth  / 4),
             
-            bottomLeadingLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            bottomLeadingLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -20),
-            bottomLeadingLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
-            bottomTrailingLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            bottomTrailingLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -20),
-            bottomTrailingLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4),
+            workoutStatisticLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
+            workoutStatisticLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -20),
+            workoutStatisticLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
+            workoutDateLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
+            workoutDateLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -20),
+            workoutDateLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4),
             
             detailsImage.widthAnchor.constraint(equalToConstant: 42),
             detailsImage.heightAnchor.constraint(equalToConstant: 42),

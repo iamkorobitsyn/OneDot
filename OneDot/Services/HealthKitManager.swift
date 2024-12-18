@@ -44,7 +44,36 @@ class HealthKitManager {
         }
     }
     
-    func fetchHealthKitData() async throws -> [HealthKitData] {
+    //MARK: - FetchHealthKitData
+    
+//    func fetchHealthKitData() async throws -> [HealthKitData] {
+//        
+//        let workoutType = HKWorkoutType.workoutType()
+//        guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
+//        else { throw HealthKitError.invalidHealthKitType }
+//        let routeType = HKSeriesType.workoutRoute()
+//        
+//        try await withCheckedThrowingContinuation { continuation in
+//            healthStore.requestAuthorization(toShare: nil, read: [workoutType, distanceType, routeType]) { success, error in
+//                if success {
+//                    continuation.resume()
+//                } else {
+//                    continuation.resume(throwing: HealthKitError.notAuthorized)
+//                }
+//            }
+//        }
+//        
+//        let workouts = try await fetchWorkouts(workoutType: workoutType)
+//        
+//        let healthKitData = try await convertWorkouts(workouts: workouts)
+//        
+//        return healthKitData
+//        
+//    }
+    
+    //MARK: - FetchWorkouts
+    
+    func fetchWorkouts() async throws -> [HKWorkout] {
         
         let workoutType = HKWorkoutType.workoutType()
         guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
@@ -60,16 +89,6 @@ class HealthKitManager {
                 }
             }
         }
-        
-        let workouts = try await fetchWorkouts(workoutType: workoutType)
-        
-        let healthKitData = try await convertWorkouts(workouts: workouts)
-        
-        return healthKitData
-        
-    }
-    
-    private func fetchWorkouts(workoutType: HKWorkoutType) async throws -> [HKWorkout] {
         
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
         
@@ -88,23 +107,23 @@ class HealthKitManager {
         }
     }
     
-    private func fetchWorkoutDistance(workout: HKWorkout) async throws -> Double {
-        guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
-        else { throw HealthKitError.noDistanceData }
-        
-        let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate)
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            let query = HKStatisticsQuery(quantityType: distanceType, quantitySamplePredicate: predicate) { _, result, _ in
-                if let distance = result?.sumQuantity()?.doubleValue(for: HKUnit.meter()) {
-                    continuation.resume(returning: distance)
-                } else {
-                    continuation.resume(returning: 0.0)
-                }
-            }
-            healthStore.execute(query)
-        }
-    }
+//    private func fetchWorkoutDistance(workout: HKWorkout) async throws -> Double {
+//        guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
+//        else { throw HealthKitError.noDistanceData }
+//        
+//        let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate)
+//        
+//        return try await withCheckedThrowingContinuation { continuation in
+//            let query = HKStatisticsQuery(quantityType: distanceType, quantitySamplePredicate: predicate) { _, result, _ in
+//                if let distance = result?.sumQuantity()?.doubleValue(for: HKUnit.meter()) {
+//                    continuation.resume(returning: distance)
+//                } else {
+//                    continuation.resume(returning: 0.0)
+//                }
+//            }
+//            healthStore.execute(query)
+//        }
+//    }
     
     private func fetchWorkoutRoute(workout: HKWorkout) async throws -> HKWorkoutRoute? {
         let routeType = HKSeriesType.workoutRoute()
@@ -152,9 +171,13 @@ class HealthKitManager {
         }
     }
     
+    //MARK: - ConvertWorkouts
     
     private func convertWorkouts(workouts: [HKWorkout]) async throws -> [HealthKitData] {
         var results: [HealthKitData] = []
+        
+        guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
+        else { throw HealthKitError.invalidHealthKitType }
         
         for workout in workouts {
             let workoutData = HealthKitData.Workout(workoutType: workout.workoutActivityType.name,
@@ -162,9 +185,12 @@ class HealthKitManager {
                                                     endDate: workout.endDate,
                                                     duration: workout.duration)
             
-            let distance = try await fetchWorkoutDistance(workout: workout)
             
-            let distanceData = HealthKitData.Distance(totalDistance: distance)
+            
+            let distance = workout.allStatistics[distanceType]
+            let distanceMeter = distance?.sumQuantity()?.doubleValue(for: HKUnit.meter()) ?? 0
+            let distanceData = HealthKitData.Distance(totalDistance: distanceMeter)
+            
             
 //            if let workoutRoute = try await fetchWorkoutRoute(workout: workout) {
 //                let route = try await fetchRouteData(for: workoutRoute)

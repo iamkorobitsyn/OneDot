@@ -209,7 +209,7 @@ extension DetailsVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(overlay: overlay)
         renderer.strokeColor = .myPaletteGold
-        renderer.lineWidth = 4
+        renderer.lineWidth = 5
         return renderer
     }
 }
