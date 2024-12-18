@@ -42,7 +42,7 @@ class WorkoutsVC: UIViewController {
     private let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.disableAutoresizingMask()
-        pageControl.numberOfPages = 2
+        pageControl.numberOfPages = 4
         pageControl.currentPageIndicatorTintColor = .myPaletteGold
         pageControl.pageIndicatorTintColor = .lightGray
         pageControl.isUserInteractionEnabled = false
@@ -206,16 +206,20 @@ extension WorkoutsVC: UICollectionViewDataSource, UICollectionViewDelegate, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        2
+        4
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = metricsPanel.dequeueReusableCell(withReuseIdentifier: "MetricsPanelCell", for: indexPath) as! StatisticCell
         switch indexPath.row {
         case 0:
-            cell.activateMode(mode: .timeCaloriesHeartRate, first: "05:45:20", second: "3246", third: "142")
+            cell.activateMode(mode: .timeAndCalories)
         case 1:
-            cell.activateMode(mode: .distancePaceCadence, first: "54.6 Km", second: "5:54 / km", third: "165")
+            cell.activateMode(mode: .distanceAndClimb)
+        case 2:
+            cell.activateMode(mode: .heartRateAndPace)
+        case 3:
+            cell.activateMode(mode: .stepsAndCadence)
         default:
             break
         }

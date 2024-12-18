@@ -163,7 +163,7 @@ class ShapeManager {
         view.layer.addSublayer(shape)
     }
     
-    //MARK: - MetricsPanelCell
+    //MARK: - MetricsPanelCell&ResultPanel
     
     func drawMetricsCellSeparator(shape: CAShapeLayer, view: UIView) {
         
@@ -173,7 +173,22 @@ class ShapeManager {
         shape.path = path.cgPath
         shape.lineWidth = 0.5
         shape.lineCap = .round
-        shape.strokeColor = UIColor.myPaletteGray.cgColor
+        shape.strokeColor = UIColor.myPaletteGold.cgColor
+        view.layer.addSublayer(shape)
+        
+    }
+    
+    func drawResultSeparator(shape: CAShapeLayer, view: UIView) {
+        
+        print(view.frame.width)
+        
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: UIScreen.main.bounds.width / 2, y:  190))
+        path.addLine(to: CGPoint(x: UIScreen.main.bounds.width / 2 , y: 250))
+        shape.path = path.cgPath
+        shape.lineWidth = 0.5
+        shape.lineCap = .round
+        shape.strokeColor = UIColor.myPaletteGold.cgColor
         view.layer.addSublayer(shape)
         
     }

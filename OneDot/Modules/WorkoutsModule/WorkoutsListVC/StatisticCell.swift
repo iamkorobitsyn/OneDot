@@ -16,12 +16,6 @@ class StatisticCell: UICollectionViewCell {
         return module
     }()
     
-    let centerResultModule: WorkoutResultModule = {
-        let module = WorkoutResultModule()
-        module.disableAutoresizingMask()
-        return module
-    }()
-    
     let trailingResultModule: WorkoutResultModule = {
         let module = WorkoutResultModule()
         module.disableAutoresizingMask()
@@ -31,8 +25,10 @@ class StatisticCell: UICollectionViewCell {
     private let separator: CAShapeLayer = CAShapeLayer()
     
     enum Mode: Int {
-        case timeCaloriesHeartRate = 0
-        case distancePaceCadence = 1
+        case timeAndCalories = 0
+        case distanceAndClimb = 1
+        case heartRateAndPace = 2
+        case stepsAndCadence = 3
     }
     
     //MARK: - Init
@@ -45,16 +41,20 @@ class StatisticCell: UICollectionViewCell {
     
     //MARK: - ActivateMode
     
-    func activateMode(mode: Mode, first: String, second: String, third: String) {
+    func activateMode(mode: Mode) {
         switch mode {
-        case .timeCaloriesHeartRate:
-            leadingResultModule.activateMode(mode: .totalTime, withResult: first)
-            centerResultModule.activateMode(mode: .totalCalories, withResult: second)
-            trailingResultModule.activateMode(mode: .heartRate, withResult: third)
-        case .distancePaceCadence:
-            leadingResultModule.activateMode(mode: .totalDistance, withResult: first)
-            centerResultModule.activateMode(mode: .pace, withResult: second)
-            trailingResultModule.activateMode(mode: .cadence, withResult: third)
+        case .timeAndCalories:
+            leadingResultModule.activateMode(axis: .y, mode: .time, result: "05:43:47")
+            trailingResultModule.activateMode(axis: .y, mode: .calories, result: "3457")
+        case .distanceAndClimb:
+            leadingResultModule.activateMode(axis: .y, mode: .distance, result: "56.4 km")
+            trailingResultModule.activateMode(axis: .y, mode: .climb, result: "459 m")
+        case .heartRateAndPace:
+            leadingResultModule.activateMode(axis: .y, mode: .heartRate, result: "147")
+            trailingResultModule.activateMode(axis: .y, mode: .pace, result: "5:43 / km")
+        case .stepsAndCadence:
+            leadingResultModule.activateMode(axis: .y, mode: .steps, result: "16457")
+            trailingResultModule.activateMode(axis: .y, mode: .cadence, result: "167")
         }
     }
     
@@ -62,10 +62,9 @@ class StatisticCell: UICollectionViewCell {
     
     private func setViews() {
         addSubview(leadingResultModule)
-        addSubview(centerResultModule)
         addSubview(trailingResultModule)
         
-//        ShapeManager.shared.drawMetricsCellSeparator(shape: separator, view: self)
+        ShapeManager.shared.drawMetricsCellSeparator(shape: separator, view: self)
     }
     
     //MARK: - SetConstraints
@@ -73,20 +72,16 @@ class StatisticCell: UICollectionViewCell {
     private func setConstraints() {
         
         NSLayoutConstraint.activate([
-            centerResultModule.widthAnchor.constraint(equalToConstant: 110),
-            centerResultModule.heightAnchor.constraint(equalToConstant: 100),
-            centerResultModule.centerXAnchor.constraint(equalTo: centerXAnchor),
-            centerResultModule.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            leadingResultModule.widthAnchor.constraint(equalToConstant: 110),
+            leadingResultModule.widthAnchor.constraint(equalToConstant: 100),
             leadingResultModule.heightAnchor.constraint(equalToConstant: 100),
-            leadingResultModule.centerYAnchor.constraint(equalTo: centerResultModule.centerYAnchor),
-            leadingResultModule.trailingAnchor.constraint(equalTo: centerResultModule.leadingAnchor),
+            leadingResultModule.centerYAnchor.constraint(equalTo: centerYAnchor),
+            leadingResultModule.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -75),
             
             trailingResultModule.widthAnchor.constraint(equalToConstant: 110),
             trailingResultModule.heightAnchor.constraint(equalToConstant: 100),
-            trailingResultModule.centerYAnchor.constraint(equalTo: centerResultModule.centerYAnchor),
-            trailingResultModule.leadingAnchor.constraint(equalTo: centerResultModule.trailingAnchor)
+            trailingResultModule.centerYAnchor.constraint(equalTo: centerYAnchor),
+            trailingResultModule.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 75)
         ])
     }
     

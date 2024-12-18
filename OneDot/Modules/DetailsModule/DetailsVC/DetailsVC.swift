@@ -27,6 +27,8 @@ class DetailsVC: UIViewController {
         return header
     }()
     
+    private let separator: CAShapeLayer = CAShapeLayer()
+    
     let mapView: MKMapView = {
         let view = MKMapView()
         view.disableAutoresizingMask()
@@ -102,6 +104,8 @@ class DetailsVC: UIViewController {
         
         MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates)
         MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 1.7)
+        
+        ShapeManager.shared.drawResultSeparator(shape: separator, view: resultHeader)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -152,17 +156,14 @@ class DetailsVC: UIViewController {
         view.addSubview(blurEffectView)
         view.addSubview(mapView)
         view.addSubview(resultHeader)
+        resultHeader.activateMode(mode: .dynamicWorkout)
         view.addSubview(backButton)
         view.addSubview(hideButton)
         view.addSubview(screenshotBottomBar)
-        
-        
-        
+
         [backButton, hideButton].forEach { button in
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
         }
-        
-//        ShapeManager.shared.drawViewGradient(layer: mapView.layer)
     }
     
     //MARK: - SetConstraints
@@ -185,9 +186,9 @@ class DetailsVC: UIViewController {
             screenshotBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
             resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: -0.5),
-            resultHeader.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0.5),
-            resultHeader.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -0.5),
-            resultHeader.heightAnchor.constraint(equalToConstant: 370),
+            resultHeader.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width + 1),
+            resultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            resultHeader.heightAnchor.constraint(equalToConstant: 300),
             
             backButton.widthAnchor.constraint(equalToConstant: 42),
             backButton.heightAnchor.constraint(equalToConstant: 42),
@@ -200,6 +201,8 @@ class DetailsVC: UIViewController {
             hideButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
         ])
     }
+    
+  
 }
 
 extension DetailsVC: MKMapViewDelegate {
