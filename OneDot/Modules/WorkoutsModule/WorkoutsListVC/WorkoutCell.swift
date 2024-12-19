@@ -80,26 +80,12 @@ class WorkoutCell: UITableViewCell {
         
         guard let healhKitData else {return}
         
-        // Тип тренировки
-        workoutTypeLabel.text = healhKitData.workoutType
+        let stringRepresentable = healhKitData.stringRepresentation()
         
-        // Длительность тренировки
-        let duration = healhKitData.duration / 60 // в минутах
-        workoutDurationLabel.text = String(format: "%.1f мин", duration)
-
-        if let distanceInMeters = healhKitData.totalDistance {
-            let kilometers = Int(distanceInMeters / 1000)
-            let meters = Int(distanceInMeters.truncatingRemainder(dividingBy: 1000))
-            
-            workoutStatisticLabel.text = "\(kilometers) km \(meters) m"
-        }
-
-             
-        // Дата тренировки
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        let workoutDate = dateFormatter.string(from: healhKitData.startDate)
-        workoutDateLabel.text = workoutDate
+        workoutTypeLabel.text = stringRepresentable.workoutType
+        workoutDurationLabel.text = stringRepresentable.duration
+        workoutStatisticLabel.text = stringRepresentable.totalDistance
+        workoutDateLabel.text = stringRepresentable.startDate
     }
     
     private func setConstraints() {

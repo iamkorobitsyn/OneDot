@@ -25,7 +25,6 @@ extension UILabel {
         textAlignment = alignment
         
         switch font {
-            
         case .thinCompSmall:
             self.font = UIFont.systemFont(ofSize: 14, weight: .light, width: .compressed)
         case .thinCompMedium:
@@ -40,5 +39,4 @@ extension UILabel {
             self.font = UIFont.systemFont(ofSize: 20, weight: .bold, width: .compressed)
         }
     }
-    
 }

@@ -50,11 +50,19 @@ class HealthKitManager {
         
         let workoutType = HKWorkoutType.workoutType()
         guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
+                
         else { throw HealthKitError.invalidHealthKitType }
         let routeType = HKSeriesType.workoutRoute()
         
+        guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)
+        else { throw HealthKitError.invalidHealthKitType }
+        
+        guard let climbingType = HKObjectType.quantityType(forIdentifier: .flightsClimbed)
+        else {throw HealthKitError.invalidHealthKitType}
+        
+        
         try await withCheckedThrowingContinuation { continuation in
-            healthStore.requestAuthorization(toShare: nil, read: [workoutType, distanceType, routeType]) { success, error in
+            healthStore.requestAuthorization(toShare: nil, read: [workoutType, distanceType, routeType, heartRateType, climbingType]) { success, error in
                 if success {
                     continuation.resume()
                 } else {
@@ -95,44 +103,72 @@ class HealthKitManager {
     
     //MARK: - ConvertWorkouts
     
+    
     private func convertWorkouts(workouts: [HKWorkout]) async throws -> [HealthKitData] {
         var healthKitData: [HealthKitData] = []
         
-        guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
-        else { throw HealthKitError.invalidHealthKitType }
+        // Проверяем типы данных
+        guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning) else {
+            throw HealthKitError.invalidHealthKitType
+        }
         
-        guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)
-        else {throw HealthKitError.invalidHealthKitType}
+        guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate) else {
+            throw HealthKitError.invalidHealthKitType
+        }
         
-        guard let activeEnergyBurned = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)
-        else {throw HealthKitError.invalidHealthKitType}
+        guard let activeEnergyBurned = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) else {
+            throw HealthKitError.invalidHealthKitType
+        }
         
+        guard let climbingType = HKObjectType.quantityType(forIdentifier: .flightsClimbed) else {
+            throw HealthKitError.invalidHealthKitType
+        }
         
+        let routeType = HKSeriesType.workoutRoute()
         
+        // Проходим по всем тренировкам
         for workout in workouts {
             
-            let distance = workout.allStatistics[distanceType]
+            // Получаем статистику по расстоянию
+            let distance = workout.statistics(for: distanceType)
             let distanceData = distance?.sumQuantity()?.doubleValue(for: HKUnit.meter()) ?? 0
             
-            let heartRate = workout.allStatistics[heartRateType]
-            let heartRateData = heartRate?.sumQuantity()?.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())) ?? 0
+            // Получаем статистику по сердечному ритму
+            let heartRate = workout.statistics(for: heartRateType)
+            let heartRateData = heartRate?.averageQuantity()?.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())) ?? 0.0
             
-            let activeEnergyBurned = workout.allStatistics[activeEnergyBurned]
-            let activeEnergyBurnedData = activeEnergyBurned?.sumQuantity()?.doubleValue(for: HKUnit.largeCalorie()) ?? 0
+            // Получаем статистику по сожженным калориям
+            let activeEnergy = workout.statistics(for: activeEnergyBurned)
+            let activeEnergyBurnedData = activeEnergy?.sumQuantity()?.doubleValue(for: HKUnit.largeCalorie()) ?? 0
             
+            // Получаем статистику по этажам
+            let climbing = workout.statistics(for: climbingType)
+            let climbingData = climbing?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0.0
+            
+            // Преобразуем количество этажей в высоту (метры). Обычно 1 этаж = 3 метра
+            let heightInMeters = climbingData * 3.0 // 1 этаж ≈ 3 метра
+            
+            // Выводим информацию для отладки
+            print("Workout: \(workout.workoutActivityType.name), Climbing: \(climbingData) floors, \(heightInMeters) meters")
+            
+            let route = workout.statistics(for: routeType)
+            
+            // Создаем объект данных о тренировке
             let data = HealthKitData(workoutType: workout.workoutActivityType.name,
                                      startDate: workout.startDate,
                                      endDate: workout.endDate,
                                      duration: workout.duration,
                                      totalDistance: distanceData,
+                                     climb: heightInMeters,
                                      heartRate: heartRateData,
                                      calloriesBurned: activeEnergyBurnedData)
+            
+            // Добавляем данные в массив
             healthKitData.append(data)
         }
         
         return healthKitData
     }
-    
     
     
     

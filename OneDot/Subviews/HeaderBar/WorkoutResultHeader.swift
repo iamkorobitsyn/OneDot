@@ -57,6 +57,11 @@ class WorkoutResultHeader: UIVisualEffectView {
 
     
     func activateMode(mode: Mode) {
+        
+        guard let healthKitData else {return}
+        let stringRepresentation = healthKitData.stringRepresentation()
+        
+        
         effect = UIBlurEffect(style: .light)
         clipsToBounds = true
         layer.customBorder(bord: true, corner: .min)
@@ -67,29 +72,27 @@ class WorkoutResultHeader: UIVisualEffectView {
         contentView.addSubview(leadingStack)
         contentView.addSubview(trailingStack)
         
-        
-        
         switch mode {
         case .dynamicWorkout:
             let distanceView = WorkoutResultModule()
-            distanceView.activateMode(axis: .x, mode: .distance, result: "10.02 km")
+            distanceView.activateMode(axis: .x, mode: .distance, result: stringRepresentation.totalDistance)
             let climbView = WorkoutResultModule()
-            climbView.activateMode(axis: .x, mode: .climb, result: "123 m")
+            climbView.activateMode(axis: .x, mode: .climb, result: stringRepresentation.climb)
             let caloriesView = WorkoutResultModule()
-            caloriesView.activateMode(axis: .x, mode: .calories, result: "345 Kcal")
+            caloriesView.activateMode(axis: .x, mode: .calories, result: stringRepresentation.calloriesBurned)
             let stepsView = WorkoutResultModule()
-            stepsView.activateMode(axis: .x, mode: .steps, result: "3458")
+            stepsView.activateMode(axis: .x, mode: .steps, result: "!")
             
             [distanceView, climbView, caloriesView, stepsView].forEach({leadingStack.addArrangedSubview($0)})
             
             let timeView = WorkoutResultModule()
-            timeView.activateMode(axis: .x, mode: .time, result: "59:04:34")
+            timeView.activateMode(axis: .x, mode: .time, result: stringRepresentation.duration)
             let paceView = WorkoutResultModule()
-            paceView.activateMode(axis: .x, mode: .pace, result: "5:49 / km")
+            paceView.activateMode(axis: .x, mode: .pace, result: "!")
             let heartRateView = WorkoutResultModule()
-            heartRateView.activateMode(axis: .x, mode: .heartRate, result: "147")
+            heartRateView.activateMode(axis: .x, mode: .heartRate, result: stringRepresentation.heartRate)
             let cadenceView = WorkoutResultModule()
-            cadenceView.activateMode(axis: .x, mode: .cadence, result: "162")
+            cadenceView.activateMode(axis: .x, mode: .cadence, result: "!")
             
             [timeView, paceView, heartRateView, cadenceView].forEach({trailingStack.addArrangedSubview($0)})
             
@@ -97,14 +100,14 @@ class WorkoutResultHeader: UIVisualEffectView {
             
         case .staticWorkout:
             let timeView = WorkoutResultModule()
-            timeView.activateMode(axis: .x, mode: .time, result: "59:04:34")
+            timeView.activateMode(axis: .x, mode: .time, result: stringRepresentation.duration)
             let heartRateView = WorkoutResultModule()
-            heartRateView.activateMode(axis: .x, mode: .heartRate, result: "147")
+            heartRateView.activateMode(axis: .x, mode: .heartRate, result: stringRepresentation.heartRate)
             
             [timeView, heartRateView].forEach({leadingStack.addArrangedSubview($0)})
             
             let caloriesView = WorkoutResultModule()
-            caloriesView.activateMode(axis: .x, mode: .calories, result: "345 Kcal")
+            caloriesView.activateMode(axis: .x, mode: .calories, result: stringRepresentation.calloriesBurned)
             
             [caloriesView].forEach({trailingStack.addArrangedSubview($0)})
             
