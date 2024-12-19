@@ -12,6 +12,8 @@ import MapKit
 
 class DetailsVC: UIViewController {
     
+    var healthKitData: HealthKitData?
+    
     let hapticGenerator = UISelectionFeedbackGenerator()
     
     enum Mode {

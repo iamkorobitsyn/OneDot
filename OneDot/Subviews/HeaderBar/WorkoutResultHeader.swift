@@ -10,12 +10,12 @@ import UIKit
 
 class WorkoutResultHeader: UIVisualEffectView {
     
+    var healthKitData: HealthKitData?
+    
     private let workoutNameLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.textAlignment = .right
-        label.textColor = .myPaletteGold
-        label.font = UIFont.systemFont(ofSize: 18, weight: .bold, width: .compressed)
+        label.instance(color: .myPaletteGold, alignment: .left, font: .boldCompLarge)
         label.text = "RUNNING"
         return label
     }()
@@ -23,9 +23,7 @@ class WorkoutResultHeader: UIVisualEffectView {
     private let workoutDateLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.textAlignment = .right
-        label.textColor = .myPaletteGold
-        label.font = UIFont.systemFont(ofSize: 18, weight: .bold, width: .compressed)
+        label.instance(color: .myPaletteGold, alignment: .left, font: .boldCompLarge)
         label.text = "ВТ. 17 ДЕК."
         return label
     }()

@@ -14,6 +14,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     let locationManager: CLLocationManager = CLLocationManager()
     
+    var healthKitDataList: [HealthKitData]?
+    
     let mapView: MKMapView = {
         let view = MKMapView()
         view.overrideUserInterfaceStyle = .light
@@ -95,7 +97,15 @@ class MainVC: UIViewController, CAAnimationDelegate {
         setViews()
         setConstraints()
         activateSubviewsHandlers()
- 
+        
+        Task {
+            do {
+                healthKitDataList = try await HealthKitManager.shared.fetchHealthKitDataList()
+            } catch {
+                HealthKitManager.shared.errorHanding(error: .noHealthKitData)
+            }
+        }
+
         UserDefaultsManager.shared.outdoorStatusValue ? activateMode(mode: .indoor) : activateMode(mode: .outdoor)
     }
     
@@ -199,6 +209,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
             calculatorBottomBar.activateMode(mode: .PickerTime)
         case .transitionToProfile:
             let WorkoutsVC = WorkoutsVC()
+            WorkoutsVC.healthKitDataList = healthKitDataList
             let navigationVC = UINavigationController(rootViewController: WorkoutsVC)
             present(navigationVC, animated: true)
         }

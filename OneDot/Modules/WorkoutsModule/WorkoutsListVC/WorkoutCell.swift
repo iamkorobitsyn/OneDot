@@ -11,7 +11,7 @@ import HealthKit
 
 class WorkoutCell: UITableViewCell {
     
-    var workout: HKWorkout?
+    var healhKitData: HealthKitData?
     
     private let backView: UIView = {
         let view = UIView()
@@ -60,7 +60,6 @@ class WorkoutCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         setViews()
         setConstraints()
     }
@@ -79,32 +78,27 @@ class WorkoutCell: UITableViewCell {
     
     func updateLabels() {
         
-        guard let workout else {return}
+        guard let healhKitData else {return}
         
         // Тип тренировки
-        workoutTypeLabel.text = workout.workoutActivityType.name
+        workoutTypeLabel.text = healhKitData.workoutType
         
         // Длительность тренировки
-        let duration = workout.duration / 60 // в минутах
+        let duration = healhKitData.duration / 60 // в минутах
         workoutDurationLabel.text = String(format: "%.1f мин", duration)
-        
-        
-        
-//               if let distanceInMeters = workout.distance?.totalDistance {
-//                   let kilometers = Int(distanceInMeters / 1000)
-//                   let meters = Int(distanceInMeters.truncatingRemainder(dividingBy: 1000))
-//
-//                   cell.bottomLeadingLabel.text = "\(kilometers) km \(meters) m"
-//               }
-//
-//               if let coordinates = workout.route?.locations {
-//                   print(coordinates.count)
-//               }
+
+        if let distanceInMeters = healhKitData.totalDistance {
+            let kilometers = Int(distanceInMeters / 1000)
+            let meters = Int(distanceInMeters.truncatingRemainder(dividingBy: 1000))
+            
+            workoutStatisticLabel.text = "\(kilometers) km \(meters) m"
+        }
+
              
         // Дата тренировки
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
-        let workoutDate = dateFormatter.string(from: workout.startDate)
+        let workoutDate = dateFormatter.string(from: healhKitData.startDate)
         workoutDateLabel.text = workoutDate
     }
     

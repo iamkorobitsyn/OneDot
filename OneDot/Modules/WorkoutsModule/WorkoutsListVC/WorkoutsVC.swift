@@ -10,19 +10,8 @@ import HealthKit
 
 class WorkoutsVC: UIViewController {
     
-    let workout = HKWorkout(activityType: .running,
-                            start: Date(),
-                            end: Date(),
-                            workoutEvents: nil,
-                            totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: 200),
-                            totalDistance: HKQuantity(unit: .meter(), doubleValue: 5000),
-                            metadata: nil)
-    
-    let secondWorkout = HKWorkout(activityType: .running, start: Date(), end: Date(), workoutEvents: nil, totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: 200), totalDistance: HKQuantity(unit: .meter(), doubleValue: 2000), totalSwimmingStrokeCount: nil, device: .local(), metadata: nil)
-    
-    
     let healthStore = HKHealthStore()
-    var workouts: [HKWorkout] = []
+    var healthKitDataList: [HealthKitData]?
     
     private let blurEffectView: UIVisualEffectView = {
         let effect = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -95,7 +84,7 @@ class WorkoutsVC: UIViewController {
 
         setViews()
         setConstraints()
-        fetchHealthkitData()
+//        fetchHealthkitData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -107,20 +96,20 @@ class WorkoutsVC: UIViewController {
        
     // MARK: - HealthKitRequest
     
-    func fetchHealthkitData() {
-        Task { [weak self] in
-            
-            do {
-                guard let self else {return}
-                let workouts = try await HealthKitManager.shared.fetchWorkouts()
-                self.workouts = workouts
-                self.workoutTable.reloadData()
-                
-            } catch let error as HealthKitManager.HealthKitError {
-                HealthKitManager.shared.errorHanding(error: error)
-            }
-        }
-    }
+//    func fetchHealthkitData() {
+//        Task { [weak self] in
+//            
+//            do {
+//                guard let self else {return}
+//                let workouts = try await HealthKitManager.shared.fetchWorkouts()
+//                self.workouts = workouts
+//                self.workoutTable.reloadData()
+//                
+//            } catch let error as HealthKitManager.HealthKitError {
+//                HealthKitManager.shared.errorHanding(error: error)
+//            }
+//        }
+//    }
  
     
     //MARK: - DidScroll & CurrentMetrics
@@ -232,14 +221,14 @@ extension WorkoutsVC: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource
        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return workouts.count
+           return healthKitDataList?.count ?? 0
        }
        
        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
            
            if let cell = tableView.dequeueReusableCell(withIdentifier: "WorkoutCell") as? WorkoutCell {
 
-               cell.workout = workouts[indexPath.row]
+               cell.healhKitData = healthKitDataList?[indexPath.row]
                cell.updateLabels()
                return cell
            }
@@ -252,20 +241,16 @@ extension WorkoutsVC: UITableViewDataSource, UITableViewDelegate {
     }
        
        // MARK: - UITableViewDelegate
-       func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-           tableView.deselectRow(at: indexPath, animated: true)
-           // Получаем выбранную тренировку
-              let workout = workouts[indexPath.row]
-              
-              // Создаём новый ViewController
-           let workoutDetailsVC = DetailsVC()
-           workoutDetailsVC.title = "Детали тренировки"
-              
-              // Переходим на новый ViewController через существующий navigationController
-              navigationController?.pushViewController(workoutDetailsVC, animated: true)
-
-       }
-   }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let detailsVC = DetailsVC()
+        detailsVC.healthKitData = healthKitDataList?[indexPath.row]
+        detailsVC.resultHeader.healthKitData = healthKitDataList?[indexPath.row]
+        
+        navigationController?.pushViewController(detailsVC, animated: true)
+    }
+}
 
 
 // MARK: - Расширение для отображения названий типов тренировок
