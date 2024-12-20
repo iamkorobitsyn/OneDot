@@ -168,7 +168,6 @@ extension NotesTableViewEditCell: UITextViewDelegate, UITextInteractionDelegate 
             
         } else if textView.contentSize.height > 100 {
             contentHeight = 145
-            print(contentHeight)
         } else {
             contentHeight = 100
         }
@@ -199,7 +198,6 @@ extension NotesTableViewEditCell: UITextViewDelegate, UITextInteractionDelegate 
             
         } else if textView.contentSize.height > 100 {
             contentHeight = 145
-            print(contentHeight)
         } else {
             contentHeight = 100
         }

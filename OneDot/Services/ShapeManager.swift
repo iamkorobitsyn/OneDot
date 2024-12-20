@@ -180,8 +180,6 @@ class ShapeManager {
     
     func drawResultSeparator(shape: CAShapeLayer, view: UIView) {
         
-        print(view.frame.width)
-        
         let path = UIBezierPath()
         path.move(to: CGPoint(x: UIScreen.main.bounds.width / 2, y:  190))
         path.addLine(to: CGPoint(x: UIScreen.main.bounds.width / 2 , y: 250))

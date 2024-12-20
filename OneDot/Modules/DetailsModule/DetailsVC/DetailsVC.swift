@@ -99,13 +99,21 @@ class DetailsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
+        
+        if let healthKitData = healthKitData {
+            Task {
+                let coordinates = try await HealthKitManager.shared.getCoordinate2D(data: healthKitData)
+                MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates)
+                MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 1.7)
+            }
+            
+        }
  
         setViews()
         setConstraints()
         activateSubviewsHandlers()
         
-        MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates)
-        MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 1.7)
+        
         
         ShapeManager.shared.drawResultSeparator(shape: separator, view: resultHeader)
     }

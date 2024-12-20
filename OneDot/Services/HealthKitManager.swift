@@ -49,20 +49,19 @@ class HealthKitManager {
     func fetchHealthKitDataList() async throws -> [HealthKitData] {
         
         let workoutType = HKWorkoutType.workoutType()
-        guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
-                
-        else { throw HealthKitError.invalidHealthKitType }
         let routeType = HKSeriesType.workoutRoute()
+        
+        guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
+        else { throw HealthKitError.invalidHealthKitType }
         
         guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)
         else { throw HealthKitError.invalidHealthKitType }
         
-        guard let climbingType = HKObjectType.quantityType(forIdentifier: .flightsClimbed)
-        else {throw HealthKitError.invalidHealthKitType}
-        
-        
         try await withCheckedThrowingContinuation { continuation in
-            healthStore.requestAuthorization(toShare: nil, read: [workoutType, distanceType, routeType, heartRateType, climbingType]) { success, error in
+            healthStore.requestAuthorization(toShare: nil, read: [workoutType,
+                                                                  distanceType,
+                                                                  routeType,
+                                                                  heartRateType]) { success, error in
                 if success {
                     continuation.resume()
                 } else {
@@ -120,12 +119,6 @@ class HealthKitManager {
             throw HealthKitError.invalidHealthKitType
         }
         
-        guard let climbingType = HKObjectType.quantityType(forIdentifier: .flightsClimbed) else {
-            throw HealthKitError.invalidHealthKitType
-        }
-        
-        let routeType = HKSeriesType.workoutRoute()
-        
         // Проходим по всем тренировкам
         for workout in workouts {
             
@@ -140,26 +133,14 @@ class HealthKitManager {
             // Получаем статистику по сожженным калориям
             let activeEnergy = workout.statistics(for: activeEnergyBurned)
             let activeEnergyBurnedData = activeEnergy?.sumQuantity()?.doubleValue(for: HKUnit.largeCalorie()) ?? 0
-            
-            // Получаем статистику по этажам
-            let climbing = workout.statistics(for: climbingType)
-            let climbingData = climbing?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0.0
-            
-            // Преобразуем количество этажей в высоту (метры). Обычно 1 этаж = 3 метра
-            let heightInMeters = climbingData * 3.0 // 1 этаж ≈ 3 метра
-            
-            // Выводим информацию для отладки
-            print("Workout: \(workout.workoutActivityType.name), Climbing: \(climbingData) floors, \(heightInMeters) meters")
-            
-            let route = workout.statistics(for: routeType)
-            
+
             // Создаем объект данных о тренировке
             let data = HealthKitData(workoutType: workout.workoutActivityType.name,
                                      startDate: workout.startDate,
                                      endDate: workout.endDate,
                                      duration: workout.duration,
                                      totalDistance: distanceData,
-                                     climb: heightInMeters,
+                                     climb: 0.0,
                                      heartRate: heartRateData,
                                      calloriesBurned: activeEnergyBurnedData)
             
@@ -173,50 +154,58 @@ class HealthKitManager {
     
     
     
+    //MARK: - HKWorkoutRoute
     
+    func getCoordinate2D(data: HealthKitData) async throws -> [CLLocationCoordinate2D] {
+        // Массив для координат
+        var coordinate2D: [CLLocationCoordinate2D] = []
+        
+        // Получаем список локаций через getCLLocations
+        let locations = try await getCLLocations(workout: data)
+        
+        // Преобразуем локации в координаты и добавляем их в массив
+        locations.forEach { loc in
+            coordinate2D.append(loc.coordinate)
+        }
+        
+        // Возвращаем результат
+        return coordinate2D
+    }
     
-    private func fetchWorkoutRoute(workout: HKWorkout) async throws -> HKWorkoutRoute? {
+    private func getCLLocations(workout: HealthKitData) async throws -> [CLLocation] {
+        
         let routeType = HKSeriesType.workoutRoute()
         
         let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate)
         
         return try await withCheckedThrowingContinuation { continuation in
 
-            let query = HKSampleQuery(sampleType: routeType, predicate: predicate, limit: 1, sortDescriptors: nil) { _, samples, _ in
+            let query = HKSampleQuery(sampleType: routeType, predicate: predicate, limit: 1, sortDescriptors: nil) { _, samples, error in
 
-                if let route = samples?.first as? HKWorkoutRoute {
-                    continuation.resume(returning: route)
-                } else {
-                    continuation.resume(returning: nil)
+                Task {
+                    if let route = samples?.first as? HKWorkoutRoute {
+                        let locations = try await self.getRouteData(for: route)
+                        continuation.resume(returning: locations)
+                    } else {
+                        continuation.resume(throwing: HealthKitError.noRouteData)
+                    }
                 }
             }
-
             healthStore.execute(query)
         }
     }
     
-    private func fetchRouteData(for route: HKWorkoutRoute) async throws -> [CLLocation] {
+    private func getRouteData(for route: HKWorkoutRoute) async throws -> [CLLocation] {
         var locations: [CLLocation] = []
         
         return try await withCheckedThrowingContinuation { continuation in
 
             let query = HKWorkoutRouteQuery(route: route) { query, routeLocations, done, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                    return
-                }
-
-                if let routeLocations = routeLocations {
-                    locations.append(contentsOf: routeLocations)
-                }
                 
-                // Если все точки загружены, завершаем выполнение
-                if done {
-                    continuation.resume(returning: locations)
-                }
+                if let routeLocations = routeLocations { locations.append(contentsOf: routeLocations) }
+                if done { continuation.resume(returning: locations) }
+                if let error = error { continuation.resume(throwing: error) }
             }
-            
-            // Выполняем запрос
             healthStore.execute(query)
         }
     }

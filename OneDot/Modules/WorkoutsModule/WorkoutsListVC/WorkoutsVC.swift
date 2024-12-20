@@ -84,7 +84,6 @@ class WorkoutsVC: UIViewController {
 
         setViews()
         setConstraints()
-//        fetchHealthkitData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -92,24 +91,6 @@ class WorkoutsVC: UIViewController {
         let currentMetricsPageValue = UserDefaultsManager.shared.profileMetricsPageValue
         DispatchQueue.main.async { self.setCurrentMetricsPage(currentPage: currentMetricsPageValue) }
     }
-    
-       
-    // MARK: - HealthKitRequest
-    
-//    func fetchHealthkitData() {
-//        Task { [weak self] in
-//            
-//            do {
-//                guard let self else {return}
-//                let workouts = try await HealthKitManager.shared.fetchWorkouts()
-//                self.workouts = workouts
-//                self.workoutTable.reloadData()
-//                
-//            } catch let error as HealthKitManager.HealthKitError {
-//                HealthKitManager.shared.errorHanding(error: error)
-//            }
-//        }
-//    }
  
     
     //MARK: - DidScroll & CurrentMetrics

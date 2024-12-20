@@ -60,8 +60,6 @@ class WorkoutResultHeader: UIVisualEffectView {
         
         guard let healthKitData else {return}
         let stringRepresentation = healthKitData.stringRepresentation()
-        
-        
         effect = UIBlurEffect(style: .light)
         clipsToBounds = true
         layer.customBorder(bord: true, corner: .min)
