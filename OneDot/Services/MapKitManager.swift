@@ -94,8 +94,8 @@ class MapKitManager {
         
         // MARK: - SetCenter
         
-        let centerLatitude = (minLatitude + maxLatitude) * 0.5
-        let centerLongitude = (minLongitude + maxLongitude) * 0.5
+        let centerLatitude = (minLatitude + ((maxLatitude - minLatitude) / 2))
+        let centerLongitude = (minLongitude + ((maxLongitude - minLongitude) / 2))
         
         let center = CLLocationCoordinate2D(latitude: centerLatitude + 0.003,
                                             longitude: centerLongitude)

@@ -157,19 +157,38 @@ class HealthKitManager {
     //MARK: - HKWorkoutRoute
     
     func getCoordinate2D(data: HealthKitData) async throws -> [CLLocationCoordinate2D] {
-        // Массив для координат
         var coordinate2D: [CLLocationCoordinate2D] = []
         
-        // Получаем список локаций через getCLLocations
         let locations = try await getCLLocations(workout: data)
         
-        // Преобразуем локации в координаты и добавляем их в массив
         locations.forEach { loc in
             coordinate2D.append(loc.coordinate)
         }
         
-        // Возвращаем результат
         return coordinate2D
+    }
+    
+    func getClimbingData(data: HealthKitData) async throws -> [Int] {
+        var climbingData: [Int] = []
+        
+        let locations = try await getCLLocations(workout: data)
+        
+        var totalElevationGain = 0
+        var previousElevation: CLLocationDistance? = nil
+        
+        for loc in locations {
+            let currentElevation = loc.altitude
+            
+            if let prevElevation = previousElevation, currentElevation > prevElevation {
+                totalElevationGain += Int(currentElevation - prevElevation)
+            }
+            
+            climbingData.append(totalElevationGain)
+
+            previousElevation = currentElevation
+        }
+        
+        return climbingData
     }
     
     private func getCLLocations(workout: HealthKitData) async throws -> [CLLocation] {

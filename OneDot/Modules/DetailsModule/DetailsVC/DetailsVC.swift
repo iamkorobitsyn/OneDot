@@ -23,7 +23,7 @@ class DetailsVC: UIViewController {
         case hide
     }
     
-    let resultHeader: WorkoutResultHeader = {
+    let workoutResultHeader: WorkoutResultHeader = {
         let header = WorkoutResultHeader()
         header.disableAutoresizingMask()
         return header
@@ -36,37 +36,6 @@ class DetailsVC: UIViewController {
         view.disableAutoresizingMask()
         return view
     }()
-    
-    var coordinates: [CLLocationCoordinate2D] = [
-        CLLocationCoordinate2D(latitude: 55.899390,
-                               longitude: 37.278832),
-        CLLocationCoordinate2D(latitude: 55.900521,
-                               longitude: 37.280463),
-        CLLocationCoordinate2D(latitude: 55.901531,
-                               longitude: 37.281836),
-        CLLocationCoordinate2D(latitude: 55.902662,
-                               longitude: 37.283553),
-        CLLocationCoordinate2D(latitude: 55.903336,
-                               longitude: 37.285527),
-        CLLocationCoordinate2D(latitude: 55.903588,
-                               longitude: 37.286975),
-        CLLocationCoordinate2D(latitude: 55.903642,
-                               longitude: 37.287887),
-        CLLocationCoordinate2D(latitude: 55.903738,
-                               longitude: 37.288703),
-        CLLocationCoordinate2D(latitude: 55.903816,
-                               longitude: 37.289454),
-        CLLocationCoordinate2D(latitude: 55.903925,
-                               longitude: 37.290055),
-        CLLocationCoordinate2D(latitude: 55.904069,
-                               longitude: 37.290698),
-        CLLocationCoordinate2D(latitude: 55.904273,
-                               longitude: 37.291439),
-        CLLocationCoordinate2D(latitude: 55.904484,
-                               longitude: 37.292361),
-        CLLocationCoordinate2D(latitude: 55.904658,
-                               longitude: 37.293145)
-    ]
     
     let blurEffectView: UIVisualEffectView = {
         let view = UIVisualEffectView()
@@ -104,7 +73,7 @@ class DetailsVC: UIViewController {
             Task {
                 let coordinates = try await HealthKitManager.shared.getCoordinate2D(data: healthKitData)
                 MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates)
-                MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 1.7)
+                MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 3.0)
             }
             
         }
@@ -115,7 +84,7 @@ class DetailsVC: UIViewController {
         
         
         
-        ShapeManager.shared.drawResultSeparator(shape: separator, view: resultHeader)
+        ShapeManager.shared.drawResultSeparator(shape: separator, view: workoutResultHeader)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -165,8 +134,8 @@ class DetailsVC: UIViewController {
         
         view.addSubview(blurEffectView)
         view.addSubview(mapView)
-        view.addSubview(resultHeader)
-        resultHeader.activateMode(mode: .dynamicWorkout)
+        view.addSubview(workoutResultHeader)
+        workoutResultHeader.activateMode(mode: .dynamicWorkout)
         view.addSubview(backButton)
         view.addSubview(hideButton)
         view.addSubview(screenshotBottomBar)
@@ -195,10 +164,10 @@ class DetailsVC: UIViewController {
             screenshotBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             screenshotBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
-            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: -0.5),
-            resultHeader.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width + 1),
-            resultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            resultHeader.heightAnchor.constraint(equalToConstant: 300),
+            workoutResultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: -0.5),
+            workoutResultHeader.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width + 1),
+            workoutResultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            workoutResultHeader.heightAnchor.constraint(equalToConstant: 300),
             
             backButton.widthAnchor.constraint(equalToConstant: 42),
             backButton.heightAnchor.constraint(equalToConstant: 42),

@@ -227,7 +227,7 @@ extension WorkoutsVC: UITableViewDataSource, UITableViewDelegate {
         
         let detailsVC = DetailsVC()
         detailsVC.healthKitData = healthKitDataList?[indexPath.row]
-        detailsVC.resultHeader.healthKitData = healthKitDataList?[indexPath.row]
+        detailsVC.workoutResultHeader.healthKitData = healthKitDataList?[indexPath.row]
         
         navigationController?.pushViewController(detailsVC, animated: true)
     }
