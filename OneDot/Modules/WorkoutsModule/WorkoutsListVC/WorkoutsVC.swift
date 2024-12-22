@@ -224,10 +224,9 @@ extension WorkoutsVC: UITableViewDataSource, UITableViewDelegate {
        // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
+
         let detailsVC = DetailsVC()
         detailsVC.healthKitData = healthKitDataList?[indexPath.row]
-        detailsVC.workoutResultHeader.healthKitData = healthKitDataList?[indexPath.row]
         
         navigationController?.pushViewController(detailsVC, animated: true)
     }

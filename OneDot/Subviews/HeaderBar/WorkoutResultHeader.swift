@@ -75,22 +75,22 @@ class WorkoutResultHeader: UIVisualEffectView {
             let distanceView = WorkoutResultModule()
             distanceView.activateMode(axis: .x, mode: .distance, result: stringRepresentation.totalDistance)
             let climbView = WorkoutResultModule()
-            climbView.activateMode(axis: .x, mode: .climb, result: stringRepresentation.climb)
+            climbView.activateMode(axis: .x, mode: .climb, result: stringRepresentation.climbing)
             let caloriesView = WorkoutResultModule()
             caloriesView.activateMode(axis: .x, mode: .calories, result: stringRepresentation.calloriesBurned)
             let stepsView = WorkoutResultModule()
-            stepsView.activateMode(axis: .x, mode: .steps, result: "!")
+            stepsView.activateMode(axis: .x, mode: .steps, result: stringRepresentation.stepCount)
             
             [distanceView, climbView, caloriesView, stepsView].forEach({leadingStack.addArrangedSubview($0)})
             
             let timeView = WorkoutResultModule()
             timeView.activateMode(axis: .x, mode: .time, result: stringRepresentation.duration)
             let paceView = WorkoutResultModule()
-            paceView.activateMode(axis: .x, mode: .pace, result: "!")
+            paceView.activateMode(axis: .x, mode: .pace, result: stringRepresentation.pace)
             let heartRateView = WorkoutResultModule()
             heartRateView.activateMode(axis: .x, mode: .heartRate, result: stringRepresentation.heartRate)
             let cadenceView = WorkoutResultModule()
-            cadenceView.activateMode(axis: .x, mode: .cadence, result: "!")
+            cadenceView.activateMode(axis: .x, mode: .cadence, result: stringRepresentation.cadence)
             
             [timeView, paceView, heartRateView, cadenceView].forEach({trailingStack.addArrangedSubview($0)})
             

@@ -119,77 +119,107 @@ class HealthKitManager {
             throw HealthKitError.invalidHealthKitType
         }
         
+        guard let stepCountType = HKObjectType.quantityType(forIdentifier: .stepCount) else {
+            throw HealthKitError.invalidHealthKitType
+        }
+        
         // Проходим по всем тренировкам
         for workout in workouts {
+                
+                // Получаем статистику по расстоянию
+                let distance = workout.statistics(for: distanceType)
+                let distanceData = distance?.sumQuantity()?.doubleValue(for: HKUnit.meter()) ?? 0
+                
+                // Получаем статистику по сердечному ритму
+                let heartRate = workout.statistics(for: heartRateType)
+                let heartRateData = heartRate?.averageQuantity()?.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())) ?? 0.0
+                
+                // Получаем статистику по сожженным калориям
+                let activeEnergy = workout.statistics(for: activeEnergyBurned)
+                let activeEnergyBurnedData = activeEnergy?.sumQuantity()?.doubleValue(for: HKUnit.largeCalorie()) ?? 0
+                
+                let stepCount = workout.statistics(for: stepCountType)
+                let stepCountData = stepCount?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
+                
+                let averageCadence = calculateCadence(stepCount: stepCountData, workoutDuration: workout.duration)
             
-            // Получаем статистику по расстоянию
-            let distance = workout.statistics(for: distanceType)
-            let distanceData = distance?.sumQuantity()?.doubleValue(for: HKUnit.meter()) ?? 0
-            
-            // Получаем статистику по сердечному ритму
-            let heartRate = workout.statistics(for: heartRateType)
-            let heartRateData = heartRate?.averageQuantity()?.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())) ?? 0.0
-            
-            // Получаем статистику по сожженным калориям
-            let activeEnergy = workout.statistics(for: activeEnergyBurned)
-            let activeEnergyBurnedData = activeEnergy?.sumQuantity()?.doubleValue(for: HKUnit.largeCalorie()) ?? 0
+                let pace = calculatePace(workoutDuration: workout.duration, distance: distanceData)
+              
+                    
 
-            // Создаем объект данных о тренировке
-            let data = HealthKitData(workoutType: workout.workoutActivityType.name,
-                                     startDate: workout.startDate,
-                                     endDate: workout.endDate,
-                                     duration: workout.duration,
-                                     totalDistance: distanceData,
-                                     climb: 0.0,
-                                     heartRate: heartRateData,
-                                     calloriesBurned: activeEnergyBurnedData)
-            
-            // Добавляем данные в массив
-            healthKitData.append(data)
-        }
+                // Создаем объект данных о тренировке
+                let data = HealthKitData(workoutType: workout.workoutActivityType.name,
+                                         startDate: workout.startDate,
+                                         endDate: workout.endDate,
+                                         duration: workout.duration,
+                                         totalDistance: distanceData,
+                                         pace: pace,
+                                         climbing: 0.0,
+                                         heartRate: heartRateData,
+                                         calloriesBurned: activeEnergyBurnedData,
+                                         stepCount: Int(stepCountData),
+                                         cadence: averageCadence)
+                
+                // Добавляем данные в массив
+                healthKitData.append(data)
+            }
         
         return healthKitData
     }
     
     
+    //MARK: - CalculateCadence
+    
+    private func calculateCadence(stepCount: Double, workoutDuration: TimeInterval) -> Int {
+        guard workoutDuration != 0, stepCount != 0 else {
+            return 0
+        }
+
+        let stepPerSecond = stepCount / workoutDuration
+        let cadence = Int(stepPerSecond * 60)
+
+        return cadence
+    }
+    
+    private func calculatePace(workoutDuration: TimeInterval, distance: Double) -> Int {
+        guard workoutDuration != 0, distance != 0 else {
+            return 0
+        }
+        
+        let meterTime = workoutDuration / distance
+        let paceInSeconds = Int(meterTime * 1000)
+        return paceInSeconds
+
+    }
     
     
-    //MARK: - HKWorkoutRoute
     
-    func getCoordinate2D(data: HealthKitData) async throws -> [CLLocationCoordinate2D] {
+    //MARK: - GetHealthKitCoordinates
+    
+    func getCoordinates(data: HealthKitData) async throws -> HealthKitCoordinates {
         var coordinate2D: [CLLocationCoordinate2D] = []
+        var climbingData: [Double] = []
         
         let locations = try await getCLLocations(workout: data)
         
         locations.forEach { loc in
             coordinate2D.append(loc.coordinate)
+            climbingData.append(loc.altitude)
         }
         
-        return coordinate2D
+        let climbingDataAverage: Double
+        if let minClimb = climbingData.min(), let maxClimb = climbingData.max() {
+            climbingDataAverage = maxClimb - minClimb
+        } else {
+            climbingDataAverage = 0
+        }
+
+        let healthKitCoordinates = HealthKitCoordinates(coordinates2D: coordinate2D, climbing: climbingDataAverage)
+        
+        return healthKitCoordinates
     }
     
-    func getClimbingData(data: HealthKitData) async throws -> [Int] {
-        var climbingData: [Int] = []
-        
-        let locations = try await getCLLocations(workout: data)
-        
-        var totalElevationGain = 0
-        var previousElevation: CLLocationDistance? = nil
-        
-        for loc in locations {
-            let currentElevation = loc.altitude
-            
-            if let prevElevation = previousElevation, currentElevation > prevElevation {
-                totalElevationGain += Int(currentElevation - prevElevation)
-            }
-            
-            climbingData.append(totalElevationGain)
-
-            previousElevation = currentElevation
-        }
-        
-        return climbingData
-    }
+    //MARK: - ReturnCLLocation
     
     private func getCLLocations(workout: HealthKitData) async throws -> [CLLocation] {
         

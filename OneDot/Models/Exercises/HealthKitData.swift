@@ -15,10 +15,17 @@ struct HealthKitData {
     let endDate: Date
     var duration: TimeInterval
     var totalDistance: Double
-    var climb: Double
+    var pace: Int
+    var climbing: Double
     let heartRate: Double
     var calloriesBurned: Double
-    
+    var stepCount: Int
+    var cadence: Int
+}
+
+struct HealthKitCoordinates {
+    let coordinates2D: [CLLocationCoordinate2D]
+    let climbing: Double
 }
 
 struct HealthkitDataStringRepresentation {
@@ -28,17 +35,21 @@ struct HealthkitDataStringRepresentation {
     let endDate: String
     var duration: String
     var totalDistance: String
-    var climb: String
+    var pace: String
+    var climbing: String
     let heartRate: String
     var calloriesBurned: String
-    
+    var stepCount: String
+    var cadence: String
 }
 
 extension HealthKitData {
     
+    mutating func updateClimbing(altitube: Double) {
+        climbing = altitube
+    }
+    
     func stringRepresentation() -> HealthkitDataStringRepresentation {
-        
-        let stringWorkoutType = workoutType
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -52,22 +63,21 @@ extension HealthKitData {
         
         let kilometers = totalDistance / 1000
         let roundedKilometers = String(format: "%.1f", kilometers)
-        let stringTotalDistance = "\(roundedKilometers) km"
         
-        let stringClimb = "\(climb)"
-        
-        let stringHeartRate = "\(Int(heartRate))"
-        
-        let stringCalloriesBurned = "\(Int(calloriesBurned))"
-        
+        let paceMin = pace / 60
+        let paceSec = pace % 60
+
         return HealthkitDataStringRepresentation(
-            workoutType: stringWorkoutType,
+            workoutType: workoutType,
             startDate: stringStartDate,
             endDate: stringEndDate,
             duration: stringDuration,
-            totalDistance: stringTotalDistance,
-            climb: stringClimb,
-            heartRate: stringHeartRate,
-            calloriesBurned: stringCalloriesBurned)
+            totalDistance: "\(roundedKilometers) km",
+            pace: String(format: "%02d:%02d", paceMin, paceSec),
+            climbing: "\(Int(climbing)) m",
+            heartRate: "\(Int(heartRate))",
+            calloriesBurned: "\(Int(calloriesBurned))",
+            stepCount: "\(stepCount)",
+            cadence: "\(cadence)")
     }
 }

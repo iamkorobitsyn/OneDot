@@ -71,13 +71,16 @@ class DetailsVC: UIViewController {
         
         if let healthKitData = healthKitData {
             Task {
-                let coordinates = try await HealthKitManager.shared.getCoordinate2D(data: healthKitData)
-                MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates)
-                MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 3.0)
+                let coordinates = try await HealthKitManager.shared.getCoordinates(data: healthKitData)
+                MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
+                MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
+                workoutResultHeader.healthKitData = healthKitData
+                workoutResultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
+                workoutResultHeader.activateMode(mode: .dynamicWorkout)
             }
             
         }
- 
+        
         setViews()
         setConstraints()
         activateSubviewsHandlers()
