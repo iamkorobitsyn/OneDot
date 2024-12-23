@@ -284,12 +284,12 @@ extension MainVC {
             notesView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
             workoutBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
-            workoutBottomBar.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            workoutBottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
             workoutBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             workoutBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
             calculatorBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
-            calculatorBottomBar.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            calculatorBottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
             calculatorBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             calculatorBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             

@@ -16,7 +16,7 @@ class WorkoutResultHeader: UIVisualEffectView {
         let label = UILabel()
         label.disableAutoresizingMask()
         label.instance(color: .myPaletteGold, alignment: .left, font: .boldCompLarge)
-        label.text = "RUNNING"
+
         return label
     }()
     
@@ -24,7 +24,6 @@ class WorkoutResultHeader: UIVisualEffectView {
         let label = UILabel()
         label.disableAutoresizingMask()
         label.instance(color: .myPaletteGold, alignment: .left, font: .boldCompLarge)
-        label.text = "ВТ. 17 ДЕК."
         return label
     }()
 
@@ -62,13 +61,16 @@ class WorkoutResultHeader: UIVisualEffectView {
         let stringRepresentation = healthKitData.stringRepresentation()
         effect = UIBlurEffect(style: .light)
         clipsToBounds = true
-        layer.customBorder(bord: true, corner: .min)
+        layer.instance(border: true, corner: .min)
         
         contentView.addSubview(workoutNameLabel)
         contentView.addSubview(workoutDateLabel)
         
         contentView.addSubview(leadingStack)
         contentView.addSubview(trailingStack)
+        
+        workoutNameLabel.text = "\(stringRepresentation.workoutType) на улице"
+        workoutDateLabel.text = stringRepresentation.startDate
         
         switch mode {
         case .dynamicWorkout:

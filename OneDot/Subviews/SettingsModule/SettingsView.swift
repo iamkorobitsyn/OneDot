@@ -56,7 +56,7 @@ class SettingsView: UIVisualEffectView {
         clipsToBounds = true
         isHidden = true
         
-        layer.customBorder(bord: true, corner: .max)
+        layer.instance(border: true, corner: .max)
         
         contentView.addSubview(tableView)
         tableView.separatorStyle = .none

@@ -11,10 +11,10 @@ import UIKit
 extension CGFloat {
 
     static let barWidth: CGFloat = .init(UIScreen.main.bounds.width / 1.05)
-    static let barCorner: CGFloat = .init(30)
+//    static let barCorner: CGFloat = .init(30)
     
     static let headerBarHeight: CGFloat = .init(130)
-    static let tabBarHeight: CGFloat = .init(95)
+    static let bottomBarHeight: CGFloat = .init(95)
 
     static let iconSide: CGFloat = .init(42)
     static let iconCorner: CGFloat = .init(21)

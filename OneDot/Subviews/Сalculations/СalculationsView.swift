@@ -231,7 +231,7 @@ class CalculationsView: UIVisualEffectView {
         clipsToBounds = true
         isHidden = true
         
-        layer.customBorder(bord: true, corner: .max)
+        layer.instance(border: true, corner: .max)
         
         setButton(button: topButton, titleColor: .myPaletteGold)
         setButton(button: bottomButton, titleColor: .myPaletteGold)

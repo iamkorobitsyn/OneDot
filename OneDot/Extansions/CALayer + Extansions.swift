@@ -15,9 +15,8 @@ extension CALayer {
         case max
     }
     
-    func customBorder(bord: Bool, corner: CornerMode) {
-        if bord {
-            cornerRadius = .barCorner
+    func instance(border: Bool, corner: CornerMode) {
+        if border {
             cornerCurve = .continuous
             borderWidth = 0.7
             borderColor = UIColor.gray.withAlphaComponent(0.3).cgColor
@@ -29,7 +28,7 @@ extension CALayer {
             cornerRadius = 10
             cornerCurve = .continuous
         case .max:
-            cornerRadius = .barCorner
+            cornerRadius = 30
             cornerCurve = .continuous
         }
     }

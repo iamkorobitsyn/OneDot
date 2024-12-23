@@ -72,11 +72,22 @@ class DetailsVC: UIViewController {
         if let healthKitData = healthKitData {
             Task {
                 let coordinates = try await HealthKitManager.shared.getCoordinates(data: healthKitData)
-                MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
-                MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
-                workoutResultHeader.healthKitData = healthKitData
-                workoutResultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
-                workoutResultHeader.activateMode(mode: .dynamicWorkout)
+                
+                do {
+                    if coordinates.coordinates2D.count > 0  {
+                        print("work")
+                        MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
+                        MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
+                        workoutResultHeader.healthKitData = healthKitData
+                        workoutResultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
+                        workoutResultHeader.activateMode(mode: .dynamicWorkout)
+                    } else {
+                        print("Nowork")
+                        workoutResultHeader.healthKitData = healthKitData
+                        workoutResultHeader.activateMode(mode: .staticWorkout)
+                    }
+                    
+                }
             }
             
         }
@@ -163,7 +174,7 @@ class DetailsVC: UIViewController {
             mapView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             screenshotBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
-            screenshotBottomBar.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            screenshotBottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
             screenshotBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             screenshotBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             

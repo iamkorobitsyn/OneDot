@@ -103,9 +103,7 @@ class WorkoutFooter: UIView {
     private func setViews() {
         activateMode(mode: .prepare)
         
-        backgroundColor = .myPaletteBlue
-        layer.cornerRadius = .barCorner
-        layer.cornerCurve = .continuous
+        layer.instance(border: false, corner: .max)
         
         addSubview(leftButton)
         addSubview(rightButton)
@@ -124,12 +122,12 @@ class WorkoutFooter: UIView {
         
         NSLayoutConstraint.activate([
             leftButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
-            leftButton.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            leftButton.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
             leftButton.leftAnchor.constraint(equalTo: leftAnchor),
             leftButton.topAnchor.constraint(equalTo: topAnchor),
             
             rightButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
-            rightButton.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            rightButton.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
             rightButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             rightButton.topAnchor.constraint(equalTo: topAnchor)
             ])

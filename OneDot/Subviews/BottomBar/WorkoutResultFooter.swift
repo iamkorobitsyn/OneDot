@@ -71,7 +71,7 @@ class WorkoutResultFooter: UIVisualEffectView {
     private func setViews() {
         effect = UIBlurEffect(style: .light)
         clipsToBounds = true
-        layer.customBorder(bord: true, corner: .max)
+        layer.instance(border: true, corner: .max)
         
         [screenShotButton, settingsButton].forEach { button in
             contentView.addSubview(button)
@@ -86,12 +86,12 @@ class WorkoutResultFooter: UIVisualEffectView {
     private func setConstraints() {
         NSLayoutConstraint.activate([
             screenShotButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
-            screenShotButton.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            screenShotButton.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
             screenShotButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             screenShotButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             
             settingsButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
-            settingsButton.heightAnchor.constraint(equalToConstant: .tabBarHeight),
+            settingsButton.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
             settingsButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             settingsButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             

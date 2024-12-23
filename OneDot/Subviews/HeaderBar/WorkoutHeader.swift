@@ -113,7 +113,7 @@ class WorkoutHeader: UIVisualEffectView {
     private func setViews() {
         effect = UIBlurEffect(style: .extraLight)
         clipsToBounds = true
-        layer.customBorder(bord: true, corner: .max)
+        layer.instance(border: true, corner: .max)
 
         locationStack.addArrangedSubview(outdoorButton)
         locationStack.addArrangedSubview(indoorButton)

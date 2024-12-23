@@ -158,7 +158,7 @@ class NotesView: UIVisualEffectView {
     //MARK: - SetViews
     
     private func setViews() {
-        layer.customBorder(bord: true, corner: .max)
+        layer.instance(border: true, corner: .max)
         
         contentView.addSubview(tableView)
         contentView.clipsToBounds = true

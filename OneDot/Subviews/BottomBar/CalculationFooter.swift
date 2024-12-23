@@ -83,9 +83,6 @@ class CalculationFooter: UIView {
     //MARK: - SetViews
     
     private func setViews() {
-        layer.cornerRadius = .barCorner
-        layer.cornerCurve = .continuous
-        
         addSubview(pickerView)
     
         ShapeManager.shared.drawTabBarTopLineSeparator(shape: topLineSeparator, view: self)
