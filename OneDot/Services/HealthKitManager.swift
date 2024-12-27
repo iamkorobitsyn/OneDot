@@ -18,28 +18,25 @@ class HealthKitManager {
     private init() {}
     
     enum HealthKitError: Error {
-        case invalidHealthKitType
         case notAuthorized
-        case noHealthKitData
-        case noDistanceData
-        case noRouteData
-        case noHeartRateData
+        case invalidHealthKitType(description: String)
+        case noWorkoutData(description: String)
+        case noRouteData(description: String)
+        case noClimbingData(description: String)
     }
     
-    func errorHanding(error: HealthKitError) {
+    func errorHandling(error: HealthKitError) {
         switch error {
-        case .invalidHealthKitType:
-            print("invalid healtkit type")
         case .notAuthorized:
-            print("no authotization")
-        case .noHealthKitData:
-            print("no healthkit data")
-        case .noDistanceData:
-            print("no distance")
-        case .noRouteData:
-            print("no route")
-        case .noHeartRateData:
-            print("no heart rate")
+            print("not authothorized")
+        case .invalidHealthKitType(let description):
+            print("invalid healtkit type, \(description)")
+        case .noWorkoutData(let description):
+            print("no healthkit data \(description)")
+        case .noRouteData(let description):
+            print("no route data, \(description)")
+        case .noClimbingData(let description):
+            print("no climbing data, \(description)")
             
         }
     }
@@ -49,13 +46,24 @@ class HealthKitManager {
     func fetchHealthKitDataList() async throws -> [HealthKitData] {
         
         let workoutType = HKWorkoutType.workoutType()
+        
+        try await checkAuthorizationStatus()
+        let hKWorkouts = try await fetchHKWorkouts(workoutType: workoutType)
+        let healthKitDataList = try await convertHKWorkoutsInHKDataList(workouts: hKWorkouts)
+        
+        return healthKitDataList
+    }
+    
+    private func checkAuthorizationStatus() async throws {
+        
+        let workoutType = HKWorkoutType.workoutType()
         let routeType = HKSeriesType.workoutRoute()
         
         guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
-        else { throw HealthKitError.invalidHealthKitType }
+        else { throw HealthKitError.invalidHealthKitType(description: "no distance type") }
         
         guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)
-        else { throw HealthKitError.invalidHealthKitType }
+        else { throw HealthKitError.invalidHealthKitType(description: "no heart rate type") }
         
         try await withCheckedThrowingContinuation { continuation in
             healthStore.requestAuthorization(toShare: nil, read: [workoutType,
@@ -69,18 +77,13 @@ class HealthKitManager {
                 }
             }
         }
-        
-        let workouts = try await fetchWorkouts(workoutType: workoutType)
-        
-        let healthKitDataList = try await convertWorkouts(workouts: workouts)
-        
-        return healthKitDataList
-        
     }
     
-    //MARK: - FetchWorkouts
     
-    private func fetchWorkouts(workoutType: HKWorkoutType) async throws -> [HKWorkout] {
+    
+    //MARK: - FetchHKWorkouts
+    
+    private func fetchHKWorkouts(workoutType: HKWorkoutType) async throws -> [HKWorkout] {
         
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
         
@@ -92,7 +95,7 @@ class HealthKitManager {
                 if let samples = samples as? [HKWorkout] {
                     continuation.resume(returning: samples)
                 } else {
-                    continuation.resume(throwing: HealthKitError.noHealthKitData)
+                    continuation.resume(throwing: HealthKitError.noWorkoutData(description: "\(#function)"))
                 }
             }
             healthStore.execute(query)
@@ -100,27 +103,27 @@ class HealthKitManager {
     }
     
     
-    //MARK: - ConvertWorkouts
+    //MARK: - ConvertHKWorkoutsInHKDataList
     
     
-    private func convertWorkouts(workouts: [HKWorkout]) async throws -> [HealthKitData] {
+    private func convertHKWorkoutsInHKDataList(workouts: [HKWorkout]) async throws -> [HealthKitData] {
         var healthKitData: [HealthKitData] = []
         
         // Проверяем типы данных
         guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning) else {
-            throw HealthKitError.invalidHealthKitType
+            throw HealthKitError.invalidHealthKitType(description: "no distance type")
         }
         
         guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate) else {
-            throw HealthKitError.invalidHealthKitType
+            throw HealthKitError.invalidHealthKitType(description: "no heart rate type")
         }
         
         guard let activeEnergyBurned = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) else {
-            throw HealthKitError.invalidHealthKitType
+            throw HealthKitError.invalidHealthKitType(description: "no energy burned type")
         }
         
         guard let stepCountType = HKObjectType.quantityType(forIdentifier: .stepCount) else {
-            throw HealthKitError.invalidHealthKitType
+            throw HealthKitError.invalidHealthKitType(description: "no step count type")
         }
         
         // Проходим по всем тренировкам
@@ -212,6 +215,7 @@ class HealthKitManager {
             climbingDataAverage = maxClimb - minClimb
         } else {
             climbingDataAverage = 0
+            throw HealthKitError.noClimbingData(description: "\(#function)")
         }
 
         let healthKitCoordinates = HealthKitCoordinates(coordinates2D: coordinate2D, climbing: climbingDataAverage)
@@ -236,7 +240,7 @@ class HealthKitManager {
                         let locations = try await self.getRouteData(for: route)
                         continuation.resume(returning: locations)
                     } else {
-                        continuation.resume(throwing: HealthKitError.noRouteData)
+                        continuation.resume(throwing: HealthKitError.noRouteData(description: "error in \(#function)"))
                     }
                 }
             }
@@ -253,7 +257,9 @@ class HealthKitManager {
                 
                 if let routeLocations = routeLocations { locations.append(contentsOf: routeLocations) }
                 if done { continuation.resume(returning: locations) }
-                if let error = error { continuation.resume(throwing: error) }
+                if error != nil {
+                    continuation.resume(throwing: HealthKitError.noRouteData(description: "error in \(#function)"))
+                }
             }
             healthStore.execute(query)
         }

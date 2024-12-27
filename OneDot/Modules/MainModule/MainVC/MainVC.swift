@@ -101,8 +101,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
         Task {
             do {
                 healthKitDataList = try await HealthKitManager.shared.fetchHealthKitDataList()
-            } catch {
-                HealthKitManager.shared.errorHanding(error: .noHealthKitData)
+            } catch let error as HealthKitManager.HealthKitError{
+                HealthKitManager.shared.errorHandling(error: error)
             }
         }
 

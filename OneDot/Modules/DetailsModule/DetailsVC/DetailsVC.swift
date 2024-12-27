@@ -37,10 +37,12 @@ class DetailsVC: UIViewController {
         return view
     }()
     
-    let blurEffectView: UIVisualEffectView = {
-        let view = UIVisualEffectView()
+    let backgroundView: UIImageView = {
+        let view = UIImageView()
         view.disableAutoresizingMask()
-        view.effect = UIBlurEffect(style: .extraLight)
+//        view.effect = UIBlurEffect(style: .extraLight)
+        view.image = UIImage(named: "GymBackground")
+        view.contentMode = .scaleAspectFill
         view.layer.cornerRadius = 10
         return view
     }()
@@ -70,23 +72,21 @@ class DetailsVC: UIViewController {
         mapView.delegate = self
         
         if let healthKitData = healthKitData {
+            
             Task {
-                let coordinates = try await HealthKitManager.shared.getCoordinates(data: healthKitData)
-                
                 do {
-                    if coordinates.coordinates2D.count > 0  {
-                        print("work")
-                        MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
-                        MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
-                        workoutResultHeader.healthKitData = healthKitData
-                        workoutResultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
-                        workoutResultHeader.activateMode(mode: .dynamicWorkout)
-                    } else {
-                        print("Nowork")
-                        workoutResultHeader.healthKitData = healthKitData
-                        workoutResultHeader.activateMode(mode: .staticWorkout)
-                    }
+                    let coordinates = try await HealthKitManager.shared.getCoordinates(data: healthKitData)
+                    MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
+                    MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
+                    workoutResultHeader.healthKitData = healthKitData
+                    workoutResultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
+                    workoutResultHeader.activateMode(mode: .dynamicWorkout)
                     
+                } catch let error as HealthKitManager.HealthKitError {
+                    HealthKitManager.shared.errorHandling(error: error)
+                    workoutResultHeader.healthKitData = healthKitData
+                    workoutResultHeader.activateMode(mode: .staticWorkout)
+                    mapView.isHidden = true
                 }
             }
             
@@ -146,7 +146,7 @@ class DetailsVC: UIViewController {
     
     private func setViews() {
         
-        view.addSubview(blurEffectView)
+        view.addSubview(backgroundView)
         view.addSubview(mapView)
         view.addSubview(workoutResultHeader)
         workoutResultHeader.activateMode(mode: .dynamicWorkout)
@@ -163,10 +163,10 @@ class DetailsVC: UIViewController {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            blurEffectView.topAnchor.constraint(equalTo: view.topAnchor),
-            blurEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            blurEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            blurEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
             mapView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
