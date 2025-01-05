@@ -18,7 +18,7 @@ class MapKitManager {
     
     //MARK: - MainVC
     
-    func checkLocationServicesEnabled(viewController: UIViewController, mapView: MKMapView) async throws -> Bool {
+    func checkLocationServicesEnabled(viewController: UIViewController?, mapView: MKMapView) async throws -> Bool {
         
         if CLLocationManager.locationServicesEnabled() {
             
@@ -29,7 +29,8 @@ class MapKitManager {
             case .restricted:
                 return true
             case .denied:
-                await viewController.present(Alert(title: "Вы запретили использование местоположения",
+                guard let vc = viewController else {return false}
+                await vc.present(Alert(title: "Вы запретили использование местоположения",
                                        message: "Разрешить?",
                                        style: .actionSheet,
                                        url: UIApplication.openSettingsURLString),
@@ -42,7 +43,8 @@ class MapKitManager {
                 break
             }
         } else {
-            await viewController.present(Alert(title: "У вас выключена служба геолокации",
+            guard let vc = viewController else {return false}
+            await vc.present(Alert(title: "У вас выключена служба геолокации",
                                    message: "Включить?",
                                    style: .actionSheet,
                                    url: "App-Prefs:root=LOCATION_SEVICES"),

@@ -10,7 +10,7 @@ import UIKit
 
 class WorkoutResultFooter: UIVisualEffectView {
     
-    var buttonStateHandler: ((DetailsVC.Mode) -> Void)?
+    var buttonStateHandler: ((SelectedWorkoutVC.Mode) -> Void)?
     
     private let screenShotButton: UIButton = {
         let button = UIButton()

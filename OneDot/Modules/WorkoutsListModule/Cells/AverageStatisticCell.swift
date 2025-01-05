@@ -8,16 +8,16 @@
 import Foundation
 import UIKit
 
-class StatisticCell: UICollectionViewCell {
-    
-    let leadingResultModule: WorkoutResultModule = {
-        let module = WorkoutResultModule()
+class AverageStatisticCell: UICollectionViewCell {
+
+    let leadingResultModule: StackModuleForResultsWorkout = {
+        let module = StackModuleForResultsWorkout()
         module.disableAutoresizingMask()
         return module
     }()
     
-    let trailingResultModule: WorkoutResultModule = {
-        let module = WorkoutResultModule()
+    let trailingResultModule: StackModuleForResultsWorkout = {
+        let module = StackModuleForResultsWorkout()
         module.disableAutoresizingMask()
         return module
     }()

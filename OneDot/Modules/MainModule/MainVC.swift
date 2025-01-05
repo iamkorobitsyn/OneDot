@@ -16,9 +16,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
     
     var healthKitDataList: [HealthKitData]?
     
-    let mapView: MKMapView = {
-        let view = MKMapView()
-        view.overrideUserInterfaceStyle = .light
+    let mapView: MapView = {
+        let view = MapView()
         view.disableAutoresizingMask()
         return view
     }()
@@ -90,10 +89,8 @@ class MainVC: UIViewController, CAAnimationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.delegate = self
+        mapView.viewController = self
         
-        checkLocationEnabled()
         setViews()
         setConstraints()
         activateSubviewsHandlers()
@@ -133,14 +130,6 @@ class MainVC: UIViewController, CAAnimationDelegate {
         calculationsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         notesView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         settingsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-    }
-    
-    //MARK: - CheckLocation
-    
-    private func checkLocationEnabled() {
-        Task { locationManager.startUpdatingLocation()
-               if try await MapKitManager.shared.checkLocationServicesEnabled(viewController: self, mapView: mapView) {
-               mapView.showsUserLocation = true } }
     }
     
     //MARK: - ActivateMode
@@ -208,28 +197,11 @@ class MainVC: UIViewController, CAAnimationDelegate {
             calculationsView.activateMode(mode: .time)
             calculatorBottomBar.activateMode(mode: .PickerTime)
         case .transitionToProfile:
-            let WorkoutsVC = WorkoutsVC()
+            let WorkoutsVC = WorkoutsListModule()
             WorkoutsVC.healthKitDataList = healthKitDataList
             let navigationVC = UINavigationController(rootViewController: WorkoutsVC)
             present(navigationVC, animated: true)
         }
-    }
-}
-
-
-//MARK: - CLLocationManagerDelegate
-
-extension MainVC: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        if let location = locations.last?.coordinate {
-            let region = MKCoordinateRegion(center: location, latitudinalMeters: 500, longitudinalMeters: 500)
-            mapView.setRegion(region, animated: true)
-        }
-    }
-    
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        checkLocationEnabled()
     }
 }
 
@@ -238,7 +210,7 @@ extension MainVC {
     //MARK: - SetViews
     
     private func setViews() {
-        
+
         view.addSubview(mapView)
         
         view.addSubview(headerBar)
@@ -249,8 +221,6 @@ extension MainVC {
         view.addSubview(calculatorBottomBar)
         
         view.addSubview(splashScreenView)
-        
-        ShapeManager.shared.drawViewGradient(layer: mapView.layer)
     }
     
     //MARK: - SetConstraints
@@ -299,16 +269,6 @@ extension MainVC {
             splashScreenView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
         ])
     }
-    
 }
 
 
-extension MainVC: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-}

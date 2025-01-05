@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class WorkoutResultHeader: UIVisualEffectView {
+class HeaderViewForSelectedWorkout: UIView {
     
     var healthKitData: HealthKitData?
     
@@ -50,48 +50,50 @@ class WorkoutResultHeader: UIVisualEffectView {
         case staticWorkout
     }
     
-    override init(effect: UIVisualEffect?) {
-        super.init(effect: effect)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        addSubview(workoutNameLabel)
+        addSubview(workoutDateLabel)
+        
+        addSubview(leadingStack)
+        addSubview(trailingStack)
     }
 
     
     func activateMode(mode: Mode) {
         
+        
+        leadingStack.arrangedSubviews.forEach({$0.removeFromSuperview()})
+        trailingStack.arrangedSubviews.forEach({$0.removeFromSuperview()})
+        leadingStack.constraints.forEach({$0.isActive = false})
+        trailingStack.constraints.forEach({$0.isActive = false})
+        
         guard let healthKitData else {return}
         let stringRepresentation = healthKitData.stringRepresentation()
-        effect = UIBlurEffect(style: .light)
-        clipsToBounds = true
-        layer.instance(border: true, corner: .min)
-        
-        contentView.addSubview(workoutNameLabel)
-        contentView.addSubview(workoutDateLabel)
-        
-        contentView.addSubview(leadingStack)
-        contentView.addSubview(trailingStack)
-        
+
         workoutNameLabel.text = "\(stringRepresentation.workoutType) на улице"
         workoutDateLabel.text = stringRepresentation.startDate
         
         switch mode {
         case .dynamicWorkout:
-            let distanceView = WorkoutResultModule()
+            let distanceView = StackModuleForResultsWorkout()
             distanceView.activateMode(axis: .x, mode: .distance, result: stringRepresentation.totalDistance)
-            let climbView = WorkoutResultModule()
+            let climbView = StackModuleForResultsWorkout()
             climbView.activateMode(axis: .x, mode: .climb, result: stringRepresentation.climbing)
-            let caloriesView = WorkoutResultModule()
+            let caloriesView = StackModuleForResultsWorkout()
             caloriesView.activateMode(axis: .x, mode: .calories, result: stringRepresentation.calloriesBurned)
-            let stepsView = WorkoutResultModule()
+            let stepsView = StackModuleForResultsWorkout()
             stepsView.activateMode(axis: .x, mode: .steps, result: stringRepresentation.stepCount)
             
             [distanceView, climbView, caloriesView, stepsView].forEach({leadingStack.addArrangedSubview($0)})
             
-            let timeView = WorkoutResultModule()
+            let timeView = StackModuleForResultsWorkout()
             timeView.activateMode(axis: .x, mode: .time, result: stringRepresentation.duration)
-            let paceView = WorkoutResultModule()
+            let paceView = StackModuleForResultsWorkout()
             paceView.activateMode(axis: .x, mode: .pace, result: stringRepresentation.pace)
-            let heartRateView = WorkoutResultModule()
+            let heartRateView = StackModuleForResultsWorkout()
             heartRateView.activateMode(axis: .x, mode: .heartRate, result: stringRepresentation.heartRate)
-            let cadenceView = WorkoutResultModule()
+            let cadenceView = StackModuleForResultsWorkout()
             cadenceView.activateMode(axis: .x, mode: .cadence, result: stringRepresentation.cadence)
             
             [timeView, paceView, heartRateView, cadenceView].forEach({trailingStack.addArrangedSubview($0)})
@@ -99,60 +101,65 @@ class WorkoutResultHeader: UIVisualEffectView {
             setConstraints(mode: mode)
             
         case .staticWorkout:
-            let timeView = WorkoutResultModule()
+            let timeView = StackModuleForResultsWorkout()
             timeView.activateMode(axis: .x, mode: .time, result: stringRepresentation.duration)
-            let heartRateView = WorkoutResultModule()
+            let heartRateView = StackModuleForResultsWorkout()
             heartRateView.activateMode(axis: .x, mode: .heartRate, result: stringRepresentation.heartRate)
             
             [timeView, heartRateView].forEach({leadingStack.addArrangedSubview($0)})
             
-            let caloriesView = WorkoutResultModule()
+            let caloriesView = StackModuleForResultsWorkout()
             caloriesView.activateMode(axis: .x, mode: .calories, result: stringRepresentation.calloriesBurned)
             
             [caloriesView].forEach({trailingStack.addArrangedSubview($0)})
             
             setConstraints(mode: mode)
+            
         }
     }
     
     private func setConstraints(mode: Mode) {
-        switch mode {
+        
+        NSLayoutConstraint.activate([
             
+            workoutNameLabel.leadingAnchor.constraint(equalTo: leadingStack.leadingAnchor),
+            workoutNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 100),
+            
+            workoutDateLabel.trailingAnchor.constraint(equalTo: trailingStack.trailingAnchor),
+            workoutDateLabel.topAnchor.constraint(equalTo: topAnchor, constant: 100)
+            
+            
+        ])
+        
+        switch mode {
+
         case .dynamicWorkout:
             NSLayoutConstraint.activate([
                 leadingStack.widthAnchor.constraint(equalToConstant: 150),
                 leadingStack.heightAnchor.constraint(equalToConstant: 120),
                 leadingStack.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -95),
-                leadingStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
+                leadingStack.topAnchor.constraint(equalTo: centerYAnchor, constant: 0),
                 
                 trailingStack.widthAnchor.constraint(equalToConstant: 150),
                 trailingStack.heightAnchor.constraint(equalToConstant: 120),
                 trailingStack.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 90),
-                trailingStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20)
+                trailingStack.topAnchor.constraint(equalTo: centerYAnchor, constant: 0)
             ])
         case .staticWorkout:
             NSLayoutConstraint.activate([
                 leadingStack.widthAnchor.constraint(equalToConstant: 150),
                 leadingStack.heightAnchor.constraint(equalToConstant: 60),
                 leadingStack.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -95),
-                leadingStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
+                leadingStack.topAnchor.constraint(equalTo: centerYAnchor, constant: 0),
                 
                 trailingStack.widthAnchor.constraint(equalToConstant: 150),
                 trailingStack.heightAnchor.constraint(equalToConstant: 30),
                 trailingStack.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 90),
-                trailingStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -70)
+                trailingStack.topAnchor.constraint(equalTo: centerYAnchor, constant: 0)
             ])
         }
         
-        NSLayoutConstraint.activate([
-            
-            workoutNameLabel.leadingAnchor.constraint(equalTo: leadingStack.leadingAnchor),
-            workoutNameLabel.bottomAnchor.constraint(equalTo: leadingStack.topAnchor, constant: -20),
-            
-            workoutDateLabel.bottomAnchor.constraint(equalTo: workoutNameLabel.bottomAnchor),
-            workoutDateLabel.trailingAnchor.constraint(equalTo: trailingStack.trailingAnchor)
-            
-        ])
+        
     }
     
     required init?(coder: NSCoder) {

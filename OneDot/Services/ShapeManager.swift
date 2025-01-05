@@ -18,33 +18,32 @@ class ShapeManager {
     
     func drawViewGradient(layer: CALayer) {
         let topGradient = CAGradientLayer()
+        let trailingGradient = CAGradientLayer()
         let bottomGradient = CAGradientLayer()
+        let leadingGradient = CAGradientLayer()
         
-        topGradient.frame = CGRect(x: 0,
-                                   y: 0,
-                                   width: UIScreen.main.bounds.width ,
-                                   height: UIScreen.main.bounds.height)
-        bottomGradient.frame = CGRect(x: 0,
-                                   y: 0,
-                                      width: UIScreen.main.bounds.width,
-                                      height: UIScreen.main.bounds.height)
+        let frame = CGRect(x: 0, y: 0, width: layer.frame.width, height: layer.frame.height)
+        [topGradient, trailingGradient, bottomGradient, leadingGradient].forEach({$0.frame = frame})
         
-        
+        let colors = [UIColor.black.cgColor, UIColor.black.withAlphaComponent(0).cgColor]
+        [topGradient, trailingGradient, bottomGradient, leadingGradient].forEach({$0.colors = colors})
         
         topGradient.startPoint = CGPoint(x: 0, y: 0)
         topGradient.endPoint = CGPoint(x: 0, y: 0.4)
-        topGradient.colors = [UIColor.white.cgColor,
-                              UIColor.white.withAlphaComponent(0).cgColor]
         
+        trailingGradient.startPoint = CGPoint(x: 0, y: 0)
+        trailingGradient.endPoint = CGPoint(x: 0.4, y: 0)
         
         bottomGradient.startPoint = CGPoint(x: 0, y: 1)
         bottomGradient.endPoint = CGPoint(x: 0, y: 0.6)
-        bottomGradient.colors = [UIColor.white.cgColor,
-                                 UIColor.white.withAlphaComponent(0).cgColor]
         
+        leadingGradient.startPoint = CGPoint(x: 1, y: 0)
+        leadingGradient.endPoint = CGPoint(x: 0.6, y: 0)
         
         layer.addSublayer(topGradient)
+        layer.addSublayer(trailingGradient)
         layer.addSublayer(bottomGradient)
+        layer.addSublayer(leadingGradient)
     }
     
     //MARK: - BottomBar

@@ -10,7 +10,7 @@ import UIKit
 import Photos
 import MapKit
 
-class DetailsVC: UIViewController {
+class SelectedWorkoutVC: UIViewController {
     
     var healthKitData: HealthKitData?
     
@@ -23,16 +23,22 @@ class DetailsVC: UIViewController {
         case hide
     }
     
-    let workoutResultHeader: WorkoutResultHeader = {
-        let header = WorkoutResultHeader()
+    let workoutResultHeader: HeaderViewForSelectedWorkout = {
+        let header = HeaderViewForSelectedWorkout()
         header.disableAutoresizingMask()
         return header
     }()
     
     private let separator: CAShapeLayer = CAShapeLayer()
     
-    let mapView: MKMapView = {
-        let view = MKMapView()
+    let mapView: MapView = {
+        let view = MapView()
+        view.disableAutoresizingMask()
+        return view
+    }()
+    
+    let blurEffectView: UIVisualEffectView = {
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .light))
         view.disableAutoresizingMask()
         return view
     }()
@@ -40,7 +46,7 @@ class DetailsVC: UIViewController {
     let backgroundView: UIImageView = {
         let view = UIImageView()
         view.disableAutoresizingMask()
-//        view.effect = UIBlurEffect(style: .extraLight)
+        view.alpha = 0
         view.image = UIImage(named: "GymBackground")
         view.contentMode = .scaleAspectFill
         view.layer.cornerRadius = 10
@@ -70,6 +76,7 @@ class DetailsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
+        mapView.viewController = self
         
         if let healthKitData = healthKitData {
             
@@ -81,12 +88,13 @@ class DetailsVC: UIViewController {
                     workoutResultHeader.healthKitData = healthKitData
                     workoutResultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
                     workoutResultHeader.activateMode(mode: .dynamicWorkout)
+                    blurEffectView.isHidden = true
                     
                 } catch let error as HealthKitManager.HealthKitError {
                     HealthKitManager.shared.errorHandling(error: error)
                     workoutResultHeader.healthKitData = healthKitData
                     workoutResultHeader.activateMode(mode: .staticWorkout)
-                    mapView.isHidden = true
+                    
                 }
             }
             
@@ -148,6 +156,7 @@ class DetailsVC: UIViewController {
         
         view.addSubview(backgroundView)
         view.addSubview(mapView)
+        view.addSubview(blurEffectView)
         view.addSubview(workoutResultHeader)
         workoutResultHeader.activateMode(mode: .dynamicWorkout)
         view.addSubview(backButton)
@@ -172,6 +181,11 @@ class DetailsVC: UIViewController {
             mapView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             mapView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            blurEffectView.topAnchor.constraint(equalTo: view.topAnchor),
+            blurEffectView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
+            blurEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            blurEffectView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             screenshotBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
             screenshotBottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
@@ -198,7 +212,7 @@ class DetailsVC: UIViewController {
   
 }
 
-extension DetailsVC: MKMapViewDelegate {
+extension SelectedWorkoutVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(overlay: overlay)
         renderer.strokeColor = .myPaletteGold

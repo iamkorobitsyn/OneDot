@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class WorkoutResultModule: UIView {
+class StackModuleForResultsWorkout: UIView {
     
     let titleLabel: UILabel = {
         let label = UILabel()
