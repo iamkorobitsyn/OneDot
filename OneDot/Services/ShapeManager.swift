@@ -172,20 +172,30 @@ class ShapeManager {
         shape.path = path.cgPath
         shape.lineWidth = 0.5
         shape.lineCap = .round
-        shape.strokeColor = UIColor.myPaletteGold.cgColor
+        shape.strokeColor = UIColor.myPaletteGray.cgColor
         view.layer.addSublayer(shape)
         
     }
     
-    func drawResultSeparator(shape: CAShapeLayer, view: UIView) {
+    func drawResultSeparator(dual: Bool, shape: CAShapeLayer, view: UIView) {
+        
+        
         
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: UIScreen.main.bounds.width / 2, y:  190))
-        path.addLine(to: CGPoint(x: UIScreen.main.bounds.width / 2 , y: 250))
+        if dual {
+            let segment = (.barWidth - 100) / 3
+            path.move(to: CGPoint(x: 50 + segment , y:  112))
+            path.addLine(to: CGPoint(x: 50 + segment , y: 152))
+            path.move(to: CGPoint(x: 50 + (segment * 2), y:  112))
+            path.addLine(to: CGPoint(x: 50 + (segment * 2) , y: 152))
+        } else {
+            path.move(to: CGPoint(x: .barWidth / 2, y:  72))
+            path.addLine(to: CGPoint(x: .barWidth / 2 , y: 192))
+        }
         shape.path = path.cgPath
         shape.lineWidth = 0.5
         shape.lineCap = .round
-        shape.strokeColor = UIColor.myPaletteGold.cgColor
+        shape.strokeColor = UIColor.myPaletteGray.cgColor
         view.layer.addSublayer(shape)
         
     }

@@ -13,7 +13,6 @@ class StackModuleForResultsWorkout: UIView {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.textColor = .myPaletteGray
         return label
     }()
     
@@ -26,7 +25,6 @@ class StackModuleForResultsWorkout: UIView {
     let resultLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.textColor = .myPaletteGray
         return label
     }()
     
@@ -42,8 +40,9 @@ class StackModuleForResultsWorkout: UIView {
     }
     
     enum Axis {
-        case x
-        case y
+        case horizontal
+        case vertical
+        case verticalUpscale
     }
     
     override init(frame: CGRect) {
@@ -52,38 +51,38 @@ class StackModuleForResultsWorkout: UIView {
         
     }
     
-    func activateMode(axis: Axis, mode: Mode, result: String) {
+    func activateMode(axis: Axis, mode: Mode, text: String) {
         
         setViews(axis: axis)
         setConstraints(axis: axis)
         
-        resultLabel.text = result
+        resultLabel.text = text
         
         switch mode {
         case .time:
-            titleLabel.text = axis == .x ? "Time" : "Total time"
-            titleIcon.image = UIImage(named: axis == .x ? "AMTime20x20" : "AMTime25x25")
+            titleLabel.text = axis == .verticalUpscale ? "Total time" : "Time"
+            titleIcon.image = UIImage(named: axis == .verticalUpscale ? "AMTime25x25" : "AMTime20x20")
         case .calories:
-            titleLabel.text = axis == .x ? "Calories" : "Total calories"
-            titleIcon.image = UIImage(named: axis == .x ? "AMCalories20x20" : "AMCalories25x25")
+            titleLabel.text = axis == .verticalUpscale ? "Total calories" : "Calories"
+            titleIcon.image = UIImage(named: axis == .verticalUpscale ? "AMCalories20x20" : "AMCalories25x25")
         case .distance:
-            titleLabel.text = axis == .x ? "Distance" : "Total distance"
-            titleIcon.image = UIImage(named: axis == .x ? "AMDistance20x20" : "AMDistance25x25")
+            titleLabel.text = axis == .verticalUpscale ? "Total distance" : "Distance"
+            titleIcon.image = UIImage(named: axis == .verticalUpscale ? "AMDistance25x25" : "AMDistance20x20")
         case .climb:
-            titleLabel.text = axis == .x ? "Climb" : "Total climb"
-            titleIcon.image = UIImage(named: axis == .x ? "AMClimb20x20" : "AMClimb25x25")
+            titleLabel.text = axis == .verticalUpscale ? "Total climb" : "Climb"
+            titleIcon.image = UIImage(named: axis == .verticalUpscale ? "AMClimb25x25" : "AMClimb20x20")
         case .heartRate:
             titleLabel.text = "Heart rate"
-            titleIcon.image = UIImage(named: axis == .x ? "AMHeartRate20x20" : "AMHeartRate25x25")
+            titleIcon.image = UIImage(named: axis == .verticalUpscale ? "AMHeartRate25x25" : "AMHeartRate20x20")
         case .pace:
-            titleLabel.text = axis == .x ? "Pace" : "Average Pace"
-            titleIcon.image = UIImage(named: axis == .x ? "AMPace20x20" : "AMPace25x25")
+            titleLabel.text = axis == .verticalUpscale ? "Average Pace" : "Pace"
+            titleIcon.image = UIImage(named: axis == .verticalUpscale ? "AMPace25x25" : "AMPace20x20")
         case .steps:
-            titleLabel.text = axis == .x ? "Steps" : "Total steps"
-            titleIcon.image = UIImage(named: axis == .x ? "AMSteps20x20" : "AMSteps25x25")
+            titleLabel.text = axis == .verticalUpscale ? "Total steps" : "Steps"
+            titleIcon.image = UIImage(named: axis == .verticalUpscale ? "AMSteps25x25" : "AMSteps20x20")
         case .cadence:
-            titleLabel.text = axis == .x ? "Cadence" : "Average cadence"
-            titleIcon.image = UIImage(named: axis == .x ? "AMCadence20x20" : "AMCadence25x25")
+            titleLabel.text = axis == .verticalUpscale ? "Average cadence" : "Cadence"
+            titleIcon.image = UIImage(named: axis == .verticalUpscale ? "AMCadence25x25" : "AMCadence20x20")
         }
     }
 
@@ -94,25 +93,31 @@ class StackModuleForResultsWorkout: UIView {
         
         switch axis {
             
-        case .x:
+        case .horizontal:
             titleLabel.textAlignment = .left
-            titleLabel.font = UIFont.systemFont(ofSize: 14, weight: .light, width: .compressed)
+            titleLabel.instance(color: .myPaletteGray, alignment: .left, font: .thinCompSmall)
             
             resultLabel.textAlignment = .right
-            resultLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium, width: .compressed)
-        case .y:
+            resultLabel.instance(color: .myPaletteGray, alignment: .right, font: .boldCompMedium)
+        case .vertical:
             titleLabel.textAlignment = .center
-            titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .light, width: .compressed)
+            titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .thinCompMedium)
             
             resultLabel.textAlignment = .center
-            resultLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium, width: .compressed)
+            resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .boldCompMedium)
+        case .verticalUpscale:
+            titleLabel.textAlignment = .center
+            titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .thinCompMedium)
+            
+            resultLabel.textAlignment = .center
+            resultLabel.instance(color: .myPaletteGray, alignment: .center, font:.boldCompMedium)
         }
     }
     
     private func setConstraints(axis: Axis) {
         switch axis {
             
-        case .x:
+        case .horizontal:
             NSLayoutConstraint.activate([
                 titleIcon.widthAnchor.constraint(equalToConstant: 20),
                 titleIcon.heightAnchor.constraint(equalToConstant: 20),
@@ -127,7 +132,22 @@ class StackModuleForResultsWorkout: UIView {
                 resultLabel.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 5),
                 resultLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
             ])
-        case .y:
+        case .vertical:
+            NSLayoutConstraint.activate([
+                titleIcon.widthAnchor.constraint(equalToConstant: 20),
+                titleIcon.heightAnchor.constraint(equalToConstant: 20),
+                titleIcon.centerXAnchor.constraint(equalTo: centerXAnchor),
+                titleIcon.centerYAnchor.constraint(equalTo: centerYAnchor),
+                
+                titleLabel.widthAnchor.constraint(equalToConstant: 100),
+                titleLabel.bottomAnchor.constraint(equalTo: titleIcon.topAnchor, constant: -20),
+                titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+                
+                resultLabel.widthAnchor.constraint(equalToConstant: 100),
+                resultLabel.topAnchor.constraint(equalTo: titleIcon.bottomAnchor, constant: 20),
+                resultLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
+            ])
+        case .verticalUpscale:
             NSLayoutConstraint.activate([
                 titleIcon.widthAnchor.constraint(equalToConstant: 25),
                 titleIcon.heightAnchor.constraint(equalToConstant: 25),

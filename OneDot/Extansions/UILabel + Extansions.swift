@@ -17,6 +17,7 @@ extension UILabel {
         case boldCompSmall
         case boldCompMedium
         case boldCompLarge
+        case boldCompExtraLarge
     }
     
     func instance(color: UIColor, alignment: NSTextAlignment, font: Font) {
@@ -36,7 +37,9 @@ extension UILabel {
         case .boldCompMedium:
             self.font = UIFont.systemFont(ofSize: 20, weight: .medium, width: .compressed)
         case .boldCompLarge:
-            self.font = UIFont.systemFont(ofSize: 20, weight: .bold, width: .compressed)
+            self.font = UIFont.systemFont(ofSize: 22, weight: .medium, width: .compressed)
+        case .boldCompExtraLarge:
+            self.font = UIFont.systemFont(ofSize: 24, weight: .medium, width: .compressed)
         }
     }
 }

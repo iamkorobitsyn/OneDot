@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 import Photos
-import MapKit
 
 class SelectedWorkoutVC: UIViewController {
     
@@ -29,8 +28,6 @@ class SelectedWorkoutVC: UIViewController {
         return header
     }()
     
-    private let separator: CAShapeLayer = CAShapeLayer()
-    
     let mapView: MapView = {
         let view = MapView()
         view.disableAutoresizingMask()
@@ -38,7 +35,7 @@ class SelectedWorkoutVC: UIViewController {
     }()
     
     let blurEffectView: UIVisualEffectView = {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
         view.disableAutoresizingMask()
         return view
     }()
@@ -75,7 +72,6 @@ class SelectedWorkoutVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        mapView.delegate = self
         mapView.viewController = self
         
         if let healthKitData = healthKitData {
@@ -89,11 +85,13 @@ class SelectedWorkoutVC: UIViewController {
                     workoutResultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
                     workoutResultHeader.activateMode(mode: .dynamicWorkout)
                     blurEffectView.isHidden = true
+                    mapView.activateMode(mode: .drawWorkoutRoute)
                     
                 } catch let error as HealthKitManager.HealthKitError {
                     HealthKitManager.shared.errorHandling(error: error)
                     workoutResultHeader.healthKitData = healthKitData
                     workoutResultHeader.activateMode(mode: .staticWorkout)
+                    mapView.activateMode(mode: .checkLocationFar)
                     
                 }
             }
@@ -104,9 +102,6 @@ class SelectedWorkoutVC: UIViewController {
         setConstraints()
         activateSubviewsHandlers()
         
-        
-        
-        ShapeManager.shared.drawResultSeparator(shape: separator, view: workoutResultHeader)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -192,10 +187,10 @@ class SelectedWorkoutVC: UIViewController {
             screenshotBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             screenshotBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
-            workoutResultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: -0.5),
-            workoutResultHeader.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width + 1),
+            workoutResultHeader.heightAnchor.constraint(equalToConstant: 210),
+            workoutResultHeader.widthAnchor.constraint(equalToConstant: .barWidth),
             workoutResultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            workoutResultHeader.heightAnchor.constraint(equalToConstant: 300),
+            workoutResultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: 120),
             
             backButton.widthAnchor.constraint(equalToConstant: 42),
             backButton.heightAnchor.constraint(equalToConstant: 42),
@@ -212,11 +207,4 @@ class SelectedWorkoutVC: UIViewController {
   
 }
 
-extension SelectedWorkoutVC: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        let renderer = MKPolylineRenderer(overlay: overlay)
-        renderer.strokeColor = .myPaletteGold
-        renderer.lineWidth = 5
-        return renderer
-    }
-}
+

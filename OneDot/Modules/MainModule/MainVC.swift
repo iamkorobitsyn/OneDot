@@ -197,7 +197,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
             calculationsView.activateMode(mode: .time)
             calculatorBottomBar.activateMode(mode: .PickerTime)
         case .transitionToProfile:
-            let WorkoutsVC = WorkoutsListModule()
+            let WorkoutsVC = WorkoutsListVC()
             WorkoutsVC.healthKitDataList = healthKitDataList
             let navigationVC = UINavigationController(rootViewController: WorkoutsVC)
             present(navigationVC, animated: true)
@@ -212,6 +212,7 @@ extension MainVC {
     private func setViews() {
 
         view.addSubview(mapView)
+        mapView.activateMode(mode: .checkLocationClose)
         
         view.addSubview(headerBar)
         view.addSubview(notesView)
@@ -235,15 +236,15 @@ extension MainVC {
             
             headerBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             headerBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
-            headerBar.heightAnchor.constraint(equalToConstant: CGFloat.headerBarHeight),
-            headerBar.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            headerBar.heightAnchor.constraint(equalToConstant: .headerBarHeight),
+            headerBar.widthAnchor.constraint(equalToConstant: .barWidth),
             
             calculationsView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             calculationsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             calculationsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             calculationsView.topAnchor.constraint(equalTo: headerBar.bottomAnchor, constant: 10),
             
-            settingsView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            settingsView.widthAnchor.constraint(equalToConstant: .barWidth),
             settingsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             settingsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             settingsView.topAnchor.constraint(equalTo: headerBar.bottomAnchor, constant: 10),

@@ -12,18 +12,39 @@ import CoreLocation
 
 class MapView: MKMapView {
     
+    enum Mode {
+        case checkLocationClose
+        case checkLocationFar
+        case drawWorkoutRoute
+    }
+    
+    var closeLocation = true
+    
     let locationManager: CLLocationManager = CLLocationManager()
     
     weak var viewController: UIViewController?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.delegate = self
-        
+        delegate = self
         self.overrideUserInterfaceStyle = .light
-        checkLocationEnabled()
+    }
+    
+    func activateMode(mode: Mode) {
+        switch mode {
+            
+        case .checkLocationClose:
+            checkLocationEnabled()
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.delegate = self
+        case .checkLocationFar:
+            closeLocation.toggle()
+            checkLocationEnabled()
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.delegate = self
+        case .drawWorkoutRoute:
+            print("route")
+        }
     }
     
     //MARK: - CheckLocation
@@ -43,12 +64,26 @@ extension MapView: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         if let location = locations.last?.coordinate {
-            let region = MKCoordinateRegion(center: location, latitudinalMeters: 500, longitudinalMeters: 500)
-            self.setRegion(region, animated: true)
+            if closeLocation {
+                let region = MKCoordinateRegion(center: location, latitudinalMeters: 500, longitudinalMeters: 500)
+                self.setRegion(region, animated: true)
+            } else {
+                let region = MKCoordinateRegion(center: location, latitudinalMeters: 4000, longitudinalMeters: 4000)
+                self.setRegion(region, animated: true)
+            }
         }
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         checkLocationEnabled()
+    }
+}
+
+extension MapView: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let renderer = MKPolylineRenderer(overlay: overlay)
+        renderer.strokeColor = .myPaletteGold
+        renderer.lineWidth = 5
+        return renderer
     }
 }

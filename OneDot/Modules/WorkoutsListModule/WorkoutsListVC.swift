@@ -8,7 +8,7 @@
 import UIKit
 import HealthKit
 
-class WorkoutsListModule: UIViewController {
+class WorkoutsListVC: UIViewController {
     
     private enum Mode {
         case workouts
@@ -33,13 +33,6 @@ class WorkoutsListModule: UIViewController {
         let button = UIButton()
         button.disableAutoresizingMask()
         button.setImage(UIImage(named: "DSHideGray"), for: .normal)
-        return button
-    }()
-    
-    private let backButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "DSBackGray"), for: .normal)
         return button
     }()
     
@@ -88,18 +81,6 @@ class WorkoutsListModule: UIViewController {
         return tableView
     }()
     
-    let headerViewForSelectedWorkout: HeaderViewForSelectedWorkout = {
-        let header = HeaderViewForSelectedWorkout()
-        header.disableAutoresizingMask()
-        return header
-    }()
-    
-    let bottomViewForSelectedWorkout: BottomViewForSelectedWorkout = {
-        let view = BottomViewForSelectedWorkout()
-        view.disableAutoresizingMask()
-        return view
-    }()
-    
    
 
     override func viewDidLoad() {
@@ -113,7 +94,6 @@ class WorkoutsListModule: UIViewController {
 
         setViews()
         setConstraints()
-        activateMode(mode: .workouts)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -121,26 +101,6 @@ class WorkoutsListModule: UIViewController {
         let currentMetricsPageValue = UserDefaultsManager.shared.profileMetricsPageValue
         DispatchQueue.main.async { self.setCurrentMetricsPage(currentPage: currentMetricsPageValue) }
     }
-    
-    
-    private func activateMode(mode: Mode) {
-        switch mode {
-            
-        case .workouts:
-            [workoutsListTable, pageControl, metricsPanel, segmenter].forEach( {$0.isHidden = false} )
-            [headerViewForSelectedWorkout, bottomViewForSelectedWorkout].forEach( {$0.isHidden = true} )
-        case .selectedWorkout:
-            [workoutsListTable, pageControl, metricsPanel, segmenter].forEach( {$0.isHidden = true} )
-            [headerViewForSelectedWorkout, bottomViewForSelectedWorkout].forEach( {$0.isHidden = false} )
-        case .screenshot:
-            print("screenshot")
-        case .settings:
-            print("settings")
-        case .dismiss:
-            dismiss(animated: true)
-        }
-    }
- 
     
     //MARK: - DidScroll & CurrentMetrics
     
@@ -159,15 +119,8 @@ class WorkoutsListModule: UIViewController {
     
     //MARK: - Dismiss
     
-    @objc private func buttonTapped(_ button: UIButton) {
-        switch button {
-        case dismissButton:
-            activateMode(mode: .dismiss)
-        case backButton:
-            activateMode(mode: .workouts)
-        default:
-            break
-        }
+    @objc private func selfDismiss() {
+        dismiss(animated: true)
     }
     
     //MARK: - SetViews
@@ -183,15 +136,12 @@ class WorkoutsListModule: UIViewController {
         view.addSubview(segmenter)
         
         view.addSubview(workoutsListTable)
-        view.addSubview(headerViewForSelectedWorkout)
-        view.addSubview(bottomViewForSelectedWorkout)
         
         view.addSubview(dismissButton)
-        view.addSubview(backButton)
         
         workoutsListTable.register(WorkoutCell.self, forCellReuseIdentifier: "WorkoutCell")
-
-        [dismissButton, backButton].forEach( {$0.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)} )
+        
+        dismissButton.addTarget(self, action: #selector(selfDismiss), for: .touchUpInside)
     }
     
     //MARK: - SetConstraints
@@ -207,11 +157,6 @@ class WorkoutsListModule: UIViewController {
             dismissButton.heightAnchor.constraint(equalToConstant: .iconSide),
             dismissButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
             dismissButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            
-            backButton.widthAnchor.constraint(equalToConstant: 42),
-            backButton.heightAnchor.constraint(equalToConstant: 42),
-            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             
             pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             pageControl.centerYAnchor.constraint(equalTo: dismissButton.centerYAnchor),
@@ -229,23 +174,13 @@ class WorkoutsListModule: UIViewController {
             workoutsListTable.topAnchor.constraint(equalTo: segmenter.bottomAnchor),
             workoutsListTable.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             workoutsListTable.widthAnchor.constraint(equalToConstant: .barWidth - 10),
-            workoutsListTable.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            headerViewForSelectedWorkout.topAnchor.constraint(equalTo: view.topAnchor, constant: -0.5),
-            headerViewForSelectedWorkout.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width + 1),
-            headerViewForSelectedWorkout.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            headerViewForSelectedWorkout.heightAnchor.constraint(equalToConstant: 300),
-            
-            bottomViewForSelectedWorkout.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
-            bottomViewForSelectedWorkout.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
-            bottomViewForSelectedWorkout.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            bottomViewForSelectedWorkout.topAnchor.constraint(equalTo: headerViewForSelectedWorkout.bottomAnchor, constant: 10)
+            workoutsListTable.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }
 
 
-extension WorkoutsListModule: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension WorkoutsListVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: view.frame.width, height: 200)
@@ -274,7 +209,7 @@ extension WorkoutsListModule: UICollectionViewDataSource, UICollectionViewDelega
 }
 
 
-extension WorkoutsListModule: UITableViewDataSource, UITableViewDelegate {
+extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource
        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -304,9 +239,6 @@ extension WorkoutsListModule: UITableViewDataSource, UITableViewDelegate {
         let selectedWorkoutVC = SelectedWorkoutVC()
         self.navigationController?.pushViewController(selectedWorkoutVC, animated: true)
         selectedWorkoutVC.healthKitData = healthKitDataList?[indexPath.row]
-
-        activateMode(mode: .selectedWorkout)
-
     }
 }
 

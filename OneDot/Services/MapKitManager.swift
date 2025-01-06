@@ -107,7 +107,7 @@ class MapKitManager {
         
         let region = MKCoordinateRegion(center: center, span: span)
         
-        mapView.setRegion(region, animated: true)
+        mapView.setRegion(region, animated: false)
     }
     
 }

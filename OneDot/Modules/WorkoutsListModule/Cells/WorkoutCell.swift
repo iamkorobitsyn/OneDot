@@ -31,28 +31,28 @@ class WorkoutCell: UITableViewCell {
     let workoutTypeLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .boldCompLarge)
+        label.instance(color: .white, alignment: .center, font: .boldCompExtraLarge)
         return label
     }()
     
     let workoutDurationLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .boldCompLarge)
+        label.instance(color: .white, alignment: .center, font: .boldCompExtraLarge)
         return label
     }()
     
     let workoutStatisticLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .boldCompLarge)
+        label.instance(color: .white, alignment: .center, font: .boldCompExtraLarge)
         return label
     }()
     
     let workoutDateLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .boldCompLarge)
+        label.instance(color: .white, alignment: .center, font: .boldCompExtraLarge)
         return label
     }()
     
