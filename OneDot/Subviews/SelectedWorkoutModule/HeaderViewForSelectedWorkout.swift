@@ -12,18 +12,23 @@ class HeaderViewForSelectedWorkout: UIVisualEffectView {
     
     var healthKitData: HealthKitData?
     
+    private let workoutIcon: UIImageView = {
+        let view = UIImageView()
+        view.disableAutoresizingMask()
+        return view
+    }()
+    
     private let workoutNameLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .myPaletteGold, alignment: .left, font: .thinCompLarge)
-
+        label.instance(color: .myPaletteGold, alignment: .left, font: .boldCompExtraLarge)
         return label
     }()
     
     private let workoutDateLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .myPaletteGray, alignment: .right, font: .boldCompLarge)
+        label.instance(color: .myPaletteGray, alignment: .right, font: .boldCompExtraLarge)
         return label
     }()
 
@@ -57,7 +62,8 @@ class HeaderViewForSelectedWorkout: UIVisualEffectView {
     private let separator: CAShapeLayer = CAShapeLayer()
     
     enum Mode {
-        case dynamicWorkout
+        case outdoorDynamicWorkout
+        case indoorDynamicWorkout
         case staticWorkout
     }
     
@@ -66,6 +72,7 @@ class HeaderViewForSelectedWorkout: UIVisualEffectView {
         self.effect = UIBlurEffect(style: .extraLight)
         clipsToBounds = true
         layer.instance(border: true, corner: .max)
+        contentView.addSubview(workoutIcon)
         contentView.addSubview(workoutNameLabel)
         contentView.addSubview(workoutDateLabel)
         
@@ -74,7 +81,6 @@ class HeaderViewForSelectedWorkout: UIVisualEffectView {
         contentView.addSubview(stackStaticMode)
         
     }
-
     
     func activateMode(mode: Mode) {
       
@@ -82,11 +88,19 @@ class HeaderViewForSelectedWorkout: UIVisualEffectView {
         guard let healthKitData else {return}
         let stringRepresentation = healthKitData.stringRepresentation()
 
-        workoutNameLabel.text = "\(stringRepresentation.workoutType) на улице".uppercased()
+        workoutNameLabel.text = stringRepresentation.workoutType.uppercased()
         workoutDateLabel.text = stringRepresentation.startDate.uppercased()
         
         switch mode {
-        case .dynamicWorkout:
+        case .indoorDynamicWorkout, .staticWorkout:
+            workoutIcon.image = UIImage(named: "AMIndoorLocGold25x25")
+        case .outdoorDynamicWorkout:
+            workoutIcon.image = UIImage(named: "AMOutdoorLocGold25x25")
+            
+        }
+        
+        switch mode {
+        case .outdoorDynamicWorkout, .indoorDynamicWorkout:
             let distanceView = StackModuleForResultsWorkout()
             distanceView.activateMode(axis: .horizontal, mode: .distance, text: stringRepresentation.totalDistance)
             let climbView = StackModuleForResultsWorkout()
@@ -131,22 +145,27 @@ class HeaderViewForSelectedWorkout: UIVisualEffectView {
         
         NSLayoutConstraint.activate([
             
+            workoutNameLabel.widthAnchor.constraint(equalToConstant: 150),
             workoutNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25),
             workoutNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 25),
             
+            workoutDateLabel.widthAnchor.constraint(equalToConstant: 150),
             workoutDateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25),
-            workoutDateLabel.topAnchor.constraint(equalTo: topAnchor, constant: 25)
+            workoutDateLabel.topAnchor.constraint(equalTo: topAnchor, constant: 25),
             
-            
+            workoutIcon.widthAnchor.constraint(equalToConstant: 25),
+            workoutIcon.heightAnchor.constraint(equalToConstant: 25),
+            workoutIcon.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            workoutIcon.topAnchor.constraint(equalTo: topAnchor, constant: 23.5)
         ])
         
         switch mode {
 
-        case .dynamicWorkout:
+        case .outdoorDynamicWorkout, .indoorDynamicWorkout:
             NSLayoutConstraint.activate([
                 stackLDynamicMode.widthAnchor.constraint(equalToConstant: 150),
                 stackLDynamicMode.heightAnchor.constraint(equalToConstant: 120),
-                stackLDynamicMode.leadingAnchor.constraint(equalTo: workoutNameLabel.leadingAnchor),
+                stackLDynamicMode.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25),
                 stackLDynamicMode.topAnchor.constraint(equalTo: workoutNameLabel.bottomAnchor, constant: 20),
                 
                 stackRDynamicMode.widthAnchor.constraint(equalToConstant: 150),

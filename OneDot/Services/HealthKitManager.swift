@@ -126,6 +126,7 @@ class HealthKitManager {
             throw HealthKitError.invalidHealthKitType(description: "no step count type")
         }
         
+        
         // Проходим по всем тренировкам
         for workout in workouts {
                 
@@ -147,8 +148,8 @@ class HealthKitManager {
                 let averageCadence = calculateCadence(stepCount: stepCountData, workoutDuration: workout.duration)
             
                 let pace = calculatePace(workoutDuration: workout.duration, distance: distanceData)
-              
-                    
+        
+            
 
                 // Создаем объект данных о тренировке
                 let data = HealthKitData(workoutType: workout.workoutActivityType.name,

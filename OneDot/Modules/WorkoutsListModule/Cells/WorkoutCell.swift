@@ -31,28 +31,28 @@ class WorkoutCell: UITableViewCell {
     let workoutTypeLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .boldCompExtraLarge)
-        return label
-    }()
-    
-    let workoutDurationLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .boldCompExtraLarge)
+        label.instance(color: .white, alignment: .right, font: .boldCompExtraLarge)
         return label
     }()
     
     let workoutStatisticLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .boldCompExtraLarge)
+        label.instance(color: .white, alignment: .right, font: .boldCompExtraLarge)
+        return label
+    }()
+    
+    let workoutDurationLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .left, font: .boldCompExtraLarge)
         return label
     }()
     
     let workoutDateLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .boldCompExtraLarge)
+        label.instance(color: .white, alignment: .left, font: .boldCompExtraLarge)
         return label
     }()
     
@@ -82,10 +82,10 @@ class WorkoutCell: UITableViewCell {
         
         let stringRepresentable = healhKitData.stringRepresentation()
         
-        workoutTypeLabel.text = stringRepresentable.workoutType
-        workoutDurationLabel.text = stringRepresentable.duration
-        workoutStatisticLabel.text = stringRepresentable.totalDistance
-        workoutDateLabel.text = stringRepresentable.startDate
+        workoutTypeLabel.text = stringRepresentable.workoutType.uppercased()
+        workoutDurationLabel.text = stringRepresentable.duration.uppercased()
+        workoutStatisticLabel.text = stringRepresentable.totalDistance.uppercased()
+        workoutDateLabel.text = stringRepresentable.startDate.uppercased()
     }
     
     private func setConstraints() {

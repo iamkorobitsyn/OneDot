@@ -11,20 +11,21 @@ import Photos
 
 class SelectedWorkoutVC: UIViewController {
     
-    let gradientBackLayer: CAGradientLayer = CAGradientLayer()
-    
-    var healthKitData: HealthKitData?
-    
     let hapticGenerator = UISelectionFeedbackGenerator()
-    
+
+    var healthKitData: HealthKitData?
+
     enum Mode {
+        case initial
         case screenshot
         case settings
         case back
         case hide
     }
     
-    let workoutResultHeader: HeaderViewForSelectedWorkout = {
+    let gradientLayer: CAGradientLayer = CAGradientLayer()
+    
+    let resultHeader: HeaderViewForSelectedWorkout = {
         let header = HeaderViewForSelectedWorkout()
         header.disableAutoresizingMask()
         return header
@@ -36,31 +37,14 @@ class SelectedWorkoutVC: UIViewController {
         return view
     }()
     
-    let blurEffectView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .myPaletteBlue
-        view.disableAutoresizingMask()
-        return view
-    }()
-    
-    let screenLogoView: UIImageView = {
+    let logoView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(named: "screenLogo")
         view.disableAutoresizingMask()
         return view
     }()
     
-    let backgroundView: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        view.alpha = 0
-        view.image = UIImage(named: "GymBackground")
-        view.contentMode = .scaleAspectFill
-        view.layer.cornerRadius = 10
-        return view
-    }()
-    
-    let screenshotBottomBar: WorkoutResultFooter = {
+    let bottomBar: WorkoutResultFooter = {
         let view = WorkoutResultFooter()
         view.disableAutoresizingMask()
         return view
@@ -84,30 +68,7 @@ class SelectedWorkoutVC: UIViewController {
         super.viewDidLoad()
         mapView.viewController = self
         
-        if let healthKitData = healthKitData {
-            
-            Task {
-                do {
-                    let coordinates = try await HealthKitManager.shared.getCoordinates(data: healthKitData)
-                    MapKitManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
-                    MapKitManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
-                    workoutResultHeader.healthKitData = healthKitData
-                    workoutResultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
-                    workoutResultHeader.activateMode(mode: .dynamicWorkout)
-                    blurEffectView.isHidden = true
-                    mapView.activateMode(mode: .drawWorkoutRoute)
-                    
-                } catch let error as HealthKitManager.HealthKitError {
-                    HealthKitManager.shared.errorHandling(error: error)
-                    workoutResultHeader.healthKitData = healthKitData
-                    workoutResultHeader.activateMode(mode: .staticWorkout)
-                    mapView.activateMode(mode: .checkLocationFar)
-                    
-                }
-            }
-            
-        }
-        
+        activateMode(mode: .initial)
         setViews()
         setConstraints()
         activateSubviewsHandlers()
@@ -119,21 +80,44 @@ class SelectedWorkoutVC: UIViewController {
     }
     
     private func activateSubviewsHandlers() {
-        screenshotBottomBar.buttonStateHandler = { self.activateMode(mode: $0) }
+        bottomBar.buttonStateHandler = { self.activateMode(mode: $0) }
     }
     
     private func activateMode(mode: Mode) {
         hapticGenerator.selectionChanged()
         
         switch mode {
+        case .initial:
+            if let healthKitData = healthKitData {
+                
+                Task {
+                    do {
+                        let coordinates = try await HealthKitManager.shared.getCoordinates(data: healthKitData)
+                        mapView.activateMode(mode: .drawWorkoutRoute(coordinates: coordinates.coordinates2D, scaleFactor: 3.0))
+                        resultHeader.healthKitData = healthKitData
+                        resultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
+                        resultHeader.activateMode(mode: .outdoorDynamicWorkout)
+                        gradientLayer.isHidden = true
+                        logoView.isHidden = true
+                        
+                    } catch let error as HealthKitManager.HealthKitError {
+                        HealthKitManager.shared.errorHandling(error: error)
+                        if healthKitData.totalDistance > 100 {
+                            resultHeader.healthKitData = healthKitData
+                            resultHeader.activateMode(mode: .indoorDynamicWorkout)
+                        } else {
+                            resultHeader.healthKitData = healthKitData
+                            resultHeader.activateMode(mode: .staticWorkout)
+                        }
+                    }
+                }
+            }
         case .screenshot:
-            ScreenschotHelper.shared.makeScreenShot(hiddenViews: [backButton, hideButton, screenshotBottomBar],
-                                                    viewController: self)
+            ScreenschotHelper.shared.makeScreenShot(hiddenViews: [backButton, hideButton, bottomBar], viewController: self)
         case .settings:
             print("settings")
         case .back:
             navigationController?.popViewController(animated: true)
-            backButton.isHidden = true
         case .hide:
             self.dismiss(animated: true)
         }
@@ -158,65 +142,47 @@ class SelectedWorkoutVC: UIViewController {
     //MARK: - SetViews
     
     private func setViews() {
-        
-        view.addSubview(backgroundView)
+
         view.addSubview(mapView)
-        view.addSubview(blurEffectView)
-        blurEffectView.addSubview(screenLogoView)
-        view.addSubview(workoutResultHeader)
-        workoutResultHeader.activateMode(mode: .dynamicWorkout)
+        view.layer.addSublayer(gradientLayer)
+        view.addSubview(logoView)
+        view.addSubview(resultHeader)
         view.addSubview(backButton)
         view.addSubview(hideButton)
-        view.addSubview(screenshotBottomBar)
+        view.addSubview(bottomBar)
 
         [backButton, hideButton].forEach { button in
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
         }
         
-        
-        gradientBackLayer.locations = [0.0, 0.4]
-        gradientBackLayer.frame = CGRect(x: 0,
-                                         y: 0,
-                                         width: UIScreen.main.bounds.width,
-                                         height: UIScreen.main.bounds.height)
-        
-        gradientBackLayer.colors = [UIColor.white.cgColor,
-                                    UIColor.myPaletteBlue.cgColor]
-        
-        blurEffectView.layer.insertSublayer(gradientBackLayer, at: 0)
+        gradientLayer.locations = [0.0, 0.4]
+        gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        gradientLayer.colors = [UIColor.white.cgColor, UIColor.myPaletteBlue.cgColor]
+
     }
     
     //MARK: - SetConstraints
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
             mapView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             mapView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            blurEffectView.topAnchor.constraint(equalTo: view.topAnchor),
-            blurEffectView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            blurEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            blurEffectView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 50),
             
-            screenLogoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            screenLogoView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 50),
+            bottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
+            bottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
+            bottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
-            screenshotBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
-            screenshotBottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
-            screenshotBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            screenshotBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
-            
-            workoutResultHeader.heightAnchor.constraint(equalToConstant: 210),
-            workoutResultHeader.widthAnchor.constraint(equalToConstant: .barWidth),
-            workoutResultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            workoutResultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: 120),
+            resultHeader.heightAnchor.constraint(equalToConstant: 210),
+            resultHeader.widthAnchor.constraint(equalToConstant: .barWidth),
+            resultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: 120),
             
             backButton.widthAnchor.constraint(equalToConstant: 42),
             backButton.heightAnchor.constraint(equalToConstant: 42),

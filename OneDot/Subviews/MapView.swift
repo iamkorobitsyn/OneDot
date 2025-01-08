@@ -13,9 +13,8 @@ import CoreLocation
 class MapView: MKMapView {
     
     enum Mode {
-        case checkLocationClose
-        case checkLocationFar
-        case drawWorkoutRoute
+        case checkLocation
+        case drawWorkoutRoute(coordinates: [CLLocationCoordinate2D], scaleFactor: Double)
     }
     
     var closeLocation = true
@@ -33,17 +32,13 @@ class MapView: MKMapView {
     func activateMode(mode: Mode) {
         switch mode {
             
-        case .checkLocationClose:
+        case .checkLocation:
             checkLocationEnabled()
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.delegate = self
-        case .checkLocationFar:
-            closeLocation.toggle()
-            checkLocationEnabled()
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.delegate = self
-        case .drawWorkoutRoute:
-            print("route")
+        case .drawWorkoutRoute(let coordinates, let scaleFactor):
+            MapKitManager.shared.drawMapPolyline(mapView: self, coordinates: coordinates)
+            MapKitManager.shared.setMapRegion(mapView: self, coordinates: coordinates, scaleFactor: scaleFactor)
         }
     }
     

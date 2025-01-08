@@ -212,7 +212,7 @@ extension MainVC {
     private func setViews() {
 
         view.addSubview(mapView)
-        mapView.activateMode(mode: .checkLocationClose)
+        mapView.activateMode(mode: .checkLocation)
         
         view.addSubview(headerBar)
         view.addSubview(notesView)
