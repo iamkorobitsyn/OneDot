@@ -64,6 +64,7 @@ class HeaderViewForSelectedWorkout: UIVisualEffectView {
     override init(effect: UIVisualEffect?) {
         super.init(effect: effect)
         self.effect = UIBlurEffect(style: .extraLight)
+        clipsToBounds = true
         layer.instance(border: true, corner: .max)
         contentView.addSubview(workoutNameLabel)
         contentView.addSubview(workoutDateLabel)

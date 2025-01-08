@@ -28,7 +28,7 @@ class SplashScreenView: UIView {
         
         backgroundColor = .none
         
-        gradientBackLayer.locations = [0.0, 1.0]
+        gradientBackLayer.locations = [0.0, 0.4]
         gradientBackLayer.frame = CGRect(x: 0,
                                          y: 0,
                                          width: UIScreen.main.bounds.width,
@@ -40,7 +40,7 @@ class SplashScreenView: UIView {
                                   width: UIScreen.main.bounds.width,
                                   height: UIScreen.main.bounds.height)
         
-        gradientBackLayer.colors = [UIColor.myPaletteGray.cgColor,
+        gradientBackLayer.colors = [UIColor.white.cgColor,
                                     UIColor.myPaletteBlue.cgColor]
         
         launchLogo.image = UIImage(named: "screenLogo")

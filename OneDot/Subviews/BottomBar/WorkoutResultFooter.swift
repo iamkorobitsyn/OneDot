@@ -69,7 +69,7 @@ class WorkoutResultFooter: UIVisualEffectView {
     }
     
     private func setViews() {
-        effect = UIBlurEffect(style: .light)
+        effect = UIBlurEffect(style: .extraLight)
         clipsToBounds = true
         layer.instance(border: true, corner: .max)
         

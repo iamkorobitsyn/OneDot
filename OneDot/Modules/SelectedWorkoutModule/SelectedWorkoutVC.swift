@@ -11,6 +11,8 @@ import Photos
 
 class SelectedWorkoutVC: UIViewController {
     
+    let gradientBackLayer: CAGradientLayer = CAGradientLayer()
+    
     var healthKitData: HealthKitData?
     
     let hapticGenerator = UISelectionFeedbackGenerator()
@@ -34,8 +36,16 @@ class SelectedWorkoutVC: UIViewController {
         return view
     }()
     
-    let blurEffectView: UIVisualEffectView = {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+    let blurEffectView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .myPaletteBlue
+        view.disableAutoresizingMask()
+        return view
+    }()
+    
+    let screenLogoView: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage(named: "screenLogo")
         view.disableAutoresizingMask()
         return view
     }()
@@ -152,6 +162,7 @@ class SelectedWorkoutVC: UIViewController {
         view.addSubview(backgroundView)
         view.addSubview(mapView)
         view.addSubview(blurEffectView)
+        blurEffectView.addSubview(screenLogoView)
         view.addSubview(workoutResultHeader)
         workoutResultHeader.activateMode(mode: .dynamicWorkout)
         view.addSubview(backButton)
@@ -161,6 +172,18 @@ class SelectedWorkoutVC: UIViewController {
         [backButton, hideButton].forEach { button in
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
         }
+        
+        
+        gradientBackLayer.locations = [0.0, 0.4]
+        gradientBackLayer.frame = CGRect(x: 0,
+                                         y: 0,
+                                         width: UIScreen.main.bounds.width,
+                                         height: UIScreen.main.bounds.height)
+        
+        gradientBackLayer.colors = [UIColor.white.cgColor,
+                                    UIColor.myPaletteBlue.cgColor]
+        
+        blurEffectView.layer.insertSublayer(gradientBackLayer, at: 0)
     }
     
     //MARK: - SetConstraints
@@ -181,6 +204,9 @@ class SelectedWorkoutVC: UIViewController {
             blurEffectView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
             blurEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             blurEffectView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            screenLogoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            screenLogoView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 50),
             
             screenshotBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
             screenshotBottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
