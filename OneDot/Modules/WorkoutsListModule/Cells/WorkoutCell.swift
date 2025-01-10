@@ -17,14 +17,15 @@ class WorkoutCell: UITableViewCell {
         let view = UIView()
         view.disableAutoresizingMask()
         view.backgroundColor = .myPaletteBlue
-        view.layer.cornerRadius = 4
+        view.layer.cornerRadius = 12
+        view.layer.cornerCurve = .continuous
         return view
     }()
     
     let detailsImage: UIImageView = {
         let imageView = UIImageView()
         imageView.disableAutoresizingMask()
-        imageView.image = UIImage(named: "SSDetails")
+        imageView.image = UIImage(named: "NavigationDetails")
         return imageView
     }()
     

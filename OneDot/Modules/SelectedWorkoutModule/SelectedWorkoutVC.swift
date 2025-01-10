@@ -18,7 +18,6 @@ class SelectedWorkoutVC: UIViewController {
     enum Mode {
         case initial
         case screenshot
-        case settings
         case back
         case hide
     }
@@ -39,39 +38,58 @@ class SelectedWorkoutVC: UIViewController {
     
     let logoView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "screenLogo")
         view.disableAutoresizingMask()
         return view
     }()
     
-    let bottomBar: WorkoutResultFooter = {
-        let view = WorkoutResultFooter()
-        view.disableAutoresizingMask()
-        return view
+    let bottleImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.disableAutoresizingMask()
+        imageView.image = UIImage(named: "bottleImage")
+        return imageView
     }()
+    
+    let dumbbellImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.disableAutoresizingMask()
+        imageView.image = UIImage(named: "dumbbellImage")
+        return imageView
+    }()
+    
+//    let bottomBar: WorkoutResultFooter = {
+//        let view = WorkoutResultFooter()
+//        view.disableAutoresizingMask()
+//        return view
+//    }()
     
     private let backButton: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "DSBackGray"), for: .normal)
+        button.setImage(UIImage(named: "NavigationBack"), for: .normal)
         return button
     }()
     
     private let hideButton: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "DSHideGray"), for: .normal)
+        button.setImage(UIImage(named: "NavigationHide"), for: .normal)
+        return button
+    }()
+    
+    private let screenshotButton: UIButton = {
+        let button = UIButton()
+        button.disableAutoresizingMask()
+        button.setImage(UIImage(named: "FooterScreenshot"), for: .normal)
         return button
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.viewController = self
-        
-        activateMode(mode: .initial)
+
         setViews()
-        setConstraints()
-        activateSubviewsHandlers()
+        activateMode(mode: .initial)
+//        activateSubviewsHandlers()
         
     }
     
@@ -79,9 +97,9 @@ class SelectedWorkoutVC: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
     
-    private func activateSubviewsHandlers() {
-        bottomBar.buttonStateHandler = { self.activateMode(mode: $0) }
-    }
+//    private func activateSubviewsHandlers() {
+//        bottomBar.buttonStateHandler = { self.activateMode(mode: $0) }
+//    }
     
     private func activateMode(mode: Mode) {
         hapticGenerator.selectionChanged()
@@ -98,10 +116,15 @@ class SelectedWorkoutVC: UIViewController {
                         resultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
                         resultHeader.activateMode(mode: .outdoorDynamicWorkout)
                         gradientLayer.isHidden = true
-                        logoView.isHidden = true
+                        bottleImage.isHidden = true
+                        dumbbellImage.isHidden = true
+                        logoView.image = UIImage(named: "workoutScreenLogoOrangeBlue")
+                        
+                        setConstraints(outdoorStatus: true)
                         
                     } catch let error as HealthKitManager.HealthKitError {
                         HealthKitManager.shared.errorHandling(error: error)
+                        logoView.image = UIImage(named: "workoutScreenLogoOrangeWhite")
                         if healthKitData.totalDistance > 100 {
                             resultHeader.healthKitData = healthKitData
                             resultHeader.activateMode(mode: .indoorDynamicWorkout)
@@ -109,13 +132,13 @@ class SelectedWorkoutVC: UIViewController {
                             resultHeader.healthKitData = healthKitData
                             resultHeader.activateMode(mode: .staticWorkout)
                         }
+                        
+                        setConstraints(outdoorStatus: false)
                     }
                 }
             }
         case .screenshot:
-            ScreenschotHelper.shared.makeScreenShot(hiddenViews: [backButton, hideButton, bottomBar], viewController: self)
-        case .settings:
-            print("settings")
+            ScreenschotHelper.shared.makeScreenShot(hiddenViews: [backButton, hideButton, screenshotButton], viewController: self)
         case .back:
             navigationController?.popViewController(animated: true)
         case .hide:
@@ -133,6 +156,8 @@ class SelectedWorkoutVC: UIViewController {
             activateMode(mode: .back)
         case hideButton:
             activateMode(mode: .hide)
+        case screenshotButton:
+            activateMode(mode: .screenshot)
         default:
             break
         }
@@ -146,12 +171,14 @@ class SelectedWorkoutVC: UIViewController {
         view.addSubview(mapView)
         view.layer.addSublayer(gradientLayer)
         view.addSubview(logoView)
+        view.addSubview(bottleImage)
+        view.addSubview(dumbbellImage)
         view.addSubview(resultHeader)
         view.addSubview(backButton)
         view.addSubview(hideButton)
-        view.addSubview(bottomBar)
+        view.addSubview(screenshotButton)
 
-        [backButton, hideButton].forEach { button in
+        [backButton, hideButton, screenshotButton].forEach { button in
             button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
         }
         
@@ -163,26 +190,38 @@ class SelectedWorkoutVC: UIViewController {
     
     //MARK: - SetConstraints
     
-    private func setConstraints() {
+    private func setConstraints(outdoorStatus: Bool) {
         NSLayoutConstraint.activate([
             
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
             mapView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100),
             mapView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            logoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logoView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 50),
-            
-            bottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
-            bottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
-            bottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            logoView.widthAnchor.constraint(equalToConstant: 80),
+            logoView.heightAnchor.constraint(equalToConstant: 40),
+            logoView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -70),
+            logoView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+          
+            screenshotButton.widthAnchor.constraint(equalToConstant: 42),
+            screenshotButton.heightAnchor.constraint(equalToConstant: 42),
+            screenshotButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            screenshotButton.centerYAnchor.constraint(equalTo: logoView.centerYAnchor),
             
             resultHeader.heightAnchor.constraint(equalToConstant: 210),
             resultHeader.widthAnchor.constraint(equalToConstant: .barWidth),
             resultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: 120),
+            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: outdoorStatus ? 120 : 160),
+            
+            bottleImage.widthAnchor.constraint(equalToConstant: 60),
+            bottleImage.heightAnchor.constraint(equalToConstant: 60),
+            bottleImage.bottomAnchor.constraint(equalTo: resultHeader.topAnchor),
+            bottleImage.leadingAnchor.constraint(equalTo: resultHeader.leadingAnchor, constant: 50),
+            
+            dumbbellImage.widthAnchor.constraint(equalToConstant: 60),
+            dumbbellImage.heightAnchor.constraint(equalToConstant: 60),
+            dumbbellImage.bottomAnchor.constraint(equalTo: resultHeader.topAnchor, constant: 17.5),
+            dumbbellImage.trailingAnchor.constraint(equalTo: resultHeader.trailingAnchor),
             
             backButton.widthAnchor.constraint(equalToConstant: 42),
             backButton.heightAnchor.constraint(equalToConstant: 42),

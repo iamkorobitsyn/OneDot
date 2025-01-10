@@ -24,13 +24,13 @@ class WorkoutHeaderButton: UIButton {
         switch state {
             
         case .outdoor:
-            setImage("DSOutdoorActive")
+            setImage("HeaderOutdoorSelected")
         case .indoor:
-            setImage("DSIndoorActive")
+            setImage("HeaderIndoorSelected")
         case .notesIndoor:
-            setImage("DSNoteIndoorActive")
+            setImage("HeaderNoteIndoorSelected")
         case .notesOutdoor:
-            setImage("DSNoteOutdoorActive")
+            setImage("HeaderNoteOutdoorSelected")
         }
     }
     
@@ -38,13 +38,13 @@ class WorkoutHeaderButton: UIButton {
         switch state {
             
         case .outdoor:
-            setImage("DSOutdoorInactive")
+            setImage("HeaderOutdoor")
         case .indoor:
-            setImage("DSIndoorInactive")
+            setImage("HeaderIndoor")
         case .notesIndoor:
-            setImage("DSNoteIndoorInactive")
+            setImage("HeaderNoteIndoorSelected")
         case .notesOutdoor:
-            setImage("DSNoteOutdoorInactive")
+            setImage("HeaderNoteOutdoor")
         }
     }
     

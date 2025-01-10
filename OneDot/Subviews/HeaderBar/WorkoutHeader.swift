@@ -19,7 +19,8 @@ class WorkoutHeader: UIVisualEffectView {
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 0
-        stack.layer.cornerRadius = CGFloat.iconSide / 2
+        stack.layer.cornerRadius = 14
+        stack.layer.cornerCurve = .continuous
         return stack
     }()
 
@@ -101,9 +102,9 @@ class WorkoutHeader: UIVisualEffectView {
             pickerView.updatePicker(outdoorIs: false, row: UserDefaultsManager.shared.pickerRowIndoorValue)
 
         case .calculations:
-            print("work")
+            print("calculations")
         case .settings:
-            print("work")
+            print("settings")
             
         }
     }
@@ -129,8 +130,8 @@ class WorkoutHeader: UIVisualEffectView {
             $0.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         }
         
-        calculatorButton.setImage(UIImage(named: "SSCalculator"), for: .normal)
-        settingsButton.setImage(UIImage(named: "SSSettings"), for: .normal)
+        calculatorButton.setImage(UIImage(named: "HeaderCalculator"), for: .normal)
+        settingsButton.setImage(UIImage(named: "HeaderSettings"), for: .normal)
         
         ShapeManager.shared.drawToolsStackSeparator(shape: toolsStackSeparator, view: self)
         ShapeManager.shared.drawLocatorDotShape(shape: locatorDotShape, view: locatorView)

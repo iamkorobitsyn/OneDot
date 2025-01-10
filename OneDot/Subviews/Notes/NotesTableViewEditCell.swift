@@ -44,14 +44,14 @@ class NotesTableViewEditCell: UITableViewCell {
     
     let placeholderImage: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "SSComment")
+        image.image = UIImage(named: "NoteDetails")
         return image
     }()
     
     let doneButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "SSCheckMark"), for: .normal)
-        button.setImage(UIImage(named: "SSCheckMark"), for: .highlighted)
+        button.setImage(UIImage(named: "noteCheckmark"), for: .normal)
+        button.setImage(UIImage(named: "noteCheckmark"), for: .highlighted)
         return button
     }()
 

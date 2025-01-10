@@ -62,7 +62,7 @@ extension HealthKitData {
         let stringDuration = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
         
         let kilometers = totalDistance / 1000
-        let roundedKilometers = String(format: "%.1f", kilometers)
+        let roundedKilometers = String(format: "%.2f", kilometers)
         
         let paceMin = pace / 60
         let paceSec = pace % 60

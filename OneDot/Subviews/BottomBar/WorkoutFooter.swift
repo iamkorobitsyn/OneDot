@@ -74,15 +74,15 @@ class WorkoutFooter: UIView {
             
         case .prepare:
             self.isHidden = false
-            setButtonImages(lButtonImg: "TBStart", rButtonImg: "TBProfile")
+            setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterProfile")
             leftButton.layer.removeAllAnimations()
             
         case .prepareToStart:
-            setButtonImages(lButtonImg: "TBStart", rButtonImg: "TBCancel")
+            setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterCancel")
             AnimationManager.shared.AnimateStartIcon(leftButton.layer)
             
         case .tracking:
-            setButtonImages(lButtonImg: "TBPause", rButtonImg: "TBStop")
+            setButtonImages(lButtonImg: "FooterPause", rButtonImg: "FooterStop")
             leftButton.layer.removeAllAnimations()
             
         case .hide:

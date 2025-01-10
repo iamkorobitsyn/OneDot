@@ -29,25 +29,25 @@ class NotesView: UIVisualEffectView {
     
     private let hideButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "DSHideGray"),
+        button.setBackgroundImage(UIImage(named: "NavigationHide"),
                                   for: .normal)
         return button
     }()
     
     private let addNoteButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "SSAdd"),
+        button.setBackgroundImage(UIImage(named: "NoteAdd"),
                                   for: .normal)
-        button.setBackgroundImage(UIImage(named: "SSAdd"),
+        button.setBackgroundImage(UIImage(named: "NoteAdd"),
                                   for: .highlighted)
         return button
     }()
     
     private let sortNoteButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "SSNotesSettings"),
+        button.setBackgroundImage(UIImage(named: "NoteSettings"),
                                   for: .normal)
-        button.setBackgroundImage(UIImage(named: "SSNotesSettings"),
+        button.setBackgroundImage(UIImage(named: "NoteSettings"),
                                   for: .highlighted)
         return button
     }()
@@ -55,9 +55,9 @@ class NotesView: UIVisualEffectView {
     private let checkMarkButton: UIButton = {
         let button = UIButton()
         button.isHidden = true
-        button.setImage(UIImage(named: "SSCheckMark"),
+        button.setImage(UIImage(named: "noteCheckmark"),
                                   for: .normal)
-        button.setImage(UIImage(named: "SSCheckMark"),
+        button.setImage(UIImage(named: "noteCheckmark"),
                                   for: .highlighted)
         button.layer.borderWidth = 0.5
         button.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.5).cgColor

@@ -32,7 +32,7 @@ class WorkoutsListVC: UIViewController {
     private let dismissButton: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "DSHideGray"), for: .normal)
+        button.setImage(UIImage(named: "NavigationHide"), for: .normal)
         return button
     }()
     
@@ -85,6 +85,7 @@ class WorkoutsListVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        isModalInPresentation = true
         workoutsListTable.dataSource = self
         workoutsListTable.delegate = self
         

@@ -43,7 +43,7 @@ class SplashScreenView: UIView {
         gradientBackLayer.colors = [UIColor.white.cgColor,
                                     UIColor.myPaletteBlue.cgColor]
         
-        launchLogo.image = UIImage(named: "screenLogo")
+        launchLogo.image = UIImage(named: "launchScreenLogo")
         
         layer.insertSublayer(gradientBackLayer, at: 0)
         layer.insertSublayer(frontLayer, at: 1)

@@ -896,6 +896,7 @@
 				INFOPLIST_FILE = OneDot/Recourses/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Мы используем данные Apple Health для предоставления персонализированных спортивных рекомендаций.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Приложению нужен доступ к вашей фото-библиотеке для загрузки изображений";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -925,6 +926,7 @@
 				INFOPLIST_FILE = OneDot/Recourses/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Мы используем данные Apple Health для предоставления персонализированных спортивных рекомендаций.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Приложению нужен доступ к вашей фото-библиотеке для загрузки изображений";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
