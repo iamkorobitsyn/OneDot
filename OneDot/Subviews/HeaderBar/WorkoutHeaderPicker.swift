@@ -112,8 +112,7 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         
         addSubview(title)
         title.clipsToBounds = true
-        title.instance(color: .myPaletteGray, alignment: .center, font: .thinCompLarge)
-        title.textColor = .myPaletteGray
+        title.instance(color: .myPaletteGray, alignment: .center, font: .condensedMax)
         
         ShapeManager.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }

@@ -32,28 +32,32 @@ class WorkoutCell: UITableViewCell {
     let workoutTypeLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .right, font: .boldCompExtraLarge)
+        label.instance(color: .white, alignment: .right, font: .boldMax)
+        label.numberOfLines = 2
         return label
     }()
     
     let workoutStatisticLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .right, font: .boldCompExtraLarge)
+        label.instance(color: .white, alignment: .right, font: .boldMax)
+        label.numberOfLines = 2
         return label
     }()
     
     let workoutDurationLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .left, font: .boldCompExtraLarge)
+        label.instance(color: .white, alignment: .left, font: .boldMax)
+        label.numberOfLines = 2
         return label
     }()
     
     let workoutDateLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .left, font: .boldCompExtraLarge)
+        label.instance(color: .white, alignment: .left, font: .boldMax)
+        label.numberOfLines = 2
         return label
     }()
     
@@ -91,25 +95,30 @@ class WorkoutCell: UITableViewCell {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
- 
             backView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             backView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             backView.widthAnchor.constraint(equalToConstant: .barWidth - 10),
             backView.heightAnchor.constraint(equalToConstant: 100),
             
-            workoutTypeLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            workoutTypeLabel.topAnchor.constraint(equalTo: backView.topAnchor, constant: 20),
-            workoutTypeLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
-            workoutDurationLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            workoutDurationLabel.topAnchor.constraint(equalTo: backView.topAnchor, constant: 20),
-            workoutDurationLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth  / 4),
+            workoutTypeLabel.widthAnchor.constraint(equalToConstant: 150),
+            workoutTypeLabel.heightAnchor.constraint(equalToConstant: 50),
+            workoutTypeLabel.topAnchor.constraint(equalTo: backView.topAnchor),
+            workoutTypeLabel.trailingAnchor.constraint(equalTo: centerXAnchor, constant: -35),
             
-            workoutStatisticLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            workoutStatisticLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -20),
-            workoutStatisticLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
-            workoutDateLabel.widthAnchor.constraint(equalToConstant: .barWidth / 4),
-            workoutDateLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -20),
-            workoutDateLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4),
+            workoutDurationLabel.widthAnchor.constraint(equalToConstant: 150),
+            workoutDurationLabel.heightAnchor.constraint(equalToConstant: 50),
+            workoutDurationLabel.topAnchor.constraint(equalTo: backView.topAnchor),
+            workoutDurationLabel.leadingAnchor.constraint(equalTo: centerXAnchor, constant: 35),
+            
+            workoutStatisticLabel.widthAnchor.constraint(equalToConstant: 150),
+            workoutStatisticLabel.heightAnchor.constraint(equalToConstant: 50),
+            workoutStatisticLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor),
+            workoutStatisticLabel.trailingAnchor.constraint(equalTo: centerXAnchor, constant: -35),
+            
+            workoutDateLabel.widthAnchor.constraint(equalToConstant: 150),
+            workoutDateLabel.heightAnchor.constraint(equalToConstant: 50),
+            workoutDateLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor),
+            workoutDateLabel.leadingAnchor.constraint(equalTo: centerXAnchor, constant: 35),
             
             detailsImage.widthAnchor.constraint(equalToConstant: 42),
             detailsImage.heightAnchor.constraint(equalToConstant: 42),

@@ -21,7 +21,7 @@ class NotesTableViewEditCell: UITableViewCell {
     private let containerView = {
         let view = UIVisualEffectView()
         view.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
-        view.layer.cornerRadius = 21
+        view.layer.cornerRadius = 12
         view.layer.cornerCurve = .continuous
         view.clipsToBounds = true
         view.layer.borderWidth = 0.3
@@ -34,11 +34,9 @@ class NotesTableViewEditCell: UITableViewCell {
         view.backgroundColor = .clear
         view.contentMode = .center
         view.clipsToBounds = true
+        view.tintColor = .myPaletteGold
         view.textColor = .gray
-        view.tintColor = .init(r: 255, g: 143, b: 69, alpha: 1)
-        view.font = UIFont.systemFont(ofSize: 20,
-                                            weight: .medium,
-                                            width: .compressed)
+        view.font = UIFont.systemFont(ofSize: 17, weight: .medium, width: .standard)
         return view
     }()
     
@@ -115,10 +113,11 @@ class NotesTableViewEditCell: UITableViewCell {
                                             constant: 60),
             textView.widthAnchor.constraint(equalToConstant:
                                             UIScreen.main.bounds.width / 1.9),
-            textView.heightAnchor.constraint(equalToConstant: 125),
-            textView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            textView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
-            textView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10),
+            textView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            textView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
+            textView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            textView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
+            
             
             placeholderImage.widthAnchor.constraint(equalToConstant: 42),
             placeholderImage.heightAnchor.constraint(equalToConstant: 42),

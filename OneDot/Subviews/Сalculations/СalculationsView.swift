@@ -254,8 +254,7 @@ class CalculationsView: UIVisualEffectView {
         button.disableAutoresizingMask()
         button.backgroundColor = .clear
         button.setTitleColor(titleColor, for: .normal)
-        button.titleLabel?.textAlignment = .center
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .bold)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .bold, width: .standard)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         hideButton.setImage(UIImage(named: "NavigationHide"), for: .normal)
     }
@@ -265,9 +264,7 @@ class CalculationsView: UIVisualEffectView {
     private func setTitle(label: UILabel, titleText: String) {
         contentView.addSubview(label)
         label.disableAutoresizingMask()
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 16, weight: .light, width: .compressed)
-        label.textColor = .myPaletteGray
+        label.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
         label.text = titleText
     }
     

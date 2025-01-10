@@ -119,7 +119,7 @@ class ShapeManager {
                                 endAngle: .pi * 2,
                                 clockwise: true)
         shape.path = path.cgPath
-        shape.fillColor = UIColor.myPaletteGold.cgColor
+        shape.fillColor = UIColor.lightGray.cgColor
         view.layer.addSublayer(shape)
     }
     

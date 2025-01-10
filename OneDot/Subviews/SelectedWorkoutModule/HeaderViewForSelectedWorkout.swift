@@ -21,14 +21,16 @@ class HeaderViewForSelectedWorkout: UIVisualEffectView {
     private let workoutNameLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .myPaletteGold, alignment: .left, font: .boldCompExtraLarge)
+        label.instance(color: .myPaletteGold, alignment: .left, font: .boldMid)
+        label.numberOfLines = 2
         return label
     }()
     
     private let workoutDateLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .myPaletteGray, alignment: .right, font: .boldCompExtraLarge)
+        label.instance(color: .myPaletteGray, alignment: .right, font: .boldMid)
+        label.numberOfLines = 2
         return label
     }()
 
@@ -145,33 +147,35 @@ class HeaderViewForSelectedWorkout: UIVisualEffectView {
         
         NSLayoutConstraint.activate([
             
-            workoutNameLabel.widthAnchor.constraint(equalToConstant: 150),
-            workoutNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25),
-            workoutNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 25),
-            
-            workoutDateLabel.widthAnchor.constraint(equalToConstant: 150),
-            workoutDateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25),
-            workoutDateLabel.topAnchor.constraint(equalTo: topAnchor, constant: 25),
-            
             workoutIcon.widthAnchor.constraint(equalToConstant: 25),
             workoutIcon.heightAnchor.constraint(equalToConstant: 25),
             workoutIcon.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            workoutIcon.topAnchor.constraint(equalTo: topAnchor, constant: 23.5)
+            workoutIcon.topAnchor.constraint(equalTo: topAnchor, constant: 23.5),
+            
+            workoutNameLabel.widthAnchor.constraint(equalToConstant: 165),
+            workoutNameLabel.heightAnchor.constraint(equalToConstant: 50),
+            workoutNameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -.barWidth / 4),
+            workoutNameLabel.centerYAnchor.constraint(equalTo: workoutIcon.centerYAnchor),
+            
+            workoutDateLabel.widthAnchor.constraint(equalToConstant: 165),
+            workoutDateLabel.heightAnchor.constraint(equalToConstant: 50),
+            workoutDateLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: .barWidth / 4),
+            workoutDateLabel.centerYAnchor.constraint(equalTo: workoutIcon.centerYAnchor)
         ])
         
         switch mode {
 
         case .outdoorDynamicWorkout, .indoorDynamicWorkout:
             NSLayoutConstraint.activate([
-                stackLDynamicMode.widthAnchor.constraint(equalToConstant: 150),
+                stackLDynamicMode.widthAnchor.constraint(equalToConstant: 165),
                 stackLDynamicMode.heightAnchor.constraint(equalToConstant: 120),
-                stackLDynamicMode.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25),
-                stackLDynamicMode.topAnchor.constraint(equalTo: workoutNameLabel.bottomAnchor, constant: 20),
+                stackLDynamicMode.centerXAnchor.constraint(equalTo: workoutNameLabel.centerXAnchor),
+                stackLDynamicMode.topAnchor.constraint(equalTo: workoutNameLabel.bottomAnchor, constant: 10),
                 
-                stackRDynamicMode.widthAnchor.constraint(equalToConstant: 150),
+                stackRDynamicMode.widthAnchor.constraint(equalToConstant: 165),
                 stackRDynamicMode.heightAnchor.constraint(equalToConstant: 120),
-                stackRDynamicMode.trailingAnchor.constraint(equalTo: workoutDateLabel.trailingAnchor),
-                stackRDynamicMode.topAnchor.constraint(equalTo: workoutDateLabel.bottomAnchor, constant: 20)
+                stackRDynamicMode.centerXAnchor.constraint(equalTo: workoutDateLabel.centerXAnchor),
+                stackRDynamicMode.topAnchor.constraint(equalTo: workoutDateLabel.bottomAnchor, constant: 10)
             ])
         case .staticWorkout:
             NSLayoutConstraint.activate([

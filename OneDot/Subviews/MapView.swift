@@ -81,4 +81,39 @@ extension MapView: MKMapViewDelegate {
         renderer.lineWidth = 5
         return renderer
     }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            if annotation is MKUserLocation {
+                // Убираем стандартный пин, чтобы использовать кастомный
+                return nil
+            }
+            
+            return nil
+        }
+        
+        // Метод для кастомного отображения пина
+        func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+            // Убираем старое кастомное аннотационное представление, если оно было
+            if let existingView = mapView.view(for: userLocation) {
+                mapView.removeAnnotation(existingView.annotation!)
+            }
+            
+            // Создаём кастомный аннотационный вид
+            let annotationView = MKAnnotationView(annotation: userLocation, reuseIdentifier: "userLocationPin")
+            
+            // Устанавливаем стандартный пин (который рисует система)
+            annotationView.image = UIImage(systemName: "location.fill") // Можно использовать стандартный или свой пин
+            
+            // Добавляем цветной круг в центр пина
+            let circleView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 16))
+            circleView.layer.cornerRadius = 8
+            circleView.backgroundColor = .red // Здесь можно выбрать любой цвет
+            annotationView.addSubview(circleView)
+            
+            // Центрируем круг в пине
+            circleView.center = annotationView.center
+            
+            // Добавляем кастомное представление на карту
+            mapView.addAnnotation(userLocation)
+        }
 }

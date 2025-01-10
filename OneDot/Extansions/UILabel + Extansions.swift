@@ -11,13 +11,13 @@ import UIKit
 extension UILabel {
     
     enum Font {
-        case thinCompSmall
-        case thinCompMedium
-        case thinCompLarge
-        case boldCompSmall
-        case boldCompMedium
-        case boldCompLarge
-        case boldCompExtraLarge
+        case condensedMin
+        case condensedMid
+        case condensedMax
+        case standartMid
+        case boldMid
+        case boldMax
+        case boldExtra
     }
     
     func instance(color: UIColor, alignment: NSTextAlignment, font: Font) {
@@ -26,20 +26,20 @@ extension UILabel {
         textAlignment = alignment
         
         switch font {
-        case .thinCompSmall:
-            self.font = UIFont.systemFont(ofSize: 14, weight: .light, width: .compressed)
-        case .thinCompMedium:
-            self.font = UIFont.systemFont(ofSize: 18, weight: .light, width: .compressed)
-        case .thinCompLarge:
-            self.font = UIFont.systemFont(ofSize: 22, weight: .light, width: .compressed)
-        case .boldCompSmall:
-            self.font = UIFont.systemFont(ofSize: 18, weight: .medium, width: .compressed)
-        case .boldCompMedium:
-            self.font = UIFont.systemFont(ofSize: 20, weight: .medium, width: .compressed)
-        case .boldCompLarge:
-            self.font = UIFont.systemFont(ofSize: 22, weight: .medium, width: .compressed)
-        case .boldCompExtraLarge:
-            self.font = UIFont.systemFont(ofSize: 24, weight: .medium, width: .compressed)
+        case .condensedMin:
+            self.font = UIFont.systemFont(ofSize: 13, weight: .light, width: .condensed)
+        case .condensedMid:
+            self.font = UIFont.systemFont(ofSize: 17, weight: .light, width: .condensed)
+        case .condensedMax:
+            self.font = UIFont.systemFont(ofSize: 21, weight: .light, width: .condensed)
+        case .standartMid:
+            self.font = UIFont.systemFont(ofSize: 17, weight: .medium, width: .standard)
+        case .boldMid:
+            self.font = UIFont.systemFont(ofSize: 17, weight: .bold, width: .standard)
+        case .boldMax:
+            self.font = UIFont.systemFont(ofSize: 19, weight: .bold, width: .standard)
+        case .boldExtra:
+            self.font = UIFont.systemFont(ofSize: 40, weight: .bold, width: .standard)
         }
     }
 }

@@ -44,17 +44,17 @@ class AverageStatisticCell: UICollectionViewCell {
     func activateMode(mode: Mode) {
         switch mode {
         case .timeAndCalories:
-            leadingResultModule.activateMode(axis: .verticalUpscale, mode: .time, text: "05:43:47")
-            trailingResultModule.activateMode(axis: .verticalUpscale, mode: .calories, text: "3457")
+            leadingResultModule.activateMode(axis: .vertical, mode: .time, text: "05:43:47")
+            trailingResultModule.activateMode(axis: .vertical, mode: .calories, text: "3457")
         case .distanceAndClimb:
-            leadingResultModule.activateMode(axis: .verticalUpscale, mode: .distance, text: "56.4 km")
-            trailingResultModule.activateMode(axis: .verticalUpscale, mode: .climb, text: "459 m")
+            leadingResultModule.activateMode(axis: .vertical, mode: .distance, text: "56.4 km")
+            trailingResultModule.activateMode(axis: .vertical, mode: .climb, text: "459 m")
         case .heartRateAndPace:
-            leadingResultModule.activateMode(axis: .verticalUpscale, mode: .heartRate, text: "147")
-            trailingResultModule.activateMode(axis: .verticalUpscale, mode: .pace, text: "5:43 / km")
+            leadingResultModule.activateMode(axis: .vertical, mode: .heartRate, text: "147")
+            trailingResultModule.activateMode(axis: .vertical, mode: .pace, text: "5:43 / km")
         case .stepsAndCadence:
-            leadingResultModule.activateMode(axis: .verticalUpscale, mode: .steps, text: "16457")
-            trailingResultModule.activateMode(axis: .verticalUpscale, mode: .cadence, text: "167")
+            leadingResultModule.activateMode(axis: .vertical, mode: .steps, text: "16457")
+            trailingResultModule.activateMode(axis: .vertical, mode: .cadence, text: "167")
         }
     }
     

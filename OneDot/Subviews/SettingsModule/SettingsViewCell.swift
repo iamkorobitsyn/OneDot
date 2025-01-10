@@ -60,8 +60,7 @@ class SettingsViewCell: UITableViewCell {
     private func setViews(mode: Mode) {
         contentView.addSubview(titleLabel)
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .light, width: .compressed)
-        titleLabel.textColor = .myPaletteGray
+        titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
         
         switcher.onTintColor = .myPaletteGold
         segmenter.selectedSegmentTintColor = .myPaletteGold

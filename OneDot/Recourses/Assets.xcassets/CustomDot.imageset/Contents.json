@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "CustomDot.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
