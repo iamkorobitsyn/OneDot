@@ -50,9 +50,9 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
     private func getTitle(row: Int) {
         
         if outdoorLocation {
-            title.text = exercises.get(.street)[row].titleName
+            title.text = exercises.get(.street)[row].name
         } else {
-            title.text = exercises.get(.room)[row].titleName
+            title.text = exercises.get(.room)[row].name
         }
     }
     

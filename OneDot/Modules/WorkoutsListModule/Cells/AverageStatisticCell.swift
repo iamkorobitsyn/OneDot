@@ -10,14 +10,14 @@ import UIKit
 
 class AverageStatisticCell: UICollectionViewCell {
 
-    let leadingResultModule: StackModuleForResultsWorkout = {
-        let module = StackModuleForResultsWorkout()
+    let leadingResultModule: DescriptionModule = {
+        let module = DescriptionModule()
         module.disableAutoresizingMask()
         return module
     }()
     
-    let trailingResultModule: StackModuleForResultsWorkout = {
-        let module = StackModuleForResultsWorkout()
+    let trailingResultModule: DescriptionModule = {
+        let module = DescriptionModule()
         module.disableAutoresizingMask()
         return module
     }()
@@ -44,17 +44,17 @@ class AverageStatisticCell: UICollectionViewCell {
     func activateMode(mode: Mode) {
         switch mode {
         case .timeAndCalories:
-            leadingResultModule.activateMode(axis: .vertical, mode: .time, text: "05:43:47")
-            trailingResultModule.activateMode(axis: .vertical, mode: .calories, text: "3457")
+            leadingResultModule.activateMode(axis: .vertical, mode: .timeDescription, text: "05:43:47")
+            trailingResultModule.activateMode(axis: .vertical, mode: .caloriesDescription, text: "3457")
         case .distanceAndClimb:
-            leadingResultModule.activateMode(axis: .vertical, mode: .distance, text: "56.4 km")
-            trailingResultModule.activateMode(axis: .vertical, mode: .climb, text: "459 m")
+            leadingResultModule.activateMode(axis: .vertical, mode: .distanceDescription, text: "56.4 km")
+            trailingResultModule.activateMode(axis: .vertical, mode: .climbDescription, text: "459 m")
         case .heartRateAndPace:
-            leadingResultModule.activateMode(axis: .vertical, mode: .heartRate, text: "147")
-            trailingResultModule.activateMode(axis: .vertical, mode: .pace, text: "5:43 / km")
+            leadingResultModule.activateMode(axis: .vertical, mode: .heartRateDescription, text: "147")
+            trailingResultModule.activateMode(axis: .vertical, mode: .paceDescription, text: "5:43 / km")
         case .stepsAndCadence:
-            leadingResultModule.activateMode(axis: .vertical, mode: .steps, text: "16457")
-            trailingResultModule.activateMode(axis: .vertical, mode: .cadence, text: "167")
+            leadingResultModule.activateMode(axis: .vertical, mode: .stepsDescription, text: "16457")
+            trailingResultModule.activateMode(axis: .vertical, mode: .cadenceDescription, text: "167")
         }
     }
     
@@ -78,7 +78,7 @@ class AverageStatisticCell: UICollectionViewCell {
             leadingResultModule.centerYAnchor.constraint(equalTo: centerYAnchor),
             leadingResultModule.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -75),
             
-            trailingResultModule.widthAnchor.constraint(equalToConstant: 110),
+            trailingResultModule.widthAnchor.constraint(equalToConstant: 100),
             trailingResultModule.heightAnchor.constraint(equalToConstant: 100),
             trailingResultModule.centerYAnchor.constraint(equalTo: centerYAnchor),
             trailingResultModule.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 75)

@@ -28,6 +28,12 @@ class MainVC: UIViewController, CAAnimationDelegate {
         return view
     }()
     
+    let trackingView: TrackingView = {
+        let view = TrackingView()
+        view.disableAutoresizingMask()
+        return view
+    }()
+    
     let notesView: NotesView = {
         let view = NotesView()
         view.effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
@@ -143,18 +149,21 @@ class MainVC: UIViewController, CAAnimationDelegate {
             headerBar.activateMode(mode: .outdoor)
             notesView.activateMode(mode: .hide)
             calculationsView.activateMode(mode: .hide)
+            calculatorBottomBar.activateMode(mode: .hide)
             settingsView.activateMode(mode: .hide)
             workoutBottomBar.activateMode(mode: .prepare)
         case .outdoorNotes:
             headerBar.activateMode(mode: .outdoorNotes)
             notesView.activateMode(mode: .outdoor)
             calculationsView.activateMode(mode: .hide)
+            calculatorBottomBar.activateMode(mode: .hide)
             settingsView.activateMode(mode: .hide)
         case .indoor:
             UserDefaultsManager.shared.outdoorStatusValue = false
             headerBar.activateMode(mode: .indoor)
             notesView.activateMode(mode: .indoor)
             calculationsView.activateMode(mode: .hide)
+            calculatorBottomBar.activateMode(mode: .hide)
             settingsView.activateMode(mode: .hide)
             workoutBottomBar.activateMode(mode: .prepare)
         case .notesHide:
@@ -174,19 +183,21 @@ class MainVC: UIViewController, CAAnimationDelegate {
             settingsView.activateMode(mode: .active)
             calculationsView.activateMode(mode: .hide)
             workoutBottomBar.activateMode(mode: .hide)
+            calculatorBottomBar.activateMode(mode: .hide)
         case .settingsHide:
             settingsView.activateMode(mode: .hide)
             workoutBottomBar.activateMode(mode: .prepare)
         case .prepare:
             workoutBottomBar.activateMode(mode: .prepare)
+            trackingView.activateMode(mode: .hide)
         case .prepareToStart:
             workoutBottomBar.activateMode(mode: .prepareToStart)
+            trackingView.activateMode(mode: .prepare)
         case .tracking:
             workoutBottomBar.activateMode(mode: .tracking)
         case .pickerDistance:
             calculatorBottomBar.activateMode(mode: .pickerDistance)
             calculationsView.activateMode(mode: .distance)
-            
         case .pickerSpeed:
             calculationsView.activateMode(mode: .speed)
             calculatorBottomBar.activateMode(mode: .pickerSpeed)
@@ -216,6 +227,7 @@ extension MainVC {
         
         view.addSubview(headerBar)
         view.addSubview(notesView)
+        view.addSubview(trackingView)
         view.addSubview(calculationsView)
         view.addSubview(settingsView)
         view.addSubview(workoutBottomBar)
@@ -253,6 +265,11 @@ extension MainVC {
             notesView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat.headerBarHeight + 70),
             notesView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             notesView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            
+            trackingView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            trackingView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            trackingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            trackingView.topAnchor.constraint(equalTo: headerBar.bottomAnchor, constant: 10),
             
             workoutBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
             workoutBottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),

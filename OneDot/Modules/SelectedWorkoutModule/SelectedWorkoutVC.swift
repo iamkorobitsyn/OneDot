@@ -24,8 +24,8 @@ class SelectedWorkoutVC: UIViewController {
     
     let gradientLayer: CAGradientLayer = CAGradientLayer()
     
-    let resultHeader: HeaderViewForSelectedWorkout = {
-        let header = HeaderViewForSelectedWorkout()
+    let resultHeader: SelectedWorkoutHeader = {
+        let header = SelectedWorkoutHeader()
         header.disableAutoresizingMask()
         return header
     }()

@@ -39,7 +39,7 @@ extension UILabel {
         case .boldMax:
             self.font = UIFont.systemFont(ofSize: 19, weight: .bold, width: .standard)
         case .boldExtra:
-            self.font = UIFont.systemFont(ofSize: 40, weight: .bold, width: .standard)
+            self.font = UIFont.systemFont(ofSize: 29, weight: .bold, width: .standard)
         }
     }
 }
