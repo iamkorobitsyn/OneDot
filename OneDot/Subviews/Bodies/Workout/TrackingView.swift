@@ -86,27 +86,27 @@ class TrackingView: UIVisualEffectView {
             
             distanceTrackingView.widthAnchor.constraint(equalToConstant: 160),
             distanceTrackingView.heightAnchor.constraint(equalToConstant: 100),
-            distanceTrackingView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 100),
+            distanceTrackingView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 80),
             distanceTrackingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -80),
             
             paceTrackingView.widthAnchor.constraint(equalToConstant: 160),
             paceTrackingView.heightAnchor.constraint(equalToConstant: 100),
-            paceTrackingView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 100),
+            paceTrackingView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 80),
             paceTrackingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: 80),
             
             crossSeparator.widthAnchor.constraint(equalToConstant: 42),
             crossSeparator.heightAnchor.constraint(equalToConstant: 42),
             crossSeparator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            crossSeparator.topAnchor.constraint(equalTo: distanceTrackingView.bottomAnchor, constant: 22),
+            crossSeparator.topAnchor.constraint(equalTo: distanceTrackingView.bottomAnchor, constant: 10),
             
             caloriesTrackingView.widthAnchor.constraint(equalToConstant: 160),
             caloriesTrackingView.heightAnchor.constraint(equalToConstant: 100),
-            caloriesTrackingView.topAnchor.constraint(equalTo: distanceTrackingView.bottomAnchor, constant: 80),
+            caloriesTrackingView.topAnchor.constraint(equalTo: crossSeparator.bottomAnchor, constant: 10),
             caloriesTrackingView.centerXAnchor.constraint(equalTo: distanceTrackingView.centerXAnchor),
             
             heartrateTrackingView.widthAnchor.constraint(equalToConstant: 160),
             heartrateTrackingView.heightAnchor.constraint(equalToConstant: 100),
-            heartrateTrackingView.topAnchor.constraint(equalTo: paceTrackingView.bottomAnchor, constant: 80),
+            heartrateTrackingView.topAnchor.constraint(equalTo: crossSeparator.bottomAnchor, constant: 10),
             heartrateTrackingView.centerXAnchor.constraint(equalTo: paceTrackingView.centerXAnchor),
         ])
     }

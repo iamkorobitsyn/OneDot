@@ -32,7 +32,7 @@ class WorkoutCell: UITableViewCell {
     let workoutTypeLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .right, font: .boldMax)
+        label.instance(color: .white, alignment: .right, font: .standartMax)
         label.numberOfLines = 2
         return label
     }()
@@ -40,7 +40,7 @@ class WorkoutCell: UITableViewCell {
     let workoutStatisticLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .right, font: .boldMax)
+        label.instance(color: .white, alignment: .right, font: .standartMax)
         label.numberOfLines = 2
         return label
     }()
@@ -48,7 +48,7 @@ class WorkoutCell: UITableViewCell {
     let workoutDurationLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .left, font: .boldMax)
+        label.instance(color: .white, alignment: .left, font: .standartMax)
         label.numberOfLines = 2
         return label
     }()
@@ -56,7 +56,7 @@ class WorkoutCell: UITableViewCell {
     let workoutDateLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .left, font: .boldMax)
+        label.instance(color: .white, alignment: .left, font: .standartMax)
         label.numberOfLines = 2
         return label
     }()

@@ -77,8 +77,8 @@ class DescriptionModule: UIView {
             resultLabel.textAlignment = .center
             switch mode {
             case .distanceTracking, .paceTracking, .caloriesTracking, .heartRateTracking:
-                titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMax)
-                resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .boldExtra)
+                titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
+                resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .standartExtra)
             default:
                 titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
                 resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)

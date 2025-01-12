@@ -21,7 +21,7 @@ class SelectedWorkoutHeader: UIVisualEffectView {
     private let workoutNameLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .myPaletteGold, alignment: .left, font: .boldMid)
+        label.instance(color: .myPaletteGold, alignment: .left, font: .standartMax)
         label.numberOfLines = 2
         return label
     }()
@@ -29,7 +29,7 @@ class SelectedWorkoutHeader: UIVisualEffectView {
     private let workoutDateLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
-        label.instance(color: .myPaletteGray, alignment: .right, font: .boldMid)
+        label.instance(color: .myPaletteGray, alignment: .right, font: .standartMax)
         label.numberOfLines = 2
         return label
     }()

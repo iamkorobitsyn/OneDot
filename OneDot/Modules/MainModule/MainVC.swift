@@ -66,8 +66,14 @@ class MainVC: UIViewController, CAAnimationDelegate {
         return view
     }()
 
-    let splashScreenView: SplashScreenView = {
-        let view = SplashScreenView()
+    let StartSplashScreen: StartSplachScreen = {
+        let view = StartSplachScreen()
+        view.disableAutoresizingMask()
+        return view
+    }()
+    
+    let workoutSplashScreen: WorkoutSplashScreen = {
+        let view = WorkoutSplashScreen()
         view.disableAutoresizingMask()
         return view
     }()
@@ -115,15 +121,15 @@ class MainVC: UIViewController, CAAnimationDelegate {
     //MARK: - SplashScreenAnimations
     
     override func viewDidAppear(_ animated: Bool) {
-        AnimationManager.shared.splashScreenAnimate(splashScreenView.frontLayer,
-                                            splashScreenView.gradientBackLayer,
-                                            splashScreenView.launchLogo,
+        AnimationManager.shared.splashScreenAnimate(StartSplashScreen.frontLayer,
+                                            StartSplashScreen.gradientBackLayer,
+                                            StartSplashScreen.launchLogo,
                                             delegate: self)
     }
     
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         if flag {
-            splashScreenView.alpha = 0
+            StartSplashScreen.alpha = 0
         }
     }
     
@@ -190,11 +196,14 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .prepare:
             workoutBottomBar.activateMode(mode: .prepare)
             trackingView.activateMode(mode: .hide)
+            workoutSplashScreen.activateMode(mode: .hide)
         case .prepareToStart:
+            workoutSplashScreen.activateMode(mode: .prepareToStart)
             workoutBottomBar.activateMode(mode: .prepareToStart)
             trackingView.activateMode(mode: .prepare)
         case .tracking:
             workoutBottomBar.activateMode(mode: .tracking)
+            workoutSplashScreen.activateMode(mode: .hide)
         case .pickerDistance:
             calculatorBottomBar.activateMode(mode: .pickerDistance)
             calculationsView.activateMode(mode: .distance)
@@ -230,10 +239,10 @@ extension MainVC {
         view.addSubview(trackingView)
         view.addSubview(calculationsView)
         view.addSubview(settingsView)
+        view.addSubview(workoutSplashScreen)
         view.addSubview(workoutBottomBar)
         view.addSubview(calculatorBottomBar)
-        
-        view.addSubview(splashScreenView)
+        view.addSubview(StartSplashScreen)
     }
     
     //MARK: - SetConstraints
@@ -281,10 +290,15 @@ extension MainVC {
             calculatorBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             calculatorBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
-            splashScreenView.topAnchor.constraint(equalTo: view.topAnchor),
-            splashScreenView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            splashScreenView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            splashScreenView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            StartSplashScreen.topAnchor.constraint(equalTo: view.topAnchor),
+            StartSplashScreen.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            StartSplashScreen.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            StartSplashScreen.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            
+            workoutSplashScreen.topAnchor.constraint(equalTo: view.topAnchor),
+            workoutSplashScreen.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            workoutSplashScreen.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            workoutSplashScreen.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
     }
 }

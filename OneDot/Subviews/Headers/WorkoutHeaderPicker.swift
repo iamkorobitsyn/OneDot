@@ -50,9 +50,9 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
     private func getTitle(row: Int) {
         
         if outdoorLocation {
-            title.text = exercises.get(.street)[row].name
+            title.text = exercises.get(.street)[row].titleName
         } else {
-            title.text = exercises.get(.room)[row].name
+            title.text = exercises.get(.room)[row].titleName
         }
     }
     
@@ -112,7 +112,7 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         
         addSubview(title)
         title.clipsToBounds = true
-        title.instance(color: .myPaletteGray, alignment: .center, font: .condensedMax)
+        title.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)
         
         ShapeManager.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }
