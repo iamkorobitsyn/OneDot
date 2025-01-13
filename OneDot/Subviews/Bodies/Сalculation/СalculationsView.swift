@@ -11,7 +11,7 @@ class CalculationsView: UIVisualEffectView {
     
     typealias UD = UserDefaultsManager
     
-    var buttonStateHandler: ((MainVC.Mode) -> Void)?
+    var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
     
     enum Mode {
         case distance,

@@ -9,7 +9,7 @@ import UIKit
 
 class SettingsView: UIVisualEffectView {
     
-    var buttonStateHandler: ((MainVC.Mode) -> Void)?
+    var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
     
     enum Mode {
         case active

@@ -8,7 +8,7 @@
 import UIKit
 import HealthKit
 
-class WorkoutsListVC: UIViewController {
+class WorkoutHistoryVC: UIViewController {
     
     private enum Mode {
         case workouts
@@ -181,7 +181,7 @@ class WorkoutsListVC: UIViewController {
 }
 
 
-extension WorkoutsListVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension WorkoutHistoryVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: view.frame.width, height: 200)
@@ -210,7 +210,7 @@ extension WorkoutsListVC: UICollectionViewDataSource, UICollectionViewDelegate, 
 }
 
 
-extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
+extension WorkoutHistoryVC: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource
        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -237,9 +237,9 @@ extension WorkoutsListVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let selectedWorkoutVC = SelectedWorkoutVC()
-        self.navigationController?.pushViewController(selectedWorkoutVC, animated: true)
-        selectedWorkoutVC.healthKitData = healthKitDataList?[indexPath.row]
+        let workoutFocusVC = WorkoutFocusVC()
+        self.navigationController?.pushViewController(workoutFocusVC, animated: true)
+        workoutFocusVC.healthKitData = healthKitDataList?[indexPath.row]
     }
 }
 

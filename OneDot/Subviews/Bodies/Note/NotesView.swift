@@ -19,7 +19,7 @@ class NotesView: UIVisualEffectView {
     }
     
     
-    var buttonStateHandler: ((MainVC.Mode) -> Void)?
+    var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
     
     private var notes: [Note] = []
     

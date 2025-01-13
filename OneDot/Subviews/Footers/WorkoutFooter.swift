@@ -9,7 +9,7 @@ import UIKit
 
 class WorkoutFooter: UIView {
     
-    var buttonStateHandler: ((MainVC.Mode)->())?
+    var buttonStateHandler: ((DashboardVC.Mode)->())?
     
     enum Mode {
         case prepare
@@ -74,7 +74,7 @@ class WorkoutFooter: UIView {
             
         case .prepare:
             self.isHidden = false
-            setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterProfile")
+            setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterList")
             leftButton.layer.removeAllAnimations()
             
         case .prepareToStart:

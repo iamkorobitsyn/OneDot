@@ -12,7 +12,7 @@ class CalculationFooter: UIView {
     
     private typealias UD = UserDefaultsManager
     
-    var buttonStateHandler: ((MainVC.Mode)->())?
+    var buttonStateHandler: ((DashboardVC.Mode)->())?
     
     enum Mode {
         case pickerDistance

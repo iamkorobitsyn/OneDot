@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import Photos
 
-class SelectedWorkoutVC: UIViewController {
+class WorkoutFocusVC: UIViewController {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
 

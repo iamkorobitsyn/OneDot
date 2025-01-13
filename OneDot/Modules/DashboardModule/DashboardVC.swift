@@ -8,7 +8,7 @@
 import UIKit
 import MapKit
 
-class MainVC: UIViewController, CAAnimationDelegate {
+class DashboardVC: UIViewController, CAAnimationDelegate {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
     
@@ -72,10 +72,9 @@ class MainVC: UIViewController, CAAnimationDelegate {
         return view
     }()
     
-    let workoutSplashScreen: WorkoutSplashScreen = {
-        let view = WorkoutSplashScreen()
-        view.disableAutoresizingMask()
-        return view
+    let workoutModeVC: WorkoutModeVC = {
+        let vc = WorkoutModeVC()
+        return vc
     }()
 
     enum Mode {
@@ -196,14 +195,16 @@ class MainVC: UIViewController, CAAnimationDelegate {
         case .prepare:
             workoutBottomBar.activateMode(mode: .prepare)
             trackingView.activateMode(mode: .hide)
-            workoutSplashScreen.activateMode(mode: .hide)
+            workoutModeVC.activateMode(mode: .hide)
         case .prepareToStart:
-            workoutSplashScreen.activateMode(mode: .prepareToStart)
+            workoutModeVC.activateMode(mode: .prepareToStart)
             workoutBottomBar.activateMode(mode: .prepareToStart)
             trackingView.activateMode(mode: .prepare)
+            workoutModeVC.modalPresentationStyle = .fullScreen
+            present(workoutModeVC, animated: false)
         case .tracking:
             workoutBottomBar.activateMode(mode: .tracking)
-            workoutSplashScreen.activateMode(mode: .hide)
+            workoutModeVC.activateMode(mode: .hide)
         case .pickerDistance:
             calculatorBottomBar.activateMode(mode: .pickerDistance)
             calculationsView.activateMode(mode: .distance)
@@ -217,7 +218,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
             calculationsView.activateMode(mode: .time)
             calculatorBottomBar.activateMode(mode: .PickerTime)
         case .transitionToProfile:
-            let WorkoutsVC = WorkoutsListVC()
+            let WorkoutsVC = WorkoutHistoryVC()
             WorkoutsVC.healthKitDataList = healthKitDataList
             let navigationVC = UINavigationController(rootViewController: WorkoutsVC)
             present(navigationVC, animated: true)
@@ -225,7 +226,7 @@ class MainVC: UIViewController, CAAnimationDelegate {
     }
 }
 
-extension MainVC {
+extension DashboardVC {
     
     //MARK: - SetViews
     
@@ -239,7 +240,6 @@ extension MainVC {
         view.addSubview(trackingView)
         view.addSubview(calculationsView)
         view.addSubview(settingsView)
-        view.addSubview(workoutSplashScreen)
         view.addSubview(workoutBottomBar)
         view.addSubview(calculatorBottomBar)
         view.addSubview(StartSplashScreen)
@@ -293,12 +293,7 @@ extension MainVC {
             StartSplashScreen.topAnchor.constraint(equalTo: view.topAnchor),
             StartSplashScreen.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             StartSplashScreen.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            StartSplashScreen.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            
-            workoutSplashScreen.topAnchor.constraint(equalTo: view.topAnchor),
-            workoutSplashScreen.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            workoutSplashScreen.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            workoutSplashScreen.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+            StartSplashScreen.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
     }
 }

@@ -10,7 +10,7 @@ import AudioToolbox
 
 class WorkoutHeader: UIVisualEffectView {
     
-    var buttonStateHandler: ((MainVC.Mode)->())?
+    var buttonStateHandler: ((DashboardVC.Mode)->())?
     
     private let locationStack: UIStackView = {
         let stack = UIStackView()
