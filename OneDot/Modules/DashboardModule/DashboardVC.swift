@@ -16,8 +16,6 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     
     var healthKitDataList: [HealthKitData]?
     
-    var selectedWorkout: Workout?
-    
     let mapView: MapView = {
         let view = MapView()
         view.disableAutoresizingMask()
@@ -29,7 +27,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         view.disableAutoresizingMask()
         return view
     }()
-    
+
     let trackingView: TrackingView = {
         let view = TrackingView()
         view.disableAutoresizingMask()
@@ -148,7 +146,6 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         calculationsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         notesView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         settingsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        headerBar.pickerView.selectedWorkoutSender = { [weak self] in self?.selectedWorkout = $0 }
     }
     
     //MARK: - ActivateMode
@@ -201,8 +198,8 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             settingsView.activateMode(mode: .hide)
             workoutFooter.activateMode(mode: .ready)
         case .transitionToWorkoutMode:
-            let workoutModeVC = WorkoutModeVC()
-            workoutModeVC.currentWorkout = selectedWorkout
+            let workout = headerBar.pickerView.updateCurrentWorkout()
+            let workoutModeVC = WorkoutModeVC(currentWorkout: workout)
             workoutModeVC.modalPresentationStyle = .fullScreen
             present(workoutModeVC, animated: false)
         case .pickerDistance:

@@ -11,7 +11,6 @@ import UIKit
 class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
 
     let factoryWorkouts = FactoryWorkouts()
-    var selectedWorkoutSender: ((Workout) -> ())?
     var geoTrackingState = UserDefaultsManager.shared.isGeoTracking
 
     let picker: UIPickerView = UIPickerView()
@@ -44,6 +43,21 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         }
     }
     
+    func updateCurrentWorkout() -> Workout {
+        let workoutList = factoryWorkouts.get(isGeoTracking: geoTrackingState)
+        if geoTrackingState {
+            let row = UserDefaultsManager.shared.pickerRowWithGeoTrackingActive
+            let workout = workoutList[row]
+            title.text = workout.titleName
+            return workout
+        } else {
+            let row = UserDefaultsManager.shared.pickerRowWithGeoTrackingInactive
+            let workout = workoutList[row]
+            title.text = workout.titleName
+            return workout
+        }
+    }
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -55,20 +69,14 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
     
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
-        let workoutList = factoryWorkouts.get(isGeoTracking: geoTrackingState)
-        
+
         if geoTrackingState {
             UserDefaultsManager.shared.pickerRowWithGeoTrackingActive = row
-            let workout = workoutList[row]
-            title.text = workout.titleName
-            selectedWorkoutSender?(workout)
         } else {
             UserDefaultsManager.shared.pickerRowWithGeoTrackingInactive = row
-            let workout = workoutList[row]
-            title.text = workout.titleName
-            selectedWorkoutSender?(workout)
         }
+        let workout = updateCurrentWorkout()
+        title.text = workout.titleName
     }
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
