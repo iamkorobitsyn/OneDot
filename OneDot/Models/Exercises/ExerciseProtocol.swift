@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import HealthKit
 
-protocol Exercise {
-    var type: String {get}
-    var name: String {get}
+protocol Workout {
+    var type: HKWorkoutActivityType {get}
+    var checkLocation: Bool {get}
     var titleName: String {get}
-    var pickerIcon: String {get}
+    var pickerViewIcon: String {get}
+    var workoutVCIcon: String {get}
 }

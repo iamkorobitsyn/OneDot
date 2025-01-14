@@ -9,18 +9,18 @@ import UIKit
 
 class WorkoutFooter: UIView {
     
-    var buttonStateHandler: ((DashboardVC.Mode)->())?
+    var dashboardVCButtonStateHandler: ((DashboardVC.Mode)->())?
+    var workoutModeVCButtonStateHandler: ((WorkoutModeVC.Mode) -> ())?
+    
     
     enum Mode {
+        case ready
         case prepare
-        case prepareToStart
-        case tracking
+        case start
         case hide
     }
     
-    private var prepareState: Bool = true
-    private var prepareToStartState: Bool = false
-    private var trackingState: Bool = false
+    var currentMode: Mode = .ready
     
     private let leftButton: UIButton = UIButton()
     private let rightButton: UIButton = UIButton()
@@ -39,52 +39,46 @@ class WorkoutFooter: UIView {
     
     @objc private func leftTapped() {
         
-        if prepareState {
-            prepareState.toggle()
-            prepareToStartState.toggle()
-            buttonStateHandler?(.prepareToStart)
-        } else if prepareToStartState {
-            prepareToStartState.toggle()
-            trackingState.toggle()
-            buttonStateHandler?(.tracking)
-        } else if trackingState {
-            trackingState.toggle()
-            prepareToStartState.toggle()
-            buttonStateHandler?(.prepareToStart)
+        switch currentMode {
+        case .ready:
+            dashboardVCButtonStateHandler?(.transitionToWorkoutMode)
+        case .prepare:
+            activateMode(mode: .start)
+        case .start:
+            activateMode(mode: .prepare)
+        default:
+            break
         }
     }
     
     @objc private func rightTapped() {
         
-        if prepareState {
-            buttonStateHandler?(.transitionToProfile)
-        } else if prepareToStartState || trackingState {
-            prepareToStartState = false
-            trackingState = false
-            prepareState = true
-            buttonStateHandler?(.prepare)
+        switch currentMode {
+        case .ready:
+            dashboardVCButtonStateHandler?(.transitionToProfile)
+        case .prepare:
+            workoutModeVCButtonStateHandler?(.hide)
+        case .start:
+            workoutModeVCButtonStateHandler?(.hide)
+        default:
+            break
         }
     }
     
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
-        backgroundColor = .myPaletteBlue
+        currentMode = mode
         switch mode {
             
-        case .prepare:
-            self.isHidden = false
+        case .ready:
             setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterList")
-            leftButton.layer.removeAllAnimations()
-            
-        case .prepareToStart:
+        case .prepare:
             setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterCancel")
             AnimationManager.shared.AnimateStartIcon(leftButton.layer)
-            
-        case .tracking:
+        case .start:
             setButtonImages(lButtonImg: "FooterPause", rButtonImg: "FooterStop")
             leftButton.layer.removeAllAnimations()
-            
         case .hide:
             self.isHidden = true
         }
@@ -101,7 +95,7 @@ class WorkoutFooter: UIView {
     //MARK: - SetViews
     
     private func setViews() {
-        activateMode(mode: .prepare)
+        backgroundColor = .myPaletteBlue
         
         layer.instance(border: false, corner: .max)
         

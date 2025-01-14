@@ -16,7 +16,7 @@ class UserDefaultsManager {
     private init() {}
     
     private enum Keys {
-        static let outdoorStatus = "outdoorStatus"
+        static let isGeoTracking = "isGeoTracking"
         static let pickerRowIndoor = "pickerRowIndoor"
         static let pickerRowOutdoor = "pickerRowOutdoor"
         static let calculationsDistance = "calculationsDistance"
@@ -45,22 +45,22 @@ class UserDefaultsManager {
     }
 
     
-    //MARK: - UserIndoor&ExersiseStatus
-    
-    var outdoorStatusValue: Bool {
-        get { getValue(key: Keys.outdoorStatus, defaultValue: false) }
-        set { setValue(key: Keys.outdoorStatus, value: newValue) }
+    var isGeoTracking: Bool {
+        get { getValue(key: Keys.isGeoTracking, defaultValue: false) }
+        set { setValue(key: Keys.isGeoTracking, value: newValue) }
     }
     
-    var pickerRowIndoorValue: Int {
+    var pickerRowWithGeoTrackingActive: Int {
+        get { getValue(key: Keys.pickerRowOutdoor, defaultValue: 3) }
+        set { setValue(key: Keys.pickerRowOutdoor, value: newValue) }
+    }
+    
+    var pickerRowWithGeoTrackingInactive: Int {
         get { getValue(key: Keys.pickerRowIndoor, defaultValue: 3) }
         set { setValue(key: Keys.pickerRowIndoor, value: newValue) }
     }
     
-    var pickerRowOutdoorValue: Int {
-        get { getValue(key: Keys.pickerRowOutdoor, defaultValue: 3) }
-        set { setValue(key: Keys.pickerRowOutdoor, value: newValue) }
-    }
+   
     
     //MARK: Calculations
     

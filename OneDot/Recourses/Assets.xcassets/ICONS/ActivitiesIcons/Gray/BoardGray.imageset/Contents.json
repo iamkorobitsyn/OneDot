@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "BoardGray.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

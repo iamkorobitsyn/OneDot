@@ -16,6 +16,8 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     
     var healthKitDataList: [HealthKitData]?
     
+    var selectedWorkout: Workout?
+    
     let mapView: MapView = {
         let view = MapView()
         view.disableAutoresizingMask()
@@ -54,7 +56,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         return view
     }()
     
-    let workoutBottomBar: WorkoutFooter = {
+    let workoutFooter: WorkoutFooter = {
         let view = WorkoutFooter()
         view.disableAutoresizingMask()
         return view
@@ -71,24 +73,17 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         view.disableAutoresizingMask()
         return view
     }()
-    
-    let workoutModeVC: WorkoutModeVC = {
-        let vc = WorkoutModeVC()
-        return vc
-    }()
 
     enum Mode {
-        case outdoor
+        case geoTrackingActive
         case outdoorNotes
-        case indoor
+        case geoTrackingInactive
         case notesHide
         case calculations
         case calculationsHide
         case settings
         case settingsHide
-        case prepare
-        case prepareToStart
-        case tracking
+        case transitionToWorkoutMode
         case pickerDistance
         case pickerSpeed
         case pickerPace
@@ -102,19 +97,12 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         super.viewDidLoad()
         mapView.viewController = self
         
+        activateInitialSettings()
+        activateSubviewsHandlers()
+        getHealthKitDataList()
+        
         setViews()
         setConstraints()
-        activateSubviewsHandlers()
-        
-        Task {
-            do {
-                healthKitDataList = try await HealthKitManager.shared.fetchHealthKitDataList()
-            } catch let error as HealthKitManager.HealthKitError{
-                HealthKitManager.shared.errorHandling(error: error)
-            }
-        }
-
-        UserDefaultsManager.shared.outdoorStatusValue ? activateMode(mode: .indoor) : activateMode(mode: .outdoor)
     }
     
     //MARK: - SplashScreenAnimations
@@ -132,15 +120,35 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         }
     }
     
+    //MARK: - ActivateInintialSettings
+    
+    private func activateInitialSettings() {
+        let uD = UserDefaultsManager.shared
+        uD.isGeoTracking ? activateMode(mode: .geoTrackingActive) : activateMode(mode: .geoTrackingInactive)
+    }
+    
+    //MARK: - GetHealthKitDataList
+    
+    private func getHealthKitDataList() {
+        Task {
+            do {
+                healthKitDataList = try await HealthKitManager.shared.fetchHealthKitDataList()
+            } catch let error as HealthKitManager.HealthKitError{
+                HealthKitManager.shared.errorHandling(error: error)
+            }
+        }
+    }
+    
     //MARK: - SetClosures
     
     private func activateSubviewsHandlers() {
         headerBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        workoutBottomBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        workoutFooter.dashboardVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         calculatorBottomBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0)}
         calculationsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         notesView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         settingsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        headerBar.pickerView.selectedWorkoutSender = { [weak self] in self?.selectedWorkout = $0 }
     }
     
     //MARK: - ActivateMode
@@ -149,62 +157,54 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         hapticGenerator.selectionChanged()
         switch mode {
             
-        case .outdoor:
-            UserDefaultsManager.shared.outdoorStatusValue = true
+        case .geoTrackingActive:
+            UserDefaultsManager.shared.isGeoTracking = true
             headerBar.activateMode(mode: .outdoor)
             notesView.activateMode(mode: .hide)
             calculationsView.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .hide)
             settingsView.activateMode(mode: .hide)
-            workoutBottomBar.activateMode(mode: .prepare)
+            workoutFooter.activateMode(mode: .ready)
         case .outdoorNotes:
             headerBar.activateMode(mode: .outdoorNotes)
             notesView.activateMode(mode: .outdoor)
             calculationsView.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .hide)
             settingsView.activateMode(mode: .hide)
-        case .indoor:
-            UserDefaultsManager.shared.outdoorStatusValue = false
+        case .geoTrackingInactive:
+            UserDefaultsManager.shared.isGeoTracking = false
             headerBar.activateMode(mode: .indoor)
             notesView.activateMode(mode: .indoor)
             calculationsView.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .hide)
             settingsView.activateMode(mode: .hide)
-            workoutBottomBar.activateMode(mode: .prepare)
+            workoutFooter.activateMode(mode: .ready)
         case .notesHide:
             notesView.activateMode(mode: .hide)
             headerBar.activateMode(mode: .outdoor)
-            workoutBottomBar.activateMode(mode: .prepare)
+            workoutFooter.activateMode(mode: .ready)
         case .calculations:
             calculationsView.activateMode(mode: .distance)
             settingsView.activateMode(mode: .hide)
-            workoutBottomBar.activateMode(mode: .hide)
+            workoutFooter.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .pickerDistance)
         case .calculationsHide:
             calculationsView.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .hide)
-            workoutBottomBar.activateMode(mode: .prepare)
+            workoutFooter.activateMode(mode: .ready)
         case .settings:
             settingsView.activateMode(mode: .active)
             calculationsView.activateMode(mode: .hide)
-            workoutBottomBar.activateMode(mode: .hide)
+            workoutFooter.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .hide)
         case .settingsHide:
             settingsView.activateMode(mode: .hide)
-            workoutBottomBar.activateMode(mode: .prepare)
-        case .prepare:
-            workoutBottomBar.activateMode(mode: .prepare)
-            trackingView.activateMode(mode: .hide)
-            workoutModeVC.activateMode(mode: .hide)
-        case .prepareToStart:
-            workoutModeVC.activateMode(mode: .prepareToStart)
-            workoutBottomBar.activateMode(mode: .prepareToStart)
-            trackingView.activateMode(mode: .prepare)
+            workoutFooter.activateMode(mode: .ready)
+        case .transitionToWorkoutMode:
+            let workoutModeVC = WorkoutModeVC()
+            workoutModeVC.currentWorkout = selectedWorkout
             workoutModeVC.modalPresentationStyle = .fullScreen
             present(workoutModeVC, animated: false)
-        case .tracking:
-            workoutBottomBar.activateMode(mode: .tracking)
-            workoutModeVC.activateMode(mode: .hide)
         case .pickerDistance:
             calculatorBottomBar.activateMode(mode: .pickerDistance)
             calculationsView.activateMode(mode: .distance)
@@ -234,13 +234,14 @@ extension DashboardVC {
 
         view.addSubview(mapView)
         mapView.activateMode(mode: .checkLocation)
+        workoutFooter.activateMode(mode: .ready)
         
         view.addSubview(headerBar)
         view.addSubview(notesView)
         view.addSubview(trackingView)
         view.addSubview(calculationsView)
         view.addSubview(settingsView)
-        view.addSubview(workoutBottomBar)
+        view.addSubview(workoutFooter)
         view.addSubview(calculatorBottomBar)
         view.addSubview(StartSplashScreen)
     }
@@ -280,10 +281,10 @@ extension DashboardVC {
             trackingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             trackingView.topAnchor.constraint(equalTo: headerBar.bottomAnchor, constant: 10),
             
-            workoutBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
-            workoutBottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
-            workoutBottomBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            workoutBottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            workoutFooter.widthAnchor.constraint(equalToConstant: .barWidth),
+            workoutFooter.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
+            workoutFooter.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            workoutFooter.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
             calculatorBottomBar.widthAnchor.constraint(equalToConstant: .barWidth),
             calculatorBottomBar.heightAnchor.constraint(equalToConstant: .bottomBarHeight),

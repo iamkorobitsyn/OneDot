@@ -6,77 +6,78 @@
 //
 
 import Foundation
+import HealthKit
 
-class SwimmingPool: Exercise {
-    
-    var type: String = "Swimming"
-    var name: String = "Swimming pool"
-    var titleName: String = "SWIMMING POOL"
-    var pickerIcon: String = "AISwimmingPool"
+class SwimmingPool: Workout {
+    let type: HKWorkoutActivityType = HKWorkoutActivityType.swimming
+    let checkLocation: Bool = false
+    let titleName: String = "SWIMMING POOL"
+    let pickerViewIcon: String = "SwimmingPoolGray"
+    let workoutVCIcon: String = "SwimmingPoolWhite"
 }
 
-class Stepper: Exercise {
-    
-    var type: String = "Сardio workout"
-    var name: String = "Stepper"
-    var titleName: String = "STEPPER"
-    var pickerIcon: String = "AIStepper"
+class Stepper: Workout {
+    let type: HKWorkoutActivityType = HKWorkoutActivityType.stepTraining
+    let checkLocation: Bool = false
+    let titleName: String = "STEPPER"
+    let pickerViewIcon: String = "StepperGray"
+    let workoutVCIcon: String = "StepperWhite"
 }
 
-class Treadmill: Exercise {
-    
-    var type: String = "Сardio workout"
-    var name: String = "Treadmill"
-    var titleName: String = "TREADMILL"
-    var pickerIcon: String = "AITreadmill"
+class Treadmill: Workout {
+    let type: HKWorkoutActivityType = HKWorkoutActivityType.running
+    let checkLocation: Bool = false
+    let titleName: String = "TREADMILL"
+    let pickerViewIcon: String = "TreadmillGray"
+    let workoutVCIcon: String = "TreadmillWhite"
 }
 
-class ExerciseBike: Exercise {
-    
-    var type: String = "Сardio workout"
-    var name: String = "Exercise bike"
-    var titleName: String = "EXERCISE BIKE"
-    var pickerIcon: String = "AIExerciseBike"
+class ExerciseBike: Workout {
+    let type: HKWorkoutActivityType = HKWorkoutActivityType.cycling
+    let checkLocation: Bool = false
+    let titleName: String = "EXERCISE BIKE"
+    let pickerViewIcon: String = "ExerciseBikeGray"
+    let workoutVCIcon: String = "ExerciseBikeWhite"
 }
 
-class RecumbentExercise: Exercise {
-    
-    var type: String = "Сardio workout"
-    var name: String = "Recumbent bike"
-    var titleName: String = "RECUMBENT BIKE"
-    var pickerIcon: String = "AIRecumbentBike"
+class RecumbentExercise: Workout {
+    let type: HKWorkoutActivityType = HKWorkoutActivityType.cycling
+    let checkLocation: Bool = false
+    let titleName: String = "RECUMBENT BIKE"
+    let pickerViewIcon: String = "RecumbentBikeGray"
+    let workoutVCIcon: String = "RecumbentBikeWhite"
 }
 
-class StrengthTraining: Exercise {
-    
-    var type: String = "Strength training"
-    var name: String = "Strength training"
-    var titleName: String = "STRENGTH TRAINING"
-    var pickerIcon: String = "AIStrengthTraining"
+class StrengthTraining: Workout {
+    let type: HKWorkoutActivityType = HKWorkoutActivityType.traditionalStrengthTraining
+    let checkLocation: Bool = false
+    let titleName: String = "STRENGTH TRAINING"
+    let pickerViewIcon: String = "StrengthTrainingGray"
+    let workoutVCIcon: String = "StrengthTrainingWhite"
 }
 
-class FusionWorkout: Exercise {
-    
-    var type: String = "Fusion workout"
-    var name: String = "Fusion workout"
-    var titleName: String = "FUSION WORKOUT"
-    var pickerIcon: String = "AIFusionWorkout"
+class FusionWorkout: Workout {
+    let type: HKWorkoutActivityType = HKWorkoutActivityType.functionalStrengthTraining
+    let checkLocation: Bool = false
+    let titleName: String = "FUSION WORKOUT"
+    let pickerViewIcon: String = "FusionWorkoutGray"
+    let workoutVCIcon: String = "FusionWorkoutWhite"
 }
 
-class Stretching: Exercise {
-    
-    var type: String = "Stretching"
-    var name: String = "Stretching"
-    var titleName: String = "STRETCHING"
-    var pickerIcon: String = "AIStretching"
+class Stretching: Workout {
+    let type: HKWorkoutActivityType = HKWorkoutActivityType.gymnastics
+    let checkLocation: Bool = false
+    let titleName: String = "STRETCHING"
+    let pickerViewIcon: String = "StretchingGray"
+    let workoutVCIcon: String = "StretchingWhite"
 }
 
-class Yoga: Exercise {
-    
-    var type: String = "Yoga"
-    var name: String = "Yoga"
-    var titleName: String = "YOGA"
-    var pickerIcon: String = "AIYoga"
+class Yoga: Workout {
+    let type: HKWorkoutActivityType = HKWorkoutActivityType.yoga
+    let checkLocation: Bool = false
+    let titleName: String = "YOGA"
+    let pickerViewIcon: String = "YogaGray"
+    let workoutVCIcon: String = "YogaWhite"
 }
 
 

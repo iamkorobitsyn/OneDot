@@ -58,9 +58,9 @@ class WorkoutHeader: UIVisualEffectView {
     @objc private func buttonTapped() {
         switch true {
         case outdoorButton.isTouchInside:
-            buttonStateHandler?(.outdoor)
+            buttonStateHandler?(.geoTrackingActive)
         case indoorButton.isTouchInside:
-            buttonStateHandler?(.indoor)
+            buttonStateHandler?(.geoTrackingInactive)
         case notesButton.isTouchInside:
             buttonStateHandler?(.outdoorNotes)
         case calculatorButton.isTouchInside:
@@ -76,6 +76,7 @@ class WorkoutHeader: UIVisualEffectView {
         switch mode {
             
         case .outdoor:
+            
             outdoorButton.setActiveState(.outdoor)
             outdoorButton.isUserInteractionEnabled = false
             indoorButton.setInactiveState(.indoor)
@@ -83,7 +84,9 @@ class WorkoutHeader: UIVisualEffectView {
             notesButton.setInactiveState(.notesOutdoor)
             notesButton.isUserInteractionEnabled = true
 
-            pickerView.updatePicker(outdoorIs: true, row: UserDefaultsManager.shared.pickerRowOutdoorValue)
+            
+            UserDefaultsManager.shared.isGeoTracking = true
+            pickerView.updatePicker(isGeoTracking: true)
             
         case .outdoorNotes:
             outdoorButton.setActiveState(.outdoor)
@@ -91,7 +94,9 @@ class WorkoutHeader: UIVisualEffectView {
             notesButton.setActiveState(.notesOutdoor)
             notesButton.isUserInteractionEnabled = false
             
+            
         case .indoor:
+            
             indoorButton.setActiveState(.indoor)
             notesButton.setActiveState(.notesIndoor)
             indoorButton.isUserInteractionEnabled = false
@@ -99,8 +104,9 @@ class WorkoutHeader: UIVisualEffectView {
             outdoorButton.setInactiveState(.outdoor)
             outdoorButton.isUserInteractionEnabled = true
             
-            pickerView.updatePicker(outdoorIs: false, row: UserDefaultsManager.shared.pickerRowIndoorValue)
-
+            UserDefaultsManager.shared.isGeoTracking = false
+            pickerView.updatePicker(isGeoTracking: false)
+            
         case .calculations:
             print("calculations")
         case .settings:

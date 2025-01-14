@@ -10,13 +10,33 @@ import UIKit
 
 class WorkoutModeVC: UIViewController {
     
+    private let workoutFooter: WorkoutFooter = {
+        let view = WorkoutFooter()
+        view.disableAutoresizingMask()
+        return view
+    }()
     
+    var currentWorkout: Workout?
     
     enum Mode {
-        case prepareToStart
+        case prepare
         case countdownStart
         case hide
     }
+    
+    private let modeSwitchButtonLeft: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .red
+        button.disableAutoresizingMask()
+        return button
+    }()
+    
+    private let modeSwitchButtonRight: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .blue
+        button.disableAutoresizingMask()
+        return button
+    }()
     
     private let textLabel: UILabel = {
         let label = UILabel()
@@ -35,31 +55,67 @@ class WorkoutModeVC: UIViewController {
     
     
     override func viewDidLoad() {
-        view.backgroundColor = .myPaletteBlue
-        view.addSubview(textLabel)
-        
+        setViews()
         setConstraints()
-        
-        self.view.isHidden = true
+        activateSubviewsHandlers()
+        print(currentWorkout?.workoutVCIcon)
+    }
+    
+    private func activateSubviewsHandlers() {
+        workoutFooter.workoutModeVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
     }
     
     func activateMode(mode: Mode) {
         switch mode {
             
-        case .prepareToStart:
-            self.view.isHidden = false
+        case .prepare:
+            view.isHidden = false
         case .countdownStart:
-            self.view.isHidden = false
+            view.isHidden = false
         case .hide:
-            self.view.isHidden = true
+            dismiss(animated: false)
         }
+    }
+    
+    private func setViews() {
+        view.backgroundColor = .myPaletteBlue
+        
+        view.addSubview(modeSwitchButtonLeft)
+        view.addSubview(modeSwitchButtonRight)
+        
+        view.addSubview(workoutFooter)
+        view.addSubview(textLabel)
+        
+        
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        workoutFooter.activateMode(mode: .prepare)
     }
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
+            modeSwitchButtonLeft.widthAnchor.constraint(equalToConstant: 150),
+            modeSwitchButtonLeft.heightAnchor.constraint(equalToConstant: 150),
+            modeSwitchButtonLeft.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -75),
+            modeSwitchButtonLeft.centerYAnchor.constraint(equalTo: view.centerYAnchor,
+                                                          constant: -UIScreen.main.bounds.height / 4),
+            
+            modeSwitchButtonRight.widthAnchor.constraint(equalToConstant: 150),
+            modeSwitchButtonRight.heightAnchor.constraint(equalToConstant: 150),
+            modeSwitchButtonRight.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 75),
+            modeSwitchButtonRight.centerYAnchor.constraint(equalTo: view.centerYAnchor,
+                                                          constant: -UIScreen.main.bounds.height / 4),
+            
             textLabel.widthAnchor.constraint(equalToConstant: .barWidth - 100),
             textLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            textLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            textLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+            workoutFooter.widthAnchor.constraint(equalToConstant: .barWidth),
+            workoutFooter.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
+            workoutFooter.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            workoutFooter.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
         ])
     }
     

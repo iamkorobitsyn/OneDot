@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "BoardWhite.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

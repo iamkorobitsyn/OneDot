@@ -9,24 +9,16 @@ import Foundation
 import UIKit
 
 class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
-    
-    var outdoorLocation: Bool = true
-    
-    let exercises = FactoryExercises()
-    var completion: ((Exercise) -> ())?
+
+    let factoryWorkouts = FactoryWorkouts()
+    var selectedWorkoutSender: ((Workout) -> ())?
+    var geoTrackingState = UserDefaultsManager.shared.isGeoTracking
 
     let picker: UIPickerView = UIPickerView()
     let title: UILabel = UILabel()
     
     private let lineSeparator: CAShapeLayer = CAShapeLayer()
     private let dotSeparator: CAShapeLayer = CAShapeLayer()
-    
-    //MARK: - Metrics
-    
-    let mainBarWidth: CGFloat = UIScreen.main.bounds.width / 1.05
-    let pickerWidth: CGFloat = 40
-    let pickerHeight: CGFloat = 150
-    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,45 +30,44 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         setConstraints()
     }
     
-    func updatePicker(outdoorIs: Bool, row: Int) {
+    func updatePicker(isGeoTracking: Bool) {
+        geoTrackingState = isGeoTracking
         
-        outdoorLocation = outdoorIs
-        picker.reloadAllComponents()
-        picker.selectRow(row, inComponent: 0, animated: true)
-        getTitle(row: row)
-    }
-    
-    
-    private func getTitle(row: Int) {
-        
-        if outdoorLocation {
-            title.text = exercises.get(.street)[row].titleName
+        if geoTrackingState {
+            let row = UserDefaultsManager.shared.pickerRowWithGeoTrackingActive
+            picker.reloadAllComponents()
+            picker.selectRow(row, inComponent: 0, animated: true)
         } else {
-            title.text = exercises.get(.room)[row].titleName
+            let row = UserDefaultsManager.shared.pickerRowWithGeoTrackingInactive
+            picker.reloadAllComponents()
+            picker.selectRow(row, inComponent: 0, animated: true)
         }
     }
     
-    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        
         return 1
     }
     
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        
-        return outdoorLocation ? exercises.get(.street).count : exercises.get(.room).count
+        return factoryWorkouts.get(isGeoTracking: geoTrackingState).count
     }
     
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        getTitle(row: row)
+        let workoutList = factoryWorkouts.get(isGeoTracking: geoTrackingState)
         
-        if outdoorLocation {
-            UserDefaultsManager.shared.pickerRowOutdoorValue = row
+        if geoTrackingState {
+            UserDefaultsManager.shared.pickerRowWithGeoTrackingActive = row
+            let workout = workoutList[row]
+            title.text = workout.titleName
+            selectedWorkoutSender?(workout)
         } else {
-            UserDefaultsManager.shared.pickerRowIndoorValue = row
+            UserDefaultsManager.shared.pickerRowWithGeoTrackingInactive = row
+            let workout = workoutList[row]
+            title.text = workout.titleName
+            selectedWorkoutSender?(workout)
         }
     }
     
@@ -97,8 +88,8 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         imageView.contentMode = .scaleAspectFit
         imageView.transform = CGAffineTransform(rotationAngle: 90 * (.pi / 180))
 
-        let exerciseList = outdoorLocation ? exercises.get(.street) : exercises.get(.room)
-        imageView.image = UIImage(named: exerciseList[row].pickerIcon)
+        let workoutList = factoryWorkouts.get(isGeoTracking: geoTrackingState)
+        imageView.image = UIImage(named: workoutList[row].pickerViewIcon)
         
         return imageView
     }
@@ -124,13 +115,13 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         title.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            picker.widthAnchor.constraint(equalToConstant: pickerWidth),
-            picker.heightAnchor.constraint(equalToConstant: pickerHeight),
+            picker.widthAnchor.constraint(equalToConstant: 40),
+            picker.heightAnchor.constraint(equalToConstant: 150),
             picker.centerYAnchor.constraint(equalTo: centerYAnchor),
-            picker.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -mainBarWidth / 4),
+            picker.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
             
             title.centerYAnchor.constraint(equalTo: centerYAnchor),
-            title.centerXAnchor.constraint(equalTo: centerXAnchor, constant: mainBarWidth / 4)
+            title.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4)
         ])
     }
     
