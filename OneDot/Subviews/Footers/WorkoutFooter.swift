@@ -72,6 +72,7 @@ class WorkoutFooter: UIView {
         switch mode {
             
         case .ready:
+            self.isHidden = false
             setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterList")
         case .prepare:
             setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterCancel")

@@ -19,6 +19,7 @@ class UserDefaultsManager {
         static let isGeoTracking = "isGeoTracking"
         static let pickerRowIndoor = "pickerRowIndoor"
         static let pickerRowOutdoor = "pickerRowOutdoor"
+        static let isWorkoutMode = "isWorkoutMode"
         static let calculationsDistance = "calculationsDistance"
         static let calculationsDistanceDecimal = "calculationsDistanceDecimal"
         static let calculationsSpeed = "calculationsSpeed"
@@ -58,6 +59,11 @@ class UserDefaultsManager {
     var pickerRowWithGeoTrackingInactive: Int {
         get { getValue(key: Keys.pickerRowIndoor, defaultValue: 3) }
         set { setValue(key: Keys.pickerRowIndoor, value: newValue) }
+    }
+    
+    var isWorkoutMode: Bool {
+        get { getValue(key: Keys.isWorkoutMode, defaultValue: true) }
+        set { setValue(key: Keys.isWorkoutMode, value: newValue) }
     }
     
    

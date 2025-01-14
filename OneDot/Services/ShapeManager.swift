@@ -127,7 +127,7 @@ class ShapeManager {
     
     func drawLocatorDotShape(shape: CAShapeLayer, view: UIView) {
         let path = UIBezierPath(arcCenter: CGPoint(x: 6, y: 6),
-                                radius: 1.5,
+                                radius: 2,
                                 startAngle: 0,
                                 endAngle: .pi * 2,
                                 clockwise: true)
@@ -144,20 +144,20 @@ class ShapeManager {
                                 clockwise: true)
         shape.path = path.cgPath
         shape.fillColor = .none
-        shape.lineWidth = 0.5
+        shape.lineWidth = 1
         shape.strokeColor = UIColor.green.cgColor
         view.layer.addSublayer(shape)
     }
     
     func drawLocatorSecondSircleShape(shape: CAShapeLayer, view: UIView) {
         let path = UIBezierPath(arcCenter: CGPoint(x: 6, y: 6),
-                                radius: 9,
+                                radius: 10,
                                 startAngle: 0,
                                 endAngle: .pi * 2,
                                 clockwise: true)
         shape.path = path.cgPath
         shape.fillColor = .none
-        shape.lineWidth = 0.5
+        shape.lineWidth = 1
         shape.strokeColor = UIColor.green.withAlphaComponent(0.5).cgColor
         view.layer.addSublayer(shape)
     }

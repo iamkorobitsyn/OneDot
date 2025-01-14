@@ -11,8 +11,7 @@ import UIKit
 class NotesView: UIVisualEffectView {
     
     enum Mode {
-        case outdoor,
-             indoor,
+        case active,
              editRows,
              inactive,
              hide
@@ -98,17 +97,11 @@ class NotesView: UIVisualEffectView {
     func activateMode(mode: Mode) {
         switch mode {
             
-        case .outdoor:
+        case .active:
             isHidden = false
             sortNoteButton.isHidden = false
             checkMarkButton.isHidden = true
             hideButton.isHidden = false
-            addNoteButton.isHidden = false
-        case .indoor:
-            isHidden = false
-            sortNoteButton.isHidden = false
-            checkMarkButton.isHidden = true
-            hideButton.isHidden = true
             addNoteButton.isHidden = false
         case .editRows:
             sortNoteButton.isHidden = true
@@ -159,6 +152,7 @@ class NotesView: UIVisualEffectView {
     
     private func setViews() {
         layer.instance(border: true, corner: .max)
+        isHidden = true
         
         contentView.addSubview(tableView)
         contentView.clipsToBounds = true
@@ -216,12 +210,6 @@ class NotesView: UIVisualEffectView {
         
         tableView.isEditing = false
         tableView.transform.ty = 0
-        
-        if UserDefaultsManager.shared.isGeoTracking {
-            activateMode(mode: .outdoor)
-        } else {
-            activateMode(mode: .indoor)
-        }
         
         checkMarkButton.isHidden = true
     }
@@ -337,8 +325,7 @@ extension NotesView: UITableViewDataSource {
                 cell.doneButton.isHidden = true
                 
                 cell.placeholderState(notes[indexPath.row].editing)
-                
-                UserDefaultsManager.shared.isGeoTracking ? activateMode(mode: .outdoor) : activateMode(mode: .indoor)
+
                 
                 tableView.endUpdates()
             }
@@ -375,12 +362,6 @@ extension NotesView: UITableViewDelegate   {
     
     func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
         refreshNotesIndex()
-        
-        if UserDefaultsManager.shared.isGeoTracking == false {
-            activateMode(mode: .indoor)
-        } else {
-            activateMode(mode: .outdoor)
-        }
         
         self.tableView.isUserInteractionEnabled = true
         tableView.reloadData()

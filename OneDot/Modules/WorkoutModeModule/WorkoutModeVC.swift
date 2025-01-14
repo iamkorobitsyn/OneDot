@@ -27,13 +27,37 @@ class WorkoutModeVC: UIViewController {
     private let modeSwitchButtonLeft: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
+        button.layer.cornerRadius = 12
+        button.layer.cornerCurve = .continuous
+        button.layer.borderWidth = 1.5
         return button
     }()
     
     private let modeSwitchButtonRight: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
+        button.layer.cornerRadius = 12
+        button.layer.cornerCurve = .continuous
+        button.layer.borderWidth = 1.5
         return button
+    }()
+    
+    private let leftButtonTitle: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .center, font: .standartMin)
+        label.numberOfLines = 2
+        label.text = "Workout Mode"
+        return label
+    }()
+    
+    private let rightButtonTitle: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .center, font: .standartMin)
+        label.numberOfLines = 2
+        label.text = "Stopwatch Mode"
+        return label
     }()
     
     private let textLabel: UILabel = {
@@ -72,6 +96,7 @@ class WorkoutModeVC: UIViewController {
         modeSwitchButtonLeft.setImage(UIImage(named: currentWorkout.workoutVCIcon), for: .highlighted)
         modeSwitchButtonRight.setImage(UIImage(named: "workoutStopWatch"), for: .normal)
         modeSwitchButtonRight.setImage(UIImage(named: "workoutStopWatch"), for: .highlighted)
+        updateButtons(workoutModeStatus: UserDefaultsManager.shared.isWorkoutMode)
     }
     
     
@@ -79,20 +104,15 @@ class WorkoutModeVC: UIViewController {
         workoutFooter.workoutModeVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
     }
     
+    private func updateButtons(workoutModeStatus: Bool) {
+        modeSwitchButtonLeft.layer.borderColor = workoutModeStatus ? UIColor.white.cgColor : UIColor.clear.cgColor
+        modeSwitchButtonRight.layer.borderColor = workoutModeStatus ? UIColor.clear.cgColor  : UIColor.white.cgColor
+    }
+    
     @objc private func buttonTapped() {
-        modeSwitchButtonLeft.layer.borderWidth = 0
-        modeSwitchButtonRight.layer.borderWidth = 0
-        modeSwitchButtonLeft.layer.borderColor = UIColor.white.cgColor
-        modeSwitchButtonLeft.layer.cornerRadius = 12
-        modeSwitchButtonRight.layer.borderColor = UIColor.white.cgColor
-        modeSwitchButtonRight.layer.cornerRadius = 12
-       
-        if modeSwitchButtonLeft.isTouchInside {
-            modeSwitchButtonLeft.layer.borderWidth = 1
-        } else if modeSwitchButtonRight.isTouchInside {
-            modeSwitchButtonRight.layer.borderWidth = 1
-        }
-
+        UserDefaultsManager.shared.isWorkoutMode = modeSwitchButtonLeft.isTouchInside ? true : false
+        UserDefaultsManager.shared.isWorkoutMode = modeSwitchButtonRight.isTouchInside ? false : true
+        updateButtons(workoutModeStatus: UserDefaultsManager.shared.isWorkoutMode)
     }
     
     
@@ -115,6 +135,9 @@ class WorkoutModeVC: UIViewController {
         view.addSubview(modeSwitchButtonRight)
         modeSwitchButtonLeft.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         modeSwitchButtonRight.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        
+        view.addSubview(leftButtonTitle)
+        view.addSubview(rightButtonTitle)
         
         view.addSubview(workoutFooter)
         view.addSubview(textLabel)
@@ -140,6 +163,16 @@ class WorkoutModeVC: UIViewController {
             modeSwitchButtonRight.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: .barWidth / 4),
             modeSwitchButtonRight.centerYAnchor.constraint(equalTo: view.centerYAnchor,
                                                           constant: -UIScreen.main.bounds.height / 4),
+            
+            leftButtonTitle.widthAnchor.constraint(equalToConstant: .barWidth / 3),
+            leftButtonTitle.heightAnchor.constraint(equalToConstant: 50),
+            leftButtonTitle.centerXAnchor.constraint(equalTo: modeSwitchButtonLeft.centerXAnchor),
+            leftButtonTitle.centerYAnchor.constraint(equalTo: modeSwitchButtonLeft.centerYAnchor, constant: 50),
+            
+            rightButtonTitle.widthAnchor.constraint(equalToConstant: .barWidth / 3),
+            rightButtonTitle.heightAnchor.constraint(equalToConstant: 50),
+            rightButtonTitle.centerXAnchor.constraint(equalTo: modeSwitchButtonRight.centerXAnchor),
+            rightButtonTitle.centerYAnchor.constraint(equalTo: modeSwitchButtonRight.centerYAnchor, constant: 50),
             
             textLabel.widthAnchor.constraint(equalToConstant: .barWidth - 100),
             textLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),

@@ -110,33 +110,14 @@ class AnimationManager {
     
     //MARK: - GPSView
     
-    func animateLocator(_ firstShape: CAShapeLayer, _ secondShape: CAShapeLayer) {
-        
-        let animationGroup = CAAnimationGroup()
-        animationGroup.duration = 2.5
-        animationGroup.repeatCount = .infinity
-        
-        let firstShapeAnimationStart = CABasicAnimation(keyPath: "opacity")
-        firstShapeAnimationStart.beginTime = 0
-        firstShapeAnimationStart.duration = 1.5
-        firstShapeAnimationStart.fromValue = 0.0
-        firstShapeAnimationStart.toValue = 1
-        
-        let firstShapeAnimationFinish = CABasicAnimation(keyPath: "opacity")
-        firstShapeAnimationFinish.beginTime = 1.5
-        firstShapeAnimationFinish.duration = 1
-        firstShapeAnimationFinish.fromValue = 1
-        firstShapeAnimationFinish.toValue = 1
-        
-        animationGroup.animations = [firstShapeAnimationStart, firstShapeAnimationFinish]
-        firstShape.add(animationGroup, forKey: "")
-        
-        let secondShapeAnimation = CABasicAnimation(keyPath: "opacity")
-        secondShapeAnimation.duration = 2.5
-        secondShapeAnimation.fromValue = 0.0
-        secondShapeAnimation.toValue = 1
-        secondShapeAnimation.repeatCount = .infinity
-        secondShape.add(secondShapeAnimation, forKey: "")
+    func animateLocator(_ view: UIView) {
+
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.duration = 1.5
+        animation.fromValue = 0.3
+        animation.toValue = 1
+        animation.repeatCount = .infinity
+        view.layer.add(animation, forKey: nil)
     }
     
 }

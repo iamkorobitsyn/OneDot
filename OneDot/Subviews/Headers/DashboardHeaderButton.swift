@@ -7,13 +7,14 @@
 
 import UIKit
 
-class WorkoutHeaderButton: UIButton {
+class DashboardHeaderButton: UIButton {
     
     enum State {
         case outdoor,
              indoor,
-             notesIndoor,
-             notesOutdoor
+             notes,
+             calculations,
+             settings
     }
     
     override init(frame: CGRect) {
@@ -27,10 +28,12 @@ class WorkoutHeaderButton: UIButton {
             setImage("HeaderOutdoorSelected")
         case .indoor:
             setImage("HeaderIndoorSelected")
-        case .notesIndoor:
-            setImage("HeaderNoteIndoorSelected")
-        case .notesOutdoor:
-            setImage("HeaderNoteOutdoorSelected")
+        case .notes:
+            setImage("HeaderNotesSelected")
+        case .calculations:
+            setImage("HeaderCalculationsSelected")
+        case .settings:
+            setImage("HeaderSettingsSelected")
         }
     }
     
@@ -41,10 +44,12 @@ class WorkoutHeaderButton: UIButton {
             setImage("HeaderOutdoor")
         case .indoor:
             setImage("HeaderIndoor")
-        case .notesIndoor:
-            setImage("HeaderNoteIndoorSelected")
-        case .notesOutdoor:
-            setImage("HeaderNoteOutdoor")
+        case .notes:
+            setImage("HeaderNotes")
+        case .calculations:
+            setImage("HeaderCalculations")
+        case .settings:
+            setImage("HeaderSettings")
         }
     }
     

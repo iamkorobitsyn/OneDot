@@ -22,8 +22,8 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         return view
     }()
     
-    let headerBar: WorkoutHeader = {
-        let view = WorkoutHeader()
+    let dashboardHeader: DashboardHeader = {
+        let view = DashboardHeader()
         view.disableAutoresizingMask()
         return view
     }()
@@ -74,8 +74,8 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
 
     enum Mode {
         case geoTrackingActive
-        case outdoorNotes
         case geoTrackingInactive
+        case notes
         case notesHide
         case calculations
         case calculationsHide
@@ -112,6 +112,14 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
                                             delegate: self)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        dashboardHeader.animateNavigationView()
+        NotificationCenter.default.addObserver(dashboardHeader,
+                                               selector: #selector(dashboardHeader.animateNavigationView),
+                                               name: UIApplication.didBecomeActiveNotification ,
+                                               object: nil)
+    }
+    
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         if flag {
             StartSplashScreen.alpha = 0
@@ -123,6 +131,8 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     private func activateInitialSettings() {
         let uD = UserDefaultsManager.shared
         uD.isGeoTracking ? activateMode(mode: .geoTrackingActive) : activateMode(mode: .geoTrackingInactive)
+        workoutFooter.activateMode(mode: .ready)
+        dashboardHeader.activateMode(mode: .toolsDefault)
     }
     
     //MARK: - GetHealthKitDataList
@@ -140,7 +150,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     //MARK: - SetClosures
     
     private func activateSubviewsHandlers() {
-        headerBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        dashboardHeader.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         workoutFooter.dashboardVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         calculatorBottomBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0)}
         calculationsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
@@ -156,49 +166,48 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             
         case .geoTrackingActive:
             UserDefaultsManager.shared.isGeoTracking = true
-            headerBar.activateMode(mode: .outdoor)
-            notesView.activateMode(mode: .hide)
-            calculationsView.activateMode(mode: .hide)
+            dashboardHeader.activateMode(mode: .outdoor)
             calculatorBottomBar.activateMode(mode: .hide)
-            settingsView.activateMode(mode: .hide)
             workoutFooter.activateMode(mode: .ready)
-        case .outdoorNotes:
-            headerBar.activateMode(mode: .outdoorNotes)
-            notesView.activateMode(mode: .outdoor)
-            calculationsView.activateMode(mode: .hide)
-            calculatorBottomBar.activateMode(mode: .hide)
-            settingsView.activateMode(mode: .hide)
         case .geoTrackingInactive:
             UserDefaultsManager.shared.isGeoTracking = false
-            headerBar.activateMode(mode: .indoor)
-            notesView.activateMode(mode: .indoor)
+            dashboardHeader.activateMode(mode: .indoor)
+            calculatorBottomBar.activateMode(mode: .hide)
+            workoutFooter.activateMode(mode: .ready)
+        case .notes:
+            notesView.activateMode(mode: .active)
+            dashboardHeader.activateMode(mode: .notes)
             calculationsView.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .hide)
             settingsView.activateMode(mode: .hide)
-            workoutFooter.activateMode(mode: .ready)
         case .notesHide:
+            dashboardHeader.activateMode(mode: .toolsDefault)
             notesView.activateMode(mode: .hide)
-            headerBar.activateMode(mode: .outdoor)
             workoutFooter.activateMode(mode: .ready)
         case .calculations:
             calculationsView.activateMode(mode: .distance)
+            dashboardHeader.activateMode(mode: .calculations)
             settingsView.activateMode(mode: .hide)
             workoutFooter.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .pickerDistance)
         case .calculationsHide:
+            dashboardHeader.activateMode(mode: .toolsDefault)
             calculationsView.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .hide)
             workoutFooter.activateMode(mode: .ready)
         case .settings:
             settingsView.activateMode(mode: .active)
+            dashboardHeader.activateMode(mode: .settings)
             calculationsView.activateMode(mode: .hide)
             workoutFooter.activateMode(mode: .hide)
             calculatorBottomBar.activateMode(mode: .hide)
         case .settingsHide:
+            dashboardHeader.activateMode(mode: .toolsDefault)
             settingsView.activateMode(mode: .hide)
             workoutFooter.activateMode(mode: .ready)
         case .transitionToWorkoutMode:
-            let workout = headerBar.pickerView.updateCurrentWorkout()
+            let workout = dashboardHeader.pickerView.updateCurrentWorkout()
+
             let workoutModeVC = WorkoutModeVC(currentWorkout: workout)
             workoutModeVC.modalPresentationStyle = .fullScreen
             present(workoutModeVC, animated: false)
@@ -231,9 +240,8 @@ extension DashboardVC {
 
         view.addSubview(mapView)
         mapView.activateMode(mode: .checkLocation)
-        workoutFooter.activateMode(mode: .ready)
         
-        view.addSubview(headerBar)
+        view.addSubview(dashboardHeader)
         view.addSubview(notesView)
         view.addSubview(trackingView)
         view.addSubview(calculationsView)
@@ -253,20 +261,20 @@ extension DashboardVC {
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            headerBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            headerBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
-            headerBar.heightAnchor.constraint(equalToConstant: .headerBarHeight),
-            headerBar.widthAnchor.constraint(equalToConstant: .barWidth),
+            dashboardHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            dashboardHeader.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
+            dashboardHeader.heightAnchor.constraint(equalToConstant: .headerBarHeight),
+            dashboardHeader.widthAnchor.constraint(equalToConstant: .barWidth),
             
             calculationsView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             calculationsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             calculationsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            calculationsView.topAnchor.constraint(equalTo: headerBar.bottomAnchor, constant: 10),
+            calculationsView.topAnchor.constraint(equalTo: dashboardHeader.bottomAnchor, constant: 10),
             
             settingsView.widthAnchor.constraint(equalToConstant: .barWidth),
             settingsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             settingsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            settingsView.topAnchor.constraint(equalTo: headerBar.bottomAnchor, constant: 10),
+            settingsView.topAnchor.constraint(equalTo: dashboardHeader.bottomAnchor, constant: 10),
             
             notesView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             notesView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat.headerBarHeight + 70),
@@ -276,7 +284,7 @@ extension DashboardVC {
             trackingView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             trackingView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             trackingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            trackingView.topAnchor.constraint(equalTo: headerBar.bottomAnchor, constant: 10),
+            trackingView.topAnchor.constraint(equalTo: dashboardHeader.bottomAnchor, constant: 10),
             
             workoutFooter.widthAnchor.constraint(equalToConstant: .barWidth),
             workoutFooter.heightAnchor.constraint(equalToConstant: .bottomBarHeight),

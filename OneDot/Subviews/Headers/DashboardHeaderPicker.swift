@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
+class DashboardHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
 
     let factoryWorkouts = FactoryWorkouts()
     var geoTrackingState = UserDefaultsManager.shared.isGeoTracking
@@ -112,6 +112,8 @@ class WorkoutHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegate 
         addSubview(title)
         title.clipsToBounds = true
         title.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)
+        let workout = updateCurrentWorkout()
+        title.text = workout.titleName
         
         ShapeManager.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }
