@@ -77,8 +77,8 @@ class DescriptionModule: UIView {
             resultLabel.textAlignment = .center
             switch mode {
             case .distanceTracking, .paceTracking, .caloriesTracking, .heartRateTracking:
-                titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
-                resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .standartExtra)
+                titleLabel.instance(color: .white, alignment: .center, font: .condensedMid)
+                resultLabel.instance(color: .white, alignment: .center, font: .standartExtra)
             default:
                 titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
                 resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)
@@ -113,16 +113,16 @@ class DescriptionModule: UIView {
             titleIcon.image = UIImage(named: axis == .vertical ? "AMCadence25x25" : "AMCadence20x20")
         case .distanceTracking:
             titleLabel.text = "Distance"
-            titleIcon.image = UIImage(named: "AMDistance25x25")
+            titleIcon.image = UIImage(named: "AMDistanceTracking25x25")
         case .paceTracking:
             titleLabel.text = "Pace"
-            titleIcon.image = UIImage(named: "AMPace25x25")
+            titleIcon.image = UIImage(named: "AMPaceTracking25x25")
         case .caloriesTracking:
             titleLabel.text = "Calories"
-            titleIcon.image = UIImage(named: "AMCalories25x25")
+            titleIcon.image = UIImage(named: "AMCaloriesTracking25x25")
         case .heartRateTracking:
             titleLabel.text = "Heart rate"
-            titleIcon.image = UIImage(named: "AMHeartRate25x25")
+            titleIcon.image = UIImage(named: "AMHeartRateTracking25x25")
         }
         
         setConstraints(axis: axis)

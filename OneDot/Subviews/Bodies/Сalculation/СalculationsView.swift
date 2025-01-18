@@ -256,7 +256,7 @@ class CalculationsView: UIVisualEffectView {
         button.setTitleColor(titleColor, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .medium, width: .standard)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        hideButton.setImage(UIImage(named: "NavigationHide"), for: .normal)
+        hideButton.setImage(UIImage(named: "BodyHide"), for: .normal)
     }
     
     //MARK: - SetTitle

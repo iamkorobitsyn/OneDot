@@ -32,7 +32,7 @@ class WorkoutHistoryVC: UIViewController {
     private let dismissButton: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "NavigationHide"), for: .normal)
+        button.setImage(UIImage(named: "BodyHide"), for: .normal)
         return button
     }()
     

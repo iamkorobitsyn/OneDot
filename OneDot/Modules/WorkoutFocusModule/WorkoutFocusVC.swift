@@ -65,14 +65,14 @@ class WorkoutFocusVC: UIViewController {
     private let backButton: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "NavigationBack"), for: .normal)
+        button.setImage(UIImage(named: "BodyBack"), for: .normal)
         return button
     }()
     
     private let hideButton: UIButton = {
         let button = UIButton()
         button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "NavigationHide"), for: .normal)
+        button.setImage(UIImage(named: "BodyHide"), for: .normal)
         return button
     }()
     

@@ -25,7 +25,7 @@ class WorkoutCell: UITableViewCell {
     let detailsImage: UIImageView = {
         let imageView = UIImageView()
         imageView.disableAutoresizingMask()
-        imageView.image = UIImage(named: "NavigationDetails")
+        imageView.image = UIImage(named: "BodyDetailsWhite")
         return imageView
     }()
     

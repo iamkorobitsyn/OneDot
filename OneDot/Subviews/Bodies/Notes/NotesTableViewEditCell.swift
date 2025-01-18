@@ -42,14 +42,14 @@ class NotesTableViewEditCell: UITableViewCell {
     
     let placeholderImage: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "NoteDetails")
+        image.image = UIImage(named: "BodyDetailsGray")
         return image
     }()
     
     let doneButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "noteCheckmark"), for: .normal)
-        button.setImage(UIImage(named: "noteCheckmark"), for: .highlighted)
+        button.setImage(UIImage(named: "BodyCheckmark"), for: .normal)
+        button.setImage(UIImage(named: "BodyCheckmark"), for: .highlighted)
         return button
     }()
 
@@ -101,7 +101,7 @@ class NotesTableViewEditCell: UITableViewCell {
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: 
                                             topAnchor,
-                                            constant: 10),
+                                            constant: 20),
             containerView.trailingAnchor.constraint(equalTo:
                                             trailingAnchor,
                                             constant: -60),
@@ -110,7 +110,7 @@ class NotesTableViewEditCell: UITableViewCell {
                                             constant: -10),
             containerView.leadingAnchor.constraint(equalTo:
                                             leadingAnchor,
-                                            constant: 60),
+                                            constant: 20),
             textView.widthAnchor.constraint(equalToConstant:
                                             UIScreen.main.bounds.width / 1.9),
             textView.topAnchor.constraint(equalTo: containerView.topAnchor),

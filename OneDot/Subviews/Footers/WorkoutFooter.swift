@@ -10,17 +10,19 @@ import UIKit
 class WorkoutFooter: UIView {
     
     var dashboardVCButtonStateHandler: ((DashboardVC.Mode)->())?
-    var workoutModeVCButtonStateHandler: ((WorkoutModeVC.Mode) -> ())?
+    var workoutVCButtonStateHandler: ((WorkoutVC.Mode) -> ())?
     
     
     enum Mode {
-        case ready
+        case dashboard
         case prepare
         case start
+        case pause
         case hide
+        case completion
     }
     
-    var currentMode: Mode = .ready
+    var currentMode: Mode = .dashboard
     
     private let leftButton: UIButton = UIButton()
     private let rightButton: UIButton = UIButton()
@@ -35,17 +37,51 @@ class WorkoutFooter: UIView {
         setConstraints()
     }
     
+    //MARK: - ActivateMode
+    
+    func activateMode(mode: Mode) {
+        self.isHidden = false
+        currentMode = mode
+        switch mode {
+        case .dashboard:
+            setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterList")
+        case .prepare:
+            setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterCancel")
+            AnimationManager.shared.AnimateStartIcon(leftButton.layer)
+        case .pause:
+            setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterStop")
+            AnimationManager.shared.AnimateStartIcon(leftButton.layer)
+        case .start:
+            setButtonImages(lButtonImg: "FooterPause", rButtonImg: "FooterStop")
+            leftButton.layer.removeAllAnimations()
+        case .hide:
+            self.isHidden = true
+        case .completion:
+            setButtonImages(lButtonImg: "FooterCheckmark", rButtonImg: "FooterBack")
+            AnimationManager.shared.AnimateStartIcon(leftButton.layer)
+            
+        }
+    }
+    
     //MARK: - MainVCHandlers
     
     @objc private func leftTapped() {
         
         switch currentMode {
-        case .ready:
+        case .dashboard:
+            currentMode = .prepare
             dashboardVCButtonStateHandler?(.transitionToWorkoutMode)
         case .prepare:
-            activateMode(mode: .start)
+            currentMode = .start
+            workoutVCButtonStateHandler?(.countdown)
         case .start:
-            activateMode(mode: .prepare)
+            currentMode = .pause
+            workoutVCButtonStateHandler?(.pause)
+        case .pause:
+            currentMode = .start
+            workoutVCButtonStateHandler?(.start)
+        case .completion:
+            workoutVCButtonStateHandler?(.saving)
         default:
             break
         }
@@ -54,36 +90,20 @@ class WorkoutFooter: UIView {
     @objc private func rightTapped() {
         
         switch currentMode {
-        case .ready:
+        case .dashboard:
             dashboardVCButtonStateHandler?(.transitionToProfile)
         case .prepare:
-            workoutModeVCButtonStateHandler?(.hide)
-        case .start:
-            workoutModeVCButtonStateHandler?(.hide)
+            workoutVCButtonStateHandler?(.hide)
+        case .start, .pause:
+            workoutVCButtonStateHandler?(.completion)
+        case .completion:
+            workoutVCButtonStateHandler?(.start)
         default:
             break
         }
     }
     
-    //MARK: - ActivateMode
     
-    func activateMode(mode: Mode) {
-        currentMode = mode
-        switch mode {
-            
-        case .ready:
-            self.isHidden = false
-            setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterList")
-        case .prepare:
-            setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterCancel")
-            AnimationManager.shared.AnimateStartIcon(leftButton.layer)
-        case .start:
-            setButtonImages(lButtonImg: "FooterPause", rButtonImg: "FooterStop")
-            leftButton.layer.removeAllAnimations()
-        case .hide:
-            self.isHidden = true
-        }
-    }
     
     private func setButtonImages(lButtonImg: String, rButtonImg: String) {
         leftButton.setImage(UIImage(named: lButtonImg), for: .normal)

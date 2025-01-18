@@ -30,7 +30,7 @@ class MapKitManager {
                 return true
             case .denied:
                 guard let vc = viewController else {return false}
-                await vc.present(Alert(title: "Вы запретили использование местоположения",
+                await vc.present(CustomAlert(title: "Вы запретили использование местоположения",
                                        message: "Разрешить?",
                                        style: .actionSheet,
                                        url: UIApplication.openSettingsURLString),
@@ -44,7 +44,7 @@ class MapKitManager {
             }
         } else {
             guard let vc = viewController else {return false}
-            await vc.present(Alert(title: "У вас выключена служба геолокации",
+            await vc.present(CustomAlert(title: "У вас выключена служба геолокации",
                                    message: "Включить?",
                                    style: .actionSheet,
                                    url: "App-Prefs:root=LOCATION_SEVICES"),

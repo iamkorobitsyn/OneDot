@@ -1,0 +1,202 @@
+//
+//  WorkoutModeHeader.swift
+//  OneDot
+//
+//  Created by Александр Коробицын on 15.01.2025.
+//
+
+import Foundation
+import UIKit
+
+class WorkoutHeader: UIView {
+    
+    enum Mode {
+        case prepare
+        case countdown
+        case workout
+        case stopWatch
+        case pause
+    }
+    
+    private let timerLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .center, font: .timerWatch)
+        label.text = "00:00:00"
+        return label
+    }()
+    
+    private let workoutTitle: UILabel = {
+        let label = UILabel()
+        label.instance(color: .white, alignment: .center, font: .standartMid)
+        label.disableAutoresizingMask()
+        return label
+    }()
+    
+    private let modeSwitchButtonLeft: UIButton = {
+        let button = UIButton()
+        button.disableAutoresizingMask()
+        button.layer.cornerRadius = 12
+        button.layer.cornerCurve = .continuous
+        button.layer.borderWidth = 1.5
+        return button
+    }()
+    
+    private let modeSwitchButtonRight: UIButton = {
+        let button = UIButton()
+        button.disableAutoresizingMask()
+        button.setImage(UIImage(named: "workoutStopWatch"), for: .normal)
+        button.setImage(UIImage(named: "workoutStopWatch"), for: .highlighted)
+        button.layer.cornerRadius = 12
+        button.layer.cornerCurve = .continuous
+        button.layer.borderWidth = 1.5
+        return button
+    }()
+    
+    private let leftButtonTitle: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .center, font: .standartMin)
+        label.numberOfLines = 2
+        label.text = "Workout Mode"
+        return label
+    }()
+    
+    private let rightButtonTitle: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .white, alignment: .center, font: .standartMin)
+        label.numberOfLines = 2
+        label.text = "Stopwatch Mode"
+        return label
+    }()
+    
+
+    //MARK: - Init
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        setViews()
+        setConstraints()
+        activateMode(mode: .prepare)
+    }
+    
+    //MARK: - ActivateMode
+    
+    func activateMode(mode: Mode) {
+        switch mode {
+            
+        case .prepare:
+            clearVisibleViews()
+            modeSwitchButtonLeft.isHidden = false
+            modeSwitchButtonRight.isHidden = false
+            leftButtonTitle.isHidden = false
+            rightButtonTitle.isHidden = false
+        case .countdown:
+            clearVisibleViews()
+        case .workout:
+            clearVisibleViews()
+            workoutTitle.isHidden = false
+            timerLabel.isHidden = false
+        case .stopWatch:
+            clearVisibleViews()
+            timerLabel.isHidden = false
+        case .pause:
+            clearVisibleViews()
+            timerLabel.isHidden = false
+        }
+    }
+    
+    //MARK: - UpdateTimerLabel
+    
+    func updateTimerLabel(text: String) {
+        timerLabel.text = text
+    }
+    
+    //MARK: - ClearVisibleViews
+    
+    private func clearVisibleViews() {
+        [workoutTitle, timerLabel, modeSwitchButtonLeft,
+         modeSwitchButtonRight, leftButtonTitle, rightButtonTitle].forEach({$0.isHidden = true})
+    }
+    
+    //MARK: - WorkoutMode
+    
+    func setWorkoutMode(title: String, workoutImageNamed: String) {
+        workoutTitle.text = title
+        
+        modeSwitchButtonLeft.setImage(UIImage(named: workoutImageNamed), for: .normal)
+        modeSwitchButtonLeft.setImage(UIImage(named: workoutImageNamed), for: .highlighted)
+        
+        let status = UserDefaultsManager.shared.isWorkoutMode
+        modeSwitchButtonLeft.layer.borderColor = status ? UIColor.white.cgColor : UIColor.clear.cgColor
+        modeSwitchButtonRight.layer.borderColor = status ? UIColor.clear.cgColor  : UIColor.white.cgColor
+    }
+
+    @objc private func updateWorkoutMode() {
+        
+        UserDefaultsManager.shared.isWorkoutMode = modeSwitchButtonLeft.isTouchInside ? true : false
+        UserDefaultsManager.shared.isWorkoutMode = modeSwitchButtonRight.isTouchInside ? false : true
+        
+        let status = UserDefaultsManager.shared.isWorkoutMode
+        modeSwitchButtonLeft.layer.borderColor = status ? UIColor.white.cgColor : UIColor.clear.cgColor
+        modeSwitchButtonRight.layer.borderColor = status ? UIColor.clear.cgColor  : UIColor.white.cgColor
+    }
+    
+    //MARK: - SetViews
+    
+    private func setViews() {
+        
+        addSubview(modeSwitchButtonLeft)
+        addSubview(modeSwitchButtonRight)
+        modeSwitchButtonLeft.addTarget(self, action: #selector(updateWorkoutMode), for: .touchUpInside)
+        modeSwitchButtonRight.addTarget(self, action: #selector(updateWorkoutMode), for: .touchUpInside)
+
+        addSubview(leftButtonTitle)
+        addSubview(rightButtonTitle)
+        addSubview(timerLabel)
+        addSubview(workoutTitle)
+    }
+    
+    //MARK: - SetConstraints
+    
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            workoutTitle.widthAnchor.constraint(equalToConstant: .barWidth),
+            workoutTitle.heightAnchor.constraint(equalToConstant: 20),
+            workoutTitle.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            workoutTitle.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            modeSwitchButtonLeft.widthAnchor.constraint(equalToConstant: .barWidth / 2),
+            modeSwitchButtonLeft.heightAnchor.constraint(equalToConstant: .barWidth / 2),
+            modeSwitchButtonLeft.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
+            modeSwitchButtonLeft.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            modeSwitchButtonRight.widthAnchor.constraint(equalToConstant: .barWidth / 2),
+            modeSwitchButtonRight.heightAnchor.constraint(equalToConstant: .barWidth / 2),
+            modeSwitchButtonRight.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4),
+            modeSwitchButtonRight.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            leftButtonTitle.widthAnchor.constraint(equalToConstant: .barWidth / 3),
+            leftButtonTitle.heightAnchor.constraint(equalToConstant: 50),
+            leftButtonTitle.centerXAnchor.constraint(equalTo: modeSwitchButtonLeft.centerXAnchor),
+            leftButtonTitle.centerYAnchor.constraint(equalTo: modeSwitchButtonLeft.centerYAnchor, constant: 50),
+            
+            rightButtonTitle.widthAnchor.constraint(equalToConstant: .barWidth / 3),
+            rightButtonTitle.heightAnchor.constraint(equalToConstant: 50),
+            rightButtonTitle.centerXAnchor.constraint(equalTo: modeSwitchButtonRight.centerXAnchor),
+            rightButtonTitle.centerYAnchor.constraint(equalTo: modeSwitchButtonRight.centerYAnchor, constant: 50),
+            
+            timerLabel.widthAnchor.constraint(equalToConstant: .barWidth),
+            timerLabel.heightAnchor.constraint(equalToConstant: .barWidth / 2),
+            timerLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            timerLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}

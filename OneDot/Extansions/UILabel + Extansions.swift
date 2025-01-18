@@ -17,6 +17,7 @@ extension UILabel {
         case standartMid
         case standartMax
         case standartExtra
+        case timerWatch
     }
     
     func instance(color: UIColor, alignment: NSTextAlignment, font: Font) {
@@ -37,6 +38,8 @@ extension UILabel {
             self.font = UIFont.systemFont(ofSize: 19, weight: .medium, width: .standard)
         case .standartExtra:
             self.font = UIFont.systemFont(ofSize: 25, weight: .medium, width: .standard)
+        case .timerWatch:
+            self.font = UIFont.monospacedDigitSystemFont(ofSize: 80, weight: .light)
         }
     }
 }
