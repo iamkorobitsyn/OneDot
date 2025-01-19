@@ -171,7 +171,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             workoutFooter.activateMode(mode: .dashboard)
         case .notes:
             dashboardHeader.activateMode(mode: .notes)
-            notesView.activateMode(mode: .active)
+            notesView.activateMode(mode: .prepare)
             calculationsView.activateMode(mode: .hide)
             settingsView.activateMode(mode: .hide)
             calculationsFooter.activateMode(mode: .hide)

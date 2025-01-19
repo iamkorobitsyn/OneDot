@@ -11,12 +11,11 @@ import UIKit
 class NotesView: UIVisualEffectView {
     
     enum Mode {
-        case active,
-//             editRows,
-             inactive,
+        case prepare,
+             editing,
+             deleting,
              hide
     }
-    
     
     var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
     
@@ -24,54 +23,36 @@ class NotesView: UIVisualEffectView {
     
     private let addNoteCellID = "addNoteCell"
     private let editNoteCellID = "editNoteCell"
-    private var bottomIndentHeight: CGFloat = 100
+    private var bottomIndentHeight: CGFloat = 120
     
-    private let hideButton: UIButton = {
+    private let hideOrDoneButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "BodyHide"),
-                                  for: .normal)
+        button.disableAutoresizingMask()
+        button.setBackgroundImage(UIImage(named: "BodyHide"), for: .normal)
+        button.setBackgroundImage(UIImage(named: "BodyHide"), for: .highlighted)
         return button
     }()
+    
+    private var textEditingMode: Bool = false
     
     private let addButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "BodyAdd"),
-                                  for: .normal)
-        button.setBackgroundImage(UIImage(named: "BodyAdd"),
-                                  for: .highlighted)
-        return button
-    }()
-    
-//    private let editTableButton: UIButton = {
-//        let button = UIButton()
-//        button.setBackgroundImage(UIImage(named: "BodyDelete"),
-//                                  for: .normal)
-//        button.setBackgroundImage(UIImage(named: "BodyDelete"),
-//                                  for: .highlighted)
-//        return button
-//    }()
-    
-    private let checkMarkButton: UIButton = {
-        let button = UIButton()
-        button.isHidden = true
-        button.setImage(UIImage(named: "BodyCheckmark"),
-                                  for: .normal)
-        button.setImage(UIImage(named: "BodyCheckmark"),
-                                  for: .highlighted)
-        button.layer.borderWidth = 0.5
-        button.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.5).cgColor
-        button.clipsToBounds = true
+        button.disableAutoresizingMask()
+        button.setBackgroundImage(UIImage(named: "BodyAdd"), for: .normal)
+        button.setBackgroundImage(UIImage(named: "BodyAdd"), for: .highlighted)
         return button
     }()
 
     private let tableView = {
         let tableView = UITableView()
+        tableView.disableAutoresizingMask()
         tableView.layer.cornerRadius = 30
         tableView.layer.cornerCurve = .continuous
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
         return tableView
     }()
+
     
     //MARK: - Init
     
@@ -80,35 +61,32 @@ class NotesView: UIVisualEffectView {
         
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(NotesTableViewEditCell.self,
+        tableView.register(NotesCell.self,
                            forCellReuseIdentifier: editNoteCellID)
 
         fetchNotes()
         setViews()
         setConstraints()
-        
     }
     
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
         switch mode {
-            
-        case .active:
+        case .prepare:
+            textEditingMode = false
             isHidden = false
-//            editTableButton.isHidden = false
-            checkMarkButton.isHidden = true
-            hideButton.isHidden = false
+            hideOrDoneButton.isHidden = false
             addButton.isHidden = false
-//        case .editRows:
-////            editTableButton.isHidden = true
-//            checkMarkButton.isHidden = false
-//            hideButton.isHidden = true
-//            addButton.isHidden = true
-        case .inactive:
-//            editTableButton.isHidden = true
-            checkMarkButton.isHidden = true
-            hideButton.isHidden = true
+            hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyHide"), for: .normal)
+            hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyHide"), for: .highlighted)
+        case .editing:
+            textEditingMode = true
+            addButton.isHidden = true
+            hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyCheckmark"), for: .normal)
+            hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyCheckmark"), for: .highlighted)
+        case .deleting:
+            hideOrDoneButton.isHidden = true
             addButton.isHidden = true
         case .hide:
             isHidden = true
@@ -123,11 +101,10 @@ class NotesView: UIVisualEffectView {
         CoreDataManager.shared.fetchNotes { result in
             
             switch result {
-            case .success(let notes):
-                var x = notes
-                x.sort(by: { $0.i < $1.i })
-                
-                self.notes = x
+            case .success(let result):
+                var notes = result
+                notes.sort(by: { $0.i < $1.i })
+                self.notes = notes
       
             case .failure(let error):
                 print(error.localizedDescription)
@@ -153,25 +130,17 @@ class NotesView: UIVisualEffectView {
         
         contentView.addSubview(tableView)
         contentView.clipsToBounds = true
-        contentView.insertSubview(hideButton, aboveSubview: tableView)
+        contentView.insertSubview(hideOrDoneButton, aboveSubview: tableView)
         contentView.insertSubview(addButton, aboveSubview: tableView)
-//        contentView.insertSubview(editTableButton, aboveSubview: tableView)
-        contentView.insertSubview(checkMarkButton, aboveSubview: tableView)
-        
-        hideButton.addTarget(self, action: #selector(hideNotes),
+        hideOrDoneButton.addTarget(self, action: #selector(tappedHideOrDoneButton),
                                  for: .touchUpInside)
         
         addButton.addTarget(self, action: #selector(addNote),
                                     for: .touchUpInside)
-        
-//        editTableButton.addTarget(self, action: #selector(notesEditBegin),
-//                                for: .touchUpInside)
-//        
-        checkMarkButton.addTarget(self, action: #selector(notesEditDone),
-                                for: .touchUpInside)
     }
     
-    //MARK: - TargetsOfButtons
+    
+    //MARK: - ButtonsTapped
     
     @objc private func addNote() {
         CoreDataManager.shared.addNote { note in
@@ -194,66 +163,43 @@ class NotesView: UIVisualEffectView {
         }
     }
     
-//    @objc private func notesEditBegin() {
-//        activateMode(mode: .editRows)
-//        tableView.isEditing = true
-//        tableView.transform.ty = 60
-//        checkMarkButton.isHidden = false
-//    }
-    
-    @objc private func notesEditDone() {
-        tableView.isEditing = false
-        tableView.transform.ty = 0
-        checkMarkButton.isHidden = true
+    @objc private func tappedHideOrDoneButton() {
+        if textEditingMode { tableView.endEditing(true) } else { buttonStateHandler?(.notesHide) }
     }
     
-    @objc func hideNotes() {
-        buttonStateHandler?(.notesHide)
+    //MARK: - EditDone
+    
+    private func notesEditDone(i: Int, rowHeight: CGFloat, text: String, editing: Bool) {
+        tableView.endEditing(true)
+        tableView.beginUpdates()
+        CoreDataManager.shared.editNote(notes[i], rowHeight: rowHeight, text: text, editing: editing)
+        tableView.endUpdates()
+        activateMode(mode: .prepare)
     }
-
+    
     //MARK: - SetConstraints
     
     private func setConstraints() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        hideButton.translatesAutoresizingMaskIntoConstraints = false
+        hideOrDoneButton.translatesAutoresizingMaskIntoConstraints = false
         addButton.translatesAutoresizingMaskIntoConstraints = false
-//        editTableButton.translatesAutoresizingMaskIntoConstraints = false
-        checkMarkButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             
-            tableView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+            tableView.topAnchor.constraint(equalTo: topAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             
-            hideButton.widthAnchor.constraint(equalToConstant: 42),
-            hideButton.heightAnchor.constraint(equalToConstant: 42),
-            hideButton.topAnchor.constraint(equalTo: tableView.topAnchor,
-                                             constant: 10),
-            hideButton.trailingAnchor.constraint(equalTo: tableView.trailingAnchor,
-                                                  constant: -10),
+            hideOrDoneButton.widthAnchor.constraint(equalToConstant: 42),
+            hideOrDoneButton.heightAnchor.constraint(equalToConstant: 42),
+            hideOrDoneButton.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            hideOrDoneButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
             addButton.widthAnchor.constraint(equalToConstant: 42),
             addButton.heightAnchor.constraint(equalToConstant: 42),
-            addButton.centerXAnchor.constraint(equalTo: hideButton.centerXAnchor),
-            addButton.centerYAnchor.constraint(equalTo: tableView.centerYAnchor),
-            
-//            editTableButton.widthAnchor.constraint(equalToConstant: 42),
-//            editTableButton.heightAnchor.constraint(equalToConstant: 42),
-//            editTableButton.centerXAnchor.constraint(equalTo: addButton.centerXAnchor),
-//            editTableButton.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 100),
-//            
-            checkMarkButton.topAnchor.constraint(equalTo: 
-                                            tableView.topAnchor,
-                                            constant: -0.5),
-            checkMarkButton.heightAnchor.constraint(equalToConstant: 60),
-            checkMarkButton.leadingAnchor.constraint(equalTo:
-                                            tableView.leadingAnchor,
-                                            constant: -0.5),
-            checkMarkButton.trailingAnchor.constraint(equalTo:
-                                            tableView.trailingAnchor,
-                                            constant: 0.5)
+            addButton.centerXAnchor.constraint(equalTo: hideOrDoneButton.centerXAnchor),
+            addButton.centerYAnchor.constraint(equalTo: tableView.centerYAnchor)
         ])
     }
     
@@ -266,21 +212,16 @@ class NotesView: UIVisualEffectView {
 
 extension NotesView: UITableViewDataSource {
     
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if section == 0 {
-            return notes.count
-        } else {
-            return 1
-        }
+        section == 0 ? notes.count : 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
   
         if indexPath.section == 0 {
             
-            let cell = NotesTableViewEditCell()
+            let cell = NotesCell()
                 cell.selectionStyle = .none
                 cell.textView.text = notes[indexPath.row].text
                 cell.textEditing = notes[indexPath.row].editing
@@ -290,11 +231,12 @@ extension NotesView: UITableViewDataSource {
                 guard let self else {return}
                 
                 tableView.beginUpdates()
-                activateMode(mode: .inactive)
+                activateMode(mode: .editing)
                 CoreDataManager.shared.editNote(notes[indexPath.row],
                                                 rowHeight: cell.contentHeight,
                                                 text: cell.textView.text,
                                                 editing: cell.textEditing)
+                    
                 bottomIndentHeight = 500
                 tableView.endUpdates()  
                 tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: 0),
@@ -303,31 +245,18 @@ extension NotesView: UITableViewDataSource {
             
                 cell.notesEndEditingHandler = { [weak self] in
                 guard let self else {return}
-                tableView.endEditing(true)
-                tableView.beginUpdates()
-                CoreDataManager.shared.editNote(notes[indexPath.row],
-                                                rowHeight: cell.contentHeight,
-                                                text: cell.textView.text,
-                                                editing: cell.textEditing)
-                
-                cell.doneButton.isHidden = true
-                
-                cell.placeholderState(notes[indexPath.row].editing)
-
-                
-                tableView.endUpdates()
-                activateMode(mode: .active)
+                    notesEditDone(i: indexPath.row, rowHeight: cell.contentHeight,
+                                  text: cell.textView.text, editing: cell.textEditing)
             }
             return cell
             
-        } else if indexPath.section == 1 {
+        } else {
             let cell = UITableViewCell()
             cell.backgroundColor = .clear
             cell.selectionStyle = .none
             return cell
         }
-        
-        return UITableViewCell()
+
     }
     
     
@@ -337,31 +266,18 @@ extension NotesView: UITableViewDataSource {
 
 extension NotesView: UITableViewDelegate   {
     
-    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        return indexPath.section == 0 ? true : false
-    }
-    
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return indexPath.section == 0 ? true : false
-    }
-    
     func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
-        activateMode(mode: .inactive)
+        if let cell = tableView.cellForRow(at: indexPath) as? NotesCell {
+            activateMode(mode: .deleting)
+            cell.verticalSeparator.alpha = 1
+        }
     }
     
     func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
         refreshNotesIndex()
         self.tableView.isUserInteractionEnabled = true
         tableView.reloadData()
-        self.activateMode(mode: .active)
-    }
-    
-    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
-        let noteToMove = notes[sourceIndexPath.row]
-        notes.remove(at: sourceIndexPath.row)
-        notes.insert(noteToMove, at: destinationIndexPath.row)
-        refreshNotesIndex()
+        activateMode(mode: .prepare)
     }
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

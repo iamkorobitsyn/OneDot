@@ -120,7 +120,7 @@ class WorkoutVC: UIViewController {
         }
     }
     
-    //MARK: - StartTimer
+    //MARK: - UpdatingTimer
     
     private func updatingTimer() {
         

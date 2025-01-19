@@ -70,7 +70,7 @@ class CoreDataManager {
                 NSManagedObject(entity: entityDescription,
                                 insertInto: context) as? Note else {return}
         note.i = 0
-        note.rowHeight = 100
+        note.rowHeight = 120
         note.text = ""
         note.editing = false
         completion(note)

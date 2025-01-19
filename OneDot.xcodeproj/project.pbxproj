@@ -41,7 +41,7 @@
 		6591F0522D0B37BB006597FE /* CalculationFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6591F0512D0B37BB006597FE /* CalculationFooter.swift */; };
 		659879222AB48BBD004F6E2D /* DashboardHeaderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659879212AB48BBD004F6E2D /* DashboardHeaderButton.swift */; };
 		659991FF2CF0CF0600D27B44 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659991FE2CF0CF0600D27B44 /* SettingsView.swift */; };
-		65A10A2A2D3713FE0013E197 /* NotesTableViewEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A10A282D3713FE0013E197 /* NotesTableViewEditCell.swift */; };
+		65A10A2A2D3713FE0013E197 /* NotesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A10A282D3713FE0013E197 /* NotesCell.swift */; };
 		65A10A2B2D3713FE0013E197 /* NotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A10A272D3713FE0013E197 /* NotesView.swift */; };
 		65A10A2F2D377A7C0013E197 /* WorkoutHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A10A2E2D377A7C0013E197 /* WorkoutHeader.swift */; };
 		65A4247E2D349ED1009B0E9A /* WorkoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A4247D2D349ED1009B0E9A /* WorkoutVC.swift */; };
@@ -154,7 +154,7 @@
 		659879212AB48BBD004F6E2D /* DashboardHeaderButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardHeaderButton.swift; sourceTree = "<group>"; };
 		659991FE2CF0CF0600D27B44 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		65A10A272D3713FE0013E197 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
-		65A10A282D3713FE0013E197 /* NotesTableViewEditCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesTableViewEditCell.swift; sourceTree = "<group>"; };
+		65A10A282D3713FE0013E197 /* NotesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesCell.swift; sourceTree = "<group>"; };
 		65A10A2E2D377A7C0013E197 /* WorkoutHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutHeader.swift; sourceTree = "<group>"; };
 		65A4247D2D349ED1009B0E9A /* WorkoutVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutVC.swift; sourceTree = "<group>"; };
 		65ADAEEB2D2B2C8800FAEC15 /* WorkoutFocusVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutFocusVC.swift; sourceTree = "<group>"; };
@@ -485,7 +485,7 @@
 			isa = PBXGroup;
 			children = (
 				65A10A272D3713FE0013E197 /* NotesView.swift */,
-				65A10A282D3713FE0013E197 /* NotesTableViewEditCell.swift */,
+				65A10A282D3713FE0013E197 /* NotesCell.swift */,
 			);
 			path = Notes;
 			sourceTree = "<group>";
@@ -715,7 +715,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65A10A2A2D3713FE0013E197 /* NotesTableViewEditCell.swift in Sources */,
+				65A10A2A2D3713FE0013E197 /* NotesCell.swift in Sources */,
 				65D99A032D333B7E009B2B20 /* WorkoutSplashScreen.swift in Sources */,
 				65EDA5802AEA3E0B007B6AE5 /* DashboardHeaderPicker.swift in Sources */,
 				65A4247E2D349ED1009B0E9A /* WorkoutVC.swift in Sources */,
