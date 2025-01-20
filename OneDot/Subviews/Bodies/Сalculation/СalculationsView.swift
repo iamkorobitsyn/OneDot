@@ -33,7 +33,19 @@ class CalculationsView: UIVisualEffectView {
     private let speedButton: UIButton = UIButton()
     private let speedTitle: UILabel = UILabel()
     
-    private let hideButton: UIButton = UIButton()
+    private let eraseButton: UIButton = {
+        let button = UIButton()
+        button.disableAutoresizingMask()
+        return button
+    }()
+    
+    private let hideButton: UIButton = {
+        let button = UIButton()
+        button.disableAutoresizingMask()
+        button.setImage(UIImage(named: "BodyHide"), for: .normal)
+        button.setImage(UIImage(named: "BodyHide"), for: .highlighted)
+        return button
+    }()
     
     private let crossSeparator: UIImageView = {
         let view = UIImageView()
@@ -68,20 +80,26 @@ class CalculationsView: UIVisualEffectView {
     }
     
     
-    //MARK: - MainVCHandlers
+    //MARK: - ButtonTapped
     
-    @objc private func buttonPressed() {
+    @objc private func buttonTapped() {
         
-        if speedButton.isTouchInside {
+        switch true {
+        case speedButton.isTouchInside:
             buttonStateHandler?(.pickerSpeed)
-        } else if paceButton.isTouchInside {
+        case paceButton.isTouchInside:
             buttonStateHandler?(.pickerPace)
-        } else if distanceButton.isTouchInside {
+        case distanceButton.isTouchInside:
             buttonStateHandler?(.pickerDistance)
-        } else if durationButton.isTouchInside {
+        case durationButton.isTouchInside:
             buttonStateHandler?(.pickerTime)
-        } else if hideButton.isTouchInside {
+        case hideButton.isTouchInside:
             buttonStateHandler?(.calculationsHide)
+        case eraseButton.isTouchInside:
+            resetValues()
+            updateValues()
+        default:
+            break
         }
     }
     
@@ -201,14 +219,20 @@ class CalculationsView: UIVisualEffectView {
         let isDistanceCleared = UD.shared.calculationsDistanceValue == 0 && UD.shared.calculationsDistanceDecimalValue == 0
         
         if isDistanceCleared {
+            eraseButton.setImage(UIImage(named: "BodyEraseInactive"), for: .normal)
+            eraseButton.setImage(UIImage(named: "BodyEraseInactive"), for: .highlighted)
             resetValues()
             updateButtonStates(isEnabled: false)
         } else {
+            eraseButton.setImage(UIImage(named: "BodyEraseActive"), for: .normal)
+            eraseButton.setImage(UIImage(named: "BodyEraseActive"), for: .highlighted)
             updateButtonStates(isEnabled: true)
         }
             
         updateButtonTitles()
     }
+    
+    
     
     private func updateButtonStates(isEnabled: Bool) {
         let alpha: CGFloat = isEnabled ? 1 : 0.5
@@ -267,7 +291,12 @@ class CalculationsView: UIVisualEffectView {
         setButton(button: speedButton, titleColor: .myPaletteGold, alignment: .left)
         setTitle(label: speedTitle, titleText: "Speed / km | h", alignment: .left)
         
-        setButton(button: hideButton, titleColor: .clear, alignment: .center)
+        contentView.addSubview(eraseButton)
+        contentView.addSubview(hideButton)
+        
+        [hideButton, eraseButton].forEach { button in
+            button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        }
     }
     
    //MARK: - SetButton
@@ -279,8 +308,7 @@ class CalculationsView: UIVisualEffectView {
         button.setTitleColor(titleColor, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .medium, width: .standard)
         button.contentHorizontalAlignment = alignment
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        hideButton.setImage(UIImage(named: "BodyHide"), for: .normal)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
     //MARK: - SetTitle
@@ -349,6 +377,11 @@ class CalculationsView: UIVisualEffectView {
             hideButton.heightAnchor.constraint(equalToConstant: .iconSide),
             hideButton.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             hideButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            
+            eraseButton.widthAnchor.constraint(equalToConstant: 42),
+            eraseButton.heightAnchor.constraint(equalToConstant: 42),
+            eraseButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            eraseButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
         ])
     }
     

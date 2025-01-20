@@ -19,6 +19,7 @@ class WorkoutVC: UIViewController {
         case countdown
         case start
         case pause
+        case erase
         case hide
         case completion
         case saving
@@ -70,6 +71,7 @@ class WorkoutVC: UIViewController {
 
     private func activateSubviewsHandlers() {
         footer.workoutVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        header.workoutVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
     }
     
     //MARK: - ActivateMode
@@ -108,6 +110,14 @@ class WorkoutVC: UIViewController {
             header.activateMode(mode: .pause)
             body.activateMode(mode: .pause)
             footer.activateMode(mode: .pause)
+            updatingTimer()
+        case .erase:
+            hapticGenerator.selectionChanged()
+            currentMode = .pause
+            header.activateMode(mode: .pause)
+            body.activateMode(mode: .pause)
+            footer.activateMode(mode: .pause)
+            timeInterval = 0
             updatingTimer()
         case .hide:
             dismiss(animated: false)

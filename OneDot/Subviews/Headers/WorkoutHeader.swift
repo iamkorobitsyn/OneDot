@@ -18,12 +18,21 @@ class WorkoutHeader: UIView {
         case pause
     }
     
+    var workoutVCButtonStateHandler: ((WorkoutVC.Mode) -> ())?
+    
     private let timerLabel: UILabel = {
         let label = UILabel()
         label.disableAutoresizingMask()
         label.instance(color: .white, alignment: .center, font: .timerWatch)
         label.text = "00:00:00"
         return label
+    }()
+    
+    private let eraseButton: UIButton = {
+        let button = UIButton()
+        button.disableAutoresizingMask()
+        button.setImage(UIImage(named: "FooterErase"), for: .normal)
+        return button
     }()
     
     private let workoutTitle: UILabel = {
@@ -91,6 +100,7 @@ class WorkoutHeader: UIView {
             clearVisibleViews()
             modeSwitchButtonLeft.isHidden = false
             modeSwitchButtonRight.isHidden = false
+            eraseButton.isHidden = true
             leftButtonTitle.isHidden = false
             rightButtonTitle.isHidden = false
         case .countdown:
@@ -102,9 +112,11 @@ class WorkoutHeader: UIView {
         case .stopWatch:
             clearVisibleViews()
             timerLabel.isHidden = false
+            eraseButton.isHidden = false
         case .pause:
             clearVisibleViews()
             timerLabel.isHidden = false
+            eraseButton.isHidden = UserDefaultsManager.shared.isWorkoutMode
         }
     }
     
@@ -117,8 +129,8 @@ class WorkoutHeader: UIView {
     //MARK: - ClearVisibleViews
     
     private func clearVisibleViews() {
-        [workoutTitle, timerLabel, modeSwitchButtonLeft,
-         modeSwitchButtonRight, leftButtonTitle, rightButtonTitle].forEach({$0.isHidden = true})
+        [workoutTitle, timerLabel, modeSwitchButtonLeft, modeSwitchButtonRight, eraseButton,
+         leftButtonTitle, rightButtonTitle].forEach({$0.isHidden = true})
     }
     
     //MARK: - WorkoutMode
@@ -134,7 +146,7 @@ class WorkoutHeader: UIView {
         modeSwitchButtonRight.layer.borderColor = status ? UIColor.clear.cgColor  : UIColor.white.cgColor
     }
 
-    @objc private func updateWorkoutMode() {
+    private func updateWorkoutMode() {
         
         UserDefaultsManager.shared.isWorkoutMode = modeSwitchButtonLeft.isTouchInside ? true : false
         UserDefaultsManager.shared.isWorkoutMode = modeSwitchButtonRight.isTouchInside ? false : true
@@ -144,18 +156,31 @@ class WorkoutHeader: UIView {
         modeSwitchButtonRight.layer.borderColor = status ? UIColor.clear.cgColor  : UIColor.white.cgColor
     }
     
+    @objc private func buttonTapped() {
+        switch true {
+        case modeSwitchButtonLeft.isTouchInside, modeSwitchButtonRight.isTouchInside:
+            updateWorkoutMode()
+        case eraseButton.isTouchInside:
+            workoutVCButtonStateHandler?(.erase)
+        default:
+            break
+        }
+    }
+    
     //MARK: - SetViews
     
     private func setViews() {
         
         addSubview(modeSwitchButtonLeft)
         addSubview(modeSwitchButtonRight)
-        modeSwitchButtonLeft.addTarget(self, action: #selector(updateWorkoutMode), for: .touchUpInside)
-        modeSwitchButtonRight.addTarget(self, action: #selector(updateWorkoutMode), for: .touchUpInside)
+        modeSwitchButtonLeft.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        modeSwitchButtonRight.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        eraseButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
 
         addSubview(leftButtonTitle)
         addSubview(rightButtonTitle)
         addSubview(timerLabel)
+        addSubview(eraseButton)
         addSubview(workoutTitle)
     }
     
@@ -191,7 +216,12 @@ class WorkoutHeader: UIView {
             timerLabel.widthAnchor.constraint(equalToConstant: .barWidth),
             timerLabel.heightAnchor.constraint(equalToConstant: .barWidth / 2),
             timerLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            timerLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+            timerLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            eraseButton.widthAnchor.constraint(equalToConstant: 42),
+            eraseButton.heightAnchor.constraint(equalToConstant: 42),
+            eraseButton.centerXAnchor.constraint(equalTo: modeSwitchButtonRight.centerXAnchor),
+            eraseButton.bottomAnchor.constraint(equalTo: modeSwitchButtonRight.topAnchor)
         ])
         
     }
