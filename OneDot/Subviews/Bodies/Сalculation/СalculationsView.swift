@@ -21,17 +21,36 @@ class CalculationsView: UIVisualEffectView {
              hide
     }
     
-    private let topButton: UIButton = UIButton()
-    private let bottomButton: UIButton = UIButton()
-    private let leftButton: UIButton = UIButton()
-    private let rightButton: UIButton = UIButton()
+    private let distanceButton: UIButton = UIButton()
+    private let distanceTitle: UILabel = UILabel()
+    
+    private let durationButton: UIButton = UIButton()
+    private let durationTitle: UILabel = UILabel()
+    
+    private let paceButton: UIButton = UIButton()
+    private let paceTitle: UILabel = UILabel()
+    
+    private let speedButton: UIButton = UIButton()
+    private let speedTitle: UILabel = UILabel()
+    
     private let hideButton: UIButton = UIButton()
     
-    private let distanceTitle: UILabel = UILabel()
-    private let speedTitle: UILabel = UILabel()
-    private let timeTitle: UILabel = UILabel()
-    private let paceTitle: UILabel = UILabel()
-    private let metricsTitle: UILabel = UILabel()
+    private let crossSeparator: UIImageView = {
+        let view = UIImageView()
+        view.disableAutoresizingMask()
+        view.image = UIImage(named: "crossSeparatorGray")
+        return view
+    }()
+
+    
+    private let containerView = {
+        let view = UIVisualEffectView()
+        view.disableAutoresizingMask()
+        view.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        view.clipsToBounds = true
+        view.layer.instance(border: true, corner: .min)
+        return view
+    }()
 
     
     //MARK: - Init
@@ -53,13 +72,13 @@ class CalculationsView: UIVisualEffectView {
     
     @objc private func buttonPressed() {
         
-        if topButton.isTouchInside {
+        if speedButton.isTouchInside {
             buttonStateHandler?(.pickerSpeed)
-        } else if bottomButton.isTouchInside {
+        } else if paceButton.isTouchInside {
             buttonStateHandler?(.pickerPace)
-        } else if leftButton.isTouchInside {
+        } else if distanceButton.isTouchInside {
             buttonStateHandler?(.pickerDistance)
-        } else if rightButton.isTouchInside {
+        } else if durationButton.isTouchInside {
             buttonStateHandler?(.pickerTime)
         } else if hideButton.isTouchInside {
             buttonStateHandler?(.calculationsHide)
@@ -193,16 +212,16 @@ class CalculationsView: UIVisualEffectView {
     
     private func updateButtonStates(isEnabled: Bool) {
         let alpha: CGFloat = isEnabled ? 1 : 0.5
-        [topButton, rightButton, bottomButton].forEach {
+        [speedButton, durationButton, paceButton].forEach {
             $0.isUserInteractionEnabled = isEnabled
             $0.alpha = alpha }
     }
     
     private func updateButtonTitles() {
-        topButton.setTitle("\(UD.shared.calculationsSpeedValue).\(UD.shared.calculationsSpeedDecimalValue)", for: .normal)
-        bottomButton.setTitle("\(addLeadingZero(UD.shared.calculationsPaceMinValue)):\(addLeadingZero(UD.shared.calculationsPaceSecValue))", for: .normal)
-        leftButton.setTitle("\(UD.shared.calculationsDistanceValue).\(UD.shared.calculationsDistanceDecimalValue)", for: .normal)
-        rightButton.setTitle("\(addLeadingZero(UD.shared.calculationsTimeHValue)):\(addLeadingZero(UD.shared.calculationsTimeMinValue)):\(addLeadingZero(UD.shared.calculationsTimeSecValue))", for: .normal)
+        speedButton.setTitle("\(UD.shared.calculationsSpeedValue).\(UD.shared.calculationsSpeedDecimalValue)", for: .normal)
+        paceButton.setTitle("\(addLeadingZero(UD.shared.calculationsPaceMinValue)):\(addLeadingZero(UD.shared.calculationsPaceSecValue))", for: .normal)
+        distanceButton.setTitle("\(UD.shared.calculationsDistanceValue).\(UD.shared.calculationsDistanceDecimalValue)", for: .normal)
+        durationButton.setTitle("\(addLeadingZero(UD.shared.calculationsTimeHValue)):\(addLeadingZero(UD.shared.calculationsTimeMinValue)):\(addLeadingZero(UD.shared.calculationsTimeSecValue))", for: .normal)
     }
     
     private func resetValues() {
@@ -233,39 +252,45 @@ class CalculationsView: UIVisualEffectView {
         
         layer.instance(border: true, corner: .max)
         
-        setButton(button: topButton, titleColor: .myPaletteGold)
-        setButton(button: bottomButton, titleColor: .myPaletteGold)
-        setButton(button: leftButton, titleColor: .myPaletteBlue)
-        setButton(button: rightButton, titleColor: .myPaletteBlue)
-        setButton(button: hideButton, titleColor: .clear)
-
-        setTitle(label: distanceTitle, titleText: "Distance")
-        setTitle(label: speedTitle, titleText: "Km / h")
-        setTitle(label: timeTitle, titleText: "Time")
-        setTitle(label: paceTitle, titleText: "Min / Km")
-        setTitle(label: metricsTitle, titleText: "Km")
-
+        contentView.addSubview(containerView)
+        contentView.addSubview(crossSeparator)
+        
+        setButton(button: distanceButton, titleColor: .link, alignment: .right)
+        setTitle(label: distanceTitle, titleText: "Distance / km", alignment: .right)
+        
+        setButton(button: durationButton, titleColor: .link, alignment: .left)
+        setTitle(label: durationTitle, titleText: "Time", alignment: .left)
+        
+        setButton(button: paceButton, titleColor: .myPaletteGold, alignment: .right)
+        setTitle(label: paceTitle, titleText: "Pace", alignment: .right)
+        
+        setButton(button: speedButton, titleColor: .myPaletteGold, alignment: .left)
+        setTitle(label: speedTitle, titleText: "Speed / km | h", alignment: .left)
+        
+        setButton(button: hideButton, titleColor: .clear, alignment: .center)
     }
     
    //MARK: - SetButton
     
-    private func setButton(button: UIButton, titleColor: UIColor) {
+    private func setButton(button: UIButton, titleColor: UIColor, alignment: UIControl.ContentHorizontalAlignment) {
         contentView.addSubview(button)
         button.disableAutoresizingMask()
         button.backgroundColor = .clear
         button.setTitleColor(titleColor, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .medium, width: .standard)
+        button.contentHorizontalAlignment = alignment
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         hideButton.setImage(UIImage(named: "BodyHide"), for: .normal)
     }
     
     //MARK: - SetTitle
     
-    private func setTitle(label: UILabel, titleText: String) {
+    private func setTitle(label: UILabel, titleText: String, alignment: NSTextAlignment) {
         contentView.addSubview(label)
         label.disableAutoresizingMask()
         label.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
         label.text = titleText
+        label.textAlignment = alignment
     }
     
     
@@ -274,45 +299,56 @@ class CalculationsView: UIVisualEffectView {
     private func setConstraints() {
         NSLayoutConstraint.activate([
             
-            topButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            topButton.widthAnchor.constraint(equalToConstant: 100),
-            topButton.heightAnchor.constraint(equalToConstant: 60),
-            topButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 100),
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -60),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            containerView.heightAnchor.constraint(equalToConstant: 400),
             
-            bottomButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            bottomButton.widthAnchor.constraint(equalToConstant: 100),
-            bottomButton.heightAnchor.constraint(equalToConstant: 60),
-            bottomButton.topAnchor.constraint(equalTo: topButton.bottomAnchor),
+            distanceButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 100),
+            distanceButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            distanceButton.heightAnchor.constraint(equalToConstant: 60),
+            distanceButton.widthAnchor.constraint(equalToConstant: 130),
             
-            leftButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 100),
-            leftButton.trailingAnchor.constraint(equalTo: topButton.leadingAnchor),
-            leftButton.heightAnchor.constraint(equalToConstant: 120),
-            leftButton.widthAnchor.constraint(equalToConstant: (.barWidth - 100) / 2),
+            distanceTitle.centerXAnchor.constraint(equalTo: distanceButton.centerXAnchor),
+            distanceTitle.bottomAnchor.constraint(equalTo: distanceButton.topAnchor, constant: -5),
+            distanceTitle.widthAnchor.constraint(equalToConstant: 130),
             
-            rightButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 100),
-            rightButton.leadingAnchor.constraint(equalTo: topButton.trailingAnchor),
-            rightButton.heightAnchor.constraint(equalToConstant: 120),
-            rightButton.widthAnchor.constraint(equalToConstant: (.barWidth - 100) / 2),
+            durationButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 100),
+            durationButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            durationButton.heightAnchor.constraint(equalToConstant: 60),
+            durationButton.widthAnchor.constraint(equalToConstant: 130),
             
+            durationTitle.centerXAnchor.constraint(equalTo: durationButton.centerXAnchor),
+            durationTitle.bottomAnchor.constraint(equalTo: durationButton.topAnchor, constant: -5),
+            durationTitle.widthAnchor.constraint(equalToConstant: 130),
+            
+            paceButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -100),
+            paceButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            paceButton.heightAnchor.constraint(equalToConstant: 60),
+            paceButton.widthAnchor.constraint(equalToConstant: 130),
+            
+            paceTitle.centerXAnchor.constraint(equalTo: paceButton.centerXAnchor),
+            paceTitle.topAnchor.constraint(equalTo: paceButton.bottomAnchor, constant: 5),
+            paceTitle.widthAnchor.constraint(equalToConstant: 130),
+            
+            speedButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -100),
+            speedButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            speedButton.heightAnchor.constraint(equalToConstant: 60),
+            speedButton.widthAnchor.constraint(equalToConstant: 130),
+            
+            speedTitle.centerXAnchor.constraint(equalTo: speedButton.centerXAnchor),
+            speedTitle.topAnchor.constraint(equalTo: speedButton.bottomAnchor, constant: 5),
+            speedTitle.widthAnchor.constraint(equalToConstant: 130),
+            
+            crossSeparator.widthAnchor.constraint(equalToConstant: 42),
+            crossSeparator.heightAnchor.constraint(equalToConstant: 42),
+            crossSeparator.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            crossSeparator.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+
             hideButton.widthAnchor.constraint(equalToConstant: .iconSide),
             hideButton.heightAnchor.constraint(equalToConstant: .iconSide),
             hideButton.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             hideButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            
-            distanceTitle.centerXAnchor.constraint(equalTo: leftButton.centerXAnchor),
-            distanceTitle.bottomAnchor.constraint(equalTo: leftButton.topAnchor, constant: -5),
-            
-            speedTitle.centerXAnchor.constraint(equalTo: topButton.centerXAnchor),
-            speedTitle.bottomAnchor.constraint(equalTo: topButton.topAnchor, constant: -5),
-            
-            timeTitle.centerXAnchor.constraint(equalTo: rightButton.centerXAnchor),
-            timeTitle.bottomAnchor.constraint(equalTo: rightButton.topAnchor, constant: -5),
-            
-            paceTitle.centerXAnchor.constraint(equalTo: bottomButton.centerXAnchor),
-            paceTitle.topAnchor.constraint(equalTo: bottomButton.bottomAnchor, constant: 5),
-            
-            metricsTitle.centerXAnchor.constraint(equalTo: leftButton.centerXAnchor),
-            metricsTitle.topAnchor.constraint(equalTo: leftButton.bottomAnchor, constant: 5)
         ])
     }
     

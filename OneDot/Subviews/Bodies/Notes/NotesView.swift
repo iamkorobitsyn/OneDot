@@ -23,7 +23,6 @@ class NotesView: UIVisualEffectView {
     
     private let addNoteCellID = "addNoteCell"
     private let editNoteCellID = "editNoteCell"
-    private var bottomIndentHeight: CGFloat = 120
     
     private let hideOrDoneButton: UIButton = {
         let button = UIButton()
@@ -180,12 +179,8 @@ class NotesView: UIVisualEffectView {
     //MARK: - SetConstraints
     
     private func setConstraints() {
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        hideOrDoneButton.translatesAutoresizingMaskIntoConstraints = false
-        addButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            
             tableView.topAnchor.constraint(equalTo: topAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -213,58 +208,54 @@ class NotesView: UIVisualEffectView {
 extension NotesView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        section == 0 ? notes.count : 1
+        notes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-  
-        if indexPath.section == 0 {
+        
+        let cell = NotesCell()
+        cell.selectionStyle = .none
+        cell.textView.text = notes[indexPath.row].text
+        cell.textEditing = notes[indexPath.row].editing
+        cell.placeholderState(cell.textEditing)
+        
+        cell.contentCompletion = { [weak self] in
+            guard let self else {return}
             
-            let cell = NotesCell()
-                cell.selectionStyle = .none
-                cell.textView.text = notes[indexPath.row].text
-                cell.textEditing = notes[indexPath.row].editing
-                cell.placeholderState(cell.textEditing)
-
-                cell.contentCompletion = { [weak self] in
-                guard let self else {return}
-                
-                tableView.beginUpdates()
-                activateMode(mode: .editing)
-                CoreDataManager.shared.editNote(notes[indexPath.row],
-                                                rowHeight: cell.contentHeight,
-                                                text: cell.textView.text,
-                                                editing: cell.textEditing)
-                    
-                bottomIndentHeight = 500
-                tableView.endUpdates()  
-                tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: 0),
-                                      at: .top, animated: true)
-            }
+            tableView.beginUpdates()
+            activateMode(mode: .editing)
+            CoreDataManager.shared.editNote(notes[indexPath.row],
+                                            rowHeight: cell.contentHeight,
+                                            text: cell.textView.text,
+                                            editing: cell.textEditing)
             
-                cell.notesEndEditingHandler = { [weak self] in
-                guard let self else {return}
-                    notesEditDone(i: indexPath.row, rowHeight: cell.contentHeight,
-                                  text: cell.textView.text, editing: cell.textEditing)
-            }
-            return cell
-            
-        } else {
-            let cell = UITableViewCell()
-            cell.backgroundColor = .clear
-            cell.selectionStyle = .none
-            return cell
+            tableView.endUpdates()
+            tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: 0),
+                                  at: .top, animated: true)
         }
-
+        
+        cell.notesEndEditingHandler = { [weak self] in
+            guard let self else {return}
+            notesEditDone(i: indexPath.row, rowHeight: cell.contentHeight,
+                          text: cell.textView.text, editing: cell.textEditing)
+        }
+        return cell
     }
-    
-    
 }
 
 //MARK: - UITableViewDelegate
 
 extension NotesView: UITableViewDelegate   {
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        600
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        return view
+    }
     
     func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? NotesCell {
@@ -279,37 +270,23 @@ extension NotesView: UITableViewDelegate   {
         tableView.reloadData()
         activateMode(mode: .prepare)
     }
-
+    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            if editingStyle == .delete {
-                CoreDataManager.shared.deleteNote(notes[indexPath.row])
-                self.notes.remove(at: indexPath.row)
-                self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                self.tableView.isUserInteractionEnabled = false
-            }
+        if editingStyle == .delete {
+            CoreDataManager.shared.deleteNote(notes[indexPath.row])
+            self.notes.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.tableView.isUserInteractionEnabled = false
         }
     }
-
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        2
-    }
-    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 1 {
-            return bottomIndentHeight
-        } else {
-            for i in 0..<notes.count {
-                if i == indexPath.row {
-                    return CGFloat(notes[i].rowHeight)
-                    
-                }
+        
+        for i in 0..<notes.count {
+            if i == indexPath.row {
+                return CGFloat(notes[i].rowHeight)
             }
         }
         return CGFloat()
     }
-
 }
-
