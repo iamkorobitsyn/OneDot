@@ -13,6 +13,8 @@ class WorkoutVC: UIViewController {
     let hapticGenerator = UISelectionFeedbackGenerator()
     
     var currentWorkout: Workout
+    
+    private var locationManager = LocationManager()
 
     enum Mode {
         case prepare
@@ -63,6 +65,15 @@ class WorkoutVC: UIViewController {
         setViews()
         setConstraints()
         activateSubviewsHandlers()
+        
+        locationManager.requestAuthorization()
+               
+               // Настройка замыкания для обновления UI
+               locationManager.didUpdateDistance = { distance in
+                   // Обновляем метку с пройденным расстоянием
+                   self.body.updateFocusLabel(text: "\(distance)", countdownSize: false)
+                   print(distance)
+               }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -96,8 +107,9 @@ class WorkoutVC: UIViewController {
             currentMode = .start
             if UserDefaultsManager.shared.isWorkoutMode {
                 header.activateMode(mode: .workout)
-                body.activateMode(mode: .workout)
+                body.activateMode(mode: .countdown)
                 footer.activateMode(mode: .start)
+                locationManager.startTracking()
             } else {
                 header.activateMode(mode: .stopWatch)
                 body.activateMode(mode: .stopWatch)
@@ -127,6 +139,7 @@ class WorkoutVC: UIViewController {
         case .saving:
             print("saveWorkout")
             dismiss(animated: false)
+            locationManager.stopTracking()
         }
     }
     
@@ -153,17 +166,12 @@ class WorkoutVC: UIViewController {
             })
 
         case .start:
-            
             if UserDefaultsManager.shared.isWorkoutMode {
                 timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
                     
                     guard let self = self else { return }
                     timeInterval += 1
                     header.updateTimerLabel(text: formatTime(timeInterval))
-                    
-                    Task {
-                        await WorkoutManager.shared.startWorkout()
-                    }
                 }
             } else {
                 timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] timer in
