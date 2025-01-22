@@ -153,12 +153,17 @@ class WorkoutVC: UIViewController {
             })
 
         case .start:
+            
             if UserDefaultsManager.shared.isWorkoutMode {
                 timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
                     
                     guard let self = self else { return }
                     timeInterval += 1
                     header.updateTimerLabel(text: formatTime(timeInterval))
+                    
+                    Task {
+                        await WorkoutManager.shared.startWorkout()
+                    }
                 }
             } else {
                 timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] timer in
