@@ -11,6 +11,7 @@ import HealthKit
 protocol Workout {
     var type: HKWorkoutActivityType {get}
     var checkLocation: Bool {get}
+    var averageCalBurnedPerSec: Double {get}
     var titleName: String {get}
     var pickerViewIcon: String {get}
     var workoutVCIcon: String {get}
