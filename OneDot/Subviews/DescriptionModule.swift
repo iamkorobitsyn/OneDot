@@ -29,6 +29,13 @@ class DescriptionModule: UIView {
         return label
     }()
     
+    let horisontalSeparator: UIImageView = {
+        let view = UIImageView()
+        view.disableAutoresizingMask()
+        view.image = UIImage(named: "verticalSeparatorWhite")
+        return view
+    }()
+    
     enum Mode {
         case timeDescription
         case caloriesDescription
@@ -41,11 +48,11 @@ class DescriptionModule: UIView {
         case distanceTracking
         case paceTracking
         case caloriesTracking
-        case heartRateTracking
     }
     
     enum Axis {
-        case horizontal
+        case horizontalCompact
+        case horizontalExpanded
         case vertical
     }
     
@@ -56,33 +63,46 @@ class DescriptionModule: UIView {
     }
     
     func activateMode(axis: Axis, mode: Mode, text: String) {
-        
-        addSubview(titleLabel)
-        addSubview(titleIcon)
-        addSubview(resultLabel)
-        
         resultLabel.text = text
         
         
         switch axis {
             
-        case .horizontal:
+        case .horizontalCompact:
+            
+            addSubview(titleLabel)
+            addSubview(titleIcon)
+            addSubview(resultLabel)
+            
             titleLabel.textAlignment = .left
             titleLabel.instance(color: .myPaletteGray, alignment: .left, font: .condensedMin)
             
             resultLabel.textAlignment = .right
             resultLabel.instance(color: .myPaletteGray, alignment: .right, font: .standartMid)
+            
+        case .horizontalExpanded:
+            
+            addSubview(titleLabel)
+            addSubview(titleIcon)
+            addSubview(resultLabel)
+            addSubview(horisontalSeparator)
+            
+            titleLabel.textAlignment = .left
+            titleLabel.instance(color: .white, alignment: .left, font: .condensedMid)
+            
+            resultLabel.textAlignment = .right
+            resultLabel.instance(color: .white, alignment: .right, font: .standartExtra)
         case .vertical:
+            
+            addSubview(titleLabel)
+            addSubview(titleIcon)
+            addSubview(resultLabel)
+            
             titleLabel.textAlignment = .center
+            titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
+            
             resultLabel.textAlignment = .center
-            switch mode {
-            case .distanceTracking, .paceTracking, .caloriesTracking, .heartRateTracking:
-                titleLabel.instance(color: .white, alignment: .center, font: .condensedMid)
-                resultLabel.instance(color: .white, alignment: .center, font: .standartExtra)
-            default:
-                titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
-                resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)
-            }
+            resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)
         }
         
         
@@ -120,9 +140,6 @@ class DescriptionModule: UIView {
         case .caloriesTracking:
             titleLabel.text = "Calories"
             titleIcon.image = UIImage(named: "AMCaloriesTracking25x25")
-        case .heartRateTracking:
-            titleLabel.text = "Heart rate"
-            titleIcon.image = UIImage(named: "AMHeartRateTracking25x25")
         }
         
         setConstraints(axis: axis)
@@ -131,7 +148,7 @@ class DescriptionModule: UIView {
     private func setConstraints(axis: Axis) {
         switch axis {
             
-        case .horizontal:
+        case .horizontalCompact:
             NSLayoutConstraint.activate([
                 titleIcon.widthAnchor.constraint(equalToConstant: 20),
                 titleIcon.heightAnchor.constraint(equalToConstant: 20),
@@ -145,6 +162,26 @@ class DescriptionModule: UIView {
                 resultLabel.widthAnchor.constraint(equalToConstant: 75),
                 resultLabel.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 2),
                 resultLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
+            ])
+        case .horizontalExpanded:
+            NSLayoutConstraint.activate([
+                titleIcon.widthAnchor.constraint(equalToConstant: 25),
+                titleIcon.heightAnchor.constraint(equalToConstant: 25),
+                titleIcon.leadingAnchor.constraint(equalTo: leadingAnchor),
+                titleIcon.centerYAnchor.constraint(equalTo: centerYAnchor),
+                
+                titleLabel.widthAnchor.constraint(equalToConstant: 75),
+                titleLabel.leadingAnchor.constraint(equalTo: titleIcon.trailingAnchor, constant: 15),
+                titleLabel.centerYAnchor.constraint(equalTo: titleIcon.centerYAnchor),
+                
+                horisontalSeparator.widthAnchor.constraint(equalToConstant: 42),
+                horisontalSeparator.heightAnchor.constraint(equalToConstant: 42),
+                horisontalSeparator.centerXAnchor.constraint(equalTo: centerXAnchor),
+                horisontalSeparator.centerYAnchor.constraint(equalTo: centerYAnchor),
+                
+                resultLabel.widthAnchor.constraint(equalToConstant: 100),
+                resultLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+                resultLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
             ])
         case .vertical:
             NSLayoutConstraint.activate([

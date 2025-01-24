@@ -13,6 +13,8 @@ class WorkoutVC: UIViewController {
     let hapticGenerator = UISelectionFeedbackGenerator()
     
     var currentWorkout: Workout
+    var currentDistance: Double?
+    var currentCalories: Double?
     
     private var locationManager = LocationManager()
 
@@ -68,11 +70,10 @@ class WorkoutVC: UIViewController {
         
         locationManager.requestAuthorization()
                
-               // Настройка замыкания для обновления UI
-               locationManager.didUpdateDistance = { distance in
-                   // Обновляем метку с пройденным расстоянием
-                   self.body.updateFocusLabel(text: "\(distance)", countdownSize: false)
-                   print(distance)
+               locationManager.didUpdateDistance = { result in
+
+                       self.currentDistance = result
+
                }
     }
     
@@ -107,7 +108,7 @@ class WorkoutVC: UIViewController {
             currentMode = .start
             if UserDefaultsManager.shared.isWorkoutMode {
                 header.activateMode(mode: .workout)
-                body.activateMode(mode: .countdown)
+                body.activateMode(mode: .workout)
                 footer.activateMode(mode: .start)
                 locationManager.startTracking()
             } else {
@@ -136,6 +137,7 @@ class WorkoutVC: UIViewController {
         case .completion:
             footer.activateMode(mode: .completion)
             body.activateMode(mode: .completion)
+            timer?.invalidate()
         case .saving:
             print("saveWorkout")
             dismiss(animated: false)
@@ -166,12 +168,26 @@ class WorkoutVC: UIViewController {
             })
 
         case .start:
+            
+            body.updateTrackingState(isGeoTracking: currentWorkout.checkLocation,
+                                     duration: timeInterval,
+                                     distance: currentDistance ?? 0,
+                                     calories: currentCalories ?? 0)
+
             if UserDefaultsManager.shared.isWorkoutMode {
                 timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
                     
                     guard let self = self else { return }
                     timeInterval += 1
                     header.updateTimerLabel(text: formatTime(timeInterval))
+                    
+                    currentCalories = currentWorkout.averageCalBurnedPerSec * timeInterval
+
+                    body.updateTrackingState(isGeoTracking: currentWorkout.checkLocation,
+                                             duration: timeInterval,
+                                             distance: currentDistance ?? 0,
+                                             calories: currentCalories ?? 0)
+
                 }
             } else {
                 timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] timer in
@@ -223,8 +239,8 @@ class WorkoutVC: UIViewController {
     
     private func setViews() {
         view.backgroundColor = .myPaletteBlue
-        view.addSubview(header)
         view.addSubview(body)
+        view.addSubview(header)
         view.addSubview(footer)
         activateMode(mode: .prepare)
     }
@@ -238,7 +254,7 @@ class WorkoutVC: UIViewController {
             header.topAnchor.constraint(equalTo: view.topAnchor),
             header.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            body.topAnchor.constraint(equalTo: header.bottomAnchor),
+            body.topAnchor.constraint(equalTo: view.topAnchor),
             body.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             body.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             body.leadingAnchor.constraint(equalTo: view.leadingAnchor),

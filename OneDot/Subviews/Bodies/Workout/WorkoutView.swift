@@ -26,34 +26,21 @@ class WorkoutView: UIView {
         return label
     }()
     
-    private let distanceTrackingView: DescriptionModule = {
+    private let topDescriptionModule: DescriptionModule = {
         let module = DescriptionModule()
         module.disableAutoresizingMask()
         return module
     }()
     
-    private let paceTrackingView: DescriptionModule = {
+    private let centerDescriptionModule: DescriptionModule = {
         let module = DescriptionModule()
         module.disableAutoresizingMask()
         return module
     }()
     
-    private let caloriesTrackingView: DescriptionModule = {
+    private let bottomDescriptionModule: DescriptionModule = {
         let view = DescriptionModule()
         view.disableAutoresizingMask()
-        return view
-    }()
-    
-    private let heartrateTrackingView: DescriptionModule = {
-        let view = DescriptionModule()
-        view.disableAutoresizingMask()
-        return view
-    }()
-    
-    let crossSeparator: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        view.image = UIImage(named: "crossSeparator")
         return view
     }()
 
@@ -61,6 +48,7 @@ class WorkoutView: UIView {
         super.init(frame: frame)
         setViews()
         setConstraints()
+        
     }
     
     func activateMode(mode: Mode) {
@@ -78,11 +66,9 @@ class WorkoutView: UIView {
         case .countdown:
             focusLabel.isHidden = false
         case .workout:
-            distanceTrackingView.isHidden = false
-            paceTrackingView.isHidden = false
-            caloriesTrackingView.isHidden = false
-            heartrateTrackingView.isHidden = false
-            crossSeparator.isHidden = false
+            topDescriptionModule.isHidden = false
+            centerDescriptionModule.isHidden = false
+            bottomDescriptionModule.isHidden = false
         case .completion:
             focusLabel.isHidden = false
             updateFocusLabel(text: "Finish the workout?", countdownSize: false)
@@ -101,62 +87,79 @@ class WorkoutView: UIView {
         }
     }
     
+    func updateTrackingState(isGeoTracking: Bool, duration: TimeInterval, distance: Double, calories: Double) {
+        
+        if isGeoTracking {
+            
+            let kilometers = distance / 1000
+            let roundedKilometers = String(format: "%.2f", kilometers)
+            topDescriptionModule.activateMode(axis: .horizontalExpanded, mode: .distanceTracking,
+                                              text: "\(roundedKilometers) km")
+            
+
+            if Int(duration) == 0 {
+                topDescriptionModule.activateMode(axis: .horizontalExpanded, mode: .distanceTracking, text: "-")
+                centerDescriptionModule.activateMode(axis: .horizontalExpanded, mode: .paceTracking, text: "-")
+                bottomDescriptionModule.activateMode(axis: .horizontalExpanded, mode: .caloriesTracking, text: "-")
+            } else if Int(duration) % 10 == 0, distance != 0 {
+                let timePerMetre = duration / distance
+                let timePerKilometer = timePerMetre * 1000
+                let minutes = Int(timePerKilometer / 60)
+                let seconds = Int(timePerKilometer) % 60
+                let stringDuration = String(format: "%02d:%02d", minutes, seconds)
+                centerDescriptionModule.activateMode(axis: .horizontalExpanded, mode: .paceTracking, text: "\(stringDuration)")
+            } else if Int(duration) % 5 == 0 {
+                bottomDescriptionModule.activateMode(axis: .horizontalExpanded, mode: .caloriesTracking, text: "\(Int(calories))")
+            }
+             
+        } else {
+            if Int(duration) == 0 {
+                centerDescriptionModule.activateMode(axis: .horizontalExpanded, mode: .caloriesTracking, text: "-")
+            } else if Int(duration) % 5 == 0 {
+                centerDescriptionModule.activateMode(axis: .horizontalExpanded, mode: .caloriesTracking, text: "\(Int(calories))")
+            }
+        }
+    }
+    
     private func clearVisibleViews() {
-        distanceTrackingView.isHidden = true
-        paceTrackingView.isHidden = true
-        caloriesTrackingView.isHidden = true
-        heartrateTrackingView.isHidden = true
-        crossSeparator.isHidden = true
+        topDescriptionModule.isHidden = true
+        centerDescriptionModule.isHidden = true
+        bottomDescriptionModule.isHidden = true
         focusLabel.isHidden = true
     }
     
     private func setViews() {
         
-        addSubview(distanceTrackingView)
-        addSubview(paceTrackingView)
-        addSubview(caloriesTrackingView)
-        addSubview(heartrateTrackingView)
-        addSubview(crossSeparator)
+        addSubview(topDescriptionModule)
+        addSubview(centerDescriptionModule)
+        addSubview(bottomDescriptionModule)
         addSubview(focusLabel)
-        
-        distanceTrackingView.activateMode(axis: .vertical, mode: .distanceTracking, text: "122.95")
-        paceTrackingView.activateMode(axis: .vertical, mode: .paceTracking, text: "12:45")
-        caloriesTrackingView.activateMode(axis: .vertical, mode: .caloriesTracking, text: "123")
-        heartrateTrackingView.activateMode(axis: .vertical, mode: .heartRateTracking, text: "147")
+
     }
     
     private func setConstraints() {
         
         NSLayoutConstraint.activate([
-            
-            distanceTrackingView.widthAnchor.constraint(equalToConstant: 160),
-            distanceTrackingView.heightAnchor.constraint(equalToConstant: 100),
-            distanceTrackingView.topAnchor.constraint(equalTo: topAnchor),
-            distanceTrackingView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -100),
-            
-            paceTrackingView.widthAnchor.constraint(equalToConstant: 160),
-            paceTrackingView.heightAnchor.constraint(equalToConstant: 100),
-            paceTrackingView.topAnchor.constraint(equalTo: topAnchor),
-            paceTrackingView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 100),
-            
-            crossSeparator.widthAnchor.constraint(equalToConstant: 42),
-            crossSeparator.heightAnchor.constraint(equalToConstant: 42),
-            crossSeparator.centerXAnchor.constraint(equalTo: centerXAnchor),
-            crossSeparator.topAnchor.constraint(equalTo: distanceTrackingView.bottomAnchor, constant: 10),
-            
             focusLabel.widthAnchor.constraint(equalToConstant: .barWidth - 100),
             focusLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            focusLabel.centerYAnchor.constraint(equalTo: crossSeparator.centerYAnchor),
+            focusLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 50),
             
-            caloriesTrackingView.widthAnchor.constraint(equalToConstant: 160),
-            caloriesTrackingView.heightAnchor.constraint(equalToConstant: 100),
-            caloriesTrackingView.topAnchor.constraint(equalTo: crossSeparator.bottomAnchor, constant: 10),
-            caloriesTrackingView.centerXAnchor.constraint(equalTo: distanceTrackingView.centerXAnchor),
+            topDescriptionModule.widthAnchor.constraint(equalToConstant: 300),
+            topDescriptionModule.heightAnchor.constraint(equalToConstant: 100),
+            topDescriptionModule.bottomAnchor.constraint(equalTo: focusLabel.topAnchor),
+            topDescriptionModule.centerXAnchor.constraint(equalTo: centerXAnchor),
             
-            heartrateTrackingView.widthAnchor.constraint(equalToConstant: 160),
-            heartrateTrackingView.heightAnchor.constraint(equalToConstant: 100),
-            heartrateTrackingView.topAnchor.constraint(equalTo: crossSeparator.bottomAnchor, constant: 10),
-            heartrateTrackingView.centerXAnchor.constraint(equalTo: paceTrackingView.centerXAnchor),
+            centerDescriptionModule.widthAnchor.constraint(equalToConstant: 300),
+            centerDescriptionModule.heightAnchor.constraint(equalToConstant: 100),
+            centerDescriptionModule.centerXAnchor.constraint(equalTo: centerXAnchor),
+            centerDescriptionModule.centerYAnchor.constraint(equalTo: focusLabel.centerYAnchor),
+            
+            bottomDescriptionModule.widthAnchor.constraint(equalToConstant: 300),
+            bottomDescriptionModule.heightAnchor.constraint(equalToConstant: 100),
+            bottomDescriptionModule.topAnchor.constraint(equalTo: focusLabel.bottomAnchor),
+            bottomDescriptionModule.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            
         ])
     }
     

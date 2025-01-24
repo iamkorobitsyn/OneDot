@@ -27,7 +27,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        self.locationManager.distanceFilter = 5 // срабатывает каждые 10 метров
+        self.locationManager.distanceFilter = 7
     }
     
     // Запрашиваем разрешение на использование местоположения

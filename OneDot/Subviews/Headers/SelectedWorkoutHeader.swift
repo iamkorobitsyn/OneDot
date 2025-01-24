@@ -104,24 +104,24 @@ class SelectedWorkoutHeader: UIVisualEffectView {
         switch mode {
         case .outdoorDynamicWorkout, .indoorDynamicWorkout:
             let distanceView = DescriptionModule()
-            distanceView.activateMode(axis: .horizontal, mode: .distanceDescription, text: stringRepresentation.totalDistance)
+            distanceView.activateMode(axis: .horizontalCompact, mode: .distanceDescription, text: stringRepresentation.totalDistance)
             let climbView = DescriptionModule()
-            climbView.activateMode(axis: .horizontal, mode: .climbDescription, text: stringRepresentation.climbing)
+            climbView.activateMode(axis: .horizontalCompact, mode: .climbDescription, text: stringRepresentation.climbing)
             let caloriesView = DescriptionModule()
-            caloriesView.activateMode(axis: .horizontal, mode: .caloriesDescription, text: stringRepresentation.calloriesBurned)
+            caloriesView.activateMode(axis: .horizontalCompact, mode: .caloriesDescription, text: stringRepresentation.calloriesBurned)
             let stepsView = DescriptionModule()
-            stepsView.activateMode(axis: .horizontal, mode: .stepsDescription, text: stringRepresentation.stepCount)
+            stepsView.activateMode(axis: .horizontalCompact, mode: .stepsDescription, text: stringRepresentation.stepCount)
             
             [distanceView, climbView, caloriesView, stepsView].forEach({stackLDynamicMode.addArrangedSubview($0)})
             
             let timeView = DescriptionModule()
-            timeView.activateMode(axis: .horizontal, mode: .timeDescription, text: stringRepresentation.duration)
+            timeView.activateMode(axis: .horizontalCompact, mode: .timeDescription, text: stringRepresentation.duration)
             let paceView = DescriptionModule()
-            paceView.activateMode(axis: .horizontal, mode: .paceDescription, text: stringRepresentation.pace)
+            paceView.activateMode(axis: .horizontalCompact, mode: .paceDescription, text: stringRepresentation.pace)
             let heartRateView = DescriptionModule()
-            heartRateView.activateMode(axis: .horizontal, mode: .heartRateDescription, text: stringRepresentation.heartRate)
+            heartRateView.activateMode(axis: .horizontalCompact, mode: .heartRateDescription, text: stringRepresentation.heartRate)
             let cadenceView = DescriptionModule()
-            cadenceView.activateMode(axis: .horizontal, mode: .cadenceDescription, text: stringRepresentation.cadence)
+            cadenceView.activateMode(axis: .horizontalCompact, mode: .cadenceDescription, text: stringRepresentation.cadence)
             
             [timeView, paceView, heartRateView, cadenceView].forEach({stackRDynamicMode.addArrangedSubview($0)})
             
