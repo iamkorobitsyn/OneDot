@@ -16,7 +16,7 @@ class WorkoutVC: UIViewController {
     var currentDistance: Double?
     var currentCalories: Double?
     
-    private var locationManager = LocationManager()
+    private var locationManager = WorkoutManager()
 
     enum Mode {
         case prepare

@@ -8,7 +8,7 @@
 import CoreLocation
 
 // Менеджер для отслеживания геопозиции и вычисления дистанции
-class LocationManager: NSObject, CLLocationManagerDelegate {
+class WorkoutManager: NSObject, CLLocationManagerDelegate {
     
     // Свойства
     private var locationManager: CLLocationManager

@@ -16,9 +16,11 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     
     var healthKitDataList: [HealthKitData]?
     
-    let mapView: MapView = {
-        let view = MapView()
+    let mapView: MKMapView = {
+        let view = MKMapView()
         view.disableAutoresizingMask()
+        view.overrideUserInterfaceStyle = .light
+        view.showsUserLocation = true
         return view
     }()
     
@@ -26,6 +28,18 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         let view = DashboardHeader()
         view.disableAutoresizingMask()
         return view
+    }()
+    
+    private let navigationStateLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.backgroundColor = .darkGray.withAlphaComponent(0.5)
+        label.layer.instance(border: false, corner: .min)
+        label.clipsToBounds = true
+        label.numberOfLines = 3
+        label.instance(color: .white, alignment: .center, font: .standartMin)
+        label.text = "You have disabled location tracking. Go to the device settings and change the status."
+        return label
     }()
     
     let notesView: NotesView = {
@@ -87,13 +101,14 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        mapView.viewController = self
-
-        activateSubviewsHandlers()
+  
         getHealthKitDataList()
-        
+        activateSubviewsHandlers()
+
         setViews()
         setConstraints()
+        activateInitialSettings()
+        
     }
     
     //MARK: - SplashScreenAnimations
@@ -107,7 +122,6 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         dashboardHeader.animateNavigationView()
-        activateInitialSettings()
         NotificationCenter.default.addObserver(dashboardHeader,
                                                selector: #selector(dashboardHeader.animateNavigationView),
                                                name: UIApplication.didBecomeActiveNotification ,
@@ -124,8 +138,9 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     //MARK: - ActivateInintialSettings
     
     private func activateInitialSettings() {
-        let uD = UserDefaultsManager.shared
-        uD.isGeoTracking ? activateMode(mode: .geoTrackingActive) : activateMode(mode: .geoTrackingInactive)
+        Task { await LocationManager.shared.requestAuthorization() }
+        
+        UserDefaultsManager.shared.isGeoTracking ? activateMode(mode: .geoTrackingActive) : activateMode(mode: .geoTrackingInactive)
         workoutFooter.activateMode(mode: .dashboard)
         dashboardHeader.activateMode(mode: .toolsDefault)
     }
@@ -136,15 +151,29 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         Task {
             do {
                 healthKitDataList = try await HealthKitManager.shared.fetchHealthKitDataList()
-            } catch let error as HealthKitManager.HealthKitError{
+            } catch let error as HealthKitManager.HealthKitError {
                 HealthKitManager.shared.errorHandling(error: error)
             }
+            
         }
     }
     
     //MARK: - SetClosures
     
     private func activateSubviewsHandlers() {
+        LocationManager.shared.didUpdateTrackingState = { [weak self] state in
+            
+            self?.dashboardHeader.activateMode(mode: .trackingIndication(state))
+            switch state {
+            case .goodSignal:
+                self?.navigationStateLabel.isHidden = true
+            case .poorSignal:
+                self?.navigationStateLabel.isHidden = true
+            case .locationDisabled:
+                self?.navigationStateLabel.isHidden = false
+            }
+        }
+        LocationManager.shared.didUpdateRegion = { [weak self] region in self?.mapView.setRegion(region, animated: true) }
         dashboardHeader.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         workoutFooter.dashboardVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         calculationsFooter.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0)}
@@ -236,9 +265,8 @@ extension DashboardVC {
     private func setViews() {
 
         view.addSubview(mapView)
-        mapView.activateMode(mode: .checkLocation)
-        
         view.addSubview(dashboardHeader)
+        view.addSubview(navigationStateLabel)
         view.addSubview(notesView)
         view.addSubview(calculationsView)
         view.addSubview(settingsView)
@@ -262,6 +290,11 @@ extension DashboardVC {
             dashboardHeader.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
             dashboardHeader.heightAnchor.constraint(equalToConstant: .headerBarHeight),
             dashboardHeader.widthAnchor.constraint(equalToConstant: .barWidth),
+            
+            navigationStateLabel.widthAnchor.constraint(equalToConstant: .barWidth - 50),
+            navigationStateLabel.heightAnchor.constraint(equalToConstant: 60),
+            navigationStateLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            navigationStateLabel.topAnchor.constraint(equalTo: dashboardHeader.bottomAnchor, constant: 20),
             
             calculationsView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
             calculationsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),

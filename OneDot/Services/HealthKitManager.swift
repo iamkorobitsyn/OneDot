@@ -49,11 +49,9 @@ class HealthKitManager {
     func fetchHealthKitDataList() async throws -> [HealthKitData] {
         
         let workoutType = HKWorkoutType.workoutType()
-        
         try await checkAuthorizationStatus()
         let hKWorkouts = try await fetchHKWorkouts(workoutType: workoutType)
         let healthKitDataList = try await convertHKWorkoutsInHKDataList(workouts: hKWorkouts)
-        
         return healthKitDataList
     }
     
@@ -87,6 +85,7 @@ class HealthKitManager {
     //MARK: - FetchHKWorkouts
     
     private func fetchHKWorkouts(workoutType: HKWorkoutType) async throws -> [HKWorkout] {
+        
         
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
         

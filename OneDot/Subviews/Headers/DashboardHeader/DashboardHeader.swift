@@ -45,10 +45,9 @@ class DashboardHeader: UIVisualEffectView {
     
     let pickerView = DashboardHeaderPicker()
     
-    let navigationStateImageView: UIImageView = {
+    private let navigationStateImageView: UIImageView = {
         let view = UIImageView()
         view.disableAutoresizingMask()
-        view.image = UIImage(named: "navigationGreen")
         return view
     }()
     
@@ -59,6 +58,7 @@ class DashboardHeader: UIVisualEffectView {
         case calculations
         case settings
         case toolsDefault
+        case trackingIndication(LocationManager.LocationTrackingState)
     }
     
     override init(effect: UIVisualEffect?) {
@@ -99,7 +99,7 @@ class DashboardHeader: UIVisualEffectView {
             indoorButton.isUserInteractionEnabled = true
             UserDefaultsManager.shared.isGeoTracking = true
             pickerView.updatePicker(isGeoTracking: true)
-
+            
         case .indoor:
             
             indoorButton.setActiveState(.indoor)
@@ -139,6 +139,15 @@ class DashboardHeader: UIVisualEffectView {
             calculatorButton.isUserInteractionEnabled = true
             settingsButton.setInactiveState(.settings)
             settingsButton.isUserInteractionEnabled = true
+        case .trackingIndication(let state):
+            switch state {
+            case .goodSignal:
+                navigationStateImageView.image = UIImage(named: "navigationGreen")
+            case .poorSignal:
+                navigationStateImageView.image = UIImage(named: "navigationYellow")
+            case .locationDisabled:
+                navigationStateImageView.image = UIImage(named: "navigationRed")
+            }
         }
     }
     

@@ -9,60 +9,81 @@ import Foundation
 import MapKit
 import CoreLocation
 
-class MapManager: NSObject, CLLocationManagerDelegate {
+class LocationManager: NSObject, CLLocationManagerDelegate {
     
-    static let shared = MapManager()
+    static let shared = LocationManager()
     
     private let locationManager: CLLocationManager = CLLocationManager()
     
     private var lastLocation: CLLocation?
     private var totalDistance: Double = 0.0
     var didUpdateDistance: ((Double) -> Void)?
+    var didUpdateRegion: ((MKCoordinateRegion) -> Void)?
+    var didUpdateTrackingState: ((LocationTrackingState) -> Void)?
+    
+    enum LocationTrackingState {
+        case goodSignal
+        case poorSignal
+        case locationDisabled
+    }
     
     private override init() {
         super.init()
-        self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        self.locationManager.distanceFilter = 7
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = 7
     }
     
-    //MARK: - Dashboard
+    func startTracking() {
+        locationManager.startUpdatingLocation()
+    }
     
-    func checkLocationServicesEnabled(viewController: UIViewController?, mapView: MKMapView) async throws -> Bool {
+    func stopTracking() {
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func requestAuthorization() async  {
         
-        if CLLocationManager.locationServicesEnabled() {
+        let globalRegion = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+            span: MKCoordinateSpan(latitudeDelta: 180, longitudeDelta: 180))
+        
+        switch locationManager.authorizationStatus {
             
-            switch locationManager.authorizationStatus {
-            
-            case .notDetermined:
-                locationManager.requestWhenInUseAuthorization()
-            case .restricted:
-                return true
-            case .denied:
-                guard let vc = viewController else {return false}
-                await vc.present(CustomAlert(title: "Вы запретили использование местоположения",
-                                       message: "Разрешить?",
-                                       style: .actionSheet,
-                                       url: UIApplication.openSettingsURLString),
-                                 animated: true)
-            case .authorizedAlways:
-                break
-            case .authorizedWhenInUse:
-                return true
-            @unknown default:
-                break
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .restricted, .authorizedAlways, .authorizedWhenInUse :
+            startTracking()
+            await MainActor.run { didUpdateTrackingState?(.goodSignal)}
+        case .denied:
+            await MainActor.run {
+                didUpdateTrackingState?(.locationDisabled)
+                didUpdateRegion?(globalRegion)
             }
-        } else {
-            guard let vc = viewController else {return false}
-            await vc.present(CustomAlert(title: "У вас выключена служба геолокации",
-                                   message: "Включить?",
-                                   style: .actionSheet,
-                                   url: "App-Prefs:root=LOCATION_SEVICES"),
-                             animated: true)
-            return false
+        default:
+            await MainActor.run {
+                didUpdateTrackingState?(.locationDisabled)
+                didUpdateRegion?(globalRegion)
+            }
         }
-        return false
     }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let coordinates = locations.last?.coordinate {
+            let region = MKCoordinateRegion(center: coordinates, latitudinalMeters: 4000, longitudinalMeters: 4000)
+            didUpdateRegion?(region)
+        }
+        
+        if let location = locations.last {
+            let accuracy = location.horizontalAccuracy
+            accuracy < 20 ? didUpdateTrackingState?(.goodSignal) : didUpdateTrackingState?(.poorSignal)
+        }
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager)  {
+        Task { await requestAuthorization() }
+    }
+
     
     //MARK: - WorkoutFocus
     

@@ -57,7 +57,6 @@ class AlertFooter: UIView {
     //MARK: - SetViews
     
     private func setViews() {
-//        effect = UIBlurEffect(style: .extraLight)
         clipsToBounds = true
         layer.instance(border: false, corner: .max)
         backgroundColor = .myPaletteBlue

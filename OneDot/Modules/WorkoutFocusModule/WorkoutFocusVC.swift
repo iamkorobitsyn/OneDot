@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Photos
+import MapKit
 
 class WorkoutFocusVC: UIViewController {
     
@@ -30,8 +31,8 @@ class WorkoutFocusVC: UIViewController {
         return header
     }()
     
-    let mapView: MapView = {
-        let view = MapView()
+    let mapView: MKMapView = {
+        let view = MKMapView()
         view.disableAutoresizingMask()
         return view
     }()
@@ -85,8 +86,7 @@ class WorkoutFocusVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        mapView.viewController = self
-
+        mapView.delegate = self
         setViews()
         activateMode(mode: .initial)
 //        activateSubviewsHandlers()
@@ -111,7 +111,8 @@ class WorkoutFocusVC: UIViewController {
                 Task {
                     do {
                         let coordinates = try await HealthKitManager.shared.getCoordinates(data: healthKitData)
-                        mapView.activateMode(mode: .drawWorkoutRoute(coordinates: coordinates.coordinates2D, scaleFactor: 3.0))
+                        LocationManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
+                        LocationManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
                         resultHeader.healthKitData = healthKitData
                         resultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
                         resultHeader.activateMode(mode: .outdoorDynamicWorkout)
@@ -236,6 +237,15 @@ class WorkoutFocusVC: UIViewController {
     }
     
   
+}
+
+extension WorkoutFocusVC: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let renderer = MKPolylineRenderer(overlay: overlay)
+        renderer.strokeColor = .myPaletteGold
+        renderer.lineWidth = 5
+        return renderer
+    }
 }
 
 
