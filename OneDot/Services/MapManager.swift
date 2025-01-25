@@ -7,16 +7,26 @@
 
 import Foundation
 import MapKit
+import CoreLocation
 
-class MapKitManager {
+class MapManager: NSObject, CLLocationManagerDelegate {
     
-    static let shared = MapKitManager()
+    static let shared = MapManager()
     
-    let locationManager: CLLocationManager = CLLocationManager()
+    private let locationManager: CLLocationManager = CLLocationManager()
     
-    private init() {}
+    private var lastLocation: CLLocation?
+    private var totalDistance: Double = 0.0
+    var didUpdateDistance: ((Double) -> Void)?
     
-    //MARK: - MainVC
+    private override init() {
+        super.init()
+        self.locationManager.delegate = self
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        self.locationManager.distanceFilter = 7
+    }
+    
+    //MARK: - Dashboard
     
     func checkLocationServicesEnabled(viewController: UIViewController?, mapView: MKMapView) async throws -> Bool {
         
@@ -54,7 +64,7 @@ class MapKitManager {
         return false
     }
     
-    //MARK: - DetailsVC
+    //MARK: - WorkoutFocus
     
     func drawMapPolyline(mapView: MKMapView, coordinates: [CLLocationCoordinate2D]) {
         
