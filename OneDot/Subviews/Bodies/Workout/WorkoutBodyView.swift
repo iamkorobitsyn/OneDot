@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class WorkoutView: UIView {
+class WorkoutBodyView: UIView {
     
     enum Mode {
         case prepare
@@ -26,20 +26,20 @@ class WorkoutView: UIView {
         return label
     }()
     
-    private let topDescriptionModule: DescriptionModule = {
-        let module = DescriptionModule()
+    private let topDescriptionModule: DescriptionModuleView = {
+        let module = DescriptionModuleView()
         module.disableAutoresizingMask()
         return module
     }()
     
-    private let centerDescriptionModule: DescriptionModule = {
-        let module = DescriptionModule()
+    private let centerDescriptionModule: DescriptionModuleView = {
+        let module = DescriptionModuleView()
         module.disableAutoresizingMask()
         return module
     }()
     
-    private let bottomDescriptionModule: DescriptionModule = {
-        let view = DescriptionModule()
+    private let bottomDescriptionModule: DescriptionModuleView = {
+        let view = DescriptionModuleView()
         view.disableAutoresizingMask()
         return view
     }()

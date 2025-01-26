@@ -7,7 +7,9 @@
 
 import UIKit
 
-class CalculationsView: UIVisualEffectView {
+class CalculationsBodyView: UIVisualEffectView {
+    
+    let hapticGenerator = UISelectionFeedbackGenerator()
     
     typealias UD = UserDefaultsManager
     
@@ -84,6 +86,7 @@ class CalculationsView: UIVisualEffectView {
     
     @objc private func buttonTapped() {
         
+        hapticGenerator.selectionChanged()
         switch true {
         case speedButton.isTouchInside:
             buttonStateHandler?(.pickerSpeed)
@@ -93,8 +96,6 @@ class CalculationsView: UIVisualEffectView {
             buttonStateHandler?(.pickerDistance)
         case durationButton.isTouchInside:
             buttonStateHandler?(.pickerTime)
-        case hideButton.isTouchInside:
-            buttonStateHandler?(.calculationsHide)
         case eraseButton.isTouchInside:
             resetValues()
             updateValues()
@@ -103,10 +104,13 @@ class CalculationsView: UIVisualEffectView {
         }
     }
     
+    @objc private func hide() {
+        buttonStateHandler?(.calculationsHide)
+    }
+    
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
-        
         self.isHidden = false
         switch mode {
         case .distance:
@@ -294,9 +298,8 @@ class CalculationsView: UIVisualEffectView {
         contentView.addSubview(eraseButton)
         contentView.addSubview(hideButton)
         
-        [hideButton, eraseButton].forEach { button in
-            button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        }
+        eraseButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        hideButton.addTarget(self, action: #selector(hide), for: .touchUpInside)
     }
     
    //MARK: - SetButton

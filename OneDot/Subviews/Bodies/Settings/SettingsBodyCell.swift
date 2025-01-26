@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class SettingsViewCell: UITableViewCell {
+class SettingsBodyCell: UITableViewCell {
     
     typealias UD = UserDefaultsManager
     

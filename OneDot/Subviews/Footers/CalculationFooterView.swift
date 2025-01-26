@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class CalculationFooter: UIView {
+class CalculationFooterView: UIView {
     
     private typealias UD = UserDefaultsManager
     
@@ -109,7 +109,7 @@ class CalculationFooter: UIView {
 
 //MARK: - PickerViewDelegate&Datasource
 
-extension CalculationFooter: UIPickerViewDelegate, UIPickerViewDataSource {
+extension CalculationFooterView: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         
         switch currentPickerState {

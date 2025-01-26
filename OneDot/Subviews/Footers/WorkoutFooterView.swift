@@ -7,7 +7,9 @@
 
 import UIKit
 
-class WorkoutFooter: UIView {
+class WorkoutFooterView: UIView {
+    
+    let hapticGenerator = UISelectionFeedbackGenerator()
     
     var dashboardVCButtonStateHandler: ((DashboardVC.Mode)->())?
     var workoutVCButtonStateHandler: ((WorkoutVC.Mode) -> ())?
@@ -40,6 +42,7 @@ class WorkoutFooter: UIView {
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
+       
         self.isHidden = false
         currentMode = mode
         switch mode {
@@ -66,10 +69,9 @@ class WorkoutFooter: UIView {
     //MARK: - MainVCHandlers
     
     @objc private func leftTapped() {
-        
+        hapticGenerator.selectionChanged()
         switch currentMode {
         case .dashboard:
-            currentMode = .prepare
             dashboardVCButtonStateHandler?(.transitionToWorkoutMode)
         case .prepare:
             currentMode = .start
@@ -88,7 +90,7 @@ class WorkoutFooter: UIView {
     }
     
     @objc private func rightTapped() {
-        
+        hapticGenerator.selectionChanged()
         switch currentMode {
         case .dashboard:
             dashboardVCButtonStateHandler?(.transitionToProfile)
@@ -102,8 +104,6 @@ class WorkoutFooter: UIView {
             break
         }
     }
-    
-    
     
     private func setButtonImages(lButtonImg: String, rButtonImg: String) {
         leftButton.setImage(UIImage(named: lButtonImg), for: .normal)

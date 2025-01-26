@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class DescriptionModule: UIView {
+class DescriptionModuleView: UIView {
     
     let titleLabel: UILabel = {
         let label = UILabel()

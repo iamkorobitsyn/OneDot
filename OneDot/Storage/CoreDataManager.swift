@@ -1,9 +1,10 @@
 //
-//  CoreDataManager.swift
+//  CoreDataService 2.swift
 //  OneDot
 //
-//  Created by Александр Коробицын on 07.12.2023.
+//  Created by Александр Коробицын on 27.01.2025.
 //
+
 
 import Foundation
 import CoreData

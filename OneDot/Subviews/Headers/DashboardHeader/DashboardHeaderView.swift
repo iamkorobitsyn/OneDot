@@ -8,7 +8,9 @@
 import UIKit
 import AudioToolbox
 
-class DashboardHeader: UIVisualEffectView {
+class DashboardHeaderView: UIVisualEffectView {
+    
+    let hapticGenerator = UISelectionFeedbackGenerator()
     
     var buttonStateHandler: ((DashboardVC.Mode)->())?
     
@@ -58,7 +60,7 @@ class DashboardHeader: UIVisualEffectView {
         case calculations
         case settings
         case toolsDefault
-        case trackingIndication(LocationManager.LocationTrackingState)
+        case trackingIndication(LocationService.LocationTrackingState)
     }
     
     override init(effect: UIVisualEffect?) {
@@ -68,6 +70,7 @@ class DashboardHeader: UIVisualEffectView {
     }
 
     @objc private func buttonTapped() {
+        hapticGenerator.selectionChanged()
         switch true {
         case outdoorButton.isTouchInside:
             buttonStateHandler?(.geoTrackingActive)

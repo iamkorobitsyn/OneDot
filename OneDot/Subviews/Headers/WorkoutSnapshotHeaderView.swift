@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class SelectedWorkoutHeader: UIVisualEffectView {
+class WorkoutSnapshotHeaderView: UIVisualEffectView {
     
     var healthKitData: HealthKitData?
     
@@ -103,24 +103,24 @@ class SelectedWorkoutHeader: UIVisualEffectView {
         
         switch mode {
         case .outdoorDynamicWorkout, .indoorDynamicWorkout:
-            let distanceView = DescriptionModule()
+            let distanceView = DescriptionModuleView()
             distanceView.activateMode(axis: .horizontalCompact, mode: .distanceDescription, text: stringRepresentation.totalDistance)
-            let climbView = DescriptionModule()
+            let climbView = DescriptionModuleView()
             climbView.activateMode(axis: .horizontalCompact, mode: .climbDescription, text: stringRepresentation.climbing)
-            let caloriesView = DescriptionModule()
+            let caloriesView = DescriptionModuleView()
             caloriesView.activateMode(axis: .horizontalCompact, mode: .caloriesDescription, text: stringRepresentation.calloriesBurned)
-            let stepsView = DescriptionModule()
+            let stepsView = DescriptionModuleView()
             stepsView.activateMode(axis: .horizontalCompact, mode: .stepsDescription, text: stringRepresentation.stepCount)
             
             [distanceView, climbView, caloriesView, stepsView].forEach({stackLDynamicMode.addArrangedSubview($0)})
             
-            let timeView = DescriptionModule()
+            let timeView = DescriptionModuleView()
             timeView.activateMode(axis: .horizontalCompact, mode: .timeDescription, text: stringRepresentation.duration)
-            let paceView = DescriptionModule()
+            let paceView = DescriptionModuleView()
             paceView.activateMode(axis: .horizontalCompact, mode: .paceDescription, text: stringRepresentation.pace)
-            let heartRateView = DescriptionModule()
+            let heartRateView = DescriptionModuleView()
             heartRateView.activateMode(axis: .horizontalCompact, mode: .heartRateDescription, text: stringRepresentation.heartRate)
-            let cadenceView = DescriptionModule()
+            let cadenceView = DescriptionModuleView()
             cadenceView.activateMode(axis: .horizontalCompact, mode: .cadenceDescription, text: stringRepresentation.cadence)
             
             [timeView, paceView, heartRateView, cadenceView].forEach({stackRDynamicMode.addArrangedSubview($0)})
@@ -129,11 +129,11 @@ class SelectedWorkoutHeader: UIVisualEffectView {
             ShapeManager.shared.drawResultSeparator(dual: false, shape: separator, view: contentView)
             
         case .staticWorkout:
-            let timeView = DescriptionModule()
+            let timeView = DescriptionModuleView()
             timeView.activateMode(axis: .vertical, mode: .timeDescription, text: stringRepresentation.duration)
-            let caloriesView = DescriptionModule()
+            let caloriesView = DescriptionModuleView()
             caloriesView.activateMode(axis: .vertical, mode: .caloriesDescription, text: stringRepresentation.calloriesBurned)
-            let heartRateView = DescriptionModule()
+            let heartRateView = DescriptionModuleView()
             heartRateView.activateMode(axis: .vertical, mode: .heartRateDescription, text: stringRepresentation.heartRate)
             
             [timeView, caloriesView, heartRateView].forEach({stackStaticMode.addArrangedSubview($0)})

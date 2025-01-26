@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class NotesCell: UITableViewCell {
+class NotesBodyCell: UITableViewCell {
     
     var contentCompletion: (() -> Void)?
     var notesEndEditingHandler: (() -> Void)?
@@ -113,7 +113,7 @@ class NotesCell: UITableViewCell {
 
 //MARK: - TextViewDidChange
 
-extension NotesCell: UITextViewDelegate, UITextInteractionDelegate {
+extension NotesBodyCell: UITextViewDelegate, UITextInteractionDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         

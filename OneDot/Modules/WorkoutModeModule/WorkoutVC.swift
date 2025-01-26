@@ -13,10 +13,10 @@ class WorkoutVC: UIViewController {
     let hapticGenerator = UISelectionFeedbackGenerator()
     
     var currentWorkout: Workout
-    var currentDistance: Double?
-    var currentCalories: Double?
+    private var timeInterval: TimeInterval?
+    private var totalDistance: Double?
+    private var totalCalories: Double?
     
-    private var locationManager = WorkoutManager()
 
     enum Mode {
         case prepare
@@ -29,25 +29,22 @@ class WorkoutVC: UIViewController {
         case saving
     }
     
-    private var timer: Timer?
-    private var timeInterval: TimeInterval = 0
+    private var workoutState: Mode = .prepare
     
-    private var currentMode: Mode = .prepare
-    
-    private let header: WorkoutHeader = {
-        let view = WorkoutHeader()
+    private let header: WorkoutHeaderView = {
+        let view = WorkoutHeaderView()
         view.disableAutoresizingMask()
         return view
     }()
     
-    private let body: WorkoutView = {
-        let view = WorkoutView()
+    private let body: WorkoutBodyView = {
+        let view = WorkoutBodyView()
         view.disableAutoresizingMask()
         return view
     }()
     
-    private let footer: WorkoutFooter = {
-        let view = WorkoutFooter()
+    private let footer: WorkoutFooterView = {
+        let view = WorkoutFooterView()
         view.disableAutoresizingMask()
         return view
     }()
@@ -68,27 +65,46 @@ class WorkoutVC: UIViewController {
         setConstraints()
         activateSubviewsHandlers()
         
-        locationManager.requestAuthorization()
-               
-               locationManager.didUpdateDistance = { result in
-
-                       self.currentDistance = result
-
-               }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        footer.activateMode(mode: .prepare)
+        Task {await LocationService.shared.requestAuthorization()}
     }
 
     private func activateSubviewsHandlers() {
-        footer.workoutVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        header.workoutVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        footer.workoutVCButtonStateHandler =
+        { [weak self] in self?.activateMode(mode: $0) }
+        
+        header.workoutVCButtonStateHandler =
+        { [weak self] in self?.activateMode(mode: $0) }
+        
+        LocationService.shared.didUpdateDistance =
+        { [weak self] in self?.totalDistance = $0}
+        
+        TimerService.shared.workoutVCModeComletion =
+        { [weak self] in self?.activateMode(mode: $0)}
+        
+        TimerService.shared.focusLabelCompletion =
+        { [weak self] in self?.body.updateFocusLabel(text: "\($0)", countdownSize: true)}
+        
+        TimerService.shared.timerLabelCompletion = { [weak self] timeInterval in
+            guard let self = self else {return}
+            
+            self.timeInterval = timeInterval
+            
+            header.updateTimerLabel(text: formatTime(timeInterval))
+            totalCalories = currentWorkout.averageCalBurnedPerSec * timeInterval
+
+            body.updateTrackingState(isGeoTracking: currentWorkout.checkLocation,
+                                     duration: timeInterval,
+                                     distance: totalDistance ?? 0,
+                                     calories: totalCalories ?? 0)
+        }
+        
     }
     
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
+        workoutState = mode
+        
         switch mode {
         case .prepare:
             header.setWorkoutMode(title: currentWorkout.titleName,
@@ -97,111 +113,47 @@ class WorkoutVC: UIViewController {
             footer.activateMode(mode: .prepare)
             
         case .countdown:
-            hapticGenerator.selectionChanged()
-            currentMode = .countdown
             header.activateMode(mode: .countdown)
             body.activateMode(mode: .countdown)
             footer.activateMode(mode: .hide)
-            updatingTimer()
+            TimerService.shared.startCountdown()
         case .start:
+            footer.activateMode(mode: .start)
             hapticGenerator.selectionChanged()
-            currentMode = .start
             if UserDefaultsManager.shared.isWorkoutMode {
+                TimerService.shared.startTimer(timeInterval: timeInterval ?? 0)
+                LocationService.shared.startTracking()
                 header.activateMode(mode: .workout)
                 body.activateMode(mode: .workout)
-                footer.activateMode(mode: .start)
-                locationManager.startTracking()
             } else {
+                TimerService.shared.startStopWatch(timeInterval: timeInterval ?? 0)
+                LocationService.shared.stopTracking()
                 header.activateMode(mode: .stopWatch)
                 body.activateMode(mode: .stopWatch)
-                footer.activateMode(mode: .start)
             }
-            updatingTimer()
         case .pause:
-            hapticGenerator.selectionChanged()
-            currentMode = .pause
             header.activateMode(mode: .pause)
             body.activateMode(mode: .pause)
             footer.activateMode(mode: .pause)
-            updatingTimer()
+            header.updateTimerLabel(text: formatTime(self.timeInterval ?? 0))
+            TimerService.shared.clearTimer()
         case .erase:
-            hapticGenerator.selectionChanged()
-            currentMode = .pause
             header.activateMode(mode: .pause)
             body.activateMode(mode: .pause)
             footer.activateMode(mode: .pause)
+            TimerService.shared.clearTimer()
             timeInterval = 0
-            updatingTimer()
+            header.updateTimerLabel(text: formatTime(self.timeInterval ?? 0))
         case .hide:
             dismiss(animated: false)
         case .completion:
+            print("completion")
             footer.activateMode(mode: .completion)
             body.activateMode(mode: .completion)
-            timer?.invalidate()
         case .saving:
             print("saveWorkout")
             dismiss(animated: false)
-            locationManager.stopTracking()
-        }
-    }
-    
-    //MARK: - UpdatingTimer
-    
-    private func updatingTimer() {
-        
-        timer?.invalidate()
-        timer = nil
-        
-        switch currentMode {
-        case .countdown:
-            timeInterval = 3
-            body.updateFocusLabel(text: "3", countdownSize: true)
-            
-            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { timer in
-                
-                self.timeInterval -= 1
-                self.body.updateFocusLabel(text: "\(Int(self.timeInterval))", countdownSize: true)
-                
-                if self.timeInterval == 0 {
-                    self.activateMode(mode: .start)
-                }
-            })
-
-        case .start:
-            
-            body.updateTrackingState(isGeoTracking: currentWorkout.checkLocation,
-                                     duration: timeInterval,
-                                     distance: currentDistance ?? 0,
-                                     calories: currentCalories ?? 0)
-
-            if UserDefaultsManager.shared.isWorkoutMode {
-                timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
-                    
-                    guard let self = self else { return }
-                    timeInterval += 1
-                    header.updateTimerLabel(text: formatTime(timeInterval))
-                    
-                    currentCalories = currentWorkout.averageCalBurnedPerSec * timeInterval
-
-                    body.updateTrackingState(isGeoTracking: currentWorkout.checkLocation,
-                                             duration: timeInterval,
-                                             distance: currentDistance ?? 0,
-                                             calories: currentCalories ?? 0)
-
-                }
-            } else {
-                timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] timer in
-                    guard let self = self else { return }
-                    timeInterval += 0.01
-                    header.updateTimerLabel(text: formatTime(timeInterval))
-                }
-            }
-            
-        case .pause:
-                header.updateTimerLabel(text: formatTime(timeInterval))
-
-        default:
-            break
+            LocationService.shared.stopTracking()
         }
     }
     
@@ -225,15 +177,7 @@ class WorkoutVC: UIViewController {
         views.forEach({ $0.isHidden = true })
     }
     
-    
-    //MARK: - Resume Timer
-    
-    func resumeTimer() {
-        updatingTimer()
-        currentMode = .start
-    }
-    
-   
+
     
     //MARK: - SetViews
     

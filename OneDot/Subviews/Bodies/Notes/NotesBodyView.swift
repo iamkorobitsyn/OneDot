@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 
-class NotesView: UIVisualEffectView {
+class NotesBodyView: UIVisualEffectView {
+    
+    let hapticGenerator = UISelectionFeedbackGenerator()
     
     enum Mode {
         case prepare,
@@ -60,7 +62,7 @@ class NotesView: UIVisualEffectView {
         
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(NotesCell.self,
+        tableView.register(NotesBodyCell.self,
                            forCellReuseIdentifier: editNoteCellID)
 
         fetchNotes()
@@ -142,6 +144,8 @@ class NotesView: UIVisualEffectView {
     //MARK: - ButtonsTapped
     
     @objc private func addNote() {
+        hapticGenerator.selectionChanged()
+        
         CoreDataManager.shared.addNote { note in
             
             notes.insert(note, at: 0)
@@ -163,7 +167,12 @@ class NotesView: UIVisualEffectView {
     }
     
     @objc private func tappedHideOrDoneButton() {
-        if textEditingMode { tableView.endEditing(true) } else { buttonStateHandler?(.notesHide) }
+        if textEditingMode {
+            tableView.endEditing(true)
+            hapticGenerator.selectionChanged()
+        } else {
+            buttonStateHandler?(.notesHide)
+        }
     }
     
     //MARK: - EditDone
@@ -205,7 +214,7 @@ class NotesView: UIVisualEffectView {
 
 //MARK: - UITableViewDataSource
 
-extension NotesView: UITableViewDataSource {
+extension NotesBodyView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         notes.count
@@ -213,7 +222,7 @@ extension NotesView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = NotesCell()
+        let cell = NotesBodyCell()
         cell.selectionStyle = .none
         cell.textView.text = notes[indexPath.row].text
         cell.textEditing = notes[indexPath.row].editing
@@ -245,7 +254,7 @@ extension NotesView: UITableViewDataSource {
 
 //MARK: - UITableViewDelegate
 
-extension NotesView: UITableViewDelegate   {
+extension NotesBodyView: UITableViewDelegate   {
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         600
@@ -258,7 +267,7 @@ extension NotesView: UITableViewDelegate   {
     }
     
     func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) as? NotesCell {
+        if let cell = tableView.cellForRow(at: indexPath) as? NotesBodyCell {
             activateMode(mode: .deleting)
             cell.verticalSeparator.alpha = 1
         }

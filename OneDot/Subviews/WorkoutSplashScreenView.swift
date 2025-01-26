@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class WorkoutSplashScreen: UIView {
+class WorkoutSplashScreenView: UIView {
     
     enum Mode {
         case prepareToStart

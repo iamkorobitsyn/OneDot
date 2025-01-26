@@ -24,8 +24,8 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         return view
     }()
     
-    let dashboardHeader: DashboardHeader = {
-        let view = DashboardHeader()
+    let dashboardHeader: DashboardHeaderView = {
+        let view = DashboardHeaderView()
         view.disableAutoresizingMask()
         return view
     }()
@@ -42,40 +42,40 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         return label
     }()
     
-    let notesView: NotesView = {
-        let view = NotesView()
+    let notesBody: NotesBodyView = {
+        let view = NotesBodyView()
         view.effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
         view.clipsToBounds = true
         view.disableAutoresizingMask()
         return view
     }()
     
-    let calculationsView = {
-        let view = CalculationsView()
+    let calculationsBody = {
+        let view = CalculationsBodyView()
         view.disableAutoresizingMask()
         return view
     }()
     
-    let settingsView: SettingsView = {
-        let view = SettingsView()
+    let settingsBody: SettingsBodyView = {
+        let view = SettingsBodyView()
         view.disableAutoresizingMask()
         return view
     }()
     
-    let workoutFooter: WorkoutFooter = {
-        let view = WorkoutFooter()
+    let dashboardFooter: WorkoutFooterView = {
+        let view = WorkoutFooterView()
         view.disableAutoresizingMask()
         return view
     }()
     
-    let calculationsFooter: CalculationFooter = {
-        let view = CalculationFooter()
+    let calculationsFooter: CalculationFooterView = {
+        let view = CalculationFooterView()
         view.disableAutoresizingMask()
         return view
     }()
 
-    let StartSplashScreen: StartSplachScreen = {
-        let view = StartSplachScreen()
+    let StartSplashScreen: StartSplachScreenView = {
+        let view = StartSplachScreenView()
         view.disableAutoresizingMask()
         return view
     }()
@@ -138,10 +138,10 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     //MARK: - ActivateInintialSettings
     
     private func activateInitialSettings() {
-        Task { await LocationManager.shared.requestAuthorization() }
+        Task { await LocationService.shared.requestAuthorization() }
         
         UserDefaultsManager.shared.isGeoTracking ? activateMode(mode: .geoTrackingActive) : activateMode(mode: .geoTrackingInactive)
-        workoutFooter.activateMode(mode: .dashboard)
+        dashboardFooter.activateMode(mode: .dashboard)
         dashboardHeader.activateMode(mode: .toolsDefault)
     }
     
@@ -161,7 +161,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     //MARK: - SetClosures
     
     private func activateSubviewsHandlers() {
-        LocationManager.shared.didUpdateTrackingState = { [weak self] state in
+        LocationService.shared.didUpdateTrackingState = { [weak self] state in
             
             self?.dashboardHeader.activateMode(mode: .trackingIndication(state))
             switch state {
@@ -173,64 +173,63 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
                 self?.navigationStateLabel.isHidden = false
             }
         }
-        LocationManager.shared.didUpdateRegion = { [weak self] region in self?.mapView.setRegion(region, animated: true) }
+        LocationService.shared.didUpdateRegion = { [weak self] region in self?.mapView.setRegion(region, animated: true) }
         dashboardHeader.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        workoutFooter.dashboardVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        dashboardFooter.dashboardVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         calculationsFooter.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0)}
-        calculationsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        notesView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        settingsView.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        calculationsBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        notesBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        settingsBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
     }
     
     //MARK: - ActivateMode
     
     private func activateMode(mode: Mode) {
-        hapticGenerator.selectionChanged()
         switch mode {
             
         case .geoTrackingActive:
             UserDefaultsManager.shared.isGeoTracking = true
             dashboardHeader.activateMode(mode: .outdoor)
             calculationsFooter.activateMode(mode: .hide)
-            workoutFooter.activateMode(mode: .dashboard)
+            dashboardFooter.activateMode(mode: .dashboard)
         case .geoTrackingInactive:
             UserDefaultsManager.shared.isGeoTracking = false
             dashboardHeader.activateMode(mode: .indoor)
             calculationsFooter.activateMode(mode: .hide)
-            workoutFooter.activateMode(mode: .dashboard)
+            dashboardFooter.activateMode(mode: .dashboard)
         case .notes:
             dashboardHeader.activateMode(mode: .notes)
-            notesView.activateMode(mode: .prepare)
-            calculationsView.activateMode(mode: .hide)
-            settingsView.activateMode(mode: .hide)
+            notesBody.activateMode(mode: .prepare)
+            calculationsBody.activateMode(mode: .hide)
+            settingsBody.activateMode(mode: .hide)
             calculationsFooter.activateMode(mode: .hide)
-            workoutFooter.activateMode(mode: .hide)
+            dashboardFooter.activateMode(mode: .hide)
         case .notesHide:
             dashboardHeader.activateMode(mode: .toolsDefault)
-            notesView.activateMode(mode: .hide)
-            workoutFooter.activateMode(mode: .dashboard)
+            notesBody.activateMode(mode: .hide)
+            dashboardFooter.activateMode(mode: .dashboard)
         case .calculations:
-            calculationsView.activateMode(mode: .distance)
+            calculationsBody.activateMode(mode: .distance)
             dashboardHeader.activateMode(mode: .calculations)
-            notesView.activateMode(mode: .hide)
-            settingsView.activateMode(mode: .hide)
-            workoutFooter.activateMode(mode: .hide)
+            notesBody.activateMode(mode: .hide)
+            settingsBody.activateMode(mode: .hide)
+            dashboardFooter.activateMode(mode: .hide)
             calculationsFooter.activateMode(mode: .pickerDistance)
         case .calculationsHide:
             dashboardHeader.activateMode(mode: .toolsDefault)
-            calculationsView.activateMode(mode: .hide)
+            calculationsBody.activateMode(mode: .hide)
             calculationsFooter.activateMode(mode: .hide)
-            workoutFooter.activateMode(mode: .dashboard)
+            dashboardFooter.activateMode(mode: .dashboard)
         case .settings:
-            settingsView.activateMode(mode: .active)
+            settingsBody.activateMode(mode: .active)
             dashboardHeader.activateMode(mode: .settings)
-            calculationsView.activateMode(mode: .hide)
-            workoutFooter.activateMode(mode: .hide)
+            calculationsBody.activateMode(mode: .hide)
+            dashboardFooter.activateMode(mode: .hide)
             calculationsFooter.activateMode(mode: .hide)
         case .settingsHide:
             dashboardHeader.activateMode(mode: .toolsDefault)
-            settingsView.activateMode(mode: .hide)
-            workoutFooter.activateMode(mode: .dashboard)
+            settingsBody.activateMode(mode: .hide)
+            dashboardFooter.activateMode(mode: .dashboard)
         case .transitionToWorkoutMode:
             let workout = dashboardHeader.pickerView.updateCurrentWorkout()
 
@@ -239,15 +238,15 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             present(workoutModeVC, animated: false)
         case .pickerDistance:
             calculationsFooter.activateMode(mode: .pickerDistance)
-            calculationsView.activateMode(mode: .distance)
+            calculationsBody.activateMode(mode: .distance)
         case .pickerSpeed:
-            calculationsView.activateMode(mode: .speed)
+            calculationsBody.activateMode(mode: .speed)
             calculationsFooter.activateMode(mode: .pickerSpeed)
         case .pickerPace:
-            calculationsView.activateMode(mode: .pace)
+            calculationsBody.activateMode(mode: .pace)
             calculationsFooter.activateMode(mode: .pickerPace)
         case .pickerTime:
-            calculationsView.activateMode(mode: .time)
+            calculationsBody.activateMode(mode: .time)
             calculationsFooter.activateMode(mode: .PickerTime)
         case .transitionToProfile:
             let WorkoutsVC = WorkoutHistoryVC()
@@ -267,10 +266,10 @@ extension DashboardVC {
         view.addSubview(mapView)
         view.addSubview(dashboardHeader)
         view.addSubview(navigationStateLabel)
-        view.addSubview(notesView)
-        view.addSubview(calculationsView)
-        view.addSubview(settingsView)
-        view.addSubview(workoutFooter)
+        view.addSubview(notesBody)
+        view.addSubview(calculationsBody)
+        view.addSubview(settingsBody)
+        view.addSubview(dashboardFooter)
         view.addSubview(calculationsFooter)
         view.addSubview(StartSplashScreen)
         
@@ -296,25 +295,25 @@ extension DashboardVC {
             navigationStateLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             navigationStateLabel.topAnchor.constraint(equalTo: dashboardHeader.bottomAnchor, constant: 20),
             
-            calculationsView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
-            calculationsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
-            calculationsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            calculationsView.topAnchor.constraint(equalTo: dashboardHeader.bottomAnchor, constant: 10),
+            calculationsBody.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            calculationsBody.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            calculationsBody.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            calculationsBody.topAnchor.constraint(equalTo: dashboardHeader.bottomAnchor, constant: 10),
             
-            settingsView.widthAnchor.constraint(equalToConstant: .barWidth),
-            settingsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
-            settingsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            settingsView.topAnchor.constraint(equalTo: dashboardHeader.bottomAnchor, constant: 10),
+            settingsBody.widthAnchor.constraint(equalToConstant: .barWidth),
+            settingsBody.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            settingsBody.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            settingsBody.topAnchor.constraint(equalTo: dashboardHeader.bottomAnchor, constant: 10),
             
-            notesView.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
-            notesView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat.headerBarHeight + 70),
-            notesView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            notesView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            notesBody.widthAnchor.constraint(equalToConstant: CGFloat.barWidth),
+            notesBody.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat.headerBarHeight + 70),
+            notesBody.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            notesBody.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
-            workoutFooter.widthAnchor.constraint(equalToConstant: .barWidth),
-            workoutFooter.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
-            workoutFooter.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            workoutFooter.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            dashboardFooter.widthAnchor.constraint(equalToConstant: .barWidth),
+            dashboardFooter.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
+            dashboardFooter.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            dashboardFooter.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             
             calculationsFooter.widthAnchor.constraint(equalToConstant: .barWidth),
             calculationsFooter.heightAnchor.constraint(equalToConstant: .bottomBarHeight),

@@ -9,9 +9,9 @@ import Foundation
 import UIKit
 import Photos
 
-class ScreenschotHelper {
+class SnapshotService {
     
-    static let shared = ScreenschotHelper()
+    static let shared = SnapshotService()
     
     var shotStateHandler: ((Bool) -> Void)?
     

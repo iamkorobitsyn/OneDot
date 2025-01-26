@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SettingsView: UIVisualEffectView {
+class SettingsBodyView: UIVisualEffectView {
     
     var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
     
@@ -93,7 +93,7 @@ class SettingsView: UIVisualEffectView {
     
 }
 
-extension SettingsView: UITableViewDataSource, UITableViewDelegate {
+extension SettingsBodyView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         5
     }
@@ -102,22 +102,22 @@ extension SettingsView: UITableViewDataSource, UITableViewDelegate {
         
         switch indexPath.row {
         case 0:
-            let cell = SettingsViewCell()
+            let cell = SettingsBodyCell()
             return cell
         case 1:
-            let cell = SettingsViewCell()
+            let cell = SettingsBodyCell()
             cell.activateMode(mode: .distanceSettings)
             return cell
         case 2:
-            let cell = SettingsViewCell()
+            let cell = SettingsBodyCell()
             cell.activateMode(mode: .autopauseSettings)
             return cell
         case 3:
-            let cell = SettingsViewCell()
+            let cell = SettingsBodyCell()
             cell.activateMode(mode: .countdownSettings)
             return cell
         case 4:
-            let cell = SettingsViewCell()
+            let cell = SettingsBodyCell()
             cell.activateMode(mode: .appleHealthSettings)
             return cell
         default:

@@ -10,6 +10,8 @@ import HealthKit
 
 class WorkoutHistoryVC: UIViewController {
     
+    let hapticGenerator = UISelectionFeedbackGenerator()
+    
     private enum Mode {
         case workouts
         case selectedWorkout
@@ -236,8 +238,9 @@ extension WorkoutHistoryVC: UITableViewDataSource, UITableViewDelegate {
        // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        hapticGenerator.selectionChanged()
         
-        let workoutFocusVC = WorkoutFocusVC()
+        let workoutFocusVC = WorkoutSnapshotVC()
         self.navigationController?.pushViewController(workoutFocusVC, animated: true)
         workoutFocusVC.healthKitData = healthKitDataList?[indexPath.row]
     }

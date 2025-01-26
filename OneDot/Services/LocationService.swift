@@ -9,9 +9,9 @@ import Foundation
 import MapKit
 import CoreLocation
 
-class LocationManager: NSObject, CLLocationManagerDelegate {
+class LocationService: NSObject, CLLocationManagerDelegate {
     
-    static let shared = LocationManager()
+    static let shared = LocationService()
     
     private let locationManager: CLLocationManager = CLLocationManager()
     
@@ -36,10 +36,12 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     
     func startTracking() {
         locationManager.startUpdatingLocation()
+        print("start tracking")
     }
     
     func stopTracking() {
         locationManager.stopUpdatingLocation()
+        print("stop tracking")
     }
     
     func requestAuthorization() async  {
@@ -69,15 +71,22 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let coordinates = locations.last?.coordinate {
-            let region = MKCoordinateRegion(center: coordinates, latitudinalMeters: 4000, longitudinalMeters: 4000)
-            didUpdateRegion?(region)
+        guard let currentLocation = locations.last else {return}
+        
+        let region = MKCoordinateRegion(center: currentLocation.coordinate, latitudinalMeters: 4000, longitudinalMeters: 4000)
+        didUpdateRegion?(region)
+        
+        let accuracy = currentLocation.horizontalAccuracy
+        accuracy < 20 ? didUpdateTrackingState?(.goodSignal) : didUpdateTrackingState?(.poorSignal)
+
+        
+        if let lastLocation = lastLocation {
+            let distance = lastLocation.distance(from: currentLocation)
+            totalDistance += distance
+            didUpdateDistance?(totalDistance)
         }
         
-        if let location = locations.last {
-            let accuracy = location.horizontalAccuracy
-            accuracy < 20 ? didUpdateTrackingState?(.goodSignal) : didUpdateTrackingState?(.poorSignal)
-        }
+        lastLocation = currentLocation
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager)  {

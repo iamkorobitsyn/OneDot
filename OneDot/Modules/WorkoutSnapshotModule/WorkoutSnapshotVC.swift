@@ -10,7 +10,7 @@ import UIKit
 import Photos
 import MapKit
 
-class WorkoutFocusVC: UIViewController {
+class WorkoutSnapshotVC: UIViewController {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
 
@@ -25,8 +25,8 @@ class WorkoutFocusVC: UIViewController {
     
     let gradientLayer: CAGradientLayer = CAGradientLayer()
     
-    let resultHeader: SelectedWorkoutHeader = {
-        let header = SelectedWorkoutHeader()
+    let resultHeader: WorkoutSnapshotHeaderView = {
+        let header = WorkoutSnapshotHeaderView()
         header.disableAutoresizingMask()
         return header
     }()
@@ -56,12 +56,7 @@ class WorkoutFocusVC: UIViewController {
         imageView.image = UIImage(named: "dumbbellImage")
         return imageView
     }()
-    
-//    let bottomBar: WorkoutResultFooter = {
-//        let view = WorkoutResultFooter()
-//        view.disableAutoresizingMask()
-//        return view
-//    }()
+
     
     private let backButton: UIButton = {
         let button = UIButton()
@@ -89,20 +84,15 @@ class WorkoutFocusVC: UIViewController {
         mapView.delegate = self
         setViews()
         activateMode(mode: .initial)
-//        activateSubviewsHandlers()
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
     }
-    
-//    private func activateSubviewsHandlers() {
-//        bottomBar.buttonStateHandler = { self.activateMode(mode: $0) }
-//    }
+
     
     private func activateMode(mode: Mode) {
-        hapticGenerator.selectionChanged()
         
         switch mode {
         case .initial:
@@ -111,8 +101,8 @@ class WorkoutFocusVC: UIViewController {
                 Task {
                     do {
                         let coordinates = try await HealthKitManager.shared.getCoordinates(data: healthKitData)
-                        LocationManager.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
-                        LocationManager.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
+                        LocationService.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
+                        LocationService.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
                         resultHeader.healthKitData = healthKitData
                         resultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
                         resultHeader.activateMode(mode: .outdoorDynamicWorkout)
@@ -139,7 +129,8 @@ class WorkoutFocusVC: UIViewController {
                 }
             }
         case .screenshot:
-            ScreenschotHelper.shared.makeScreenShot(hiddenViews: [backButton, hideButton, screenshotButton], viewController: self)
+            hapticGenerator.selectionChanged()
+            SnapshotService.shared.makeScreenShot(hiddenViews: [backButton, hideButton, screenshotButton], viewController: self)
         case .back:
             navigationController?.popViewController(animated: true)
         case .hide:
@@ -239,7 +230,7 @@ class WorkoutFocusVC: UIViewController {
   
 }
 
-extension WorkoutFocusVC: MKMapViewDelegate {
+extension WorkoutSnapshotVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(overlay: overlay)
         renderer.strokeColor = .myPaletteGold

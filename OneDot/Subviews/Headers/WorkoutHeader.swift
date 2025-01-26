@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 
-class WorkoutHeader: UIView {
+class WorkoutHeaderView: UIView {
+    
+    let hapticGenerator = UISelectionFeedbackGenerator()
     
     enum Mode {
         case prepare
@@ -95,7 +97,6 @@ class WorkoutHeader: UIView {
     
     func activateMode(mode: Mode) {
         switch mode {
-            
         case .prepare:
             clearVisibleViews()
             modeSwitchButtonLeft.isHidden = false
@@ -157,6 +158,8 @@ class WorkoutHeader: UIView {
     }
     
     @objc private func buttonTapped() {
+        hapticGenerator.selectionChanged()
+        
         switch true {
         case modeSwitchButtonLeft.isTouchInside, modeSwitchButtonRight.isTouchInside:
             updateWorkoutMode()

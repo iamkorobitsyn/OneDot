@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class StartSplachScreen: UIView {
+class StartSplachScreenView: UIView {
     
     let frontLayer: CALayer = CALayer()
     let gradientBackLayer: CAGradientLayer = CAGradientLayer()
