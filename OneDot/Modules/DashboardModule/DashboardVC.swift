@@ -161,7 +161,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     //MARK: - SetClosures
     
     private func activateSubviewsHandlers() {
-        LocationService.shared.didUpdateTrackingState = { [weak self] state in
+        LocationService.shared.didUpdateHightAccuracy = { [weak self] state in
             
             self?.dashboardHeader.activateMode(mode: .trackingIndication(state))
             switch state {

@@ -16,7 +16,6 @@ class WorkoutVC: UIViewController {
     private var timeInterval: TimeInterval?
     private var totalDistance: Double?
     private var totalCalories: Double?
-    
 
     enum Mode {
         case prepare
@@ -24,9 +23,9 @@ class WorkoutVC: UIViewController {
         case start
         case pause
         case erase
-        case hide
         case completion
         case saving
+        case hide
     }
     
     private var workoutState: Mode = .prepare
@@ -89,7 +88,7 @@ class WorkoutVC: UIViewController {
             
             self.timeInterval = timeInterval
             
-            header.updateTimerLabel(text: formatTime(timeInterval))
+            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval))
             totalCalories = currentWorkout.averageCalBurnedPerSec * timeInterval
 
             body.updateTrackingState(isGeoTracking: currentWorkout.checkLocation,
@@ -107,8 +106,7 @@ class WorkoutVC: UIViewController {
         
         switch mode {
         case .prepare:
-            header.setWorkoutMode(title: currentWorkout.titleName,
-                                         workoutImageNamed: currentWorkout.workoutVCIcon)
+            header.setWorkoutMode(title: currentWorkout.titleName, workoutImageNamed: currentWorkout.workoutVCIcon)
             body.activateMode(mode: .prepare)
             footer.activateMode(mode: .prepare)
             
@@ -117,6 +115,7 @@ class WorkoutVC: UIViewController {
             body.activateMode(mode: .countdown)
             footer.activateMode(mode: .hide)
             TimerService.shared.startCountdown()
+            
         case .start:
             footer.activateMode(mode: .start)
             hapticGenerator.selectionChanged()
@@ -131,47 +130,37 @@ class WorkoutVC: UIViewController {
                 header.activateMode(mode: .stopWatch)
                 body.activateMode(mode: .stopWatch)
             }
+            
         case .pause:
             header.activateMode(mode: .pause)
             body.activateMode(mode: .pause)
             footer.activateMode(mode: .pause)
-            header.updateTimerLabel(text: formatTime(self.timeInterval ?? 0))
+            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval ?? 0))
             TimerService.shared.clearTimer()
+            
         case .erase:
             header.activateMode(mode: .pause)
             body.activateMode(mode: .pause)
             footer.activateMode(mode: .pause)
             TimerService.shared.clearTimer()
             timeInterval = 0
-            header.updateTimerLabel(text: formatTime(self.timeInterval ?? 0))
-        case .hide:
-            dismiss(animated: false)
+            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval ?? 0))
+            
         case .completion:
             print("completion")
             footer.activateMode(mode: .completion)
             body.activateMode(mode: .completion)
+            
         case .saving:
             print("saveWorkout")
             dismiss(animated: false)
             LocationService.shared.stopTracking()
+            
+        case .hide:
+            dismiss(animated: false)
         }
     }
     
-    //MARK: - FormatTime
-    
-    private func formatTime(_ timeInterval: TimeInterval) -> String {
-        if UserDefaultsManager.shared.isWorkoutMode {
-            let hours = Int(timeInterval) / 3600
-            let minutes = Int(timeInterval) / 60 % 60
-            let seconds = Int(timeInterval) % 60
-            return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
-        } else {
-            let minutes = Int(timeInterval) / 60
-            let seconds = Int(timeInterval) % 60
-            let milliseconds = Int((timeInterval - Double(Int(timeInterval))) * 100)
-            return String(format: "%02d:%02d.%02d", minutes, seconds, milliseconds)
-        }
-    }
 
     private func hideViews(views: [UIView]) {
         views.forEach({ $0.isHidden = true })

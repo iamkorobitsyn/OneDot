@@ -19,7 +19,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     private var totalDistance: Double = 0.0
     var didUpdateDistance: ((Double) -> Void)?
     var didUpdateRegion: ((MKCoordinateRegion) -> Void)?
-    var didUpdateTrackingState: ((LocationTrackingState) -> Void)?
+    var didUpdateHightAccuracy: ((LocationTrackingState) -> Void)?
     
     enum LocationTrackingState {
         case goodSignal
@@ -56,15 +56,15 @@ class LocationService: NSObject, CLLocationManagerDelegate {
             locationManager.requestWhenInUseAuthorization()
         case .restricted, .authorizedAlways, .authorizedWhenInUse :
             startTracking()
-            await MainActor.run { didUpdateTrackingState?(.goodSignal)}
+            await MainActor.run { didUpdateHightAccuracy?(.poorSignal)}
         case .denied:
             await MainActor.run {
-                didUpdateTrackingState?(.locationDisabled)
+                didUpdateHightAccuracy?(.locationDisabled)
                 didUpdateRegion?(globalRegion)
             }
         default:
             await MainActor.run {
-                didUpdateTrackingState?(.locationDisabled)
+                didUpdateHightAccuracy?(.locationDisabled)
                 didUpdateRegion?(globalRegion)
             }
         }
@@ -77,7 +77,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         didUpdateRegion?(region)
         
         let accuracy = currentLocation.horizontalAccuracy
-        accuracy < 20 ? didUpdateTrackingState?(.goodSignal) : didUpdateTrackingState?(.poorSignal)
+        accuracy < 20 ? didUpdateHightAccuracy?(.goodSignal) : didUpdateHightAccuracy?(.poorSignal)
 
         
         if let lastLocation = lastLocation {

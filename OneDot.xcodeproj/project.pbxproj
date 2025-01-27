@@ -92,6 +92,7 @@
 		65EDA58F2AEA952E007B6AE5 /* OnTheStreetExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA58E2AEA952E007B6AE5 /* OnTheStreetExercises.swift */; };
 		65F264BE2D469C95003AF444 /* TimerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F264BD2D469C95003AF444 /* TimerService.swift */; };
 		65F264C12D46F17D003AF444 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F264C02D46F17D003AF444 /* CoreDataManager.swift */; };
+		65F264C32D479700003AF444 /* CalculationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F264C22D479700003AF444 /* CalculationsService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -202,6 +203,7 @@
 		65EDA58E2AEA952E007B6AE5 /* OnTheStreetExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnTheStreetExercises.swift; sourceTree = "<group>"; };
 		65F264BD2D469C95003AF444 /* TimerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerService.swift; sourceTree = "<group>"; };
 		65F264C02D46F17D003AF444 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		65F264C22D479700003AF444 /* CalculationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculationsService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +336,7 @@
 			children = (
 				6591F04E2D0A6A76006597FE /* LocationService.swift */,
 				65055E202D0CF80500AC14C5 /* SnapshotService.swift */,
+				65F264C22D479700003AF444 /* CalculationsService.swift */,
 				65F264BD2D469C95003AF444 /* TimerService.swift */,
 				6521308D2AC587210056DEA5 /* AnimationManager.swift */,
 				65551C762AC5D8CF00CE3309 /* ShapeManager.swift */,
@@ -757,6 +760,7 @@
 				65EDA58D2AEA951D007B6AE5 /* ExerciseProtocol.swift in Sources */,
 				65783ECD2D12C9A200B6E4C2 /* UILabel + Extansions.swift in Sources */,
 				65F264BE2D469C95003AF444 /* TimerService.swift in Sources */,
+				65F264C32D479700003AF444 /* CalculationsService.swift in Sources */,
 				6502D6AC2A595315000F96E0 /* DashboardVC.swift in Sources */,
 				6502D6A82A595315000F96E0 /* AppDelegate.swift in Sources */,
 			);

@@ -97,7 +97,8 @@ class CalculationsBodyView: UIVisualEffectView {
         case durationButton.isTouchInside:
             buttonStateHandler?(.pickerTime)
         case eraseButton.isTouchInside:
-            resetValues()
+            CalculationsService.shared.resetValues()
+            buttonStateHandler?(.pickerDistance)
             updateValues()
         default:
             break
@@ -114,106 +115,17 @@ class CalculationsBodyView: UIVisualEffectView {
         self.isHidden = false
         switch mode {
         case .distance:
-            calculateDistance()
+            CalculationsService.shared.calculateDistance()
         case .speed:
-            calculateSpeed()
+            CalculationsService.shared.calculateSpeed()
         case .pace:
-            calculatePace()
+            CalculationsService.shared.calculatePace()
         case .time:
-            calculateTime()
+            CalculationsService.shared.calculateTime()
         case .hide:
             self.isHidden = true
         }
         updateValues()
-    }
-    
-    //MARK: - Calculations
-    
-    private func calculateDistance() {
-        
-        let lengthOfDistance = UD.shared.calculationsDistanceValue * 1000 + UD.shared.calculationsDistanceDecimalValue * 100
-        let paceOfSeconds = UD.shared.calculationsPaceMinValue * 60 + UD.shared.calculationsPaceSecValue
-        
-        let time = paceOfSeconds * lengthOfDistance / 1000
-        
-        UD.shared.calculationsTimeHValue = time / 3600
-        UD.shared.calculationsTimeMinValue = time % 3600 / 60
-        UD.shared.calculationsTimeSecValue = time % 3600 % 60
-    }
-    
-    private func calculateSpeed() {
-        
-        
-        let lengthOfDistance = Double(UD.shared.calculationsDistanceValue * 1000 + UD.shared.calculationsDistanceDecimalValue * 100)
-        let distancePerSecond = Double(UD.shared.calculationsSpeedValue * 1000 + UD.shared.calculationsSpeedDecimalValue * 100) / 3600
-        let timeOfSeconds = lengthOfDistance / distancePerSecond
-        let secondsPerDistance = timeOfSeconds / lengthOfDistance * 1000
-
-        if UD.shared.calculationsSpeedValue != 0 || UD.shared.calculationsSpeedDecimalValue != 0 {
-            UD.shared.calculationsTimeHValue = Int(timeOfSeconds) / 3600
-            UD.shared.calculationsTimeMinValue = Int(timeOfSeconds) % 3600 / 60
-            UD.shared.calculationsTimeSecValue = Int(timeOfSeconds) % 3600 % 60
-            
-            
-            UD.shared.calculationsPaceMinValue = Int(secondsPerDistance) / 60
-            UD.shared.calculationsPaceSecValue = Int(secondsPerDistance) % 60
-        } else {
-            UD.shared.calculationsTimeHValue = 0
-            UD.shared.calculationsTimeMinValue = 0
-            UD.shared.calculationsTimeSecValue = 0
-            
-            UD.shared.calculationsPaceMinValue = 0
-            UD.shared.calculationsPaceSecValue = 0
-        }
-    }
-    
-    private func calculatePace() {
-        
-        let lengthOfDistance = Double(UD.shared.calculationsDistanceValue * 1000 + UD.shared.calculationsDistanceDecimalValue * 100)
-        let secondsPerDistance = Double(UD.shared.calculationsPaceMinValue * 60 + UD.shared.calculationsPaceSecValue) / 1000
-        
-        let timeOfSeconds = secondsPerDistance * lengthOfDistance
-        let distancePerHour = lengthOfDistance / timeOfSeconds * 60 * 60
-
-        if UD.shared.calculationsPaceMinValue != 0 || UD.shared.calculationsPaceSecValue != 0 {
-            UD.shared.calculationsTimeHValue = Int(timeOfSeconds) / 3600
-            UD.shared.calculationsTimeMinValue = Int(timeOfSeconds) % 3600 / 60
-            UD.shared.calculationsTimeSecValue = Int(timeOfSeconds) % 3600 % 60
-            
-            UD.shared.calculationsSpeedValue = Int(distancePerHour / 1000)
-            UD.shared.calculationsSpeedDecimalValue = Int(distancePerHour) % 1000 / 100
-            
-        } else {
-            UD.shared.calculationsTimeHValue = 0
-            UD.shared.calculationsTimeMinValue = 0
-            UD.shared.calculationsTimeSecValue = 0
-            
-            UD.shared.calculationsSpeedValue = 0
-            UD.shared.calculationsSpeedDecimalValue = 0
-        }
-    }
-    
-    private func calculateTime() {
-        let lengthOfDistance = Double(UD.shared.calculationsDistanceValue * 1000 + UD.shared.calculationsDistanceDecimalValue * 100)
-        let timeOfSeconds = Double(UD.shared.calculationsTimeHValue * 3600 + UD.shared.calculationsTimeMinValue * 60 + UD.shared.calculationsTimeSecValue)
-
-        let distancePerHour = lengthOfDistance / timeOfSeconds * 60 * 60
-        let secondsPerDistance = timeOfSeconds / lengthOfDistance * 1000
-        
-        if UD.shared.calculationsTimeHValue != 0 || UD.shared.calculationsTimeMinValue != 0 || UD.shared.calculationsTimeSecValue != 0 {
-            UD.shared.calculationsSpeedValue = Int(distancePerHour / 1000)
-            UD.shared.calculationsSpeedDecimalValue = Int(distancePerHour) % 1000 / 100
-            
-            UD.shared.calculationsPaceMinValue = Int(secondsPerDistance) / 60
-            UD.shared.calculationsPaceSecValue = Int(secondsPerDistance) % 60
-            
-        } else {
-            UD.shared.calculationsSpeedValue = 0
-            UD.shared.calculationsSpeedDecimalValue = 0
-            
-            UD.shared.calculationsPaceMinValue = 0
-            UD.shared.calculationsPaceSecValue = 0
-        }
     }
     
     //MARK: - UpdateValues
@@ -225,7 +137,7 @@ class CalculationsBodyView: UIVisualEffectView {
         if isDistanceCleared {
             eraseButton.setImage(UIImage(named: "BodyEraseInactive"), for: .normal)
             eraseButton.setImage(UIImage(named: "BodyEraseInactive"), for: .highlighted)
-            resetValues()
+            CalculationsService.shared.resetValues()
             updateButtonStates(isEnabled: false)
         } else {
             eraseButton.setImage(UIImage(named: "BodyEraseActive"), for: .normal)
@@ -246,28 +158,24 @@ class CalculationsBodyView: UIVisualEffectView {
     }
     
     private func updateButtonTitles() {
-        speedButton.setTitle("\(UD.shared.calculationsSpeedValue).\(UD.shared.calculationsSpeedDecimalValue)", for: .normal)
-        paceButton.setTitle("\(addLeadingZero(UD.shared.calculationsPaceMinValue)):\(addLeadingZero(UD.shared.calculationsPaceSecValue))", for: .normal)
-        distanceButton.setTitle("\(UD.shared.calculationsDistanceValue).\(UD.shared.calculationsDistanceDecimalValue)", for: .normal)
-        durationButton.setTitle("\(addLeadingZero(UD.shared.calculationsTimeHValue)):\(addLeadingZero(UD.shared.calculationsTimeMinValue)):\(addLeadingZero(UD.shared.calculationsTimeSecValue))", for: .normal)
+        
+        let speedValue = UD.shared.calculationsSpeedValue
+        let speedDecimalValue = UD.shared.calculationsSpeedDecimalValue
+        speedButton.setTitle("\(speedValue).\(speedDecimalValue)", for: .normal)
+        
+        let paceMinValue = UD.shared.calculationsPaceMinValue
+        let paceSecValue = UD.shared.calculationsPaceSecValue
+        paceButton.setTitle(String(format: "%02d:%02d", paceMinValue, paceSecValue), for: .normal)
+        
+        let distanceValue = UD.shared.calculationsDistanceValue
+        let distanceDecimalValue = UD.shared.calculationsDistanceDecimalValue
+        distanceButton.setTitle("\(distanceValue).\(distanceDecimalValue)", for: .normal)
+        
+        let timeHValue = UD.shared.calculationsTimeHValue
+        let timeMinValue = UD.shared.calculationsTimeMinValue
+        let timeSecValue = UD.shared.calculationsTimeSecValue
+        durationButton.setTitle(String(format: "%02d:%02d:%02d", timeHValue, timeMinValue, timeSecValue), for: .normal)
     }
-    
-    private func resetValues() {
-        UD.shared.calculationsDistanceValue = 0
-        UD.shared.calculationsDistanceDecimalValue = 0
-        UD.shared.calculationsSpeedValue = 0
-        UD.shared.calculationsSpeedDecimalValue = 0
-        UD.shared.calculationsPaceMinValue = 0
-        UD.shared.calculationsPaceSecValue = 0
-        UD.shared.calculationsTimeHValue = 0
-        UD.shared.calculationsTimeMinValue = 0
-        UD.shared.calculationsTimeSecValue = 0
-    }
-    
-    private func addLeadingZero(_ int: Int) -> String {
-        return int < 10 ? "0\(int)" : "\(int)"
-    }
-    
     
     
     //MARK: - SetViews

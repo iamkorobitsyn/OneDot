@@ -30,6 +30,13 @@ class CalculationFooterView: UIView {
         view.disableAutoresizingMask()
         return view
     }()
+    
+    let pickerLabel: UILabel = {
+        let label = UILabel()
+        label.disableAutoresizingMask()
+        label.instance(color: .myPaletteGray, alignment: .left, font: .condensedMin)
+        return label
+    }()
     private var currentPickerState: Mode?
     
     override init(frame: CGRect) {
@@ -47,6 +54,7 @@ class CalculationFooterView: UIView {
         switch mode {
         case .pickerDistance:
             isHidden = false
+            pickerLabel.text = "Distance"
             ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             currentPickerState = .pickerDistance
             pickerView.reloadAllComponents()
@@ -54,6 +62,7 @@ class CalculationFooterView: UIView {
             pickerView.selectRow(UD.shared.calculationsDistanceDecimalValue, inComponent: 1, animated: true)
         case .pickerSpeed:
             isHidden = false
+            pickerLabel.text = "Speed"
             ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             currentPickerState = .pickerSpeed
             pickerView.reloadAllComponents()
@@ -61,6 +70,7 @@ class CalculationFooterView: UIView {
             pickerView.selectRow(UD.shared.calculationsSpeedDecimalValue, inComponent: 1, animated: true)
         case .pickerPace:
             isHidden = false
+            pickerLabel.text = "Pace"
             ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
             currentPickerState = .pickerPace
             pickerView.reloadAllComponents()
@@ -68,6 +78,7 @@ class CalculationFooterView: UIView {
             pickerView.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
         case .PickerTime:
             isHidden = false
+            pickerLabel.text = "Time"
             ShapeManager.shared.drawTabBarNumbersTwoLineSeparator(shape: numbersLineSeparator, view: self)
             currentPickerState = .PickerTime
             pickerView.reloadAllComponents()
@@ -84,6 +95,7 @@ class CalculationFooterView: UIView {
     
     private func setViews() {
         addSubview(pickerView)
+        addSubview(pickerLabel)
     
         ShapeManager.shared.drawTabBarTopLineSeparator(shape: topLineSeparator, view: self)
     }
@@ -96,7 +108,12 @@ class CalculationFooterView: UIView {
             pickerView.topAnchor.constraint(equalTo: topAnchor),
             pickerView.trailingAnchor.constraint(equalTo: trailingAnchor),
             pickerView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            pickerView.leadingAnchor.constraint(equalTo: leadingAnchor)
+            pickerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            
+            pickerLabel.widthAnchor.constraint(equalToConstant: 100),
+            pickerLabel.heightAnchor.constraint(equalToConstant: 50),
+            pickerLabel.leadingAnchor.constraint(equalTo: pickerView.leadingAnchor, constant: 50),
+            pickerLabel.bottomAnchor.constraint(equalTo: pickerView.topAnchor)
         ])
     }
     
