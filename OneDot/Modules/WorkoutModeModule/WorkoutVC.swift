@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MapKit
 import UIKit
 
 class WorkoutVC: UIViewController {
@@ -14,6 +15,7 @@ class WorkoutVC: UIViewController {
     
     var currentWorkout: Workout
     private var timeInterval: TimeInterval?
+    private var locationCoordinates: [CLLocationCoordinate2D] = []
     private var totalDistance: Double?
     private var totalCalories: Double?
 
@@ -77,6 +79,9 @@ class WorkoutVC: UIViewController {
         LocationService.shared.didUpdateDistance =
         { [weak self] in self?.totalDistance = $0}
         
+        LocationService.shared.didUpdateCoordinates =
+        { [weak self] in self?.locationCoordinates.append($0)}
+        
         TimerService.shared.workoutVCModeComletion =
         { [weak self] in self?.activateMode(mode: $0)}
         
@@ -119,9 +124,13 @@ class WorkoutVC: UIViewController {
         case .start:
             footer.activateMode(mode: .start)
             hapticGenerator.selectionChanged()
+            
             if UserDefaultsManager.shared.isWorkoutMode {
+                if UserDefaultsManager.shared.isGeoTracking {
+                    LocationService.shared.startTracking()
+                    LocationService.shared.recordingCoordinates = true
+                }
                 TimerService.shared.startTimer(timeInterval: timeInterval ?? 0)
-                LocationService.shared.startTracking()
                 header.activateMode(mode: .workout)
                 body.activateMode(mode: .workout)
             } else {
@@ -152,6 +161,17 @@ class WorkoutVC: UIViewController {
             body.activateMode(mode: .completion)
             
         case .saving:
+  
+            WorkoutManager.shared.saveWorkout(distance: 1000, energyBurned: 10, duration: 10, activityType: .running) { success, error in
+                if success {
+                       print("Тренировка успешно сохранена в HealthKit.")
+                   } else {
+                       print("Ошибка сохранения тренировки: \(String(describing: error))")
+                   }
+            }
+            
+
+            
             print("saveWorkout")
             dismiss(animated: false)
             LocationService.shared.stopTracking()

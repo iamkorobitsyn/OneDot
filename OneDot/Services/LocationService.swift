@@ -17,6 +17,8 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     
     private var lastLocation: CLLocation?
     private var totalDistance: Double = 0.0
+    var recordingCoordinates: Bool = false
+    var didUpdateCoordinates: ((CLLocationCoordinate2D) -> Void)?
     var didUpdateDistance: ((Double) -> Void)?
     var didUpdateRegion: ((MKCoordinateRegion) -> Void)?
     var didUpdateHightAccuracy: ((LocationTrackingState) -> Void)?
@@ -31,7 +33,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 7
+        locationManager.distanceFilter = 0.1
     }
     
     func startTracking() {
@@ -72,6 +74,10 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let currentLocation = locations.last else {return}
+
+        if recordingCoordinates {
+            didUpdateCoordinates?(currentLocation.coordinate)
+        }
         
         let region = MKCoordinateRegion(center: currentLocation.coordinate, latitudinalMeters: 4000, longitudinalMeters: 4000)
         didUpdateRegion?(region)

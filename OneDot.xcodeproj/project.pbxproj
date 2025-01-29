@@ -93,6 +93,7 @@
 		65F264BE2D469C95003AF444 /* TimerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F264BD2D469C95003AF444 /* TimerService.swift */; };
 		65F264C12D46F17D003AF444 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F264C02D46F17D003AF444 /* CoreDataManager.swift */; };
 		65F264C32D479700003AF444 /* CalculationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F264C22D479700003AF444 /* CalculationsService.swift */; };
+		65F264C52D494FB0003AF444 /* WorkoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F264C42D494FB0003AF444 /* WorkoutManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -204,6 +205,7 @@
 		65F264BD2D469C95003AF444 /* TimerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerService.swift; sourceTree = "<group>"; };
 		65F264C02D46F17D003AF444 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		65F264C22D479700003AF444 /* CalculationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculationsService.swift; sourceTree = "<group>"; };
+		65F264C42D494FB0003AF444 /* WorkoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -548,6 +550,7 @@
 				65551C782AC60F5A00CE3309 /* UserDefaultsManager.swift */,
 				65F264C02D46F17D003AF444 /* CoreDataManager.swift */,
 				655912972D07562F008C6E95 /* HealthKitManager.swift */,
+				65F264C42D494FB0003AF444 /* WorkoutManager.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -757,6 +760,7 @@
 				65D999FC2D324667009B2B20 /* DescriptionModuleView.swift in Sources */,
 				65D99A002D324890009B2B20 /* WorkoutBodyView.swift in Sources */,
 				659879222AB48BBD004F6E2D /* DashboardHeaderButton.swift in Sources */,
+				65F264C52D494FB0003AF444 /* WorkoutManager.swift in Sources */,
 				65EDA58D2AEA951D007B6AE5 /* ExerciseProtocol.swift in Sources */,
 				65783ECD2D12C9A200B6E4C2 /* UILabel + Extansions.swift in Sources */,
 				65F264BE2D469C95003AF444 /* TimerService.swift in Sources */,

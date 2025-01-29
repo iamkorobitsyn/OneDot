@@ -14,8 +14,8 @@ class HealthKitManager {
     static let shared = HealthKitManager()
     
     private let healthStore: HKHealthStore = HKHealthStore()
-
-
+    
+    
     
     private init() {}
     
@@ -55,26 +55,33 @@ class HealthKitManager {
         return healthKitDataList
     }
     
-    private func checkAuthorizationStatus() async throws {
-        
-        let workoutType = HKWorkoutType.workoutType()
-        let routeType = HKSeriesType.workoutRoute()
-        
+    func checkAuthorizationStatus() async throws {
+        let workoutType = HKWorkoutType.workoutType()  // Тип тренировки
+        let routeType = HKSeriesType.workoutRoute()    // Тип маршрута тренировки
+
         guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)
-        else { throw HealthKitError.invalidHealthKitType(description: "no distance type") }
-        
+        else { throw HealthKitManager.HealthKitError.invalidHealthKitType(description: "no distance type") }
+
         guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate)
-        else { throw HealthKitError.invalidHealthKitType(description: "no heart rate type") }
-        
+        else { throw HealthKitManager.HealthKitError.invalidHealthKitType(description: "no heart rate type") }
+
+        guard let energyBurnedType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)
+        else { throw HealthKitManager.HealthKitError.invalidHealthKitType(description: "no energy burned type") }
+
+        let authStatus = healthStore.authorizationStatus(for: workoutType)
+        if authStatus != .sharingAuthorized {
+            throw HealthKitManager.HealthKitError.notAuthorized
+        }
+
         try await withCheckedThrowingContinuation { continuation in
-            healthStore.requestAuthorization(toShare: nil, read: [workoutType,
-                                                                  distanceType,
-                                                                  routeType,
-                                                                  heartRateType]) { success, error in
+            healthStore.requestAuthorization(
+                toShare: [energyBurnedType, routeType, workoutType],  // Добавляем workoutType для маршрута тренировки
+                read: [workoutType, distanceType, routeType, heartRateType]  // Убедитесь, что workoutType для тренировки также добавлен в read
+            ) { success, error in
                 if success {
                     continuation.resume()
                 } else {
-                    continuation.resume(throwing: HealthKitError.notAuthorized)
+                    continuation.resume(throwing: HealthKitManager.HealthKitError.notAuthorized)
                 }
             }
         }
@@ -131,6 +138,7 @@ class HealthKitManager {
         
         // Проходим по всем тренировкам
         for workout in workouts {
+            
             
             // Получаем статистику по расстоянию
             let distance = workout.statistics(for: distanceType)
@@ -267,5 +275,4 @@ class HealthKitManager {
             healthStore.execute(query)
         }
     }
-
 }

@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Мы читаем данные о тренировках и активности для анализа ваших достижений.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Мы записываем данные о тренировках, чтобы отслеживать вашу активность и калории.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

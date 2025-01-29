@@ -146,10 +146,8 @@ class DashboardHeaderView: UIVisualEffectView {
             switch state {
             case .goodSignal:
                 navigationStateImageView.image = UIImage(named: "navigationGreen")
-            case .poorSignal:
+            case .poorSignal, .locationDisabled:
                 navigationStateImageView.image = UIImage(named: "navigationGray")
-            case .locationDisabled:
-                navigationStateImageView.image = UIImage(named: "navigationBlack")
             }
         }
     }
