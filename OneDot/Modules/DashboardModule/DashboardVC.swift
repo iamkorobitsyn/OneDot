@@ -102,7 +102,6 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
   
-        getHealthKitDataList()
         activateSubviewsHandlers()
 
         setViews()
@@ -121,6 +120,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        getHealthKitDataList()
         dashboardHeader.animateNavigationView()
         NotificationCenter.default.addObserver(dashboardHeader,
                                                selector: #selector(dashboardHeader.animateNavigationView),
@@ -154,7 +154,6 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             } catch let error as HealthKitManager.HealthKitError {
                 HealthKitManager.shared.errorHandling(error: error)
             }
-            
         }
     }
     

@@ -14,6 +14,7 @@ class WorkoutVC: UIViewController {
     let hapticGenerator = UISelectionFeedbackGenerator()
     
     var currentWorkout: Workout
+    private var startDate: Date?
     private var timeInterval: TimeInterval?
     private var locationCoordinates: [CLLocationCoordinate2D] = []
     private var totalDistance: Double?
@@ -124,6 +125,7 @@ class WorkoutVC: UIViewController {
         case .start:
             footer.activateMode(mode: .start)
             hapticGenerator.selectionChanged()
+            startDate = Date()
             
             if UserDefaultsManager.shared.isWorkoutMode {
                 if UserDefaultsManager.shared.isGeoTracking {
@@ -156,23 +158,21 @@ class WorkoutVC: UIViewController {
             header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval ?? 0))
             
         case .completion:
-            print("completion")
             footer.activateMode(mode: .completion)
             body.activateMode(mode: .completion)
             
         case .saving:
-  
-            WorkoutManager.shared.saveWorkout(distance: 1000, energyBurned: 10, duration: 10, activityType: .running) { success, error in
+            guard let startDate = startDate else {return}
+            WorkoutManager.shared.saveWorkout(activityType: .running, locationType: .indoor,
+                                              startDate: startDate, duration: 1000, energyBurned: 349,
+                                              distance: 10000) { success, error in
                 if success {
                        print("Тренировка успешно сохранена в HealthKit.")
                    } else {
                        print("Ошибка сохранения тренировки: \(String(describing: error))")
                    }
             }
-            
 
-            
-            print("saveWorkout")
             dismiss(animated: false)
             LocationService.shared.stopTracking()
             
