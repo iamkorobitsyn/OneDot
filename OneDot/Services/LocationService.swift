@@ -103,7 +103,6 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     //MARK: - WorkoutFocus
     
     func drawMapPolyline(mapView: MKMapView, coordinates: [CLLocationCoordinate2D]) {
-        
         let polyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
         mapView.addOverlay(polyline)
         

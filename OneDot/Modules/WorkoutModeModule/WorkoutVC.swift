@@ -16,7 +16,11 @@ class WorkoutVC: UIViewController {
     var currentWorkout: Workout
     private var startDate: Date?
     private var timeInterval: TimeInterval?
-    private var locationCoordinates: [CLLocationCoordinate2D] = []
+    private var locationCoordinates: [CLLocationCoordinate2D] = [
+        CLLocationCoordinate2D(latitude: 55.89850870655372, longitude: 37.27808634765911),
+        CLLocationCoordinate2D(latitude: 55.898462702531035, longitude: 37.27800006724356),
+        CLLocationCoordinate2D(latitude: 55.89840709488408, longitude: 37.27786287175624)
+    ]
     private var totalDistance: Double?
     private var totalCalories: Double?
 
@@ -163,14 +167,25 @@ class WorkoutVC: UIViewController {
             
         case .saving:
             guard let startDate = startDate else {return}
-            WorkoutManager.shared.saveWorkout(activityType: .running, locationType: .indoor,
-                                              startDate: startDate, duration: 1000, energyBurned: 349,
-                                              distance: 10000) { success, error in
-                if success {
-                       print("Тренировка успешно сохранена в HealthKit.")
-                   } else {
-                       print("Ошибка сохранения тренировки: \(String(describing: error))")
-                   }
+            
+            Task {
+                do {
+                    try await WorkoutManager.shared.saveWorkout(activityType: .running, locationType: .outdoor,
+                                                                startDate: startDate, duration: 1000, energyBurned: 349,
+                                                                distance: 10000, coordinates: locationCoordinates)
+                } catch {
+                    if let error = error as? WorkoutManager.InternalError {
+                        switch error {
+                            
+                        case .notAuthorized(let description):
+                            print("not authorized")
+                        case .workoutIsEmpty:
+                            print("workout is empty")
+                        }
+                    } else {
+                        print("workout not saved")
+                    }
+                }
             }
 
             dismiss(animated: false)
