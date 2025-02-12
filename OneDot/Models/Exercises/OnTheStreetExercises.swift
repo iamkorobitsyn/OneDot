@@ -9,8 +9,8 @@ import Foundation
 import HealthKit
 
 class Swimming: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.swimming
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.swimming
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.175
     let titleName: String = "SWIMMING"
     let pickerViewIcon: String = "SwimmingGray"
@@ -18,8 +18,8 @@ class Swimming: Workout {
 }
 
 class Paddle: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.paddleSports
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.paddleSports
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.126
     let titleName: String = "PADDLE"
     let pickerViewIcon: String = "PaddleGray"
@@ -27,8 +27,8 @@ class Paddle: Workout {
 }
 
 class Hiking: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.hiking
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.hiking
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.116
     let titleName: String = "HIKING"
     let pickerViewIcon: String = "HikingGray"
@@ -36,8 +36,8 @@ class Hiking: Workout {
 }
 
 class Running: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.running
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.running
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.229
     let titleName: String = "RUNNING"
     let pickerViewIcon: String = "RunningGray"
@@ -45,8 +45,8 @@ class Running: Workout {
 }
 
 class Cycling: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.cycling
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.cycling
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.156
     var titleName: String = "CYCLING"
     var pickerViewIcon: String = "CycleGray"
@@ -54,8 +54,8 @@ class Cycling: Workout {
 }
 
 class Board: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.skatingSports
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.skatingSports
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.087
     let titleName: String = "BOARD"
     let pickerViewIcon: String = "BoardGray"
@@ -63,8 +63,8 @@ class Board: Workout {
 }
 
 class RollerSkates: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.skatingSports
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.skatingSports
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.143
     let titleName: String = "ROLLER SKATES"
     let pickerViewIcon: String = "RollerSkatesGray"
@@ -72,8 +72,8 @@ class RollerSkates: Workout {
 }
 
 class Skates: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.skatingSports
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.skatingSports
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.133
     let titleName: String = "SKATES"
     let pickerViewIcon: String = "SkatesGray"
@@ -81,8 +81,8 @@ class Skates: Workout {
 }
 
 class Skis: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.snowSports
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.snowSports
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.166
     let titleName: String = "SKIS"
     let pickerViewIcon: String = "SkisGray"
@@ -90,8 +90,8 @@ class Skis: Workout {
 }
 
 class Snowboard: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.snowboarding
-    let checkLocation: Bool = true
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.snowboarding
+    let locationType: HKWorkoutSessionLocationType = .outdoor
     let averageCalBurnedPerSec: Double = 0.116
     let titleName: String = "SNOWBOARD"
     let pickerViewIcon: String = "SnowboardGray"

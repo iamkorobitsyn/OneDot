@@ -16,7 +16,8 @@ class TimerService {
     
     var workoutVCModeComletion: ((WorkoutVC.Mode) -> Void)?
     var focusLabelCompletion: ((Int) -> Void)?
-    var timerLabelCompletion: ((Double) -> Void)?
+    
+    var timerStateHandler: (() -> Void)?
     
     private init() {}
     
@@ -44,15 +45,15 @@ class TimerService {
         })
     }
     
-    func startTimer(timeInterval: Double) {
+    func startTimer() {
         clearTimer()
-        var timeInterval = timeInterval
+//        var timeInterval = timeInterval
         
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
             guard let self = self else { return }
             
-            timeInterval += 1
-            timerLabelCompletion?(timeInterval)
+//            timeInterval += 1
+            timerStateHandler?()
 
         }
     }
@@ -64,7 +65,7 @@ class TimerService {
         timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] timer in
             guard let self = self else { return }
             timeInterval += 0.01
-            timerLabelCompletion?(timeInterval)
+            timerStateHandler?()
         }
     }
 }

@@ -101,7 +101,6 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-  
         activateSubviewsHandlers()
 
         setViews()
@@ -161,15 +160,13 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     
     private func activateSubviewsHandlers() {
         LocationService.shared.didUpdateHightAccuracy = { [weak self] state in
-            
-            self?.dashboardHeader.activateMode(mode: .trackingIndication(state))
+            guard let self else { return }
+            dashboardHeader.activateMode(mode: .trackingIndication(state))
             switch state {
-            case .goodSignal:
-                self?.navigationStateLabel.isHidden = true
-            case .poorSignal:
-                self?.navigationStateLabel.isHidden = true
+            case .goodSignal, .poorSignal:
+                navigationStateLabel.isHidden = true
             case .locationDisabled:
-                self?.navigationStateLabel.isHidden = false
+                navigationStateLabel.isHidden = false
             }
         }
         LocationService.shared.didUpdateRegion = { [weak self] region in self?.mapView.setRegion(region, animated: true) }

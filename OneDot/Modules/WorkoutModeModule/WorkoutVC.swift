@@ -14,15 +14,12 @@ class WorkoutVC: UIViewController {
     let hapticGenerator = UISelectionFeedbackGenerator()
     
     var currentWorkout: Workout
-    private var startDate: Date?
-    private var timeInterval: TimeInterval?
-    private var locationCoordinates: [CLLocationCoordinate2D] = [
-        CLLocationCoordinate2D(latitude: 55.89850870655372, longitude: 37.27808634765911),
-        CLLocationCoordinate2D(latitude: 55.898462702531035, longitude: 37.27800006724356),
-        CLLocationCoordinate2D(latitude: 55.89840709488408, longitude: 37.27786287175624)
-    ]
-    private var totalDistance: Double?
-    private var totalCalories: Double?
+    private var startDate: Date = Date()
+    private var timeInterval: TimeInterval = 0.0
+    private var totalCalories: Double = 0.0
+    private var locationCoordinates: [CLLocation] = []
+    private var totalDistance: Double = 0.0
+    
 
     enum Mode {
         case prepare
@@ -67,11 +64,20 @@ class WorkoutVC: UIViewController {
     //MARK: - DidLoad
     
     override func viewDidLoad() {
+        UIApplication.shared.isIdleTimerDisabled = true
+        print(currentWorkout.averageCalBurnedPerSec)
+        print(currentWorkout.locationType)
+        print(currentWorkout.activityType.name)
+        
         setViews()
         setConstraints()
         activateSubviewsHandlers()
         
         Task {await LocationService.shared.requestAuthorization()}
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        UIApplication.shared.isIdleTimerDisabled = false
     }
 
     private func activateSubviewsHandlers() {
@@ -93,18 +99,19 @@ class WorkoutVC: UIViewController {
         TimerService.shared.focusLabelCompletion =
         { [weak self] in self?.body.updateFocusLabel(text: "\($0)", countdownSize: true)}
         
-        TimerService.shared.timerLabelCompletion = { [weak self] timeInterval in
-            guard let self = self else {return}
+        TimerService.shared.timerStateHandler = { [weak self] in
+            guard let self else { return }
             
-            self.timeInterval = timeInterval
+            timeInterval += 1
             
-            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval))
             totalCalories = currentWorkout.averageCalBurnedPerSec * timeInterval
+            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval))
+            
 
-            body.updateTrackingState(isGeoTracking: currentWorkout.checkLocation,
+            body.updateTrackingState(isGeoTracking: true,
                                      duration: timeInterval,
-                                     distance: totalDistance ?? 0,
-                                     calories: totalCalories ?? 0)
+                                     distance: totalDistance,
+                                     calories: totalCalories)
         }
         
     }
@@ -129,18 +136,18 @@ class WorkoutVC: UIViewController {
         case .start:
             footer.activateMode(mode: .start)
             hapticGenerator.selectionChanged()
-            startDate = Date()
+            startDate = .now
             
             if UserDefaultsManager.shared.isWorkoutMode {
                 if UserDefaultsManager.shared.isGeoTracking {
                     LocationService.shared.startTracking()
                     LocationService.shared.recordingCoordinates = true
                 }
-                TimerService.shared.startTimer(timeInterval: timeInterval ?? 0)
+                TimerService.shared.startTimer()
                 header.activateMode(mode: .workout)
                 body.activateMode(mode: .workout)
             } else {
-                TimerService.shared.startStopWatch(timeInterval: timeInterval ?? 0)
+                TimerService.shared.startStopWatch(timeInterval: timeInterval)
                 LocationService.shared.stopTracking()
                 header.activateMode(mode: .stopWatch)
                 body.activateMode(mode: .stopWatch)
@@ -150,7 +157,7 @@ class WorkoutVC: UIViewController {
             header.activateMode(mode: .pause)
             body.activateMode(mode: .pause)
             footer.activateMode(mode: .pause)
-            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval ?? 0))
+            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval))
             TimerService.shared.clearTimer()
             
         case .erase:
@@ -159,26 +166,30 @@ class WorkoutVC: UIViewController {
             footer.activateMode(mode: .pause)
             TimerService.shared.clearTimer()
             timeInterval = 0
-            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval ?? 0))
+            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval))
             
         case .completion:
             footer.activateMode(mode: .completion)
             body.activateMode(mode: .completion)
             
         case .saving:
-            guard let startDate = startDate else {return}
             
             Task {
                 do {
-                    try await WorkoutManager.shared.saveWorkout(activityType: .running, locationType: .outdoor,
-                                                                startDate: startDate, duration: 1000, energyBurned: 349,
-                                                                distance: 10000, coordinates: locationCoordinates)
+                    try await WorkoutManager.shared.saveWorkout(activityType: currentWorkout.activityType,
+                                                                locationType: currentWorkout.locationType,
+                                                                startDate: startDate,
+                                                                duration: timeInterval,
+                                                                energyBurned: totalCalories,
+                                                                distance: totalDistance,
+                                                                coordinates: locationCoordinates)
                 } catch {
                     if let error = error as? WorkoutManager.InternalError {
                         switch error {
                             
                         case .notAuthorized(let description):
                             print("not authorized")
+                            print("\(description)")
                         case .workoutIsEmpty:
                             print("workout is empty")
                         }
@@ -186,10 +197,12 @@ class WorkoutVC: UIViewController {
                         print("workout not saved")
                     }
                 }
+                dismiss(animated: false)
+                LocationService.shared.stopTracking()
+                TimerService.shared.clearTimer()
             }
 
-            dismiss(animated: false)
-            LocationService.shared.stopTracking()
+            
             
         case .hide:
             dismiss(animated: false)

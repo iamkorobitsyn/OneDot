@@ -18,7 +18,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     private var lastLocation: CLLocation?
     private var totalDistance: Double = 0.0
     var recordingCoordinates: Bool = false
-    var didUpdateCoordinates: ((CLLocationCoordinate2D) -> Void)?
+    var didUpdateCoordinates: ((CLLocation) -> Void)?
     var didUpdateDistance: ((Double) -> Void)?
     var didUpdateRegion: ((MKCoordinateRegion) -> Void)?
     var didUpdateHightAccuracy: ((LocationTrackingState) -> Void)?
@@ -33,7 +33,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 0.1
+        locationManager.distanceFilter = 5.0
     }
     
     func startTracking() {
@@ -76,7 +76,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         guard let currentLocation = locations.last else {return}
 
         if recordingCoordinates {
-            didUpdateCoordinates?(currentLocation.coordinate)
+            didUpdateCoordinates?(currentLocation)
         }
         
         let region = MKCoordinateRegion(center: currentLocation.coordinate, latitudinalMeters: 4000, longitudinalMeters: 4000)
@@ -109,48 +109,20 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     }
     
     func setMapRegion(mapView: MKMapView, coordinates: [CLLocationCoordinate2D], scaleFactor: Double) {
-
-        var minLatitude: Double = coordinates[0].latitude
-        var maxLatitude: Double = coordinates[0].latitude
         
-        var minLongitude: Double = coordinates[0].longitude
-        var maxLongitude: Double = coordinates[0].longitude
-        
-        
-        for i in 0..<coordinates.count {
-            if coordinates[i].latitude < minLatitude {
-                minLatitude = coordinates[i].latitude
-            } else if coordinates[i].latitude > maxLatitude {
-                maxLatitude = coordinates[i].latitude
-            }
-            
-            if coordinates[i].longitude < minLongitude {
-                minLongitude = coordinates[i].longitude
-            } else if coordinates[i].longitude > maxLongitude {
-                maxLongitude = coordinates[i].longitude
-            }
-        }
-
-        // MARK: - SetSpan
+        let minLatitude: Double = coordinates.map { $0.latitude } .min() ?? 0
+        let maxLatitude: Double = coordinates.map { $0.latitude } .max() ?? 0
+        let minLongitude: Double = coordinates.map { $0.longitude } .min() ?? 0
+        let maxLongitude: Double = coordinates.map { $0.longitude } .max() ?? 0
         
         let latitudeDelta = (maxLatitude - minLatitude) * scaleFactor
         let longitudeDelta = (maxLongitude - minLongitude) * scaleFactor
         
-        let span = MKCoordinateSpan(latitudeDelta: latitudeDelta,
-                                    longitudeDelta: longitudeDelta)
-        
-        // MARK: - SetCenter
-        
         let centerLatitude = (minLatitude + ((maxLatitude - minLatitude) / 2))
         let centerLongitude = (minLongitude + ((maxLongitude - minLongitude) / 2))
         
-        let center = CLLocationCoordinate2D(latitude: centerLatitude + 0.003,
-                                            longitude: centerLongitude)
-        
-        // MARK: - SetRegion
-        
-        
-        let region = MKCoordinateRegion(center: center, span: span)
+        let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: centerLatitude, longitude: centerLongitude),
+                                        span: MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta))
         
         mapView.setRegion(region, animated: false)
     }

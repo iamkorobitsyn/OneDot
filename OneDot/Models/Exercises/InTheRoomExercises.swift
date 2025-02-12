@@ -9,8 +9,8 @@ import Foundation
 import HealthKit
 
 class SwimmingPool: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.swimming
-    let checkLocation: Bool = false
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.swimming
+    let locationType: HKWorkoutSessionLocationType = .indoor
     let averageCalBurnedPerSec: Double = 0.158
     let titleName: String = "SWIMMING POOL"
     let pickerViewIcon: String = "SwimmingPoolGray"
@@ -18,8 +18,8 @@ class SwimmingPool: Workout {
 }
 
 class Stepper: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.stepTraining
-    let checkLocation: Bool = false
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.stepTraining
+    let locationType: HKWorkoutSessionLocationType = .indoor
     let averageCalBurnedPerSec: Double = 0.143
     let titleName: String = "STEPPER"
     let pickerViewIcon: String = "StepperGray"
@@ -27,8 +27,8 @@ class Stepper: Workout {
 }
 
 class Treadmill: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.running
-    let checkLocation: Bool = false
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.running
+    let locationType: HKWorkoutSessionLocationType = .indoor
     let averageCalBurnedPerSec: Double = 0.211
     let titleName: String = "TREADMILL"
     let pickerViewIcon: String = "TreadmillGray"
@@ -36,8 +36,8 @@ class Treadmill: Workout {
 }
 
 class ExerciseBike: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.cycling
-    let checkLocation: Bool = false
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.cycling
+    let locationType: HKWorkoutSessionLocationType = .indoor
     let averageCalBurnedPerSec: Double = 0.133
     let titleName: String = "EXERCISE BIKE"
     let pickerViewIcon: String = "ExerciseBikeGray"
@@ -45,8 +45,8 @@ class ExerciseBike: Workout {
 }
 
 class RecumbentExercise: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.cycling
-    let checkLocation: Bool = false
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.cycling
+    let locationType: HKWorkoutSessionLocationType = .indoor
     let averageCalBurnedPerSec: Double = 0.107
     let titleName: String = "RECUMBENT BIKE"
     let pickerViewIcon: String = "RecumbentBikeGray"
@@ -54,8 +54,8 @@ class RecumbentExercise: Workout {
 }
 
 class StrengthTraining: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.traditionalStrengthTraining
-    let checkLocation: Bool = false
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.traditionalStrengthTraining
+    let locationType: HKWorkoutSessionLocationType = .indoor
     let averageCalBurnedPerSec: Double = 0.098
     let titleName: String = "STRENGTH TRAINING"
     let pickerViewIcon: String = "StrengthTrainingGray"
@@ -63,8 +63,8 @@ class StrengthTraining: Workout {
 }
 
 class FusionWorkout: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.functionalStrengthTraining
-    let checkLocation: Bool = false
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.functionalStrengthTraining
+    let locationType: HKWorkoutSessionLocationType = .indoor
     let averageCalBurnedPerSec: Double = 0.120
     let titleName: String = "FUSION WORKOUT"
     let pickerViewIcon: String = "FusionWorkoutGray"
@@ -72,8 +72,8 @@ class FusionWorkout: Workout {
 }
 
 class Stretching: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.gymnastics
-    let checkLocation: Bool = false
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.gymnastics
+    let locationType: HKWorkoutSessionLocationType = .indoor
     let averageCalBurnedPerSec: Double = 0.053
     let titleName: String = "STRETCHING"
     let pickerViewIcon: String = "StretchingGray"
@@ -81,8 +81,8 @@ class Stretching: Workout {
 }
 
 class Yoga: Workout {
-    let type: HKWorkoutActivityType = HKWorkoutActivityType.yoga
-    let checkLocation: Bool = false
+    let activityType: HKWorkoutActivityType = HKWorkoutActivityType.yoga
+    let locationType: HKWorkoutSessionLocationType = .indoor
     let averageCalBurnedPerSec: Double = 0.047
     let titleName: String = "YOGA"
     let pickerViewIcon: String = "YogaGray"
