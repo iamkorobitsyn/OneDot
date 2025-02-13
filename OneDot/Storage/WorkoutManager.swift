@@ -29,6 +29,8 @@ class WorkoutManager {
                      distance: Double,
                      coordinates: [CLLocation]) async throws {
         
+        
+        
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = activityType
         configuration.locationType = locationType
@@ -52,10 +54,15 @@ class WorkoutManager {
             start: startDate,
             end: startDate.addingTimeInterval(duration)
         )
+        
+        let meta: [String: Any] = [
+                "locationType": "locationType.rawValue"
+            ]
 
         try await requestAuthorization()
         try await workoutBuilder.beginCollection(at: startDate)
         try await workoutBuilder.addSamples([energySample, distanceSample])
+        try await workoutBuilder.addMetadata(meta)
         try await workoutBuilder.endCollection(at: startDate.addingTimeInterval(duration))
         
         if let workout = try await workoutBuilder.finishWorkout() {

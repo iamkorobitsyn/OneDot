@@ -328,6 +328,7 @@
 		6502D6DE2A595731000F96E0 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				655912952D073A57008C6E95 /* HealthKitData.swift */,
 				65EDA5832AEA9437007B6AE5 /* Exercises */,
 			);
 			path = Models;
@@ -535,7 +536,6 @@
 		65EDA5832AEA9437007B6AE5 /* Exercises */ = {
 			isa = PBXGroup;
 			children = (
-				655912952D073A57008C6E95 /* HealthKitData.swift */,
 				65EDA58C2AEA951D007B6AE5 /* ExerciseProtocol.swift */,
 				65EDA5862AEA948D007B6AE5 /* InTheRoomExercises.swift */,
 				65EDA58E2AEA952E007B6AE5 /* OnTheStreetExercises.swift */,

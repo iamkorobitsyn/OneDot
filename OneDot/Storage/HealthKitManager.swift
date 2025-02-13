@@ -9,6 +9,22 @@ import Foundation
 import HealthKit
 import CoreLocation
 
+// MARK: - Расширение для отображения названий типов тренировок
+extension HKWorkoutActivityType {
+    var name: String {
+        switch self {
+        case .running: return "Street Run"
+        case .hiking: return "Hiking"
+        case .walking: return "Ходьба"
+        case .cycling: return "Велосипед"
+        case .swimming: return "Плавание"
+        case .yoga: return "Йога"
+        case .other: return "Другое"
+        default: return "Неизвестная тренировка"
+        }
+    }
+}
+
 class HealthKitManager {
     
     static let shared = HealthKitManager()
@@ -139,6 +155,12 @@ class HealthKitManager {
         // Проходим по всем тренировкам
         for workout in workouts {
             
+            if let locationType = workout.metadata?["locationType"] as? String {
+                            print("Workout Location Type: \(locationType)")
+                        } else {
+                            print("Location Type not available")
+                        }
+            
             
             // Получаем статистику по расстоянию
             let distance = workout.statistics(for: distanceType)
@@ -159,9 +181,6 @@ class HealthKitManager {
             
             let pace = calculatePace(workoutDuration: workout.duration, distance: distanceData)
             
-            
-            
-            // Создаем объект данных о тренировке
             let data = HealthKitData(workoutType: workout.workoutActivityType.name,
                                      startDate: workout.startDate,
                                      endDate: workout.endDate,

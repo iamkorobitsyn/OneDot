@@ -247,17 +247,4 @@ extension WorkoutHistoryVC: UITableViewDataSource, UITableViewDelegate {
 }
 
 
-// MARK: - Расширение для отображения названий типов тренировок
-extension HKWorkoutActivityType {
-    var name: String {
-        switch self {
-        case .running: return "Бег"
-        case .walking: return "Ходьба"
-        case .cycling: return "Велосипед"
-        case .swimming: return "Плавание"
-        case .yoga: return "Йога"
-        case .other: return "Другое"
-        default: return "Неизвестная тренировка"
-        }
-    }
-}
+
