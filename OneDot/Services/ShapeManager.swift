@@ -177,21 +177,15 @@ class ShapeManager {
         
     }
     
-    func drawResultSeparator(dual: Bool, shape: CAShapeLayer, view: UIView) {
+    func drawResultSeparator(view: UIView, shape: CAShapeLayer, descriptionValueCountMax: Int) {
         
         
         
         let path = UIBezierPath()
-        if dual {
-            let segment = (.barWidth - 100) / 3
-            path.move(to: CGPoint(x: 50 + segment , y:  112))
-            path.addLine(to: CGPoint(x: 50 + segment , y: 152))
-            path.move(to: CGPoint(x: 50 + (segment * 2), y:  112))
-            path.addLine(to: CGPoint(x: 50 + (segment * 2) , y: 152))
-        } else {
-            path.move(to: CGPoint(x: .barWidth / 2, y:  72))
-            path.addLine(to: CGPoint(x: .barWidth / 2 , y: 192))
-        }
+        
+        path.move(to: CGPoint(x: .barWidth / 2, y:  72))
+        path.addLine(to: CGPoint(x: .barWidth / 2 , y: 72 + CGFloat(30 * descriptionValueCountMax)))
+        
         shape.path = path.cgPath
         shape.lineWidth = 0.5
         shape.lineCap = .round

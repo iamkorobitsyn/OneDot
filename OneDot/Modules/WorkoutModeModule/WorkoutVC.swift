@@ -65,9 +65,6 @@ class WorkoutVC: UIViewController {
     
     override func viewDidLoad() {
         UIApplication.shared.isIdleTimerDisabled = true
-        print(currentWorkout.averageCalBurnedPerSec)
-        print(currentWorkout.locationType)
-        print(currentWorkout.activityType.name)
         
         setViews()
         setConstraints()
@@ -123,7 +120,7 @@ class WorkoutVC: UIViewController {
         
         switch mode {
         case .prepare:
-            header.setWorkoutMode(title: currentWorkout.titleName, workoutImageNamed: currentWorkout.workoutVCIcon)
+            header.setWorkoutMode(title: currentWorkout.name, workoutImageNamed: currentWorkout.workoutIconName)
             body.activateMode(mode: .prepare)
             footer.activateMode(mode: .prepare)
             
@@ -141,7 +138,7 @@ class WorkoutVC: UIViewController {
             if UserDefaultsManager.shared.isWorkoutMode {
                 if UserDefaultsManager.shared.isGeoTracking {
                     LocationService.shared.startTracking()
-                    LocationService.shared.recordingCoordinates = true
+                    LocationService.shared.recording = true
                 }
                 TimerService.shared.startTimer()
                 header.activateMode(mode: .workout)
@@ -176,8 +173,7 @@ class WorkoutVC: UIViewController {
             
             Task {
                 do {
-                    try await WorkoutManager.shared.saveWorkout(activityType: currentWorkout.activityType,
-                                                                locationType: currentWorkout.locationType,
+                    try await WorkoutManager.shared.saveWorkout(name: currentWorkout.name,
                                                                 startDate: startDate,
                                                                 duration: timeInterval,
                                                                 energyBurned: totalCalories,
@@ -193,8 +189,6 @@ class WorkoutVC: UIViewController {
                         case .workoutIsEmpty:
                             print("workout is empty")
                         }
-                    } else {
-                        print("workout not saved")
                     }
                 }
                 dismiss(animated: false)

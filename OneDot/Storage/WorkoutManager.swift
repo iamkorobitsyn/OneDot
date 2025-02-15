@@ -17,12 +17,39 @@ class WorkoutManager {
     enum InternalError: Error {
         case notAuthorized(Error)
         case workoutIsEmpty
-    } 
+    }
+    
+    private func workoutTypeRepresentable(name: String) -> HKWorkoutActivityType {
+        switch name {
+        case "Swimming": return .swimming
+        case "Paddle": return .paddleSports
+        case "Hiking": return .hiking
+        case "Running": return .running
+        case "Cycling": return .cycling
+        case "Board": return .skatingSports
+        case "Roller skates": return .skatingSports
+        case "Skates": return .skatingSports
+        case "Skis": return .crossCountrySkiing
+        case "Snowboard": return .snowboarding
+            
+        case "Swimming pool": return .swimming
+        case "Stepper": return .stairClimbing
+        case "Treadmill": return .running
+        case "Exercise bike": return .cycling
+        case "Recumbent bike": return .cycling
+        case "Strength training": return .traditionalStrengthTraining
+        case "Fusion workout": return .functionalStrengthTraining
+        case "Stretching": return .flexibility
+        case "Yoga": return .yoga
+        default:
+            break
+        }
+        return .other
+    }
     
     //MARK: - SaveWorkout
     
-    func saveWorkout(activityType: HKWorkoutActivityType,
-                     locationType: HKWorkoutSessionLocationType,
+    func saveWorkout(name: String,
                      startDate: Date,
                      duration: Double,
                      energyBurned: Double,
@@ -32,8 +59,7 @@ class WorkoutManager {
         
         
         let configuration = HKWorkoutConfiguration()
-        configuration.activityType = activityType
-        configuration.locationType = locationType
+        configuration.activityType = workoutTypeRepresentable(name: name)
         
         let workoutBuilder = HKWorkoutBuilder(healthStore: healthStore, configuration: configuration, device: nil)
         let routeBuilder = HKWorkoutRouteBuilder(healthStore: healthStore, device: .local())
@@ -55,14 +81,12 @@ class WorkoutManager {
             end: startDate.addingTimeInterval(duration)
         )
         
-        let meta: [String: Any] = [
-                "locationType": "locationType.rawValue"
-            ]
+        let metadata: [String: Any] = ["name": name]
 
         try await requestAuthorization()
         try await workoutBuilder.beginCollection(at: startDate)
         try await workoutBuilder.addSamples([energySample, distanceSample])
-        try await workoutBuilder.addMetadata(meta)
+        try await workoutBuilder.addMetadata(metadata)
         try await workoutBuilder.endCollection(at: startDate.addingTimeInterval(duration))
         
         if let workout = try await workoutBuilder.finishWorkout() {

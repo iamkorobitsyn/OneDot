@@ -14,7 +14,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     
     let locationManager: CLLocationManager = CLLocationManager()
     
-    var healthKitDataList: [HealthKitData]?
+    var healthKitDataList: [WorkoutData]?
     
     let mapView: MKMapView = {
         let view = MKMapView()

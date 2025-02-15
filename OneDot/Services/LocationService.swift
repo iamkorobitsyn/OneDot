@@ -13,11 +13,11 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     
     static let shared = LocationService()
     
-    private let locationManager: CLLocationManager = CLLocationManager()
+    var recording: Bool = false
     
+    private let locationManager: CLLocationManager = CLLocationManager()
     private var lastLocation: CLLocation?
     private var totalDistance: Double = 0.0
-    var recordingCoordinates: Bool = false
     var didUpdateCoordinates: ((CLLocation) -> Void)?
     var didUpdateDistance: ((Double) -> Void)?
     var didUpdateRegion: ((MKCoordinateRegion) -> Void)?
@@ -75,8 +75,16 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let currentLocation = locations.last else {return}
 
-        if recordingCoordinates {
+        if recording {
             didUpdateCoordinates?(currentLocation)
+            
+            if let lastLocation = lastLocation {
+                let distance = lastLocation.distance(from: currentLocation)
+                totalDistance += distance
+                didUpdateDistance?(totalDistance)
+            }
+            
+            lastLocation = currentLocation
         }
         
         let region = MKCoordinateRegion(center: currentLocation.coordinate, latitudinalMeters: 4000, longitudinalMeters: 4000)
@@ -86,13 +94,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         accuracy < 20 ? didUpdateHightAccuracy?(.goodSignal) : didUpdateHightAccuracy?(.poorSignal)
 
         
-        if let lastLocation = lastLocation {
-            let distance = lastLocation.distance(from: currentLocation)
-            totalDistance += distance
-            didUpdateDistance?(totalDistance)
-        }
         
-        lastLocation = currentLocation
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager)  {

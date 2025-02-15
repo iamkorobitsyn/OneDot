@@ -21,7 +21,7 @@ class WorkoutHistoryVC: UIViewController {
     }
     
     let healthStore = HKHealthStore()
-    var healthKitDataList: [HealthKitData]?
+    var healthKitDataList: [WorkoutData]?
     
     private let blurEffectView: UIVisualEffectView = {
         let effect = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -223,7 +223,7 @@ extension WorkoutHistoryVC: UITableViewDataSource, UITableViewDelegate {
            
            if let cell = tableView.dequeueReusableCell(withIdentifier: "WorkoutCell") as? WorkoutCell {
 
-               cell.healhKitData = healthKitDataList?[indexPath.row]
+               cell.workoutData = healthKitDataList?[indexPath.row]
                cell.updateLabels()
                return cell
            }
@@ -242,7 +242,7 @@ extension WorkoutHistoryVC: UITableViewDataSource, UITableViewDelegate {
         
         let workoutFocusVC = WorkoutSnapshotVC()
         self.navigationController?.pushViewController(workoutFocusVC, animated: true)
-        workoutFocusVC.healthKitData = healthKitDataList?[indexPath.row]
+        workoutFocusVC.workoutData = healthKitDataList?[indexPath.row]
     }
 }
 

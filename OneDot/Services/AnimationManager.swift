@@ -111,13 +111,26 @@ class AnimationManager {
     //MARK: - GPSView
     
     func animateLocator(_ view: UIView) {
-
+        
+        let animatoonList = CAAnimationGroup()
+        
         let animation = CABasicAnimation(keyPath: "opacity")
-        animation.duration = 1.5
-        animation.fromValue = 0.3
-        animation.toValue = 1
-        animation.repeatCount = .infinity
-        view.layer.add(animation, forKey: nil)
+        animation.duration = 2
+        animation.fromValue = 1
+        animation.toValue = 0.4
+        
+        let opacity = CABasicAnimation(keyPath: "opacity")
+        opacity.beginTime = 2
+        opacity.duration = 2
+        opacity.fromValue = 0.4
+        opacity.toValue = 1
+        
+        animatoonList.animations = [animation, opacity]
+        animatoonList.duration = 4
+        animatoonList.repeatCount = .infinity
+        
+        view.layer.add(animatoonList, forKey: nil)
+
     }
     
 }

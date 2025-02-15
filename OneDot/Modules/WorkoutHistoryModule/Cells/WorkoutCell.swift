@@ -11,7 +11,7 @@ import HealthKit
 
 class WorkoutCell: UITableViewCell {
     
-    var healhKitData: HealthKitData?
+    var workoutData: WorkoutData?
     
     private let backView: UIView = {
         let view = UIView()
@@ -83,14 +83,25 @@ class WorkoutCell: UITableViewCell {
     
     func updateLabels() {
         
-        guard let healhKitData else {return}
+        guard let workoutData else {return}
+
+        workoutTypeLabel.text = workoutData.workoutName.uppercased()
         
-        let stringRepresentable = healhKitData.stringRepresentation()
+        let hours = Int(workoutData.duration) / 3600
+        let minutes = (Int(workoutData.duration) % 3600) / 60
+        let seconds = Int(workoutData.duration) % 60
+        let duration = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+        workoutDurationLabel.text = duration.uppercased()
         
-        workoutTypeLabel.text = stringRepresentable.workoutType.uppercased()
-        workoutDurationLabel.text = stringRepresentable.duration.uppercased()
-        workoutStatisticLabel.text = stringRepresentable.totalDistance.uppercased()
-        workoutDateLabel.text = stringRepresentable.startDate.uppercased()
+        let kilometers = workoutData.totalDistance / 1000
+        let roundedKilometers = String(format: "%.2f", kilometers)
+        workoutStatisticLabel.text = ("\(roundedKilometers) km").uppercased()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        let stringStartDate = dateFormatter.string(from: workoutData.startDate)
+        workoutDateLabel.text = stringStartDate
+  
     }
     
     private func setConstraints() {

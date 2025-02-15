@@ -48,12 +48,12 @@ class DashboardHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegat
         if geoTrackingState {
             let row = UserDefaultsManager.shared.pickerRowWithGeoTrackingActive
             let workout = workoutList[row]
-            title.text = workout.titleName
+            title.text = workout.name
             return workout
         } else {
             let row = UserDefaultsManager.shared.pickerRowWithGeoTrackingInactive
             let workout = workoutList[row]
-            title.text = workout.titleName
+            title.text = workout.name
             return workout
         }
     }
@@ -76,7 +76,7 @@ class DashboardHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegat
             UserDefaultsManager.shared.pickerRowWithGeoTrackingInactive = row
         }
         let workout = updateCurrentWorkout()
-        title.text = workout.titleName
+        title.text = workout.name
     }
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
@@ -97,7 +97,7 @@ class DashboardHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegat
         imageView.transform = CGAffineTransform(rotationAngle: 90 * (.pi / 180))
 
         let workoutList = factoryWorkouts.get(isGeoTracking: geoTrackingState)
-        imageView.image = UIImage(named: workoutList[row].pickerViewIcon)
+        imageView.image = UIImage(named: workoutList[row].pickerIconName)
         
         return imageView
     }
@@ -113,7 +113,7 @@ class DashboardHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegat
         title.clipsToBounds = true
         title.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)
         let workout = updateCurrentWorkout()
-        title.text = workout.titleName
+        title.text = workout.name
         
         ShapeManager.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }

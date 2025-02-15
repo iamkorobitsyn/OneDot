@@ -14,7 +14,7 @@ class WorkoutSnapshotVC: UIViewController {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
 
-    var healthKitData: HealthKitData?
+    var workoutData: WorkoutData?
 
     enum Mode {
         case initial
@@ -25,8 +25,8 @@ class WorkoutSnapshotVC: UIViewController {
     
     let gradientLayer: CAGradientLayer = CAGradientLayer()
     
-    let resultHeader: WorkoutSnapshotHeaderView = {
-        let header = WorkoutSnapshotHeaderView()
+    let resultHeader: SnapshotHeaderView = {
+        let header = SnapshotHeaderView()
         header.disableAutoresizingMask()
         return header
     }()
@@ -84,7 +84,7 @@ class WorkoutSnapshotVC: UIViewController {
         mapView.delegate = self
         setViews()
         activateMode(mode: .initial)
-        
+        setConstraints()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -96,38 +96,46 @@ class WorkoutSnapshotVC: UIViewController {
         
         switch mode {
         case .initial:
-            if let healthKitData = healthKitData {
+            if let workoutData = workoutData {
                 
+                resultHeader.workoutData = workoutData
                 Task {
                     do {
-                        let coordinates = try await HealthKitManager.shared.getCoordinates(data: healthKitData)
-                        LocationService.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates.coordinates2D)
-                        LocationService.shared.setMapRegion(mapView: mapView, coordinates: coordinates.coordinates2D, scaleFactor: 3.0)
-                        resultHeader.healthKitData = healthKitData
-                        resultHeader.healthKitData?.updateClimbing(altitube: coordinates.climbing)
-                        resultHeader.activateMode(mode: .outdoorDynamicWorkout)
+                        let locations = try await HealthKitManager.shared.getRoute(workout: workoutData)
+                        
+                        var coordinates: [CLLocationCoordinate2D] = []
+                        locations.forEach { location in
+                            coordinates.append(location.coordinate)
+                        }
+                        
+                        LocationService.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates)
+                        LocationService.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 2.5)
+        
+                        let currentPoint = mapView.convert(mapView.centerCoordinate, toPointTo: mapView)
+                        let newPoint = CGPoint(x: currentPoint.x, y: currentPoint.y - 100)
+                        let newCenter = mapView.convert(newPoint, toCoordinateFrom: mapView)
+                        mapView.setCenter(newCenter, animated: false)
+                        
+                        let climbing = try await HealthKitManager.shared.getClimbing(locations: locations)
+                        resultHeader.climbValue = climbing
+                        resultHeader.locationIconName = "AMOutdoorLocGold25x25"
+                        
+                        
                         gradientLayer.isHidden = true
                         bottleImage.isHidden = true
                         dumbbellImage.isHidden = true
-                        logoView.image = UIImage(named: "workoutScreenLogoOrangeBlue")
+                        logoView.image = UIImage(named: "workoutScreenLogoOrangeGray")
+                        resultHeader.activate(locationOutdoor: true)
+                    } catch {
                         
-                        setConstraints(outdoorStatus: true)
-                        
-                    } catch let error as HealthKitManager.HealthKitError {
-                        HealthKitManager.shared.errorHandling(error: error)
+                        resultHeader.locationIconName = "AMIndoorLocGold25x25"
                         logoView.image = UIImage(named: "workoutScreenLogoOrangeWhite")
-                        if healthKitData.totalDistance > 100 {
-                            resultHeader.healthKitData = healthKitData
-                            resultHeader.activateMode(mode: .indoorDynamicWorkout)
-                        } else {
-                            resultHeader.healthKitData = healthKitData
-                            resultHeader.activateMode(mode: .staticWorkout)
-                        }
-                        
-                        setConstraints(outdoorStatus: false)
+                        resultHeader.activate(locationOutdoor: false)
                     }
+                    
                 }
             }
+             
         case .screenshot:
             hapticGenerator.selectionChanged()
             SnapshotService.shared.makeScreenShot(hiddenViews: [backButton, hideButton, screenshotButton], viewController: self)
@@ -182,7 +190,7 @@ class WorkoutSnapshotVC: UIViewController {
     
     //MARK: - SetConstraints
     
-    private func setConstraints(outdoorStatus: Bool) {
+    private func setConstraints() {
         NSLayoutConstraint.activate([
             
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -203,7 +211,7 @@ class WorkoutSnapshotVC: UIViewController {
             resultHeader.heightAnchor.constraint(equalToConstant: 210),
             resultHeader.widthAnchor.constraint(equalToConstant: .barWidth),
             resultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: outdoorStatus ? 120 : 160),
+            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: 160),
             
             bottleImage.widthAnchor.constraint(equalToConstant: 60),
             bottleImage.heightAnchor.constraint(equalToConstant: 60),

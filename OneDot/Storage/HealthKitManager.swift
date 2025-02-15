@@ -9,22 +9,6 @@ import Foundation
 import HealthKit
 import CoreLocation
 
-// MARK: - Расширение для отображения названий типов тренировок
-extension HKWorkoutActivityType {
-    var name: String {
-        switch self {
-        case .running: return "Street Run"
-        case .hiking: return "Hiking"
-        case .walking: return "Ходьба"
-        case .cycling: return "Велосипед"
-        case .swimming: return "Плавание"
-        case .yoga: return "Йога"
-        case .other: return "Другое"
-        default: return "Неизвестная тренировка"
-        }
-    }
-}
-
 class HealthKitManager {
     
     static let shared = HealthKitManager()
@@ -62,7 +46,7 @@ class HealthKitManager {
     
     //MARK: - FetchHealthKitDataList
     
-    func fetchHealthKitDataList() async throws -> [HealthKitData] {
+    func fetchHealthKitDataList() async throws -> [WorkoutData] {
         
         let workoutType = HKWorkoutType.workoutType()
         try await checkAuthorizationStatus()
@@ -131,8 +115,8 @@ class HealthKitManager {
     //MARK: - ConvertHKWorkoutsInHKDataList
     
     
-    private func convertHKWorkoutsInHKDataList(workouts: [HKWorkout]) async throws -> [HealthKitData] {
-        var healthKitData: [HealthKitData] = []
+    private func convertHKWorkoutsInHKDataList(workouts: [HKWorkout]) async throws -> [WorkoutData] {
+        var healthKitData: [WorkoutData] = []
         
         // Проверяем типы данных
         guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning) else {
@@ -151,26 +135,22 @@ class HealthKitManager {
             throw HealthKitError.invalidHealthKitType(description: "no step count type")
         }
         
-        
-        // Проходим по всем тренировкам
         for workout in workouts {
             
-            if let locationType = workout.metadata?["locationType"] as? String {
-                            print("Workout Location Type: \(locationType)")
-                        } else {
-                            print("Location Type not available")
-                        }
+            var associatedName: String = ""
             
+            if let metadata = workout.metadata?["name"] as? String {
+                associatedName = metadata
+            } else {
+                associatedName = workout.workoutActivityType.name
+            }
             
-            // Получаем статистику по расстоянию
             let distance = workout.statistics(for: distanceType)
             let distanceData = distance?.sumQuantity()?.doubleValue(for: HKUnit.meter()) ?? 0
             
-            // Получаем статистику по сердечному ритму
             let heartRate = workout.statistics(for: heartRateType)
             let heartRateData = heartRate?.averageQuantity()?.doubleValue(for: HKUnit.count().unitDivided(by: HKUnit.minute())) ?? 0.0
             
-            // Получаем статистику по сожженным калориям
             let activeEnergy = workout.statistics(for: activeEnergyBurned)
             let activeEnergyBurnedData = activeEnergy?.sumQuantity()?.doubleValue(for: HKUnit.largeCalorie()) ?? 0
             
@@ -181,19 +161,19 @@ class HealthKitManager {
             
             let pace = calculatePace(workoutDuration: workout.duration, distance: distanceData)
             
-            let data = HealthKitData(workoutType: workout.workoutActivityType.name,
+            let data = WorkoutData(workoutName: workout.workoutActivityType.name,
+                                     associatedName: associatedName,
                                      startDate: workout.startDate,
                                      endDate: workout.endDate,
                                      duration: workout.duration,
                                      totalDistance: distanceData,
                                      pace: pace,
-                                     climbing: 0.0,
                                      heartRate: heartRateData,
                                      calloriesBurned: activeEnergyBurnedData,
                                      stepCount: Int(stepCountData),
-                                     cadence: averageCadence)
+                                     cadence: averageCadence
+                                     )
             
-            // Добавляем данные в массив
             healthKitData.append(data)
         }
         
@@ -229,66 +209,52 @@ class HealthKitManager {
     
     //MARK: - GetHealthKitCoordinates
     
-    func getCoordinates(data: HealthKitData) async throws -> HealthKitCoordinates {
-        var coordinate2D: [CLLocationCoordinate2D] = []
-        var climbingData: [Double] = []
+    func getClimbing(locations: [CLLocation]) async throws -> Double {
         
-        let locations = try await getCLLocations(workout: data)
+        var climbingDataList: [Double] = []
         
-        locations.forEach { loc in
-            coordinate2D.append(loc.coordinate)
-            climbingData.append(loc.altitude)
+        locations.forEach { coordinate in
+            climbingDataList.append(coordinate.altitude)
         }
         
         let climbingDataAverage: Double
-        if let minClimb = climbingData.min(), let maxClimb = climbingData.max() {
+        if let minClimb = climbingDataList.min(), let maxClimb = climbingDataList.max() {
             climbingDataAverage = maxClimb - minClimb
         } else {
             climbingDataAverage = 0
             throw HealthKitError.noClimbingData(description: "\(#function)")
         }
         
-        let healthKitCoordinates = HealthKitCoordinates(coordinates2D: coordinate2D, climbing: climbingDataAverage)
-        
-        return healthKitCoordinates
+        return climbingDataAverage
     }
     
     //MARK: - ReturnCLLocation
     
-    private func getCLLocations(workout: HealthKitData) async throws -> [CLLocation] {
-        
+    func getRoute(workout: WorkoutData) async throws -> [CLLocation] {
+
         let routeType = HKSeriesType.workoutRoute()
-        
         let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate)
         
         return try await withCheckedThrowingContinuation { continuation in
             
             let query = HKSampleQuery(sampleType: routeType, predicate: predicate, limit: 1, sortDescriptors: nil) { _, samples, error in
-                
-                Task {
-                    if let route = samples?.first as? HKWorkoutRoute {
-                        let locations = try await self.getRouteData(for: route)
-                        continuation.resume(returning: locations)
-                    } else {
-                        continuation.resume(throwing: HealthKitError.noRouteData(description: "error in \(#function)"))
+                if let route = samples?.first as? HKWorkoutRoute {
+                    
+                    var allLocations: [CLLocation] = []
+                    let routeQuery = HKWorkoutRouteQuery(route: route) { _, locations, done, error in
+                        
+                        if let locations = locations {
+                            allLocations.append(contentsOf: locations)
+                            
+                            if done {
+                                continuation.resume(returning: allLocations)
+                            }
+                        }
                     }
-                }
-            }
-            healthStore.execute(query)
-        }
-    }
-    
-    private func getRouteData(for route: HKWorkoutRoute) async throws -> [CLLocation] {
-        var locations: [CLLocation] = []
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            let query = HKWorkoutRouteQuery(route: route) { query, routeLocations, done, error in
-                
-                if let routeLocations = routeLocations { locations.append(contentsOf: routeLocations) }
-                if done { continuation.resume(returning: locations) }
-                if error != nil {
-                    continuation.resume(throwing: HealthKitError.noRouteData(description: "error in \(#function)"))
+                    self.healthStore.execute(routeQuery)
+                    
+                } else {
+                    continuation.resume(throwing: HealthKitError.noRouteData(description: "no route"))
                 }
             }
             healthStore.execute(query)
