@@ -87,21 +87,28 @@ class WorkoutCell: UITableViewCell {
 
         workoutTypeLabel.text = workoutData.workoutName.uppercased()
         
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        let stringStartDate = dateFormatter.string(from: workoutData.startDate)
+        workoutDateLabel.text = stringStartDate
+        
         let hours = Int(workoutData.duration) / 3600
         let minutes = (Int(workoutData.duration) % 3600) / 60
         let seconds = Int(workoutData.duration) % 60
         let duration = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
         workoutDurationLabel.text = duration.uppercased()
         
-        let kilometers = workoutData.totalDistance / 1000
-        let roundedKilometers = String(format: "%.2f", kilometers)
-        workoutStatisticLabel.text = ("\(roundedKilometers) km").uppercased()
+        if workoutData.totalDistance >= 100 {
+            let kilometers = workoutData.totalDistance / 1000
+            let roundedKilometers = String(format: "%.2f", kilometers)
+            workoutStatisticLabel.text = ("\(roundedKilometers) km").uppercased()
+        } else {
+            workoutStatisticLabel.font = UIFont.systemFont(ofSize: 20, weight: .thin)
+            workoutStatisticLabel.text = "\u{2014}"
+        }
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        let stringStartDate = dateFormatter.string(from: workoutData.startDate)
-        workoutDateLabel.text = stringStartDate
-  
+        
+
     }
     
     private func setConstraints() {
@@ -116,20 +123,20 @@ class WorkoutCell: UITableViewCell {
             workoutTypeLabel.topAnchor.constraint(equalTo: backView.topAnchor),
             workoutTypeLabel.trailingAnchor.constraint(equalTo: centerXAnchor, constant: -35),
             
+            workoutDateLabel.widthAnchor.constraint(equalToConstant: 150),
+            workoutDateLabel.heightAnchor.constraint(equalToConstant: 50),
+            workoutDateLabel.topAnchor.constraint(equalTo: backView.topAnchor),
+            workoutDateLabel.leadingAnchor.constraint(equalTo: centerXAnchor, constant: 35),
+            
             workoutDurationLabel.widthAnchor.constraint(equalToConstant: 150),
             workoutDurationLabel.heightAnchor.constraint(equalToConstant: 50),
-            workoutDurationLabel.topAnchor.constraint(equalTo: backView.topAnchor),
+            workoutDurationLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor),
             workoutDurationLabel.leadingAnchor.constraint(equalTo: centerXAnchor, constant: 35),
             
             workoutStatisticLabel.widthAnchor.constraint(equalToConstant: 150),
             workoutStatisticLabel.heightAnchor.constraint(equalToConstant: 50),
             workoutStatisticLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor),
             workoutStatisticLabel.trailingAnchor.constraint(equalTo: centerXAnchor, constant: -35),
-            
-            workoutDateLabel.widthAnchor.constraint(equalToConstant: 150),
-            workoutDateLabel.heightAnchor.constraint(equalToConstant: 50),
-            workoutDateLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor),
-            workoutDateLabel.leadingAnchor.constraint(equalTo: centerXAnchor, constant: 35),
             
             detailsImage.widthAnchor.constraint(equalToConstant: 42),
             detailsImage.heightAnchor.constraint(equalToConstant: 42),

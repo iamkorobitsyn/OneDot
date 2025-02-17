@@ -110,7 +110,7 @@ class WorkoutSnapshotVC: UIViewController {
                         
                         LocationService.shared.drawMapPolyline(mapView: mapView, coordinates: coordinates)
                         LocationService.shared.setMapRegion(mapView: mapView, coordinates: coordinates, scaleFactor: 2.5)
-        
+
                         let currentPoint = mapView.convert(mapView.centerCoordinate, toPointTo: mapView)
                         let newPoint = CGPoint(x: currentPoint.x, y: currentPoint.y - 100)
                         let newCenter = mapView.convert(newPoint, toCoordinateFrom: mapView)

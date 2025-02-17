@@ -164,7 +164,7 @@ class SnapshotHeaderView: UIView {
 
         ShapeManager.shared.drawResultSeparator(view: self,
                                                 shape: separator,
-                                                descriptionValueCountMax: descriptionValueCountMax)
+                                                descriptionFullHeightState: descriptionValueCountMax > 2 ? true : false)
         
         setConstraints(descriptionValueCountL: leadingStackView.subviews.count,
                        descriptionValueCountR: trailingStackView.subviews.count,
@@ -174,9 +174,10 @@ class SnapshotHeaderView: UIView {
     
     private func setConstraints(descriptionValueCountL: Int, descriptionValueCountR: Int, descriptionValueCountMax: Int) {
         
+        let descriptionHeight: CGFloat = descriptionValueCountMax > 2 ? 120 : 60
 
         NSLayoutConstraint.activate([
-            containerVisualEffectView.heightAnchor.constraint(equalToConstant: CGFloat(90 + (descriptionValueCountMax * 30))),
+            containerVisualEffectView.heightAnchor.constraint(equalToConstant: 90 + descriptionHeight),
             containerVisualEffectView.topAnchor.constraint(equalTo: topAnchor),
             containerVisualEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
             containerVisualEffectView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -199,12 +200,13 @@ class SnapshotHeaderView: UIView {
             leadingStackView.widthAnchor.constraint(equalToConstant: 165),
             leadingStackView.heightAnchor.constraint(equalToConstant: CGFloat(descriptionValueCountL * 30)),
             leadingStackView.centerXAnchor.constraint(equalTo: workoutNameLabel.centerXAnchor),
-            leadingStackView.topAnchor.constraint(equalTo: workoutNameLabel.bottomAnchor, constant: 10),
+            leadingStackView.centerYAnchor.constraint(equalTo: containerVisualEffectView.topAnchor,
+                                                      constant: (descriptionHeight / 2) + 60),
             
             trailingStackView.widthAnchor.constraint(equalToConstant: 165),
             trailingStackView.heightAnchor.constraint(equalToConstant: CGFloat(descriptionValueCountR * 30)),
             trailingStackView.centerXAnchor.constraint(equalTo: workoutDateLabel.centerXAnchor),
-            trailingStackView.topAnchor.constraint(equalTo: workoutDateLabel.bottomAnchor, constant: 10)
+            trailingStackView.topAnchor.constraint(equalTo: leadingStackView.topAnchor)
         ])
     }
     

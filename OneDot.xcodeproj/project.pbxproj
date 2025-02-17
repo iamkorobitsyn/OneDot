@@ -451,12 +451,12 @@
 		6568C8B22CE173BF00993E00 /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
+				65D999FB2D324667009B2B20 /* DescriptionModuleView.swift */,
 				658F7A4D2AF46AA300FF087F /* Headers */,
 				65D999FE2D3247FA009B2B20 /* Bodies */,
 				6568C8B02CE0960A00993E00 /* Footers */,
 				6521308B2AC46F400056DEA5 /* StartSplachScreenView.swift */,
 				65D99A022D333B7E009B2B20 /* WorkoutSplashScreenView.swift */,
-				65D999FB2D324667009B2B20 /* DescriptionModuleView.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
