@@ -14,6 +14,77 @@ class CalculationsService {
     
     typealias UD = UserDefaultsManager
     
+    enum WorkoutsPeriod {
+        case week
+        case month
+        case year
+        case allTime
+    }
+    
+    
+    //MARK: - GetWorkoutsAverageValues
+    
+    func getWorkoutStatistics(workoutList: [WorkoutData], period: WorkoutsPeriod) -> WorkoutStatistics {
+        
+        let endDate = Date()
+        var filteredWorkouts: [WorkoutData] = []
+        
+        switch period {
+            
+        case .week:
+            if let startDate = Calendar.current.date(byAdding: .day, value: -7, to: endDate) {
+                let lastWeekInterval = DateInterval(start: startDate, end: endDate)
+                filteredWorkouts = workoutList.filter { workout in
+                        lastWeekInterval.contains(workout.startDate)
+                    }
+            }
+            
+        case .month:
+            if let startDate = Calendar.current.date(byAdding: .month, value: -1, to: endDate) {
+                let lastWeekInterval = DateInterval(start: startDate, end: endDate)
+                filteredWorkouts = workoutList.filter { workout in
+                        lastWeekInterval.contains(workout.startDate)
+                    }
+            }
+            
+        case .year:
+            if let startDate = Calendar.current.date(byAdding: .year, value: -1, to: endDate) {
+                let lastWeekInterval = DateInterval(start: startDate, end: endDate)
+                filteredWorkouts = workoutList.filter { workout in
+                        lastWeekInterval.contains(workout.startDate)
+                    }
+            }
+            
+        case .allTime:
+            filteredWorkouts = workoutList
+        }
+        
+        var duration: TimeInterval = 0
+        var calloriesBurned: Double = 0
+        var totalDistance: Double = 0
+        var averagePace: Int = 0
+        var averageHeartRate: Double = 0
+        var averageCadence: Int = 0
+        
+        filteredWorkouts.forEach { workout in
+            duration += workout.duration
+            calloriesBurned += workout.calloriesBurned
+            totalDistance += workout.totalDistance
+            averagePace += workout.pace
+            averageHeartRate += workout.heartRate
+            averageCadence += workout.cadence
+        }
+        
+        let statistics = WorkoutStatistics(duration: duration,
+                                           calloriesBurned: calloriesBurned,
+                                           totalDistance: totalDistance,
+                                           averagePace: averagePace,
+                                           averageHeartRate: averageHeartRate,
+                                           averageCadence: averageCadence)
+        return statistics
+
+    }
+    
     //MARK: - FormatTime
     
     func formatTime(_ timeInterval: TimeInterval) -> String {

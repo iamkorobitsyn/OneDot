@@ -182,6 +182,8 @@ class WorkoutHistoryVC: UIViewController {
     }
 }
 
+//MARK: - CollectionView
+
 
 extension WorkoutHistoryVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
@@ -195,6 +197,9 @@ extension WorkoutHistoryVC: UICollectionViewDataSource, UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = metricsPanel.dequeueReusableCell(withReuseIdentifier: "MetricsPanelCell", for: indexPath) as! AverageStatisticCell
+        
+        cell.workoutData = healthKitDataList
+        
         switch indexPath.row {
         case 0:
             cell.activateMode(mode: .timeAndCalories)

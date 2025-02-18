@@ -15,8 +15,6 @@ class HealthKitManager {
     
     private let healthStore: HKHealthStore = HKHealthStore()
     
-    
-    
     private init() {}
     
     enum HealthKitError: Error {
@@ -51,7 +49,7 @@ class HealthKitManager {
         let workoutType = HKWorkoutType.workoutType()
         try await checkAuthorizationStatus()
         let hKWorkouts = try await fetchHKWorkouts(workoutType: workoutType)
-        let healthKitDataList = try await convertHKWorkoutsInHKDataList(workouts: hKWorkouts)
+        let healthKitDataList = try await convertHKWorkoutsInWorkoutDataList(workouts: hKWorkouts)
         return healthKitDataList
     }
     
@@ -115,10 +113,9 @@ class HealthKitManager {
     //MARK: - ConvertHKWorkoutsInHKDataList
     
     
-    private func convertHKWorkoutsInHKDataList(workouts: [HKWorkout]) async throws -> [WorkoutData] {
+    private func convertHKWorkoutsInWorkoutDataList(workouts: [HKWorkout]) async throws -> [WorkoutData] {
         var healthKitData: [WorkoutData] = []
         
-        // Проверяем типы данных
         guard let distanceType = HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning) else {
             throw HealthKitError.invalidHealthKitType(description: "no distance type")
         }

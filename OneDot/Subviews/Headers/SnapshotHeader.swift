@@ -164,7 +164,7 @@ class SnapshotHeaderView: UIView {
 
         ShapeManager.shared.drawResultSeparator(view: self,
                                                 shape: separator,
-                                                descriptionFullHeightState: descriptionValueCountMax > 2 ? true : false)
+                                                descriptionValueCountMax: descriptionValueCountMax)
         
         setConstraints(descriptionValueCountL: leadingStackView.subviews.count,
                        descriptionValueCountR: trailingStackView.subviews.count,
@@ -174,7 +174,7 @@ class SnapshotHeaderView: UIView {
     
     private func setConstraints(descriptionValueCountL: Int, descriptionValueCountR: Int, descriptionValueCountMax: Int) {
         
-        let descriptionHeight: CGFloat = descriptionValueCountMax > 2 ? 120 : 60
+        let descriptionHeight: CGFloat = descriptionValueCountMax > 2 ? 125 : 65
 
         NSLayoutConstraint.activate([
             containerVisualEffectView.heightAnchor.constraint(equalToConstant: 90 + descriptionHeight),
@@ -200,8 +200,7 @@ class SnapshotHeaderView: UIView {
             leadingStackView.widthAnchor.constraint(equalToConstant: 165),
             leadingStackView.heightAnchor.constraint(equalToConstant: CGFloat(descriptionValueCountL * 30)),
             leadingStackView.centerXAnchor.constraint(equalTo: workoutNameLabel.centerXAnchor),
-            leadingStackView.centerYAnchor.constraint(equalTo: containerVisualEffectView.topAnchor,
-                                                      constant: (descriptionHeight / 2) + 60),
+            leadingStackView.topAnchor.constraint(equalTo: workoutNameLabel.bottomAnchor, constant: 15),
             
             trailingStackView.widthAnchor.constraint(equalToConstant: 165),
             trailingStackView.heightAnchor.constraint(equalToConstant: CGFloat(descriptionValueCountR * 30)),

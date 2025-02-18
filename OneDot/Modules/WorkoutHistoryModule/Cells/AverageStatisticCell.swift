@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 class AverageStatisticCell: UICollectionViewCell {
+    
+    var workoutData: [WorkoutData]?
 
     let leadingResultModule: DescriptionModuleView = {
         let module = DescriptionModuleView()
@@ -42,19 +44,30 @@ class AverageStatisticCell: UICollectionViewCell {
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
+        
+        guard let workoutData else { return }
+        let statistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutData,
+                                                                         period: .allTime)
+        
         switch mode {
         case .timeAndCalories:
-            leadingResultModule.activateMode(axis: .vertical, mode: .timeDescription, text: "05:43:47")
-            trailingResultModule.activateMode(axis: .vertical, mode: .caloriesDescription, text: "3457")
+            
+            let hours = Int(statistics.duration) / 3600
+            let minutes = (Int(statistics.duration) % 3600) / 60
+            let seconds = Int(statistics.duration) % 60
+            let duration = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+            
+            leadingResultModule.activateMode(axis: .vertical, mode: .timeDescription, text: duration)
+            trailingResultModule.activateMode(axis: .vertical, mode: .caloriesDescription, text: "\(Int(statistics.calloriesBurned))")
         case .distanceAndClimb:
-            leadingResultModule.activateMode(axis: .vertical, mode: .distanceDescription, text: "56.4 km")
-            trailingResultModule.activateMode(axis: .vertical, mode: .climbDescription, text: "459 m")
+            leadingResultModule.activateMode(axis: .vertical, mode: .distanceDescription, text: "\(statistics.totalDistance)")
+            trailingResultModule.activateMode(axis: .vertical, mode: .climbDescription, text: "CLIMB")
         case .heartRateAndPace:
-            leadingResultModule.activateMode(axis: .vertical, mode: .heartRateDescription, text: "147")
-            trailingResultModule.activateMode(axis: .vertical, mode: .paceDescription, text: "5:43 / km")
+            leadingResultModule.activateMode(axis: .vertical, mode: .heartRateDescription, text: "\(statistics.averageHeartRate)")
+            trailingResultModule.activateMode(axis: .vertical, mode: .paceDescription, text: "\(statistics.averagePace)")
         case .stepsAndCadence:
-            leadingResultModule.activateMode(axis: .vertical, mode: .stepsDescription, text: "16457")
-            trailingResultModule.activateMode(axis: .vertical, mode: .cadenceDescription, text: "167")
+            leadingResultModule.activateMode(axis: .vertical, mode: .stepsDescription, text: "STEPS")
+            trailingResultModule.activateMode(axis: .vertical, mode: .cadenceDescription, text: "\(statistics.averageCadence)")
         }
     }
     

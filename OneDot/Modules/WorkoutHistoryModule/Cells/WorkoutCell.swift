@@ -63,6 +63,11 @@ class WorkoutCell: UITableViewCell {
     
     let separators: CAShapeLayer = CAShapeLayer()
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        workoutStatisticLabel.instance(color: .white, alignment: .right, font: .standartMax)
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setViews()

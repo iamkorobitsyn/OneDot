@@ -29,4 +29,14 @@ struct WorkoutData {
     var cadence: Int
 }
 
+struct WorkoutStatistics {
+    
+    let duration: TimeInterval
+    let calloriesBurned: Double
+    let totalDistance: Double
+    let averagePace: Int
+    let averageHeartRate: Double
+    let averageCadence: Int
+}
+
 
