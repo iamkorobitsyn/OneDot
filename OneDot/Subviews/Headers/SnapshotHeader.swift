@@ -106,9 +106,9 @@ class SnapshotHeaderView: UIView {
         let stringStartDate = dateFormatter.string(from: workoutData.startDate)
         workoutDateLabel.text = stringStartDate
 
-        if workoutData.totalDistance != 0 {
+        if workoutData.distance != 0 {
             let distanceView = DescriptionModuleView()
-            let kilometers = workoutData.totalDistance / 1000
+            let kilometers = workoutData.distance / 1000
             let roundedKilometers = String(format: "%.2f", kilometers)
             distanceView.activateMode(axis: .horizontalCompact, mode: .distanceDescription, text: "\(roundedKilometers) km")
             leadingStackView.addArrangedSubview(distanceView)

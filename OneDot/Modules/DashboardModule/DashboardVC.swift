@@ -246,7 +246,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             calculationsFooter.activateMode(mode: .PickerTime)
         case .transitionToProfile:
             let WorkoutsVC = WorkoutHistoryVC()
-            WorkoutsVC.healthKitDataList = healthKitDataList
+            WorkoutsVC.workoutList = healthKitDataList
             let navigationVC = UINavigationController(rootViewController: WorkoutsVC)
             present(navigationVC, animated: true)
         }

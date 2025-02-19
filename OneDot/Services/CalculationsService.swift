@@ -69,18 +69,18 @@ class CalculationsService {
         filteredWorkouts.forEach { workout in
             duration += workout.duration
             calloriesBurned += workout.calloriesBurned
-            totalDistance += workout.totalDistance
+            totalDistance += workout.distance
             averagePace += workout.pace
             averageHeartRate += workout.heartRate
             averageCadence += workout.cadence
         }
         
-        let statistics = WorkoutStatistics(duration: duration,
-                                           calloriesBurned: calloriesBurned,
-                                           totalDistance: totalDistance,
-                                           averagePace: averagePace,
-                                           averageHeartRate: averageHeartRate,
-                                           averageCadence: averageCadence)
+        let hours = Int(duration) / 3600
+        let minutes = (Int(duration) % 3600) / 60
+        let seconds = Int(duration) % 60
+        let durationText = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+        
+        let statistics = WorkoutStatistics(duration: durationText, calloriesBurned: "", distance: "", averagePace: "", averageHeartRate: "", averageCadence: "")
         return statistics
 
     }

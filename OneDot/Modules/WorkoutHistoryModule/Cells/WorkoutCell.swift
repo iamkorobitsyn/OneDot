@@ -103,8 +103,8 @@ class WorkoutCell: UITableViewCell {
         let duration = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
         workoutDurationLabel.text = duration.uppercased()
         
-        if workoutData.totalDistance >= 100 {
-            let kilometers = workoutData.totalDistance / 1000
+        if workoutData.distance >= 100 {
+            let kilometers = workoutData.distance / 1000
             let roundedKilometers = String(format: "%.2f", kilometers)
             workoutStatisticLabel.text = ("\(roundedKilometers) km").uppercased()
         } else {

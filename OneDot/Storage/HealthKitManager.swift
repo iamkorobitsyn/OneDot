@@ -163,13 +163,12 @@ class HealthKitManager {
                                      startDate: workout.startDate,
                                      endDate: workout.endDate,
                                      duration: workout.duration,
-                                     totalDistance: distanceData,
+                                     calloriesBurned: activeEnergyBurnedData,
+                                     distance: distanceData,
                                      pace: pace,
                                      heartRate: heartRateData,
-                                     calloriesBurned: activeEnergyBurnedData,
-                                     stepCount: Int(stepCountData),
-                                     cadence: averageCadence
-                                     )
+                                     cadence: averageCadence,
+                                     stepCount: Int(stepCountData))
             
             healthKitData.append(data)
         }

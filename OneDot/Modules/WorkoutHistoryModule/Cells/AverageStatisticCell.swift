@@ -10,8 +10,6 @@ import UIKit
 
 class AverageStatisticCell: UICollectionViewCell {
     
-    var workoutData: [WorkoutData]?
-
     let leadingResultModule: DescriptionModuleView = {
         let module = DescriptionModuleView()
         module.disableAutoresizingMask()
@@ -28,9 +26,8 @@ class AverageStatisticCell: UICollectionViewCell {
     
     enum Mode: Int {
         case timeAndCalories = 0
-        case distanceAndClimb = 1
-        case heartRateAndPace = 2
-        case stepsAndCadence = 3
+        case distanceAndPace = 1
+        case heartRateAndCadence = 2
     }
     
     //MARK: - Init
@@ -43,30 +40,18 @@ class AverageStatisticCell: UICollectionViewCell {
     
     //MARK: - ActivateMode
     
-    func activateMode(mode: Mode) {
-        
-        guard let workoutData else { return }
-        let statistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutData,
-                                                                         period: .allTime)
+    func activateMode(mode: Mode, statistics: WorkoutStatistics) {
         
         switch mode {
         case .timeAndCalories:
             
-            let hours = Int(statistics.duration) / 3600
-            let minutes = (Int(statistics.duration) % 3600) / 60
-            let seconds = Int(statistics.duration) % 60
-            let duration = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
-            
-            leadingResultModule.activateMode(axis: .vertical, mode: .timeDescription, text: duration)
-            trailingResultModule.activateMode(axis: .vertical, mode: .caloriesDescription, text: "\(Int(statistics.calloriesBurned))")
-        case .distanceAndClimb:
-            leadingResultModule.activateMode(axis: .vertical, mode: .distanceDescription, text: "\(statistics.totalDistance)")
-            trailingResultModule.activateMode(axis: .vertical, mode: .climbDescription, text: "CLIMB")
-        case .heartRateAndPace:
-            leadingResultModule.activateMode(axis: .vertical, mode: .heartRateDescription, text: "\(statistics.averageHeartRate)")
+            leadingResultModule.activateMode(axis: .vertical, mode: .timeDescription, text: statistics.duration)
+            trailingResultModule.activateMode(axis: .vertical, mode: .caloriesDescription, text: "")
+        case .distanceAndPace:
+            leadingResultModule.activateMode(axis: .vertical, mode: .distanceDescription, text: "")
             trailingResultModule.activateMode(axis: .vertical, mode: .paceDescription, text: "\(statistics.averagePace)")
-        case .stepsAndCadence:
-            leadingResultModule.activateMode(axis: .vertical, mode: .stepsDescription, text: "STEPS")
+        case .heartRateAndCadence:
+            leadingResultModule.activateMode(axis: .vertical, mode: .heartRateDescription, text: "\(statistics.averageHeartRate)")
             trailingResultModule.activateMode(axis: .vertical, mode: .cadenceDescription, text: "\(statistics.averageCadence)")
         }
     }

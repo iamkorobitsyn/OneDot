@@ -21,22 +21,21 @@ struct WorkoutData {
     let startDate: Date
     let endDate: Date
     var duration: TimeInterval
-    var totalDistance: Double
+    var calloriesBurned: Double
+    var distance: Double
     var pace: Int
     let heartRate: Double
-    var calloriesBurned: Double
-    var stepCount: Int
     var cadence: Int
+    var stepCount: Int
 }
 
 struct WorkoutStatistics {
-    
-    let duration: TimeInterval
-    let calloriesBurned: Double
-    let totalDistance: Double
-    let averagePace: Int
-    let averageHeartRate: Double
-    let averageCadence: Int
+    let duration: String
+    let calloriesBurned: String
+    let distance: String
+    let averagePace: String
+    let averageHeartRate: String
+    let averageCadence: String
 }
 
 

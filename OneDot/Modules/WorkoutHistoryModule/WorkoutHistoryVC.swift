@@ -21,7 +21,8 @@ class WorkoutHistoryVC: UIViewController {
     }
     
     let healthStore = HKHealthStore()
-    var healthKitDataList: [WorkoutData]?
+    var workoutList: [WorkoutData]?
+    var workoutStatistics: WorkoutStatistics?
     
     private let blurEffectView: UIVisualEffectView = {
         let effect = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -41,7 +42,7 @@ class WorkoutHistoryVC: UIViewController {
     private let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.disableAutoresizingMask()
-        pageControl.numberOfPages = 4
+        pageControl.numberOfPages = 3
         pageControl.currentPageIndicatorTintColor = .myPaletteGold
         pageControl.pageIndicatorTintColor = .lightGray
         pageControl.isUserInteractionEnabled = false
@@ -94,7 +95,8 @@ class WorkoutHistoryVC: UIViewController {
         metricsPanel.delegate = self
         metricsPanel.dataSource = self
         metricsPanel.register(AverageStatisticCell.self, forCellWithReuseIdentifier: "MetricsPanelCell")
-
+ 
+        
         setViews()
         setConstraints()
     }
@@ -103,6 +105,32 @@ class WorkoutHistoryVC: UIViewController {
         navigationController?.isNavigationBarHidden = true
         let currentMetricsPageValue = UserDefaultsManager.shared.profileMetricsPageValue
         DispatchQueue.main.async { self.setCurrentMetricsPage(currentPage: currentMetricsPageValue) }
+    }
+    
+    //MARK: - Segmenter
+    
+    private func setSegmenter() {
+        segmenter.selectedSegmentIndex = UserDefaultsManager.shared.statisticsSegmenterValue
+        segmenterTapped(segmenter)
+    }
+    
+    @objc private func segmenterTapped(_ sender: UISegmentedControl) {
+        UserDefaultsManager.shared.statisticsSegmenterValue = sender.selectedSegmentIndex
+        
+        guard let workoutList else { return }
+        switch sender.selectedSegmentIndex {
+        case 0:
+            workoutStatistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutList, period: .week)
+        case 1:
+            workoutStatistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutList, period: .month)
+        case 2:
+            workoutStatistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutList, period: .year)
+        case 3:
+            workoutStatistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutList, period: .allTime)
+        default:
+            break
+        }
+        metricsPanel.reloadData()
     }
     
     //MARK: - DidScroll & CurrentMetrics
@@ -145,6 +173,9 @@ class WorkoutHistoryVC: UIViewController {
         workoutsListTable.register(WorkoutCell.self, forCellReuseIdentifier: "WorkoutCell")
         
         dismissButton.addTarget(self, action: #selector(selfDismiss), for: .touchUpInside)
+        
+        segmenter.addTarget(self, action: #selector(segmenterTapped(_:)), for: .valueChanged)
+        setSegmenter()
     }
     
     //MARK: - SetConstraints
@@ -192,26 +223,31 @@ extension WorkoutHistoryVC: UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        4
+        3
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = metricsPanel.dequeueReusableCell(withReuseIdentifier: "MetricsPanelCell", for: indexPath) as! AverageStatisticCell
         
-        cell.workoutData = healthKitDataList
+        let emptyStatistics = WorkoutStatistics(duration: "-",
+                                                calloriesBurned: "-",
+                                                distance: "-",
+                                                averagePace: "-",
+                                                averageHeartRate: "-",
+                                                averageCadence: "-")
         
         switch indexPath.row {
+            
         case 0:
-            cell.activateMode(mode: .timeAndCalories)
+            cell.activateMode(mode: .timeAndCalories, statistics: workoutStatistics ?? emptyStatistics)
         case 1:
-            cell.activateMode(mode: .distanceAndClimb)
+            cell.activateMode(mode: .distanceAndPace, statistics: workoutStatistics ?? emptyStatistics)
         case 2:
-            cell.activateMode(mode: .heartRateAndPace)
-        case 3:
-            cell.activateMode(mode: .stepsAndCadence)
+            cell.activateMode(mode: .heartRateAndCadence, statistics: workoutStatistics ?? emptyStatistics)
         default:
             break
         }
+    
         return cell
     }
 }
@@ -221,14 +257,14 @@ extension WorkoutHistoryVC: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource
        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return healthKitDataList?.count ?? 0
+           return workoutList?.count ?? 0
        }
        
        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
            
            if let cell = tableView.dequeueReusableCell(withIdentifier: "WorkoutCell") as? WorkoutCell {
 
-               cell.workoutData = healthKitDataList?[indexPath.row]
+               cell.workoutData = workoutList?[indexPath.row]
                cell.updateLabels()
                return cell
            }
@@ -247,7 +283,7 @@ extension WorkoutHistoryVC: UITableViewDataSource, UITableViewDelegate {
         
         let workoutFocusVC = WorkoutSnapshotVC()
         self.navigationController?.pushViewController(workoutFocusVC, animated: true)
-        workoutFocusVC.workoutData = healthKitDataList?[indexPath.row]
+        workoutFocusVC.workoutData = workoutList?[indexPath.row]
     }
 }
 

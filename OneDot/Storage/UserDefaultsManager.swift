@@ -16,6 +16,7 @@ class UserDefaultsManager {
     private init() {}
     
     private enum Keys {
+        static let statisticsSegmenterValue = "statisticsSegmenterValue"
         static let isGeoTracking = "isGeoTracking"
         static let pickerRowIndoor = "pickerRowIndoor"
         static let pickerRowOutdoor = "pickerRowOutdoor"
@@ -44,7 +45,16 @@ class UserDefaultsManager {
         userDefaults.setValue(value, forKey: key)
         userDefaults.synchronize()
     }
+    
+    var statisticsSegmenterValue: Int {
+        get { getValue(key: Keys.statisticsSegmenterValue, defaultValue: 0)}
+        set { setValue(key: Keys.statisticsSegmenterValue, value: newValue) }
+    }
 
+    var isWorkoutMode: Bool {
+        get { getValue(key: Keys.isWorkoutMode, defaultValue: true) }
+        set { setValue(key: Keys.isWorkoutMode, value: newValue) }
+    }
     
     var isGeoTracking: Bool {
         get { getValue(key: Keys.isGeoTracking, defaultValue: false) }
@@ -61,12 +71,6 @@ class UserDefaultsManager {
         set { setValue(key: Keys.pickerRowIndoor, value: newValue) }
     }
     
-    var isWorkoutMode: Bool {
-        get { getValue(key: Keys.isWorkoutMode, defaultValue: true) }
-        set { setValue(key: Keys.isWorkoutMode, value: newValue) }
-    }
-    
-   
     
     //MARK: Calculations
     
