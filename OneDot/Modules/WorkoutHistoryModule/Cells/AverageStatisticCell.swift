@@ -40,19 +40,19 @@ class AverageStatisticCell: UICollectionViewCell {
     
     //MARK: - ActivateMode
     
-    func activateMode(mode: Mode, statistics: WorkoutStatistics) {
+    func activateMode(mode: Mode, statistics: WorkoutStatistics?) {
         
         switch mode {
         case .timeAndCalories:
             
-            leadingResultModule.activateMode(axis: .vertical, mode: .timeDescription, text: statistics.duration)
-            trailingResultModule.activateMode(axis: .vertical, mode: .caloriesDescription, text: "")
+            leadingResultModule.activateMode(axis: .vertical, mode: .timeDescription, text: statistics?.duration ?? "-")
+            trailingResultModule.activateMode(axis: .vertical, mode: .caloriesDescription, text: statistics?.calloriesBurned ?? "-")
         case .distanceAndPace:
-            leadingResultModule.activateMode(axis: .vertical, mode: .distanceDescription, text: "")
-            trailingResultModule.activateMode(axis: .vertical, mode: .paceDescription, text: "\(statistics.averagePace)")
+            leadingResultModule.activateMode(axis: .vertical, mode: .distanceDescription, text: statistics?.distance ?? "-")
+            trailingResultModule.activateMode(axis: .vertical, mode: .paceDescription, text: statistics?.averagePace ?? "-")
         case .heartRateAndCadence:
-            leadingResultModule.activateMode(axis: .vertical, mode: .heartRateDescription, text: "\(statistics.averageHeartRate)")
-            trailingResultModule.activateMode(axis: .vertical, mode: .cadenceDescription, text: "\(statistics.averageCadence)")
+            leadingResultModule.activateMode(axis: .vertical, mode: .heartRateDescription, text: statistics?.averageHeartRate ?? "-")
+            trailingResultModule.activateMode(axis: .vertical, mode: .cadenceDescription, text: statistics?.averageCadence ?? "-")
         }
     }
     
@@ -62,7 +62,7 @@ class AverageStatisticCell: UICollectionViewCell {
         addSubview(leadingResultModule)
         addSubview(trailingResultModule)
         
-        ShapeManager.shared.drawMetricsCellSeparator(shape: separator, view: self)
+        GraphicsService.shared.drawShape(shape: separator, shapeType: .headerSingleShape, view: self)
     }
     
     //MARK: - SetConstraints

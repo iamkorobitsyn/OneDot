@@ -61,7 +61,7 @@ class WorkoutHistoryVC: UIViewController {
     }()
     
     private let segmenter: UISegmentedControl = {
-        let view = UISegmentedControl(items: ["Week", "Month", "Year", "All time"])
+        let view = UISegmentedControl(items: ["Week", "Month", "Year"])
         view.selectedSegmentTintColor = .myPaletteGold
         view.selectedSegmentIndex = 1
         view.setTitleTextAttributes([.foregroundColor: UIColor.white,
@@ -115,21 +115,11 @@ class WorkoutHistoryVC: UIViewController {
     }
     
     @objc private func segmenterTapped(_ sender: UISegmentedControl) {
-        UserDefaultsManager.shared.statisticsSegmenterValue = sender.selectedSegmentIndex
         
+        UserDefaultsManager.shared.statisticsSegmenterValue = sender.selectedSegmentIndex
         guard let workoutList else { return }
-        switch sender.selectedSegmentIndex {
-        case 0:
-            workoutStatistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutList, period: .week)
-        case 1:
-            workoutStatistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutList, period: .month)
-        case 2:
-            workoutStatistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutList, period: .year)
-        case 3:
-            workoutStatistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutList, period: .allTime)
-        default:
-            break
-        }
+        workoutStatistics = CalculationsService.shared.getWorkoutStatistics(workoutList: workoutList,
+                                                                            segmenterIndex: sender.selectedSegmentIndex)
         metricsPanel.reloadData()
     }
     
@@ -229,21 +219,14 @@ extension WorkoutHistoryVC: UICollectionViewDataSource, UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = metricsPanel.dequeueReusableCell(withReuseIdentifier: "MetricsPanelCell", for: indexPath) as! AverageStatisticCell
         
-        let emptyStatistics = WorkoutStatistics(duration: "-",
-                                                calloriesBurned: "-",
-                                                distance: "-",
-                                                averagePace: "-",
-                                                averageHeartRate: "-",
-                                                averageCadence: "-")
-        
         switch indexPath.row {
             
         case 0:
-            cell.activateMode(mode: .timeAndCalories, statistics: workoutStatistics ?? emptyStatistics)
+            cell.activateMode(mode: .timeAndCalories, statistics: workoutStatistics)
         case 1:
-            cell.activateMode(mode: .distanceAndPace, statistics: workoutStatistics ?? emptyStatistics)
+            cell.activateMode(mode: .distanceAndPace, statistics: workoutStatistics)
         case 2:
-            cell.activateMode(mode: .heartRateAndCadence, statistics: workoutStatistics ?? emptyStatistics)
+            cell.activateMode(mode: .heartRateAndCadence, statistics: workoutStatistics)
         default:
             break
         }

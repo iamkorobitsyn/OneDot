@@ -16,7 +16,7 @@ class DashboardHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegat
     let picker: UIPickerView = UIPickerView()
     let title: UILabel = UILabel()
     
-    private let lineSeparator: CAShapeLayer = CAShapeLayer()
+   
     private let dotSeparator: CAShapeLayer = CAShapeLayer()
     
     override init(frame: CGRect) {
@@ -28,6 +28,7 @@ class DashboardHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegat
         setViews()
         setConstraints()
     }
+    
     
     func updatePicker(isGeoTracking: Bool) {
         geoTrackingState = isGeoTracking
@@ -114,8 +115,6 @@ class DashboardHeaderPicker: UIView, UIPickerViewDataSource, UIPickerViewDelegat
         title.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)
         let workout = updateCurrentWorkout()
         title.text = workout.name
-        
-        ShapeManager.shared.drawPickerViewDotSeparator(shape: dotSeparator, view: self)
     }
     
     //MARK: - SetConstraints

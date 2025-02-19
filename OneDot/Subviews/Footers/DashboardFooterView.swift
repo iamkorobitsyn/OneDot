@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WorkoutFooterView: UIView {
+class DashboardFooterView: UIView {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
     
@@ -28,9 +28,6 @@ class WorkoutFooterView: UIView {
     
     private let leftButton: UIButton = UIButton()
     private let rightButton: UIButton = UIButton()
-    
-    private let buttonsLineSeparator: CAShapeLayer = CAShapeLayer()
-  
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -124,8 +121,6 @@ class WorkoutFooterView: UIView {
         addSubview(rightButton)
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
-        
-        ShapeManager.shared.drawTabBarButtonsLineSeparator(shape: buttonsLineSeparator, view: self, color: .white)
     }
     
     

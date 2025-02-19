@@ -62,8 +62,8 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         return view
     }()
     
-    let dashboardFooter: WorkoutFooterView = {
-        let view = WorkoutFooterView()
+    let dashboardFooter: DashboardFooterView = {
+        let view = DashboardFooterView()
         view.disableAutoresizingMask()
         return view
     }()
@@ -79,6 +79,10 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         view.disableAutoresizingMask()
         return view
     }()
+    
+    private let headerSeparator: CAShapeLayer = CAShapeLayer()
+    private let footerSeparator: CAShapeLayer = CAShapeLayer()
+    
 
     enum Mode {
         case geoTrackingActive
@@ -106,7 +110,6 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         setViews()
         setConstraints()
         activateInitialSettings()
-        
     }
     
     //MARK: - SplashScreenAnimations
@@ -116,6 +119,9 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
                                             StartSplashScreen.gradientBackLayer,
                                             StartSplashScreen.launchLogo,
                                             delegate: self)
+        
+        GraphicsService.shared.drawShape(shape: headerSeparator, shapeType: .headerSingleShape, view: dashboardHeader)
+        GraphicsService.shared.drawShape(shape: footerSeparator, shapeType: .footerSingleShape, view: dashboardFooter)
     }
     
     override func viewWillAppear(_ animated: Bool) {

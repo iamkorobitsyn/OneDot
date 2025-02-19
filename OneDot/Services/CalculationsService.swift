@@ -14,73 +14,84 @@ class CalculationsService {
     
     typealias UD = UserDefaultsManager
     
-    enum WorkoutsPeriod {
-        case week
-        case month
-        case year
-        case allTime
-    }
-    
     
     //MARK: - GetWorkoutsAverageValues
     
-    func getWorkoutStatistics(workoutList: [WorkoutData], period: WorkoutsPeriod) -> WorkoutStatistics {
+    func getWorkoutStatistics(workoutList: [WorkoutData], segmenterIndex: Int) -> WorkoutStatistics {
         
         let endDate = Date()
         var filteredWorkouts: [WorkoutData] = []
         
-        switch period {
-            
-        case .week:
+        switch segmenterIndex {
+        case 0:
             if let startDate = Calendar.current.date(byAdding: .day, value: -7, to: endDate) {
-                let lastWeekInterval = DateInterval(start: startDate, end: endDate)
-                filteredWorkouts = workoutList.filter { workout in
-                        lastWeekInterval.contains(workout.startDate)
-                    }
+                filteredWorkouts = getFilteredWorkouts(startDate: startDate, endDate: endDate)
             }
-            
-        case .month:
+        case 1:
             if let startDate = Calendar.current.date(byAdding: .month, value: -1, to: endDate) {
-                let lastWeekInterval = DateInterval(start: startDate, end: endDate)
-                filteredWorkouts = workoutList.filter { workout in
-                        lastWeekInterval.contains(workout.startDate)
-                    }
+                filteredWorkouts = getFilteredWorkouts(startDate: startDate, endDate: endDate)
             }
-            
-        case .year:
+        case 2:
             if let startDate = Calendar.current.date(byAdding: .year, value: -1, to: endDate) {
-                let lastWeekInterval = DateInterval(start: startDate, end: endDate)
-                filteredWorkouts = workoutList.filter { workout in
-                        lastWeekInterval.contains(workout.startDate)
-                    }
+                filteredWorkouts = getFilteredWorkouts(startDate: startDate, endDate: endDate)
             }
-            
-        case .allTime:
+        default:
             filteredWorkouts = workoutList
         }
         
+        func getFilteredWorkouts(startDate: Date, endDate: Date) -> [WorkoutData] {
+            let lastWeekInterval = DateInterval(start: startDate, end: endDate)
+            return workoutList.filter { workout in
+                    lastWeekInterval.contains(workout.startDate)
+                }
+        }
+  
+        
         var duration: TimeInterval = 0
-        var calloriesBurned: Double = 0
-        var totalDistance: Double = 0
-        var averagePace: Int = 0
-        var averageHeartRate: Double = 0
-        var averageCadence: Int = 0
+        var caloriesBurned: Double = 0
+        var distance: Double = 0
+        var pace: Int = 0
+        var heartRate: Double = 0
+        var cadence: Int = 0
         
         filteredWorkouts.forEach { workout in
             duration += workout.duration
-            calloriesBurned += workout.calloriesBurned
-            totalDistance += workout.distance
-            averagePace += workout.pace
-            averageHeartRate += workout.heartRate
-            averageCadence += workout.cadence
+            caloriesBurned += workout.calloriesBurned
+            distance += workout.distance
+            pace += workout.pace
+            heartRate += workout.heartRate
+            cadence += workout.cadence
         }
+
         
         let hours = Int(duration) / 3600
         let minutes = (Int(duration) % 3600) / 60
         let seconds = Int(duration) % 60
-        let durationText = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+        let durationRepresentable = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
         
-        let statistics = WorkoutStatistics(duration: durationText, calloriesBurned: "", distance: "", averagePace: "", averageHeartRate: "", averageCadence: "")
+        let caloriesRepresentable = String(format: "%.0f", caloriesBurned)
+        
+        let kilometers = distance / 1000
+        let distanceRepresentable = String(format: "%.2f km", kilometers)
+        
+        pace /= filteredWorkouts.count
+        let paceMin = pace / 60
+        let paceSec = pace % 60
+        let paceRepresentable = String(format: "%02d:%02d", paceMin, paceSec)
+        
+        heartRate /= Double(filteredWorkouts.count)
+        let averageHeartRateRepresentable = String(format: "%.0f", heartRate)
+        
+        cadence /= filteredWorkouts.count
+        let averageCadenceRepresentable = String(cadence)
+        
+        
+        let statistics = WorkoutStatistics(duration: durationRepresentable,
+                                           calloriesBurned: caloriesRepresentable,
+                                           distance: distanceRepresentable,
+                                           averagePace: paceRepresentable,
+                                           averageHeartRate: averageHeartRateRepresentable,
+                                           averageCadence: averageCadenceRepresentable)
         return statistics
 
     }

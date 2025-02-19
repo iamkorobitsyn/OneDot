@@ -22,7 +22,6 @@ class CalculationFooterView: UIView {
         case hide
     }
     
-    private let topLineSeparator: CAShapeLayer = CAShapeLayer()
     private let numbersLineSeparator: CAShapeLayer = CAShapeLayer()
 
     private let pickerView: UIPickerView = {
@@ -42,6 +41,7 @@ class CalculationFooterView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         isHidden = true
+        backgroundColor = .myPaletteBlue
         pickerView.delegate = self
         pickerView.dataSource = self
         setViews()
@@ -55,7 +55,7 @@ class CalculationFooterView: UIView {
         case .pickerDistance:
             isHidden = false
             pickerLabel.text = "Distance"
-            ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
+            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .footerSingleShape, view: self)
             currentPickerState = .pickerDistance
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsDistanceValue, inComponent: 0, animated: true)
@@ -63,7 +63,7 @@ class CalculationFooterView: UIView {
         case .pickerSpeed:
             isHidden = false
             pickerLabel.text = "Speed"
-            ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
+            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .footerSingleShape, view: self)
             currentPickerState = .pickerSpeed
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsSpeedValue, inComponent: 0, animated: true)
@@ -71,7 +71,7 @@ class CalculationFooterView: UIView {
         case .pickerPace:
             isHidden = false
             pickerLabel.text = "Pace"
-            ShapeManager.shared.drawTabBarNumbersLineSeparator(shape: numbersLineSeparator, view: self)
+            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .footerSingleShape, view: self)
             currentPickerState = .pickerPace
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsPaceMinValue, inComponent: 0, animated: true)
@@ -79,7 +79,7 @@ class CalculationFooterView: UIView {
         case .PickerTime:
             isHidden = false
             pickerLabel.text = "Time"
-            ShapeManager.shared.drawTabBarNumbersTwoLineSeparator(shape: numbersLineSeparator, view: self)
+            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .footerDoubleShape, view: self)
             currentPickerState = .PickerTime
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsTimeHValue, inComponent: 0, animated: true)
@@ -94,10 +94,10 @@ class CalculationFooterView: UIView {
     //MARK: - SetViews
     
     private func setViews() {
+        backgroundColor = .myPaletteBlue
+        layer.instance(border: false, corner: .max)
         addSubview(pickerView)
         addSubview(pickerLabel)
-    
-        ShapeManager.shared.drawTabBarTopLineSeparator(shape: topLineSeparator, view: self)
     }
     
     
@@ -165,9 +165,7 @@ extension CalculationFooterView: UIPickerViewDelegate, UIPickerViewDataSource {
         }
         
         let label = UILabel()
-        label.textColor = .myPaletteGray
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 25, weight: .light)
+        label.instance(color: .white, alignment: .center, font: .standartExtra)
         
         switch currentPickerState {
             

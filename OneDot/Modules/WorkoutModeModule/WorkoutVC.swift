@@ -46,11 +46,13 @@ class WorkoutVC: UIViewController {
         return view
     }()
     
-    private let footer: WorkoutFooterView = {
-        let view = WorkoutFooterView()
+    private let footer: DashboardFooterView = {
+        let view = DashboardFooterView()
         view.disableAutoresizingMask()
         return view
     }()
+    
+    private let footerSeparator: CAShapeLayer = CAShapeLayer()
 
     init(currentWorkout: Workout) {
         self.currentWorkout = currentWorkout
@@ -71,6 +73,10 @@ class WorkoutVC: UIViewController {
         activateSubviewsHandlers()
         
         Task {await LocationService.shared.requestAuthorization()}
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        GraphicsService.shared.drawShape(shape: footerSeparator, shapeType: .footerSingleShape, view: footer)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

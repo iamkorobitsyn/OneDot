@@ -162,9 +162,9 @@ class SnapshotHeaderView: UIView {
         
         let descriptionValueCountMax = max(leadingStackView.subviews.count, trailingStackView.subviews.count)
 
-        ShapeManager.shared.drawResultSeparator(view: self,
-                                                shape: separator,
-                                                descriptionValueCountMax: descriptionValueCountMax)
+        GraphicsService.shared.drawShape(shape: separator,
+                                        shapeType: .dynamicDescriptionShape(descriptionCount: descriptionValueCountMax),
+                                        view: self)
         
         setConstraints(descriptionValueCountL: leadingStackView.subviews.count,
                        descriptionValueCountR: trailingStackView.subviews.count,

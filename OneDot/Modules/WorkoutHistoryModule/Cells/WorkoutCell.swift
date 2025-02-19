@@ -66,6 +66,7 @@ class WorkoutCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         workoutStatisticLabel.instance(color: .white, alignment: .right, font: .standartMax)
+        
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -73,6 +74,7 @@ class WorkoutCell: UITableViewCell {
         setViews()
         setConstraints()
     }
+
     
     private func setViews() {
         backgroundColor = .clear
@@ -83,7 +85,7 @@ class WorkoutCell: UITableViewCell {
         addSubview(workoutDateLabel)
         addSubview(detailsImage)
         
-        ShapeManager.shared.drawWorkoutCellSeparators(shape: separators, view: self)
+        GraphicsService.shared.drawShape(shape: separators, shapeType: .bodyCrossShape, view: self)
     }
     
     func updateLabels() {
