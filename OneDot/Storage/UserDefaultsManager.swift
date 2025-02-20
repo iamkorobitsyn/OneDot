@@ -61,12 +61,12 @@ class UserDefaultsManager {
         set { setValue(key: Keys.isGeoTracking, value: newValue) }
     }
     
-    var pickerRowWithGeoTrackingActive: Int {
+    var pickerRowOutdoor: Int {
         get { getValue(key: Keys.pickerRowOutdoor, defaultValue: 3) }
         set { setValue(key: Keys.pickerRowOutdoor, value: newValue) }
     }
     
-    var pickerRowWithGeoTrackingInactive: Int {
+    var pickerRowIndoor: Int {
         get { getValue(key: Keys.pickerRowIndoor, defaultValue: 3) }
         set { setValue(key: Keys.pickerRowIndoor, value: newValue) }
     }

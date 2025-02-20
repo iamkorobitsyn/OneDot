@@ -47,10 +47,10 @@ class DashboardFooterView: UIView {
             setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterList")
         case .prepare:
             setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterCancel")
-            AnimationManager.shared.AnimateStartIcon(leftButton.layer)
+            GraphicsService.shared.AnimateStartIcon(leftButton.layer)
         case .pause:
             setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterStop")
-            AnimationManager.shared.AnimateStartIcon(leftButton.layer)
+            GraphicsService.shared.AnimateStartIcon(leftButton.layer)
         case .start:
             setButtonImages(lButtonImg: "FooterPause", rButtonImg: "FooterStop")
             leftButton.layer.removeAllAnimations()
@@ -58,7 +58,7 @@ class DashboardFooterView: UIView {
             self.isHidden = true
         case .completion:
             setButtonImages(lButtonImg: "FooterCheckmark", rButtonImg: "FooterBack")
-            AnimationManager.shared.AnimateStartIcon(leftButton.layer)
+            GraphicsService.shared.AnimateStartIcon(leftButton.layer)
             
         }
     }

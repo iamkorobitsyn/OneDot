@@ -71,7 +71,7 @@ class GraphicsService {
         view.layer.addSublayer(shape)
     }
     
-    //MARK: - MainView
+    //MARK: - Animations
     
     func drawViewGradient(layer: CALayer) {
         let topGradient = CAGradientLayer()
@@ -101,5 +101,89 @@ class GraphicsService {
         layer.addSublayer(trailingGradient)
         layer.addSublayer(bottomGradient)
         layer.addSublayer(leadingGradient)
+    }
+    
+    
+    
+    func splashScreenAnimate(_ frontLayer: CALayer,
+                             _ backLayer: CAGradientLayer,
+                             _ logoLayer: UIView,
+                             delegate: CAAnimationDelegate) {
+        
+       
+        var animations: [CABasicAnimation] = []
+        
+        let frontLayerOpacity = CABasicAnimation(keyPath: "opacity")
+        frontLayerOpacity.beginTime = 0
+        frontLayerOpacity.fromValue = 1
+        frontLayerOpacity.toValue = 0
+        frontLayerOpacity.duration = 1
+        
+        animations.append(frontLayerOpacity)
+        
+        let frontLayerDelay = CABasicAnimation(keyPath: "opacity")
+        frontLayerDelay.beginTime = 1
+        frontLayerDelay.fromValue = 0
+        frontLayerDelay.toValue = 0
+        frontLayerDelay.duration = 0.5
+        frontLayerDelay.fillMode = .forwards
+        frontLayerDelay.isRemovedOnCompletion = false
+        
+        animations.append(frontLayerDelay)
+        
+        let backLayerOpacity = CABasicAnimation(keyPath: "opacity")
+        backLayerOpacity.beginTime = CACurrentMediaTime() + 1
+        backLayerOpacity.fromValue = 1
+        backLayerOpacity.toValue = 0
+        backLayerOpacity.duration = 0.50
+        backLayerOpacity.fillMode = .forwards
+        backLayerOpacity.isRemovedOnCompletion = false
+        
+        let frontLayerAnimationGroup = CAAnimationGroup()
+        frontLayerAnimationGroup.animations = animations
+        frontLayerAnimationGroup.duration = 1.5
+        frontLayerAnimationGroup.fillMode = .forwards
+        frontLayerAnimationGroup.isRemovedOnCompletion = false
+        frontLayerAnimationGroup.delegate = delegate
+
+        frontLayer.add(frontLayerAnimationGroup, forKey: "opacityAnimations")
+        backLayer.add(backLayerOpacity, forKey: "")
+        logoLayer.layer.add(backLayerOpacity, forKey: "")
+        
+    }
+
+    
+    func AnimateStartIcon(_ layer: CALayer) {
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.fromValue = 1
+        animation.toValue = 0
+        animation.duration = 0.7
+        animation.repeatCount = .infinity
+        layer.add(animation, forKey: nil)
+    }
+
+    
+    
+    func animateLocator(_ view: UIView) {
+        
+        let animatoonList = CAAnimationGroup()
+        
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.duration = 2
+        animation.fromValue = 1
+        animation.toValue = 0.4
+        
+        let opacity = CABasicAnimation(keyPath: "opacity")
+        opacity.beginTime = 2
+        opacity.duration = 2
+        opacity.fromValue = 0.4
+        opacity.toValue = 1
+        
+        animatoonList.animations = [animation, opacity]
+        animatoonList.duration = 4
+        animatoonList.repeatCount = .infinity
+        
+        view.layer.add(animatoonList, forKey: nil)
+
     }
 }

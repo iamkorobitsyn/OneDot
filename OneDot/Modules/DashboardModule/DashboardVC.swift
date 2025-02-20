@@ -115,7 +115,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     //MARK: - SplashScreenAnimations
     
     override func viewDidAppear(_ animated: Bool) {
-        AnimationManager.shared.splashScreenAnimate(StartSplashScreen.frontLayer,
+        GraphicsService.shared.splashScreenAnimate(StartSplashScreen.frontLayer,
                                             StartSplashScreen.gradientBackLayer,
                                             StartSplashScreen.launchLogo,
                                             delegate: self)
@@ -233,7 +233,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             settingsBody.activateMode(mode: .hide)
             dashboardFooter.activateMode(mode: .dashboard)
         case .transitionToWorkoutMode:
-            let workout = dashboardHeader.pickerView.updateCurrentWorkout()
+            let workout = dashboardHeader.updateCurrentWorkout()
 
             let workoutModeVC = WorkoutVC(currentWorkout: workout)
             workoutModeVC.modalPresentationStyle = .fullScreen
