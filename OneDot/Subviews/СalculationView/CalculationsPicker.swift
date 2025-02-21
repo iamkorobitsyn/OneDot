@@ -8,11 +8,11 @@
 import Foundation
 import UIKit
 
-class CalculationFooterView: UIView {
+class CalculationsPicker: UIVisualEffectView {
     
     private typealias UD = UserDefaultsManager
     
-    var buttonStateHandler: ((DashboardVC.Mode)->())?
+    var buttonsStateHandler: (() -> Void)?
     
     enum Mode {
         case pickerDistance
@@ -30,18 +30,10 @@ class CalculationFooterView: UIView {
         return view
     }()
     
-    let pickerLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.instance(color: .myPaletteGray, alignment: .left, font: .condensedMin)
-        return label
-    }()
     private var currentPickerState: Mode?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        isHidden = true
-        backgroundColor = .myPaletteBlue
+    override init(effect: UIVisualEffect?) {
+        super.init(effect: effect)
         pickerView.delegate = self
         pickerView.dataSource = self
         setViews()
@@ -51,35 +43,33 @@ class CalculationFooterView: UIView {
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
+        buttonsStateHandler?()
         switch mode {
         case .pickerDistance:
             isHidden = false
-            pickerLabel.text = "Distance"
-            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .footerSingleShape, view: self)
+            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .pickerSingleShape, view: self)
             currentPickerState = .pickerDistance
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsDistanceValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsDistanceDecimalValue, inComponent: 1, animated: true)
+           
         case .pickerSpeed:
             isHidden = false
-            pickerLabel.text = "Speed"
-            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .footerSingleShape, view: self)
+            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .pickerSingleShape, view: self)
             currentPickerState = .pickerSpeed
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsSpeedValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsSpeedDecimalValue, inComponent: 1, animated: true)
         case .pickerPace:
             isHidden = false
-            pickerLabel.text = "Pace"
-            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .footerSingleShape, view: self)
+            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .pickerSingleShape, view: self)
             currentPickerState = .pickerPace
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsPaceMinValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
         case .PickerTime:
             isHidden = false
-            pickerLabel.text = "Time"
-            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .footerDoubleShape, view: self)
+            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .pickerDoubleShape, view: self)
             currentPickerState = .PickerTime
             pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsTimeHValue, inComponent: 0, animated: true)
@@ -94,10 +84,10 @@ class CalculationFooterView: UIView {
     //MARK: - SetViews
     
     private func setViews() {
-        backgroundColor = .myPaletteBlue
-        layer.instance(border: false, corner: .max)
-        addSubview(pickerView)
-        addSubview(pickerLabel)
+        effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        clipsToBounds = true
+        layer.instance(border: true, corner: .min)
+        contentView.addSubview(pickerView)
     }
     
     
@@ -108,12 +98,7 @@ class CalculationFooterView: UIView {
             pickerView.topAnchor.constraint(equalTo: topAnchor),
             pickerView.trailingAnchor.constraint(equalTo: trailingAnchor),
             pickerView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            pickerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            
-            pickerLabel.widthAnchor.constraint(equalToConstant: 100),
-            pickerLabel.heightAnchor.constraint(equalToConstant: 50),
-            pickerLabel.leadingAnchor.constraint(equalTo: pickerView.leadingAnchor, constant: 50),
-            pickerLabel.bottomAnchor.constraint(equalTo: pickerView.topAnchor)
+            pickerView.leadingAnchor.constraint(equalTo: leadingAnchor)
         ])
     }
     
@@ -126,7 +111,7 @@ class CalculationFooterView: UIView {
 
 //MARK: - PickerViewDelegate&Datasource
 
-extension CalculationFooterView: UIPickerViewDelegate, UIPickerViewDataSource {
+extension CalculationsPicker: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         
         switch currentPickerState {
@@ -154,7 +139,7 @@ extension CalculationFooterView: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-        return .barWidth / 6.5
+        return 80
     }
     
     
@@ -165,7 +150,7 @@ extension CalculationFooterView: UIPickerViewDelegate, UIPickerViewDataSource {
         }
         
         let label = UILabel()
-        label.instance(color: .white, alignment: .center, font: .standartExtra)
+        label.instance(color: .myPaletteGray, alignment: .center, font: .condensedMax)
         
         switch currentPickerState {
             
@@ -194,34 +179,34 @@ extension CalculationFooterView: UIPickerViewDelegate, UIPickerViewDataSource {
             
         case (.pickerDistance, 0):
             UD.shared.calculationsDistanceValue = row
-            buttonStateHandler?(.pickerDistance)
+            activateMode(mode: .pickerDistance)
         case (.pickerDistance, 1):
             UD.shared.calculationsDistanceDecimalValue = row
-            buttonStateHandler?(.pickerDistance)
+            activateMode(mode: .pickerDistance)
             
         case (.pickerSpeed, 0):
             UD.shared.calculationsSpeedValue = row
-            buttonStateHandler?(.pickerSpeed)
+            activateMode(mode: .pickerSpeed)
         case (.pickerSpeed, 1):
             UD.shared.calculationsSpeedDecimalValue = row
-            buttonStateHandler?(.pickerSpeed)
+            activateMode(mode: .pickerSpeed)
             
         case (.pickerPace, 0):
             UD.shared.calculationsPaceMinValue = row
-            buttonStateHandler?(.pickerPace)
+            activateMode(mode: .pickerPace)
         case (.pickerPace, 1):
             UD.shared.calculationsPaceSecValue = row
-            buttonStateHandler?(.pickerPace)
+            activateMode(mode: .pickerPace)
             
         case (.PickerTime, 0):
             UD.shared.calculationsTimeHValue = row
-            buttonStateHandler?(.pickerTime)
+            activateMode(mode: .PickerTime)
         case (.PickerTime, 1):
             UD.shared.calculationsTimeMinValue = row
-            buttonStateHandler?(.pickerTime)
+            activateMode(mode: .PickerTime)
         case (.PickerTime, 2):
             UD.shared.calculationsTimeSecValue = row
-            buttonStateHandler?(.pickerTime)
+            activateMode(mode: .PickerTime)
         default:
             break
         }

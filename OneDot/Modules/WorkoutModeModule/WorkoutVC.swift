@@ -46,8 +46,8 @@ class WorkoutVC: UIViewController {
         return view
     }()
     
-    private let footer: DashboardFooterView = {
-        let view = DashboardFooterView()
+    private let footer: footerBarView = {
+        let view = footerBarView()
         view.disableAutoresizingMask()
         return view
     }()

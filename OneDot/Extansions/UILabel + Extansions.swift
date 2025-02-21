@@ -13,6 +13,7 @@ extension UILabel {
     enum Font {
         case condensedMin
         case condensedMid
+        case condensedMax
         case standartMin
         case standartMid
         case standartMax
@@ -30,6 +31,8 @@ extension UILabel {
             self.font = UIFont.systemFont(ofSize: 15, weight: .light, width: .condensed)
         case .condensedMid:
             self.font = UIFont.systemFont(ofSize: 17, weight: .light, width: .condensed)
+        case .condensedMax:
+            self.font = UIFont.systemFont(ofSize: 25, weight: .light, width: .condensed)
         case .standartMin:
             self.font = UIFont.systemFont(ofSize: 13, weight: .medium, width: .standard)
         case .standartMid:

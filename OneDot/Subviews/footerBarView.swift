@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DashboardFooterView: UIView {
+class footerBarView: UIView {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
     

@@ -17,7 +17,8 @@ class GraphicsService {
     enum ShapeType {
         case headerSingleShape
         case footerSingleShape
-        case footerDoubleShape
+        case pickerSingleShape
+        case pickerDoubleShape
         case bodyCrossShape
         case dynamicDescriptionShape(descriptionCount: Int)
     }
@@ -41,16 +42,17 @@ class GraphicsService {
             path.addLine(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 + 30))
             shape.strokeColor = UIColor.white.cgColor
             
-        case .footerDoubleShape:
-            path.move(to: CGPoint(x: view.bounds.width / 2 - view.bounds.width / 12 ,
-                                  y: view.bounds.height / 2 - 30))
-            path.addLine(to: CGPoint(x: view.bounds.width / 2 - view.bounds.width / 12 ,
-                                     y: view.bounds.height / 2 + 30))
-            path.move(to: CGPoint(x: view.bounds.width / 2 + view.bounds.width / 12,
-                                  y: view.bounds.height / 2 - 30))
-            path.addLine(to: CGPoint(x: view.bounds.width / 2 + view.bounds.width / 12 ,
-                                     y: view.bounds.height / 2 + 30))
-            shape.strokeColor = UIColor.white.cgColor
+        case .pickerSingleShape:
+            path.move(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 - 10))
+            path.addLine(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 + 10))
+            shape.strokeColor = UIColor.myPaletteGray.cgColor
+            
+        case .pickerDoubleShape:
+            path.move(to: CGPoint(x: view.bounds.width / 3, y: view.bounds.height / 2 - 10))
+            path.addLine(to: CGPoint(x: view.bounds.width / 3, y: view.bounds.height / 2 + 10))
+            path.move(to: CGPoint(x: view.bounds.width / 3 * 2, y: view.bounds.height / 2 - 10))
+            path.addLine(to: CGPoint(x: view.bounds.width / 3 * 2, y: view.bounds.height / 2 + 10))
+            shape.strokeColor = UIColor.myPaletteGray.cgColor
             
         case .bodyCrossShape:
             path.move(to: CGPoint(x: .barWidth / 2.16 - 5, y: 39))

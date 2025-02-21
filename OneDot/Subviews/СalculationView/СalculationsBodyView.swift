@@ -28,12 +28,15 @@ class CalculationsBodyView: UIVisualEffectView {
     
     private let durationButton: UIButton = UIButton()
     private let durationTitle: UILabel = UILabel()
+    private let durationIndicator: UIImageView = UIImageView()
     
     private let paceButton: UIButton = UIButton()
     private let paceTitle: UILabel = UILabel()
+    private let paceIndicator: UIImageView = UIImageView()
     
     private let speedButton: UIButton = UIButton()
     private let speedTitle: UILabel = UILabel()
+    private let speedIndicator: UIImageView = UIImageView()
     
     private let eraseButton: UIButton = {
         let button = UIButton()
@@ -57,12 +60,19 @@ class CalculationsBodyView: UIVisualEffectView {
     }()
 
     
-    private let containerView = {
+    private let valuesContainerView = {
         let view = UIVisualEffectView()
         view.disableAutoresizingMask()
         view.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
         view.clipsToBounds = true
         view.layer.instance(border: true, corner: .min)
+        return view
+    }()
+
+    private let calculationsPicker: CalculationsPicker = {
+        let view = CalculationsPicker()
+        view.backgroundColor = .white.withAlphaComponent(0.3)
+        view.disableAutoresizingMask()
         return view
     }()
 
@@ -75,6 +85,8 @@ class CalculationsBodyView: UIVisualEffectView {
         setViews()
         setConstraints()
         updateValues()
+        
+        calculationsPicker.buttonsStateHandler = { self.updateButtonTitles() }
     }
     
     required init?(coder: NSCoder) {
@@ -85,20 +97,24 @@ class CalculationsBodyView: UIVisualEffectView {
     //MARK: - ButtonTapped
     
     @objc private func buttonTapped() {
-        
+        [speedTitle, paceTitle, distanceTitle, durationTitle].forEach({$0.textColor = .myPaletteGray})
         hapticGenerator.selectionChanged()
         switch true {
         case speedButton.isTouchInside:
-            buttonStateHandler?(.pickerSpeed)
+            calculationsPicker.activateMode(mode: .pickerSpeed)
+            speedTitle.textColor = .myPaletteGold
         case paceButton.isTouchInside:
-            buttonStateHandler?(.pickerPace)
+            calculationsPicker.activateMode(mode: .pickerPace)
+            paceTitle.textColor = .myPaletteGold
         case distanceButton.isTouchInside:
-            buttonStateHandler?(.pickerDistance)
+            calculationsPicker.activateMode(mode: .pickerDistance)
+            distanceTitle.textColor = .systemBlue
         case durationButton.isTouchInside:
-            buttonStateHandler?(.pickerTime)
+            calculationsPicker.activateMode(mode: .PickerTime)
+            durationTitle.textColor = .systemBlue
         case eraseButton.isTouchInside:
             CalculationsService.shared.resetValues()
-            buttonStateHandler?(.pickerDistance)
+            calculationsPicker.activateMode(mode: .pickerDistance)
             updateValues()
         default:
             break
@@ -185,14 +201,16 @@ class CalculationsBodyView: UIVisualEffectView {
         effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
         clipsToBounds = true
         isHidden = true
-        
         layer.instance(border: true, corner: .max)
         
-        contentView.addSubview(containerView)
+        contentView.addSubview(valuesContainerView)
         contentView.addSubview(crossSeparator)
+        
+        contentView.addSubview(calculationsPicker)
         
         setButton(button: distanceButton, titleColor: .link, alignment: .right)
         setTitle(label: distanceTitle, titleText: "Distance / km", alignment: .right)
+        
         
         setButton(button: durationButton, titleColor: .link, alignment: .left)
         setTitle(label: durationTitle, titleText: "Time", alignment: .left)
@@ -208,6 +226,8 @@ class CalculationsBodyView: UIVisualEffectView {
         
         eraseButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         hideButton.addTarget(self, action: #selector(hide), for: .touchUpInside)
+        
+        
     }
     
    //MARK: - SetButton
@@ -238,13 +258,18 @@ class CalculationsBodyView: UIVisualEffectView {
     private func setConstraints() {
         NSLayoutConstraint.activate([
             
-            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -60),
-            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            containerView.heightAnchor.constraint(equalToConstant: 400),
+            valuesContainerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            valuesContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -60),
+            valuesContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            valuesContainerView.heightAnchor.constraint(equalToConstant: 400),
             
-            distanceButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 100),
-            distanceButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            calculationsPicker.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
+            calculationsPicker.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -60),
+            calculationsPicker.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 60),
+            calculationsPicker.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
+            
+            distanceButton.topAnchor.constraint(equalTo: valuesContainerView.topAnchor, constant: 100),
+            distanceButton.leadingAnchor.constraint(equalTo: valuesContainerView.leadingAnchor),
             distanceButton.heightAnchor.constraint(equalToConstant: 60),
             distanceButton.widthAnchor.constraint(equalToConstant: 130),
             
@@ -252,8 +277,8 @@ class CalculationsBodyView: UIVisualEffectView {
             distanceTitle.bottomAnchor.constraint(equalTo: distanceButton.topAnchor, constant: -5),
             distanceTitle.widthAnchor.constraint(equalToConstant: 130),
             
-            durationButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 100),
-            durationButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            durationButton.topAnchor.constraint(equalTo: valuesContainerView.topAnchor, constant: 100),
+            durationButton.trailingAnchor.constraint(equalTo: valuesContainerView.trailingAnchor),
             durationButton.heightAnchor.constraint(equalToConstant: 60),
             durationButton.widthAnchor.constraint(equalToConstant: 130),
             
@@ -261,8 +286,8 @@ class CalculationsBodyView: UIVisualEffectView {
             durationTitle.bottomAnchor.constraint(equalTo: durationButton.topAnchor, constant: -5),
             durationTitle.widthAnchor.constraint(equalToConstant: 130),
             
-            paceButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -100),
-            paceButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            paceButton.bottomAnchor.constraint(equalTo: valuesContainerView.bottomAnchor, constant: -100),
+            paceButton.leadingAnchor.constraint(equalTo: valuesContainerView.leadingAnchor),
             paceButton.heightAnchor.constraint(equalToConstant: 60),
             paceButton.widthAnchor.constraint(equalToConstant: 130),
             
@@ -270,8 +295,8 @@ class CalculationsBodyView: UIVisualEffectView {
             paceTitle.topAnchor.constraint(equalTo: paceButton.bottomAnchor, constant: 5),
             paceTitle.widthAnchor.constraint(equalToConstant: 130),
             
-            speedButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -100),
-            speedButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            speedButton.bottomAnchor.constraint(equalTo: valuesContainerView.bottomAnchor, constant: -100),
+            speedButton.trailingAnchor.constraint(equalTo: valuesContainerView.trailingAnchor),
             speedButton.heightAnchor.constraint(equalToConstant: 60),
             speedButton.widthAnchor.constraint(equalToConstant: 130),
             
@@ -281,8 +306,8 @@ class CalculationsBodyView: UIVisualEffectView {
             
             crossSeparator.widthAnchor.constraint(equalToConstant: 42),
             crossSeparator.heightAnchor.constraint(equalToConstant: 42),
-            crossSeparator.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            crossSeparator.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            crossSeparator.centerXAnchor.constraint(equalTo: valuesContainerView.centerXAnchor),
+            crossSeparator.centerYAnchor.constraint(equalTo: valuesContainerView.centerYAnchor),
 
             hideButton.widthAnchor.constraint(equalToConstant: .iconSide),
             hideButton.heightAnchor.constraint(equalToConstant: .iconSide),

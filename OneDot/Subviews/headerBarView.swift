@@ -8,52 +8,26 @@
 import UIKit
 import AudioToolbox
 
-class DashboardHeaderView: UIVisualEffectView {
-    
-    let hapticGenerator = UISelectionFeedbackGenerator()
+class headerBarView: UIVisualEffectView {
     
     var buttonStateHandler: ((DashboardVC.Mode)->())?
     
-    let factoryWorkouts = FactoryWorkouts()
+    private let hapticGenerator = UISelectionFeedbackGenerator()
+    private let factoryWorkouts = FactoryWorkouts()
+    private var isGeoTracking = UserDefaultsManager.shared.isGeoTracking
     
-    private let locationStack: UIStackView = {
-        let stack = UIStackView()
-        stack.disableAutoresizingMask()
-        stack.backgroundColor = .myPaletteGold
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.spacing = 0
-        stack.layer.cornerRadius = 14
-        stack.layer.cornerCurve = .continuous
-        return stack
-    }()
-    
-    private let toolsStack: UIStackView = {
-        let stack = UIStackView()
-        stack.disableAutoresizingMask()
-        stack.backgroundColor = .myPaletteGold
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.spacing = 0
-        stack.layer.cornerRadius = 14
-        stack.layer.cornerCurve = .continuous
-        return stack
-    }()
+    private let locationStack: UIStackView = UIStackView()
+    private let toolsStack: UIStackView = UIStackView()
 
     private let outdoorButton: UIButton = UIButton()
     private let indoorButton: UIButton = UIButton()
-    
     private let notesButton: UIButton = UIButton()
     private let calculatorButton: UIButton = UIButton()
     private let settingsButton: UIButton = UIButton()
     
     private let picker: UIPickerView = UIPickerView()
     
-    private let navigationStateImageView: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        return view
-    }()
+    private let gpsStateImageView: UIImageView = UIImageView()
     
     enum Mode {
         case outdoor
@@ -65,6 +39,8 @@ class DashboardHeaderView: UIVisualEffectView {
         case trackingIndication(LocationService.LocationTrackingState)
     }
     
+    //MARK: - Init
+    
     override init(effect: UIVisualEffect?) {
         super.init(effect: effect)
         picker.dataSource = self
@@ -74,28 +50,58 @@ class DashboardHeaderView: UIVisualEffectView {
         setConstraints()
     }
     
-    //MARK: - Picker Test
+    //MARK: - public: ActivateMode
     
-    private func updatePicker(isGeoTracking: Bool) {
-        
-        let row = isGeoTracking ? UserDefaultsManager.shared.pickerRowOutdoor : UserDefaultsManager.shared.pickerRowIndoor
-        picker.selectRow(row, inComponent: 0, animated: true)
-        picker.reloadAllComponents()
-    }
-    
-    func updateCurrentWorkout() -> Workout {
-        let isGeoTracking = UserDefaultsManager.shared.isGeoTracking
-        let workoutList = factoryWorkouts.get(isGeoTracking: isGeoTracking)
-        if isGeoTracking {
-            let row = UserDefaultsManager.shared.pickerRowOutdoor
-            let workout = workoutList[row]
-            return workout
-        } else {
-            let row = UserDefaultsManager.shared.pickerRowIndoor
-            let workout = workoutList[row]
-            return workout
+    func activateMode(mode: Mode) {
+        switch mode {
+            
+        case .outdoor:
+            updateGeoTracking(state: true)
+            updateLocationStackButtons()
+            updatePicker()
+            
+        case .indoor:
+            updateGeoTracking(state: false)
+            updateLocationStackButtons()
+            updatePicker()
+            
+        case .notes:
+            updateToolsStackButtons(notesButton, withImageNamed: "HeaderNotesSelected")
+            
+        case .calculations:
+            updateToolsStackButtons(calculatorButton, withImageNamed: "HeaderCalculationsSelected")
+            
+        case .settings:
+            updateToolsStackButtons(settingsButton, withImageNamed: "HeaderSettingsSelected")
+            
+        case .toolsDefault:
+            updateToolsStackButtons(nil, withImageNamed: nil)
+        case .trackingIndication(let state):
+            switch state {
+            case .goodSignal:
+                gpsStateImageView.image = UIImage(named: "navigationGreen")
+            case .poorSignal:
+                gpsStateImageView.image = UIImage(named: "navigationYellow")
+            case .locationDisabled:
+                gpsStateImageView.image = UIImage(named: "navigationGray")
+            }
         }
     }
+    
+    //MARK: - UbdateGeoTracking
+    
+    private func updateGeoTracking(state: Bool) {
+        UserDefaultsManager.shared.isGeoTracking = state
+        isGeoTracking = state
+    }
+    
+    //MARK: - public: GPSStateImageView
+    
+    @objc func animateNavigationView() {
+        GraphicsService.shared.animateLocator(gpsStateImageView)
+    }
+    
+    //MARK: - Buttons
 
     @objc private func buttonTapped() {
         hapticGenerator.selectionChanged()
@@ -114,50 +120,9 @@ class DashboardHeaderView: UIVisualEffectView {
             break
         }
     }
-    
-    @objc func animateNavigationView() {
-        GraphicsService.shared.animateLocator(navigationStateImageView)
-    }
-    
-    func activateMode(mode: Mode) {
-        switch mode {
-            
-        case .outdoor:
-            UserDefaultsManager.shared.isGeoTracking = true
-            updateLocationButtons()
-            updatePicker(isGeoTracking: true)
-            
-        case .indoor:
-            UserDefaultsManager.shared.isGeoTracking = false
-            updateLocationButtons()
-            updatePicker(isGeoTracking: false)
-            
-        case .notes:
-            updateToolsButtons(notesButton, withImageNamed: "HeaderNotesSelected")
-            
-        case .calculations:
-            updateToolsButtons(calculatorButton, withImageNamed: "HeaderCalculationsSelected")
-            
-        case .settings:
-            updateToolsButtons(settingsButton, withImageNamed: "HeaderSettingsSelected")
-            
-        case .toolsDefault:
-            updateToolsButtons(nil, withImageNamed: nil)
-        case .trackingIndication(let state):
-            switch state {
-            case .goodSignal:
-                navigationStateImageView.image = UIImage(named: "navigationGreen")
-            case .poorSignal:
-                navigationStateImageView.image = UIImage(named: "navigationYellow")
-            case .locationDisabled:
-                navigationStateImageView.image = UIImage(named: "navigationGray")
-            }
-        }
-    }
-    
-    //MARK: - UpdateButtons
-    
-    private func updateLocationButtons() {
+
+
+    private func updateLocationStackButtons() {
         let isGeoTracking = UserDefaultsManager.shared.isGeoTracking
         outdoorButton.isUserInteractionEnabled = !isGeoTracking ? true : false
         indoorButton.isUserInteractionEnabled = isGeoTracking ? true : false
@@ -170,7 +135,7 @@ class DashboardHeaderView: UIVisualEffectView {
         }
     }
     
-    private func updateToolsButtons(_ active: UIButton?, withImageNamed: String?) {
+    private func updateToolsStackButtons(_ active: UIButton?, withImageNamed: String?) {
         [notesButton, calculatorButton, settingsButton].forEach( {$0.isUserInteractionEnabled = true} )
         updateButtonImage(notesButton, withImageNamed: "HeaderNotes")
         updateButtonImage(calculatorButton, withImageNamed: "HeaderCalculations")
@@ -186,23 +151,46 @@ class DashboardHeaderView: UIVisualEffectView {
         button.setImage(UIImage(named: withImageNamed), for: .highlighted)
     }
     
+    //MARK: - Picker
+    
+    private func updatePicker() {
+        
+        let row = isGeoTracking ? UserDefaultsManager.shared.pickerRowOutdoor : UserDefaultsManager.shared.pickerRowIndoor
+        picker.reloadAllComponents()
+        picker.selectRow(row, inComponent: 0, animated: true)
+    }
+    
+    func getCurrentWorkout() -> Workout {
+        let workoutList = factoryWorkouts.get(isGeoTracking: isGeoTracking)
+        let workout = isGeoTracking ?
+        workoutList[UserDefaultsManager.shared.pickerRowOutdoor] : workoutList[UserDefaultsManager.shared.pickerRowIndoor]
+        return workout
+    }
     
     //MARK: - SetViews
     private func setViews() {
         effect = UIBlurEffect(style: .extraLight)
-        clipsToBounds = true
         layer.instance(border: true, corner: .max)
+        clipsToBounds = true
+        
+        [locationStack, toolsStack].forEach { stack in
+            stack.disableAutoresizingMask()
+            stack.backgroundColor = .myPaletteGold
+            stack.axis = .horizontal
+            stack.distribution = .fillEqually
+            stack.spacing = 0
+            stack.layer.cornerRadius = 14
+            stack.layer.cornerCurve = .continuous
+            contentView.addSubview(stack)
+        }
 
         locationStack.addArrangedSubview(outdoorButton)
         locationStack.addArrangedSubview(indoorButton)
-        contentView.addSubview(locationStack)
-        
         toolsStack.addArrangedSubview(notesButton)
         toolsStack.addArrangedSubview(calculatorButton)
         toolsStack.addArrangedSubview(settingsButton)
-        contentView.addSubview(toolsStack)
         
-        contentView.addSubview(navigationStateImageView)
+        contentView.addSubview(gpsStateImageView)
         
         contentView.addSubview(picker)
         picker.transform = CGAffineTransform(rotationAngle: -90 * (.pi / 180))
@@ -216,7 +204,7 @@ class DashboardHeaderView: UIVisualEffectView {
     
     private func setConstraints() {
 
-        navigationStateImageView.disableAutoresizingMask()
+        gpsStateImageView.disableAutoresizingMask()
         picker.disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
@@ -235,10 +223,10 @@ class DashboardHeaderView: UIVisualEffectView {
             picker.centerXAnchor.constraint(equalTo: locationStack.centerXAnchor),
             picker.centerYAnchor.constraint(equalTo: centerYAnchor, constant: CGFloat.headerBarHeight / 4),
             
-            navigationStateImageView.centerYAnchor.constraint(equalTo: locationStack.centerYAnchor),
-            navigationStateImageView.trailingAnchor.constraint(equalTo: locationStack.leadingAnchor),
-            navigationStateImageView.widthAnchor.constraint(equalToConstant: 42),
-            navigationStateImageView.heightAnchor.constraint(equalToConstant: 42)
+            gpsStateImageView.centerYAnchor.constraint(equalTo: locationStack.centerYAnchor),
+            gpsStateImageView.trailingAnchor.constraint(equalTo: locationStack.leadingAnchor),
+            gpsStateImageView.widthAnchor.constraint(equalToConstant: 42),
+            gpsStateImageView.heightAnchor.constraint(equalToConstant: 42)
         ])
     }
     
@@ -247,20 +235,20 @@ class DashboardHeaderView: UIVisualEffectView {
     }
 }
 
-extension DashboardHeaderView: UIPickerViewDataSource, UIPickerViewDelegate {
+//MARK: - PickerDataSource&Delegate
+
+extension headerBarView: UIPickerViewDataSource, UIPickerViewDelegate {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        let isGeoTracking = UserDefaultsManager.shared.isGeoTracking
         return factoryWorkouts.get(isGeoTracking: isGeoTracking).count
     }
     
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let isGeoTracking = UserDefaultsManager.shared.isGeoTracking
         if isGeoTracking {
             UserDefaultsManager.shared.pickerRowOutdoor = row
         } else {
@@ -277,19 +265,15 @@ extension DashboardHeaderView: UIPickerViewDataSource, UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        let isGeoTracking = UserDefaultsManager.shared.isGeoTracking
         pickerView.subviews.forEach{$0.backgroundColor = .clear}
         
+        let workoutList = factoryWorkouts.get(isGeoTracking: isGeoTracking)
         let imageView = UIImageView()
+        
         imageView.backgroundColor = .none
         imageView.contentMode = .scaleAspectFit
         imageView.transform = CGAffineTransform(rotationAngle: 90 * (.pi / 180))
-
-        let workoutList = factoryWorkouts.get(isGeoTracking: isGeoTracking)
         imageView.image = UIImage(named: workoutList[row].pickerIconName)
-        
         return imageView
     }
-    
-    
 }
