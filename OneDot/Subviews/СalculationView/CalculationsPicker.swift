@@ -12,25 +12,20 @@ class CalculationsPicker: UIVisualEffectView {
     
     private typealias UD = UserDefaultsManager
     
-    var buttonsStateHandler: (() -> Void)?
-    
     enum Mode {
         case pickerDistance
+        case PickerTime
         case pickerSpeed
         case pickerPace
-        case PickerTime
-        case hide
+        
     }
     
-    private let numbersLineSeparator: CAShapeLayer = CAShapeLayer()
-
-    private let pickerView: UIPickerView = {
-        let view = UIPickerView()
-        view.disableAutoresizingMask()
-        return view
-    }()
+    var valueStateHandler: (() -> Void)?
     
-    private var currentPickerState: Mode?
+    private let separator: CAShapeLayer = CAShapeLayer()
+
+    private let pickerView: UIPickerView = UIPickerView()
+    private var currentPickerState: Mode = .pickerDistance
     
     override init(effect: UIVisualEffect?) {
         super.init(effect: effect)
@@ -40,54 +35,55 @@ class CalculationsPicker: UIVisualEffectView {
         setConstraints()
     }
     
+    override func layoutSubviews() {
+        switch currentPickerState {
+        case .pickerDistance, .pickerSpeed, .pickerPace:
+            GraphicsService.shared.drawShape(shape: separator, shapeType: .pickerSingleShape, view: self)
+        case .PickerTime:
+            GraphicsService.shared.drawShape(shape: separator, shapeType: .pickerDoubleShape, view: self)
+        }
+    }
+    
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
-        buttonsStateHandler?()
+        currentPickerState = mode
+        pickerView.reloadAllComponents()
+        layoutSubviews()
+        
         switch mode {
         case .pickerDistance:
-            isHidden = false
-            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .pickerSingleShape, view: self)
-            currentPickerState = .pickerDistance
-            pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsDistanceValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsDistanceDecimalValue, inComponent: 1, animated: true)
-           
-        case .pickerSpeed:
-            isHidden = false
-            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .pickerSingleShape, view: self)
-            currentPickerState = .pickerSpeed
-            pickerView.reloadAllComponents()
-            pickerView.selectRow(UD.shared.calculationsSpeedValue, inComponent: 0, animated: true)
-            pickerView.selectRow(UD.shared.calculationsSpeedDecimalValue, inComponent: 1, animated: true)
-        case .pickerPace:
-            isHidden = false
-            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .pickerSingleShape, view: self)
-            currentPickerState = .pickerPace
-            pickerView.reloadAllComponents()
-            pickerView.selectRow(UD.shared.calculationsPaceMinValue, inComponent: 0, animated: true)
-            pickerView.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
+            CalculationsService.shared.calculateDistance()
+            
         case .PickerTime:
-            isHidden = false
-            GraphicsService.shared.drawShape(shape: numbersLineSeparator, shapeType: .pickerDoubleShape, view: self)
-            currentPickerState = .PickerTime
-            pickerView.reloadAllComponents()
             pickerView.selectRow(UD.shared.calculationsTimeHValue, inComponent: 0, animated: true)
             pickerView.selectRow(UD.shared.calculationsTimeMinValue, inComponent: 1, animated: true)
             pickerView.selectRow(UD.shared.calculationsTimeSecValue, inComponent: 2, animated: true)
-        case .hide:
-            isHidden = true
-            return
+            CalculationsService.shared.calculateTime()
+        
+        case .pickerSpeed:
+            pickerView.selectRow(UD.shared.calculationsSpeedValue, inComponent: 0, animated: true)
+            pickerView.selectRow(UD.shared.calculationsSpeedDecimalValue, inComponent: 1, animated: true)
+            CalculationsService.shared.calculateSpeed()
+        case .pickerPace:
+            pickerView.selectRow(UD.shared.calculationsPaceMinValue, inComponent: 0, animated: true)
+            pickerView.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
+            CalculationsService.shared.calculatePace()
         }
+
+        valueStateHandler?()
     }
     
     //MARK: - SetViews
     
     private func setViews() {
-        effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
         clipsToBounds = true
         layer.instance(border: true, corner: .min)
         contentView.addSubview(pickerView)
+        pickerView.disableAutoresizingMask()
     }
     
     
@@ -119,8 +115,6 @@ extension CalculationsPicker: UIPickerViewDelegate, UIPickerViewDataSource {
             return 2
         case .PickerTime:
             return 3
-        default:
-            return 0
         }
     }
     
@@ -155,21 +149,14 @@ extension CalculationsPicker: UIPickerViewDelegate, UIPickerViewDataSource {
         switch currentPickerState {
             
         case .pickerDistance:
-            
             label.text = String(row)
         case .pickerSpeed:
-
             label.text = String(row)
         case .pickerPace:
-
             label.text = row < 10 ? "0\(String(row))" : String(row)
         case .PickerTime:
-
             label.text = row < 10 ? "0\(String(row))" : String(row)
-        default:
-            break
         }
-       
         return label
     }
     
@@ -184,6 +171,16 @@ extension CalculationsPicker: UIPickerViewDelegate, UIPickerViewDataSource {
             UD.shared.calculationsDistanceDecimalValue = row
             activateMode(mode: .pickerDistance)
             
+        case (.PickerTime, 0):
+            UD.shared.calculationsTimeHValue = row
+            activateMode(mode: .PickerTime)
+        case (.PickerTime, 1):
+            UD.shared.calculationsTimeMinValue = row
+            activateMode(mode: .PickerTime)
+        case (.PickerTime, 2):
+            UD.shared.calculationsTimeSecValue = row
+            activateMode(mode: .PickerTime)
+            
         case (.pickerSpeed, 0):
             UD.shared.calculationsSpeedValue = row
             activateMode(mode: .pickerSpeed)
@@ -197,16 +194,6 @@ extension CalculationsPicker: UIPickerViewDelegate, UIPickerViewDataSource {
         case (.pickerPace, 1):
             UD.shared.calculationsPaceSecValue = row
             activateMode(mode: .pickerPace)
-            
-        case (.PickerTime, 0):
-            UD.shared.calculationsTimeHValue = row
-            activateMode(mode: .PickerTime)
-        case (.PickerTime, 1):
-            UD.shared.calculationsTimeMinValue = row
-            activateMode(mode: .PickerTime)
-        case (.PickerTime, 2):
-            UD.shared.calculationsTimeSecValue = row
-            activateMode(mode: .PickerTime)
         default:
             break
         }

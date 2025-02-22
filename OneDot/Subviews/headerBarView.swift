@@ -25,6 +25,8 @@ class headerBarView: UIVisualEffectView {
     private let calculatorButton: UIButton = UIButton()
     private let settingsButton: UIButton = UIButton()
     
+    private let toolsTitle: UILabel = UILabel()
+    
     private let picker: UIPickerView = UIPickerView()
     
     private let gpsStateImageView: UIImageView = UIImageView()
@@ -112,10 +114,13 @@ class headerBarView: UIVisualEffectView {
             buttonStateHandler?(.geoTrackingInactive)
         case notesButton.isTouchInside:
             buttonStateHandler?(.notes)
+            toolsTitle.text = "Notes"
         case calculatorButton.isTouchInside:
             buttonStateHandler?(.calculations)
+            toolsTitle.text = "Calculations"
         case settingsButton.isTouchInside:
             buttonStateHandler?(.settings)
+            toolsTitle.text = "Settings"
         default:
             break
         }
@@ -140,6 +145,7 @@ class headerBarView: UIVisualEffectView {
         updateButtonImage(notesButton, withImageNamed: "HeaderNotes")
         updateButtonImage(calculatorButton, withImageNamed: "HeaderCalculations")
         updateButtonImage(settingsButton, withImageNamed: "HeaderSettings")
+        toolsTitle.text = ""
         if let button = active, let named = withImageNamed {
             updateButtonImage(button, withImageNamed: named)
             button.isUserInteractionEnabled = false
@@ -190,6 +196,10 @@ class headerBarView: UIVisualEffectView {
         toolsStack.addArrangedSubview(calculatorButton)
         toolsStack.addArrangedSubview(settingsButton)
         
+        contentView.addSubview(toolsTitle)
+        toolsTitle.instance(color: .myPaletteGray, alignment: .center, font: .condensedMin)
+        toolsTitle.disableAutoresizingMask()
+        
         contentView.addSubview(gpsStateImageView)
         
         contentView.addSubview(picker)
@@ -217,6 +227,11 @@ class headerBarView: UIVisualEffectView {
             toolsStack.heightAnchor.constraint(equalToConstant: 42),
             toolsStack.centerYAnchor.constraint(equalTo: centerYAnchor),
             toolsStack.centerXAnchor.constraint(equalTo: centerXAnchor, constant: CGFloat.barWidth / 4),
+            
+            toolsTitle.widthAnchor.constraint(equalToConstant: 100),
+            toolsTitle.heightAnchor.constraint(equalToConstant: 40),
+            toolsTitle.topAnchor.constraint(equalTo: toolsStack.bottomAnchor),
+            toolsTitle.centerXAnchor.constraint(equalTo: toolsStack.centerXAnchor),
          
             picker.widthAnchor.constraint(equalToConstant: 50),
             picker.heightAnchor.constraint(equalToConstant: 150),

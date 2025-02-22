@@ -19,7 +19,7 @@ class GraphicsService {
         case footerSingleShape
         case pickerSingleShape
         case pickerDoubleShape
-        case bodyCrossShape
+        case crossShape(color: UIColor)
         case dynamicDescriptionShape(descriptionCount: Int)
     }
     
@@ -54,12 +54,12 @@ class GraphicsService {
             path.addLine(to: CGPoint(x: view.bounds.width / 3 * 2, y: view.bounds.height / 2 + 10))
             shape.strokeColor = UIColor.myPaletteGray.cgColor
             
-        case .bodyCrossShape:
-            path.move(to: CGPoint(x: .barWidth / 2.16 - 5, y: 39))
-            path.addLine(to: CGPoint(x: .barWidth - (.barWidth / 2.16) - 5, y: 69))
-            path.move(to: CGPoint(x: .barWidth - (.barWidth / 2.16) - 5, y: 39))
-            path.addLine(to: CGPoint(x: .barWidth / 2.16 - 5, y: 69))
-            shape.strokeColor = UIColor.white.cgColor
+        case .crossShape(let color):
+            path.move(to: CGPoint(x: view.bounds.width / 2 + 15, y: view.bounds.height / 2 - 15))
+            path.addLine(to: CGPoint(x: view.bounds.width - (view.bounds.width / 2) - 15, y: view.bounds.height / 2 + 15))
+            path.move(to: CGPoint(x: view.bounds.width - (view.bounds.width / 2) - 15, y: view.bounds.height / 2 - 15))
+            path.addLine(to: CGPoint(x: view.bounds.width / 2 + 15, y: view.bounds.height / 2 + 15))
+            shape.strokeColor = color.cgColor
             
         case .dynamicDescriptionShape(descriptionCount: let descriptionCount):
             path.move(to: CGPoint(x: .barWidth / 2, y:  76))

@@ -10,72 +10,27 @@ import UIKit
 class CalculationsBodyView: UIVisualEffectView {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
+    var hideHandler: (() -> Void)?
     
-    typealias UD = UserDefaultsManager
-    
-    var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
-    
-    enum Mode {
-        case distance,
-             speed,
-             pace,
-             time,
-             hide
-    }
+    private let valuesContainerView = UIVisualEffectView()
+    private let separator: CAShapeLayer = CAShapeLayer()
     
     private let distanceButton: UIButton = UIButton()
     private let distanceTitle: UILabel = UILabel()
     
-    private let durationButton: UIButton = UIButton()
+    private let timeButton: UIButton = UIButton()
     private let durationTitle: UILabel = UILabel()
-    private let durationIndicator: UIImageView = UIImageView()
     
     private let paceButton: UIButton = UIButton()
     private let paceTitle: UILabel = UILabel()
-    private let paceIndicator: UIImageView = UIImageView()
     
     private let speedButton: UIButton = UIButton()
     private let speedTitle: UILabel = UILabel()
-    private let speedIndicator: UIImageView = UIImageView()
     
-    private let eraseButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        return button
-    }()
-    
-    private let hideButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "BodyHide"), for: .normal)
-        button.setImage(UIImage(named: "BodyHide"), for: .highlighted)
-        return button
-    }()
-    
-    private let crossSeparator: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        view.image = UIImage(named: "crossSeparatorGray")
-        return view
-    }()
+    private let eraseButton: UIButton = UIButton()
+    private let hideButton: UIButton = UIButton()
 
-    
-    private let valuesContainerView = {
-        let view = UIVisualEffectView()
-        view.disableAutoresizingMask()
-        view.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
-        view.clipsToBounds = true
-        view.layer.instance(border: true, corner: .min)
-        return view
-    }()
-
-    private let calculationsPicker: CalculationsPicker = {
-        let view = CalculationsPicker()
-        view.backgroundColor = .white.withAlphaComponent(0.3)
-        view.disableAutoresizingMask()
-        return view
-    }()
-
+    private let calculationsPicker: CalculationsPicker = CalculationsPicker()
     
     //MARK: - Init
     
@@ -86,7 +41,11 @@ class CalculationsBodyView: UIVisualEffectView {
         setConstraints()
         updateValues()
         
-        calculationsPicker.buttonsStateHandler = { self.updateButtonTitles() }
+        calculationsPicker.valueStateHandler = { self.updateValues() }
+    }
+    
+    override func layoutSubviews() {
+        GraphicsService.shared.drawShape(shape: separator, shapeType: .crossShape(color: .myPaletteGray), view: valuesContainerView)
     }
     
     required init?(coder: NSCoder) {
@@ -96,101 +55,76 @@ class CalculationsBodyView: UIVisualEffectView {
     
     //MARK: - ButtonTapped
     
-    @objc private func buttonTapped() {
+    @objc private func buttonTapped(_ sender: UIButton) {
         [speedTitle, paceTitle, distanceTitle, durationTitle].forEach({$0.textColor = .myPaletteGray})
         hapticGenerator.selectionChanged()
-        switch true {
-        case speedButton.isTouchInside:
+        switch sender {
+        case distanceButton:
+            calculationsPicker.activateMode(mode: .pickerDistance)
+            distanceTitle.textColor = .myPaletteGold
+        case timeButton:
+            calculationsPicker.activateMode(mode: .PickerTime)
+            durationTitle.textColor = .myPaletteGold
+        case speedButton:
             calculationsPicker.activateMode(mode: .pickerSpeed)
             speedTitle.textColor = .myPaletteGold
-        case paceButton.isTouchInside:
+        case paceButton:
             calculationsPicker.activateMode(mode: .pickerPace)
             paceTitle.textColor = .myPaletteGold
-        case distanceButton.isTouchInside:
-            calculationsPicker.activateMode(mode: .pickerDistance)
-            distanceTitle.textColor = .systemBlue
-        case durationButton.isTouchInside:
-            calculationsPicker.activateMode(mode: .PickerTime)
-            durationTitle.textColor = .systemBlue
-        case eraseButton.isTouchInside:
+        case eraseButton:
             CalculationsService.shared.resetValues()
             calculationsPicker.activateMode(mode: .pickerDistance)
+            distanceTitle.textColor = .myPaletteGold
             updateValues()
-        default:
-            break
+        default: break
         }
     }
+    
+    //MARK: - Present
     
     @objc private func hide() {
-        buttonStateHandler?(.calculationsHide)
+        hideHandler?()
     }
     
-    //MARK: - ActivateMode
-    
-    func activateMode(mode: Mode) {
-        self.isHidden = false
-        switch mode {
-        case .distance:
-            CalculationsService.shared.calculateDistance()
-        case .speed:
-            CalculationsService.shared.calculateSpeed()
-        case .pace:
-            CalculationsService.shared.calculatePace()
-        case .time:
-            CalculationsService.shared.calculateTime()
-        case .hide:
-            self.isHidden = true
-        }
+    func present(_ state: Bool) {
+        self.isHidden = state ? false : true
         updateValues()
     }
     
     //MARK: - UpdateValues
     
     private func updateValues() {
-        
-        let isDistanceCleared = UD.shared.calculationsDistanceValue == 0 && UD.shared.calculationsDistanceDecimalValue == 0
-        
-        if isDistanceCleared {
-            eraseButton.setImage(UIImage(named: "BodyEraseInactive"), for: .normal)
-            eraseButton.setImage(UIImage(named: "BodyEraseInactive"), for: .highlighted)
-            CalculationsService.shared.resetValues()
-            updateButtonStates(isEnabled: false)
-        } else {
-            eraseButton.setImage(UIImage(named: "BodyEraseActive"), for: .normal)
-            eraseButton.setImage(UIImage(named: "BodyEraseActive"), for: .highlighted)
-            updateButtonStates(isEnabled: true)
-        }
-            
+        let isDistanceValue = UserDefaultsManager.shared.calculationsDistanceValue == 0 && UserDefaultsManager.shared.calculationsDistanceDecimalValue == 0
+        updateButtonStates(clean: isDistanceValue)
         updateButtonTitles()
     }
     
     
     
-    private func updateButtonStates(isEnabled: Bool) {
-        let alpha: CGFloat = isEnabled ? 1 : 0.5
-        [speedButton, durationButton, paceButton].forEach {
-            $0.isUserInteractionEnabled = isEnabled
+    private func updateButtonStates(clean: Bool) {
+        let alpha: CGFloat = clean ? 0.5 : 1
+        [speedButton, timeButton, paceButton, eraseButton].forEach {
+            $0.isUserInteractionEnabled = !clean
             $0.alpha = alpha }
     }
     
     private func updateButtonTitles() {
-        
-        let speedValue = UD.shared.calculationsSpeedValue
-        let speedDecimalValue = UD.shared.calculationsSpeedDecimalValue
+        let speedValue = UserDefaultsManager.shared.calculationsSpeedValue
+        let speedDecimalValue = UserDefaultsManager.shared.calculationsSpeedDecimalValue
         speedButton.setTitle("\(speedValue).\(speedDecimalValue)", for: .normal)
         
-        let paceMinValue = UD.shared.calculationsPaceMinValue
-        let paceSecValue = UD.shared.calculationsPaceSecValue
+        let paceMinValue = UserDefaultsManager.shared.calculationsPaceMinValue
+        let paceSecValue = UserDefaultsManager.shared.calculationsPaceSecValue
         paceButton.setTitle(String(format: "%02d:%02d", paceMinValue, paceSecValue), for: .normal)
         
-        let distanceValue = UD.shared.calculationsDistanceValue
-        let distanceDecimalValue = UD.shared.calculationsDistanceDecimalValue
+        let distanceValue = UserDefaultsManager.shared.calculationsDistanceValue
+        let distanceDecimalValue = UserDefaultsManager.shared.calculationsDistanceDecimalValue
         distanceButton.setTitle("\(distanceValue).\(distanceDecimalValue)", for: .normal)
         
-        let timeHValue = UD.shared.calculationsTimeHValue
-        let timeMinValue = UD.shared.calculationsTimeMinValue
-        let timeSecValue = UD.shared.calculationsTimeSecValue
-        durationButton.setTitle(String(format: "%02d:%02d:%02d", timeHValue, timeMinValue, timeSecValue), for: .normal)
+        let timeHValue = UserDefaultsManager.shared.calculationsTimeHValue
+        let timeMinValue = UserDefaultsManager.shared.calculationsTimeMinValue
+        let timeSecValue = UserDefaultsManager.shared.calculationsTimeSecValue
+        timeButton.setTitle(String(format: "%02d:%02d:%02d", timeHValue, timeMinValue, timeSecValue), for: .normal)
     }
     
     
@@ -202,52 +136,51 @@ class CalculationsBodyView: UIVisualEffectView {
         clipsToBounds = true
         isHidden = true
         layer.instance(border: true, corner: .max)
+ 
+        [valuesContainerView, calculationsPicker, eraseButton, hideButton].forEach( {contentView.addSubview($0)} )
+        [valuesContainerView, calculationsPicker, eraseButton, hideButton].forEach( {($0.disableAutoresizingMask())} )
+
+        valuesContainerView.effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
+        valuesContainerView.clipsToBounds = true
+        valuesContainerView.layer.instance(border: true, corner: .min)
         
-        contentView.addSubview(valuesContainerView)
-        contentView.addSubview(crossSeparator)
+        setValueButton(button: distanceButton, titleColor: .link, alignment: .right)
+        setTitle(label: distanceTitle, color: .myPaletteGold, titleText: "Distance / km", alignment: .right)
         
-        contentView.addSubview(calculationsPicker)
+        setValueButton(button: timeButton, titleColor: .link, alignment: .left)
+        setTitle(label: durationTitle, color: .myPaletteGray, titleText: "Time", alignment: .left)
         
-        setButton(button: distanceButton, titleColor: .link, alignment: .right)
-        setTitle(label: distanceTitle, titleText: "Distance / km", alignment: .right)
+        setValueButton(button: paceButton, titleColor: .link, alignment: .right)
+        setTitle(label: paceTitle, color: .myPaletteGray, titleText: "Pace", alignment: .right)
         
-        
-        setButton(button: durationButton, titleColor: .link, alignment: .left)
-        setTitle(label: durationTitle, titleText: "Time", alignment: .left)
-        
-        setButton(button: paceButton, titleColor: .myPaletteGold, alignment: .right)
-        setTitle(label: paceTitle, titleText: "Pace", alignment: .right)
-        
-        setButton(button: speedButton, titleColor: .myPaletteGold, alignment: .left)
-        setTitle(label: speedTitle, titleText: "Speed / km | h", alignment: .left)
-        
-        contentView.addSubview(eraseButton)
-        contentView.addSubview(hideButton)
-        
+        setValueButton(button: speedButton, titleColor: .link, alignment: .left)
+        setTitle(label: speedTitle, color: .myPaletteGray, titleText: "Speed / km | h", alignment: .left)
+
         eraseButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        eraseButton.disableAutoresizingMask()
+        eraseButton.setImage(UIImage(named: "BodyEraseActive"), for: .normal)
         hideButton.addTarget(self, action: #selector(hide), for: .touchUpInside)
-        
-        
+        hideButton.disableAutoresizingMask()
+        hideButton.setImage(UIImage(named: "BodyHide"), for: .normal)
     }
     
    //MARK: - SetButton
     
-    private func setButton(button: UIButton, titleColor: UIColor, alignment: UIControl.ContentHorizontalAlignment) {
+    private func setValueButton(button: UIButton, titleColor: UIColor, alignment: UIControl.ContentHorizontalAlignment) {
         contentView.addSubview(button)
         button.disableAutoresizingMask()
-        button.backgroundColor = .clear
         button.setTitleColor(titleColor, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .medium, width: .standard)
         button.contentHorizontalAlignment = alignment
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
     }
     
     //MARK: - SetTitle
     
-    private func setTitle(label: UILabel, titleText: String, alignment: NSTextAlignment) {
+    private func setTitle(label: UILabel, color: UIColor, titleText: String, alignment: NSTextAlignment) {
         contentView.addSubview(label)
         label.disableAutoresizingMask()
-        label.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
+        label.instance(color: color, alignment: .center, font: .condensedMid)
         label.text = titleText
         label.textAlignment = alignment
     }
@@ -268,47 +201,45 @@ class CalculationsBodyView: UIVisualEffectView {
             calculationsPicker.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 60),
             calculationsPicker.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
             
-            distanceButton.topAnchor.constraint(equalTo: valuesContainerView.topAnchor, constant: 100),
-            distanceButton.leadingAnchor.constraint(equalTo: valuesContainerView.leadingAnchor),
-            distanceButton.heightAnchor.constraint(equalToConstant: 60),
-            distanceButton.widthAnchor.constraint(equalToConstant: 130),
+            distanceButton.heightAnchor.constraint(equalToConstant: 100),
+            distanceButton.widthAnchor.constraint(equalToConstant: 120),
+            distanceButton.centerYAnchor.constraint(equalTo: valuesContainerView.centerYAnchor, constant: -70),
+            distanceButton.centerXAnchor.constraint(equalTo: valuesContainerView.centerXAnchor, constant: -80),
             
             distanceTitle.centerXAnchor.constraint(equalTo: distanceButton.centerXAnchor),
-            distanceTitle.bottomAnchor.constraint(equalTo: distanceButton.topAnchor, constant: -5),
-            distanceTitle.widthAnchor.constraint(equalToConstant: 130),
+            distanceTitle.topAnchor.constraint(equalTo: distanceButton.topAnchor),
+            distanceTitle.widthAnchor.constraint(equalToConstant: 120),
             
-            durationButton.topAnchor.constraint(equalTo: valuesContainerView.topAnchor, constant: 100),
-            durationButton.trailingAnchor.constraint(equalTo: valuesContainerView.trailingAnchor),
-            durationButton.heightAnchor.constraint(equalToConstant: 60),
-            durationButton.widthAnchor.constraint(equalToConstant: 130),
             
-            durationTitle.centerXAnchor.constraint(equalTo: durationButton.centerXAnchor),
-            durationTitle.bottomAnchor.constraint(equalTo: durationButton.topAnchor, constant: -5),
-            durationTitle.widthAnchor.constraint(equalToConstant: 130),
+            timeButton.heightAnchor.constraint(equalToConstant: 100),
+            timeButton.widthAnchor.constraint(equalToConstant: 120),
+            timeButton.centerYAnchor.constraint(equalTo: valuesContainerView.centerYAnchor, constant: -70),
+            timeButton.centerXAnchor.constraint(equalTo: valuesContainerView.centerXAnchor, constant: 80),
             
-            paceButton.bottomAnchor.constraint(equalTo: valuesContainerView.bottomAnchor, constant: -100),
-            paceButton.leadingAnchor.constraint(equalTo: valuesContainerView.leadingAnchor),
-            paceButton.heightAnchor.constraint(equalToConstant: 60),
-            paceButton.widthAnchor.constraint(equalToConstant: 130),
+            durationTitle.centerXAnchor.constraint(equalTo: timeButton.centerXAnchor),
+            durationTitle.topAnchor.constraint(equalTo: timeButton.topAnchor),
+            durationTitle.widthAnchor.constraint(equalToConstant: 120),
+            
+            
+            paceButton.heightAnchor.constraint(equalToConstant: 100),
+            paceButton.widthAnchor.constraint(equalToConstant: 120),
+            paceButton.centerYAnchor.constraint(equalTo: valuesContainerView.centerYAnchor, constant: 70),
+            paceButton.centerXAnchor.constraint(equalTo: valuesContainerView.centerXAnchor, constant: -80),
             
             paceTitle.centerXAnchor.constraint(equalTo: paceButton.centerXAnchor),
-            paceTitle.topAnchor.constraint(equalTo: paceButton.bottomAnchor, constant: 5),
-            paceTitle.widthAnchor.constraint(equalToConstant: 130),
+            paceTitle.bottomAnchor.constraint(equalTo: paceButton.bottomAnchor),
+            paceTitle.widthAnchor.constraint(equalToConstant: 120),
             
-            speedButton.bottomAnchor.constraint(equalTo: valuesContainerView.bottomAnchor, constant: -100),
-            speedButton.trailingAnchor.constraint(equalTo: valuesContainerView.trailingAnchor),
-            speedButton.heightAnchor.constraint(equalToConstant: 60),
-            speedButton.widthAnchor.constraint(equalToConstant: 130),
+            
+            speedButton.heightAnchor.constraint(equalToConstant: 100),
+            speedButton.widthAnchor.constraint(equalToConstant: 120),
+            speedButton.centerYAnchor.constraint(equalTo: valuesContainerView.centerYAnchor, constant: 70),
+            speedButton.centerXAnchor.constraint(equalTo: valuesContainerView.centerXAnchor, constant: 80),
             
             speedTitle.centerXAnchor.constraint(equalTo: speedButton.centerXAnchor),
-            speedTitle.topAnchor.constraint(equalTo: speedButton.bottomAnchor, constant: 5),
-            speedTitle.widthAnchor.constraint(equalToConstant: 130),
+            speedTitle.bottomAnchor.constraint(equalTo: speedButton.bottomAnchor),
+            speedTitle.widthAnchor.constraint(equalToConstant: 120),
             
-            crossSeparator.widthAnchor.constraint(equalToConstant: 42),
-            crossSeparator.heightAnchor.constraint(equalToConstant: 42),
-            crossSeparator.centerXAnchor.constraint(equalTo: valuesContainerView.centerXAnchor),
-            crossSeparator.centerYAnchor.constraint(equalTo: valuesContainerView.centerYAnchor),
-
             hideButton.widthAnchor.constraint(equalToConstant: .iconSide),
             hideButton.heightAnchor.constraint(equalToConstant: .iconSide),
             hideButton.topAnchor.constraint(equalTo: topAnchor, constant: 10),
@@ -316,8 +247,8 @@ class CalculationsBodyView: UIVisualEffectView {
             
             eraseButton.widthAnchor.constraint(equalToConstant: 42),
             eraseButton.heightAnchor.constraint(equalToConstant: 42),
-            eraseButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            eraseButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
+            eraseButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            eraseButton.bottomAnchor.constraint(equalTo: valuesContainerView.bottomAnchor)
         ])
     }
     

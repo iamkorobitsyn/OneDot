@@ -168,7 +168,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         LocationService.shared.didUpdateRegion = { [weak self] region in self?.mapView.setRegion(region, animated: true) }
         dashboardHeader.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         dashboardFooter.dashboardVCButtonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        calculationsBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        calculationsBody.hideHandler = { [weak self] in self?.activateMode(mode:.calculationsHide) }
         notesBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         settingsBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
     }
@@ -189,7 +189,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         case .notes:
             dashboardHeader.activateMode(mode: .notes)
             notesBody.activateMode(mode: .prepare)
-            calculationsBody.activateMode(mode: .hide)
+            calculationsBody.present(false)
             settingsBody.activateMode(mode: .hide)
             dashboardFooter.activateMode(mode: .hide)
         case .notesHide:
@@ -197,19 +197,19 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             notesBody.activateMode(mode: .hide)
             dashboardFooter.activateMode(mode: .dashboard)
         case .calculations:
-            calculationsBody.activateMode(mode: .distance)
+            calculationsBody.present(true)
             dashboardHeader.activateMode(mode: .calculations)
             notesBody.activateMode(mode: .hide)
             settingsBody.activateMode(mode: .hide)
             dashboardFooter.activateMode(mode: .hide)
         case .calculationsHide:
             dashboardHeader.activateMode(mode: .toolsDefault)
-            calculationsBody.activateMode(mode: .hide)
+            calculationsBody.present(false)
             dashboardFooter.activateMode(mode: .dashboard)
         case .settings:
             settingsBody.activateMode(mode: .active)
             dashboardHeader.activateMode(mode: .settings)
-            calculationsBody.activateMode(mode: .hide)
+            calculationsBody.present(false)
             dashboardFooter.activateMode(mode: .hide)
         case .settingsHide:
             dashboardHeader.activateMode(mode: .toolsDefault)

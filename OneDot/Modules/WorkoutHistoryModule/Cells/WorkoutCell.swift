@@ -84,8 +84,10 @@ class WorkoutCell: UITableViewCell {
         addSubview(workoutStatisticLabel)
         addSubview(workoutDateLabel)
         addSubview(detailsImage)
-        
-        GraphicsService.shared.drawShape(shape: separators, shapeType: .bodyCrossShape, view: self)
+    }
+    
+    override func layoutSubviews() {
+        GraphicsService.shared.drawShape(shape: separators, shapeType: .crossShape(color: .white), view: self)
     }
     
     func updateLabels() {
