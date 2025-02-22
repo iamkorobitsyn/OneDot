@@ -17,7 +17,6 @@ class CalculationsPicker: UIVisualEffectView {
         case PickerTime
         case pickerSpeed
         case pickerPace
-        
     }
     
     var valueStateHandler: (() -> Void)?
@@ -72,7 +71,6 @@ class CalculationsPicker: UIVisualEffectView {
             pickerView.selectRow(UD.shared.calculationsPaceSecValue, inComponent: 1, animated: true)
             CalculationsService.shared.calculatePace()
         }
-
         valueStateHandler?()
     }
     
@@ -136,7 +134,6 @@ extension CalculationsPicker: UIPickerViewDelegate, UIPickerViewDataSource {
         return 80
     }
     
-    
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
  
         pickerView.subviews.forEach {
@@ -147,15 +144,10 @@ extension CalculationsPicker: UIPickerViewDelegate, UIPickerViewDataSource {
         label.instance(color: .myPaletteGray, alignment: .center, font: .condensedMax)
         
         switch currentPickerState {
-            
-        case .pickerDistance:
+        case .pickerDistance, .pickerSpeed:
             label.text = String(row)
-        case .pickerSpeed:
-            label.text = String(row)
-        case .pickerPace:
-            label.text = row < 10 ? "0\(String(row))" : String(row)
-        case .PickerTime:
-            label.text = row < 10 ? "0\(String(row))" : String(row)
+        case .pickerPace, .PickerTime:
+            label.text = row < 10 ? String(format: "%02d", row) : String(row)
         }
         return label
     }

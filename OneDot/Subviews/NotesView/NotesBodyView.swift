@@ -11,6 +11,7 @@ import UIKit
 class NotesBodyView: UIVisualEffectView {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
+    var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
     
     enum Mode {
         case prepare,
@@ -19,52 +20,22 @@ class NotesBodyView: UIVisualEffectView {
              hide
     }
     
-    var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
-    
     private var notes: [Note] = []
-    
-    private let addNoteCellID = "addNoteCell"
-    private let editNoteCellID = "editNoteCell"
-    
-    private let hideOrDoneButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setBackgroundImage(UIImage(named: "BodyHide"), for: .normal)
-        button.setBackgroundImage(UIImage(named: "BodyHide"), for: .highlighted)
-        return button
-    }()
-    
     private var textEditingMode: Bool = false
     
-    private let addButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setBackgroundImage(UIImage(named: "BodyAdd"), for: .normal)
-        button.setBackgroundImage(UIImage(named: "BodyAdd"), for: .highlighted)
-        return button
-    }()
-
-    private let tableView = {
-        let tableView = UITableView()
-        tableView.disableAutoresizingMask()
-        tableView.layer.cornerRadius = 30
-        tableView.layer.cornerCurve = .continuous
-        tableView.backgroundColor = .clear
-        tableView.separatorStyle = .none
-        return tableView
-    }()
-
+    private let tableView = UITableView()
+    private let cellID = "noteCell"
     
+    private let hideOrDoneButton: UIButton = UIButton()
+    private let addButton: UIButton = UIButton()
+
+
     //MARK: - Init
     
     override init(effect: UIVisualEffect?) {
         super.init(effect: effect)
-        
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(NotesBodyCell.self,
-                           forCellReuseIdentifier: editNoteCellID)
-
         fetchNotes()
         setViews()
         setConstraints()
@@ -80,12 +51,10 @@ class NotesBodyView: UIVisualEffectView {
             hideOrDoneButton.isHidden = false
             addButton.isHidden = false
             hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyHide"), for: .normal)
-            hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyHide"), for: .highlighted)
         case .editing:
             textEditingMode = true
             addButton.isHidden = true
             hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyCheckmark"), for: .normal)
-            hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyCheckmark"), for: .highlighted)
         case .deleting:
             hideOrDoneButton.isHidden = true
             addButton.isHidden = true
@@ -126,18 +95,25 @@ class NotesBodyView: UIVisualEffectView {
     //MARK: - SetViews
     
     private func setViews() {
-        layer.instance(border: true, corner: .max)
         isHidden = true
+        clipsToBounds = true
+        effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
+        layer.instance(border: true, corner: .max)
         
-        contentView.addSubview(tableView)
-        contentView.clipsToBounds = true
-        contentView.insertSubview(hideOrDoneButton, aboveSubview: tableView)
-        contentView.insertSubview(addButton, aboveSubview: tableView)
-        hideOrDoneButton.addTarget(self, action: #selector(tappedHideOrDoneButton),
-                                 for: .touchUpInside)
-        
-        addButton.addTarget(self, action: #selector(addNote),
-                                    for: .touchUpInside)
+        [tableView, hideOrDoneButton, addButton].forEach { view in
+            view.disableAutoresizingMask()
+            contentView.addSubview(view)
+        }
+
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        tableView.register(NotesBodyCell.self, forCellReuseIdentifier: cellID)
+
+        hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyHide"), for: .normal)
+        hideOrDoneButton.addTarget(self, action: #selector(tappedHideOrDoneButton), for: .touchUpInside)
+
+        addButton.setBackgroundImage(UIImage(named: "BodyAdd"), for: .normal)
+        addButton.addTarget(self, action: #selector(addNote), for: .touchUpInside)
     }
     
     
@@ -223,31 +199,23 @@ extension NotesBodyView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = NotesBodyCell()
-        cell.selectionStyle = .none
-        cell.textView.text = notes[indexPath.row].text
-        cell.textEditing = notes[indexPath.row].editing
-        cell.placeholderState(cell.textEditing)
+        cell.beginUpdates(textEditing: notes[indexPath.row].editing, text: notes[indexPath.row].text ?? "")
         
-        cell.contentCompletion = { [weak self] in
+        cell.contentCompletion = { [weak self] contentHeight, text, editing in
             guard let self else {return}
             
             tableView.beginUpdates()
             activateMode(mode: .editing)
-            CoreDataManager.shared.editNote(notes[indexPath.row],
-                                            rowHeight: cell.contentHeight,
-                                            text: cell.textView.text,
-                                            editing: cell.textEditing)
-            
+            CoreDataManager.shared.editNote(notes[indexPath.row], rowHeight: contentHeight, text: text, editing: editing)
             tableView.endUpdates()
-            tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: 0),
-                                  at: .top, animated: true)
+            tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: 0), at: .top, animated: true)
         }
         
-        cell.notesEndEditingHandler = { [weak self] in
+        cell.notesEndEditingHandler = { [weak self] contentHeight, text, editing in
             guard let self else {return}
-            notesEditDone(i: indexPath.row, rowHeight: cell.contentHeight,
-                          text: cell.textView.text, editing: cell.textEditing)
+            notesEditDone(i: indexPath.row, rowHeight: contentHeight, text: text, editing: editing)
         }
+
         return cell
     }
 }
@@ -267,10 +235,7 @@ extension NotesBodyView: UITableViewDelegate   {
     }
     
     func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) as? NotesBodyCell {
-            activateMode(mode: .deleting)
-            cell.verticalSeparator.alpha = 1
-        }
+        activateMode(mode: .deleting)
     }
     
     func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {

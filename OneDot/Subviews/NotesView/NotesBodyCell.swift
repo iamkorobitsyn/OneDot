@@ -10,49 +10,17 @@ import UIKit
 
 class NotesBodyCell: UITableViewCell {
     
-    var contentCompletion: (() -> Void)?
-    var notesEndEditingHandler: (() -> Void)?
+    var contentCompletion: ((CGFloat, String, Bool) -> Void)?
+    var notesEndEditingHandler: ((CGFloat, String, Bool) -> Void)?
     
     var rCounter: Int = 0
     var contentHeight: CGFloat = 120
     var textEditing: Bool = false
 
-    private let containerView = {
-        let view = UIVisualEffectView()
-        view.disableAutoresizingMask()
-        view.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
-        view.clipsToBounds = true
-        view.layer.instance(border: true, corner: .min)
-        return view
-    }()
+    private let containerView = UIVisualEffectView()
+    let textView = UITextView()
+    let placeholderImage: UIImageView = UIImageView()
     
-    let textView = {
-        let view = UITextView()
-        view.disableAutoresizingMask()
-        view.backgroundColor = .clear
-        view.contentMode = .center
-        view.clipsToBounds = true
-        view.tintColor = .myPaletteGold
-        view.textColor = .darkGray
-        view.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        return view
-    }()
-    
-    let placeholderImage: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        view.image = UIImage(named: "BodyDetailsGray")
-        return view
-    }()
-    
-    let verticalSeparator: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        view.image = UIImage(named: "verticalSeparatorRed")
-        view.alpha = 0.3
-        return view
-    }()
-
     //MARK: - Init
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -63,8 +31,9 @@ class NotesBodyCell: UITableViewCell {
         setConstraints()
     }
     
-    func placeholderState(_ textEditing: Bool) {
+    func beginUpdates(textEditing: Bool, text: String) {
         placeholderImage.isHidden = textEditing
+        textView.text = text
     }
     
     //MARK: - SetViews
@@ -72,10 +41,26 @@ class NotesBodyCell: UITableViewCell {
     private func setViews() {
         
         backgroundColor = .clear
+        selectionStyle = .none
+        
         contentView.addSubview(containerView)
+        containerView.disableAutoresizingMask()
+        containerView.effect = UIBlurEffect(style: UIBlurEffect.Style.light)
+        containerView.clipsToBounds = true
+        containerView.layer.instance(border: true, corner: .min)
+        
         containerView.contentView.addSubview(textView)
+        textView.disableAutoresizingMask()
+        textView.backgroundColor = .clear
+        textView.contentMode = .center
+        textView.clipsToBounds = true
+        textView.tintColor = .myPaletteGold
+        textView.textColor = .darkGray
+        textView.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        
         containerView.contentView.addSubview(placeholderImage)
-        contentView.addSubview(verticalSeparator)
+        placeholderImage.disableAutoresizingMask()
+        placeholderImage.image = UIImage(named: "BodyDetailsGray")
     }
 
     //MARK: - SetConstraints
@@ -88,7 +73,6 @@ class NotesBodyCell: UITableViewCell {
             containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
             containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             
-            textView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width / 1.9),
             textView.topAnchor.constraint(equalTo: containerView.topAnchor),
             textView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
             textView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
@@ -97,12 +81,7 @@ class NotesBodyCell: UITableViewCell {
             placeholderImage.widthAnchor.constraint(equalToConstant: 42),
             placeholderImage.heightAnchor.constraint(equalToConstant: 42),
             placeholderImage.centerYAnchor.constraint(equalTo: containerView.centerYAnchor, constant: 0),
-            placeholderImage.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            
-            verticalSeparator.widthAnchor.constraint(equalToConstant: 42),
-            verticalSeparator.heightAnchor.constraint(equalToConstant: 42),
-            verticalSeparator.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 24),
-            verticalSeparator.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+            placeholderImage.centerXAnchor.constraint(equalTo: containerView.centerXAnchor)
         ])
     }
     
@@ -117,18 +96,16 @@ extension NotesBodyCell: UITextViewDelegate, UITextInteractionDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         
-        contentHeight = textView.contentSize.height > 80 ? textView.contentSize.height + 30 : 120
-        notesEndEditingHandler?()
-        verticalSeparator.isHidden = false
-        placeholderState(textEditing)
+        contentHeight = textView.contentSize.height > 80 ? textView.contentSize.height + 40 : 120
+        notesEndEditingHandler?(contentHeight, textView.text, textEditing)
+        beginUpdates(textEditing: textEditing, text: textView.text)
     }
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         
         contentHeight = 150
-        verticalSeparator.isHidden = true
         placeholderImage.isHidden = true
-        contentCompletion?()
+        contentCompletion?(contentHeight, textView.text, textEditing)
         return true
     }
   
@@ -143,6 +120,6 @@ extension NotesBodyCell: UITextViewDelegate, UITextInteractionDelegate {
         }
         rCounter = textView.selectedRange.location
         
-        contentCompletion?()
+        contentCompletion?(contentHeight, textView.text, textEditing)
     }
 }

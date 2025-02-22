@@ -42,13 +42,7 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         return label
     }()
     
-    let notesBody: NotesBodyView = {
-        let view = NotesBodyView()
-        view.effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
-        view.clipsToBounds = true
-        view.disableAutoresizingMask()
-        return view
-    }()
+    let notesBody: NotesBodyView = NotesBodyView()
     
     let calculationsBody = {
         let view = CalculationsBodyView()
@@ -240,6 +234,7 @@ extension DashboardVC {
         view.addSubview(dashboardHeader)
         view.addSubview(navigationStateLabel)
         view.addSubview(notesBody)
+        notesBody.disableAutoresizingMask()
         view.addSubview(calculationsBody)
         view.addSubview(settingsBody)
         view.addSubview(dashboardFooter)

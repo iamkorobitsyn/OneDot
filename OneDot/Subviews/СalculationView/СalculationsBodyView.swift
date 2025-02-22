@@ -136,40 +136,40 @@ class CalculationsBodyView: UIVisualEffectView {
         clipsToBounds = true
         isHidden = true
         layer.instance(border: true, corner: .max)
- 
-        [valuesContainerView, calculationsPicker, eraseButton, hideButton].forEach( {contentView.addSubview($0)} )
-        [valuesContainerView, calculationsPicker, eraseButton, hideButton].forEach( {($0.disableAutoresizingMask())} )
 
         valuesContainerView.effect = UIBlurEffect(style: UIBlurEffect.Style.extraLight)
         valuesContainerView.clipsToBounds = true
         valuesContainerView.layer.instance(border: true, corner: .min)
         
-        setValueButton(button: distanceButton, titleColor: .link, alignment: .right)
+        [valuesContainerView, calculationsPicker, eraseButton, hideButton].forEach { view in
+            contentView.addSubview(view)
+            view.disableAutoresizingMask()
+        }
+        
+        setValueButton(button: distanceButton, alignment: .right)
+        setValueButton(button: timeButton, alignment: .left)
+        setValueButton(button: paceButton, alignment: .right)
+        setValueButton(button: speedButton, alignment: .left)
+        
         setTitle(label: distanceTitle, color: .myPaletteGold, titleText: "Distance / km", alignment: .right)
-        
-        setValueButton(button: timeButton, titleColor: .link, alignment: .left)
         setTitle(label: durationTitle, color: .myPaletteGray, titleText: "Time", alignment: .left)
+        setTitle(label: paceTitle, color: .myPaletteGray, titleText: "min / km", alignment: .right)
+        setTitle(label: speedTitle, color: .myPaletteGray, titleText: "km / h", alignment: .left)
         
-        setValueButton(button: paceButton, titleColor: .link, alignment: .right)
-        setTitle(label: paceTitle, color: .myPaletteGray, titleText: "Pace", alignment: .right)
         
-        setValueButton(button: speedButton, titleColor: .link, alignment: .left)
-        setTitle(label: speedTitle, color: .myPaletteGray, titleText: "Speed / km | h", alignment: .left)
-
+        
         eraseButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        eraseButton.disableAutoresizingMask()
         eraseButton.setImage(UIImage(named: "BodyEraseActive"), for: .normal)
         hideButton.addTarget(self, action: #selector(hide), for: .touchUpInside)
-        hideButton.disableAutoresizingMask()
         hideButton.setImage(UIImage(named: "BodyHide"), for: .normal)
     }
     
    //MARK: - SetButton
     
-    private func setValueButton(button: UIButton, titleColor: UIColor, alignment: UIControl.ContentHorizontalAlignment) {
+    private func setValueButton(button: UIButton, alignment: UIControl.ContentHorizontalAlignment) {
         contentView.addSubview(button)
         button.disableAutoresizingMask()
-        button.setTitleColor(titleColor, for: .normal)
+        button.setTitleColor(.link, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .medium, width: .standard)
         button.contentHorizontalAlignment = alignment
         button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
