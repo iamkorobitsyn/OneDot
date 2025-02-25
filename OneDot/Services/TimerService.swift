@@ -14,8 +14,10 @@ class TimerService {
     
     var timer: Timer?
     
-    var workoutVCModeComletion: ((WorkoutVC.Mode) -> Void)?
-    var focusLabelCompletion: ((Int) -> Void)?
+//    var workoutVCModeComletion: ((WorkoutVC.Mode) -> Void)?
+    
+//    var focusLabelCompletion: ((Int) -> Void)?
+    var dashboardModeHandler: ((DashboardVC.Mode) -> Void)?
     
     var timerStateHandler: (() -> Void)?
     
@@ -31,16 +33,16 @@ class TimerService {
         clearTimer()
         var timeInterval = 3
         
-        focusLabelCompletion?(Int(timeInterval))
+        dashboardModeHandler?(.workoutCountDown(Int(timeInterval)))
         
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] timer in
             guard let self = self else { return }
             
             timeInterval -= 1
-            focusLabelCompletion?(Int(timeInterval))
+            dashboardModeHandler?(.workoutCountDown(Int(timeInterval)))
             
             if timeInterval == 0 {
-                workoutVCModeComletion?(.start)
+                startTimer()
             }
         })
     }
@@ -53,7 +55,8 @@ class TimerService {
             guard let self = self else { return }
             
 //            timeInterval += 1
-            timerStateHandler?()
+            dashboardModeHandler?(.workoutStart(timer.timeInterval))
+            print(timer.timeInterval)
 
         }
     }

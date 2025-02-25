@@ -10,7 +10,7 @@ import UIKit
 class CalculationsBodyView: UIVisualEffectView {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
-    var hideHandler: (() -> Void)?
+    var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
     
     private let valuesContainerView = UIVisualEffectView()
     private let separator: CAShapeLayer = CAShapeLayer()
@@ -40,7 +40,6 @@ class CalculationsBodyView: UIVisualEffectView {
         setViews()
         setConstraints()
         updateValues()
-        
         calculationsPicker.valueStateHandler = { self.updateValues() }
     }
     
@@ -83,12 +82,7 @@ class CalculationsBodyView: UIVisualEffectView {
     //MARK: - Present
     
     @objc private func hide() {
-        hideHandler?()
-    }
-    
-    func present(_ state: Bool) {
-        self.isHidden = state ? false : true
-        updateValues()
+        buttonStateHandler?(.toolHide(self))
     }
     
     //MARK: - UpdateValues

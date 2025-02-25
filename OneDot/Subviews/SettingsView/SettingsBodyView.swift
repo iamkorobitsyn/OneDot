@@ -13,7 +13,6 @@ class SettingsBodyView: UIVisualEffectView {
     
     enum Mode {
         case active
-        case hide
     }
     
     private let tableView: UITableView = UITableView()
@@ -38,14 +37,12 @@ class SettingsBodyView: UIVisualEffectView {
         switch mode {
         case .active:
             self.isHidden = false
-        case .hide:
-            self.isHidden = true
         }
     }
     
     
     @objc private func buttonPressed() {
-        buttonStateHandler?(.settingsHide)
+        buttonStateHandler?(.toolHide(self))
     }
 
 

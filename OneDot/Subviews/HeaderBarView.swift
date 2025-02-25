@@ -55,8 +55,8 @@ class HeaderBarView: UIVisualEffectView {
     //MARK: - public: ActivateMode
     
     func activateMode(mode: Mode) {
+
         switch mode {
-            
         case .outdoor:
             updateGeoTracking(state: true)
             updateLocationStackButtons()

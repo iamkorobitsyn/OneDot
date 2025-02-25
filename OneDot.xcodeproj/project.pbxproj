@@ -44,7 +44,7 @@
 		65ADAEEC2D2B2C8800FAEC15 /* WorkoutSnapshotVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65ADAEEB2D2B2C8800FAEC15 /* WorkoutSnapshotVC.swift */; };
 		65D999FC2D324667009B2B20 /* DescriptionModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D999FB2D324667009B2B20 /* DescriptionModuleView.swift */; };
 		65D99A002D324890009B2B20 /* WorkoutBodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D999FF2D324890009B2B20 /* WorkoutBodyView.swift */; };
-		65D99A032D333B7E009B2B20 /* WorkoutSplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D99A022D333B7E009B2B20 /* WorkoutSplashScreenView.swift */; };
+		65D99A032D333B7E009B2B20 /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D99A022D333B7E009B2B20 /* WorkoutView.swift */; };
 		65EC20772AEEBD3800410905 /* CGFloat + Extansions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */; };
 		65EDA5872AEA948D007B6AE5 /* InTheRoomExercises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA5862AEA948D007B6AE5 /* InTheRoomExercises.swift */; };
 		65EDA58B2AEA950F007B6AE5 /* FactoryWorkouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EDA58A2AEA950F007B6AE5 /* FactoryWorkouts.swift */; };
@@ -115,7 +115,7 @@
 		65ADAEEB2D2B2C8800FAEC15 /* WorkoutSnapshotVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSnapshotVC.swift; sourceTree = "<group>"; };
 		65D999FB2D324667009B2B20 /* DescriptionModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionModuleView.swift; sourceTree = "<group>"; };
 		65D999FF2D324890009B2B20 /* WorkoutBodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutBodyView.swift; sourceTree = "<group>"; };
-		65D99A022D333B7E009B2B20 /* WorkoutSplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSplashScreenView.swift; sourceTree = "<group>"; };
+		65D99A022D333B7E009B2B20 /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
 		65EC20762AEEBD3800410905 /* CGFloat + Extansions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat + Extansions.swift"; sourceTree = "<group>"; };
 		65EDA5862AEA948D007B6AE5 /* InTheRoomExercises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InTheRoomExercises.swift; sourceTree = "<group>"; };
 		65EDA58A2AEA950F007B6AE5 /* FactoryWorkouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactoryWorkouts.swift; sourceTree = "<group>"; };
@@ -313,17 +313,17 @@
 		6568C8B22CE173BF00993E00 /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
-				65D999FB2D324667009B2B20 /* DescriptionModuleView.swift */,
 				654893982AAE8099005039DF /* HeaderBarView.swift */,
 				6502D6EF2A5C9A1F000F96E0 /* FooterBarView.swift */,
+				65D99A022D333B7E009B2B20 /* WorkoutView.swift */,
 				65A10A2C2D3714100013E197 /* NotesView */,
 				65C517002AF01F0400095AFE /* СalculationView */,
 				65551C7A2AC61DF800CE3309 /* SettingsView */,
 				65A10A2E2D377A7C0013E197 /* WorkoutHeader.swift */,
-				65055E242D10470D00AC14C5 /* SnapshotHeader.swift */,
 				65D999FF2D324890009B2B20 /* WorkoutBodyView.swift */,
+				65D999FB2D324667009B2B20 /* DescriptionModuleView.swift */,
+				65055E242D10470D00AC14C5 /* SnapshotHeader.swift */,
 				6521308B2AC46F400056DEA5 /* SplashScreenView.swift */,
-				65D99A022D333B7E009B2B20 /* WorkoutSplashScreenView.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
@@ -515,7 +515,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65A10A2A2D3713FE0013E197 /* NoteCell.swift in Sources */,
-				65D99A032D333B7E009B2B20 /* WorkoutSplashScreenView.swift in Sources */,
+				65D99A032D333B7E009B2B20 /* WorkoutView.swift in Sources */,
 				6589BDEE2D5E080A005CE723 /* HKWorkoutActivityType + Extansions.swift in Sources */,
 				65F264C12D46F17D003AF444 /* CoreDataManager.swift in Sources */,
 				65A4247E2D349ED1009B0E9A /* WorkoutVC.swift in Sources */,

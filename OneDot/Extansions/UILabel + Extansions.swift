@@ -18,6 +18,7 @@ extension UILabel {
         case standartMid
         case standartMax
         case standartExtra
+        case countDown
         case timerWatch
     }
     
@@ -41,6 +42,8 @@ extension UILabel {
             self.font = UIFont.systemFont(ofSize: 19, weight: .medium, width: .standard)
         case .standartExtra:
             self.font = UIFont.systemFont(ofSize: 25, weight: .medium, width: .standard)
+        case .countDown:
+            self.font = UIFont.monospacedDigitSystemFont(ofSize: 60, weight: .light)
         case .timerWatch:
             self.font = UIFont.monospacedDigitSystemFont(ofSize: 80, weight: .light)
         }

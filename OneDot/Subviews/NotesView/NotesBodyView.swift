@@ -16,8 +16,7 @@ class NotesBodyView: UIVisualEffectView {
     enum Mode {
         case prepare,
              editing,
-             deleting,
-             hide
+             deleting
     }
     
     private lazy var notes: [Note] = []
@@ -58,8 +57,6 @@ class NotesBodyView: UIVisualEffectView {
         case .deleting:
             hideOrDoneButton.isHidden = true
             addButton.isHidden = true
-        case .hide:
-            isHidden = true
         }
     }
     
@@ -145,7 +142,7 @@ class NotesBodyView: UIVisualEffectView {
             tableView.endEditing(true)
             hapticGenerator.selectionChanged()
         } else {
-            buttonStateHandler?(.notesHide)
+            buttonStateHandler?(.toolHide(self))
         }
     }
     

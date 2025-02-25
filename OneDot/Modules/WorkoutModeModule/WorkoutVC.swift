@@ -46,11 +46,11 @@ class WorkoutVC: UIViewController {
         return view
     }()
     
-    private let footer: FooterBarView = {
-        let view = FooterBarView()
-        view.disableAutoresizingMask()
-        return view
-    }()
+//    private let footer: FooterBarView = {
+//        let view = FooterBarView()
+//        view.disableAutoresizingMask()
+//        return view
+//    }()
     
     private let footerSeparator: CAShapeLayer = CAShapeLayer()
 
@@ -67,7 +67,7 @@ class WorkoutVC: UIViewController {
     
     override func viewDidLoad() {
         UIApplication.shared.isIdleTimerDisabled = true
-        
+        view.backgroundColor = .red
         setViews()
         setConstraints()
         activateSubviewsHandlers()
@@ -75,17 +75,17 @@ class WorkoutVC: UIViewController {
         Task {await LocationService.shared.requestAuthorization()}
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        GraphicsService.shared.drawShape(shape: footerSeparator, shapeType: .footerSingleSeparator, view: footer)
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        GraphicsService.shared.drawShape(shape: footerSeparator, shapeType: .footerSingleSeparator, view: footer)
+//    }
     
     override func viewWillDisappear(_ animated: Bool) {
         UIApplication.shared.isIdleTimerDisabled = false
     }
 
     private func activateSubviewsHandlers() {
-        footer.workoutVCButtonStateHandler =
-        { [weak self] in self?.activateMode(mode: $0) }
+//        footer.workoutVCButtonStateHandler =
+//        { [weak self] in self?.activateMode(mode: $0) }
         
         header.workoutVCButtonStateHandler =
         { [weak self] in self?.activateMode(mode: $0) }
@@ -96,11 +96,11 @@ class WorkoutVC: UIViewController {
         LocationService.shared.didUpdateCoordinates =
         { [weak self] in self?.locationCoordinates.append($0)}
         
-        TimerService.shared.workoutVCModeComletion =
-        { [weak self] in self?.activateMode(mode: $0)}
+//        TimerService.shared.workoutVCModeComletion =
+//        { [weak self] in self?.activateMode(mode: $0)}
         
-        TimerService.shared.focusLabelCompletion =
-        { [weak self] in self?.body.updateFocusLabel(text: "\($0)", countdownSize: true)}
+//        TimerService.shared.focusLabelCompletion =
+//        { [weak self] in self?.body.updateFocusLabel(text: "\($0)", countdownSize: true)}
         
         TimerService.shared.timerStateHandler = { [weak self] in
             guard let self else { return }
@@ -128,16 +128,16 @@ class WorkoutVC: UIViewController {
         case .prepare:
             header.setWorkoutMode(title: currentWorkout.name, workoutImageNamed: currentWorkout.workoutIconName)
             body.activateMode(mode: .prepare)
-            footer.activateMode(mode: .prepare)
+//            footer.activateMode(mode: .prepare)
             
         case .countdown:
             header.activateMode(mode: .countdown)
             body.activateMode(mode: .countdown)
-            footer.activateMode(mode: .hide)
+//            footer.activateMode(mode: .hide)
             TimerService.shared.startCountdown()
             
         case .start:
-            footer.activateMode(mode: .start)
+//            footer.activateMode(mode: .start)
             hapticGenerator.selectionChanged()
             startDate = .now
             
@@ -159,20 +159,20 @@ class WorkoutVC: UIViewController {
         case .pause:
             header.activateMode(mode: .pause)
             body.activateMode(mode: .pause)
-            footer.activateMode(mode: .pause)
+//            footer.activateMode(mode: .pause)
             header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval))
             TimerService.shared.clearTimer()
             
         case .erase:
             header.activateMode(mode: .pause)
             body.activateMode(mode: .pause)
-            footer.activateMode(mode: .pause)
+//            footer.activateMode(mode: .pause)
             TimerService.shared.clearTimer()
             timeInterval = 0
             header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval))
             
         case .completion:
-            footer.activateMode(mode: .completion)
+//            footer.activateMode(mode: .completion)
             body.activateMode(mode: .completion)
             
         case .saving:
@@ -222,7 +222,7 @@ class WorkoutVC: UIViewController {
         view.backgroundColor = .myPaletteBlue
         view.addSubview(body)
         view.addSubview(header)
-        view.addSubview(footer)
+//        view.addSubview(footer)
         activateMode(mode: .prepare)
     }
     
@@ -240,10 +240,10 @@ class WorkoutVC: UIViewController {
             body.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             body.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 
-            footer.widthAnchor.constraint(equalToConstant: .barWidth),
-            footer.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
-            footer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            footer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+//            footer.widthAnchor.constraint(equalToConstant: .barWidth),
+//            footer.heightAnchor.constraint(equalToConstant: .bottomBarHeight),
+//            footer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            footer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
         ])
     }
     

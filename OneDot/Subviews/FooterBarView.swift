@@ -11,16 +11,13 @@ class FooterBarView: UIView {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
     
-    var dashboardVCButtonStateHandler: ((DashboardVC.Mode)->())?
-    var workoutVCButtonStateHandler: ((WorkoutVC.Mode) -> ())?
-    
+    var buttonStateHandler: ((DashboardVC.Mode)->())?
     
     enum Mode {
         case dashboard
         case prepare
         case start
         case pause
-        case hide
         case completion
     }
     
@@ -54,8 +51,6 @@ class FooterBarView: UIView {
         case .start:
             setButtonImages(lButtonImg: "FooterPause", rButtonImg: "FooterStop")
             leftButton.layer.removeAllAnimations()
-        case .hide:
-            self.isHidden = true
         case .completion:
             setButtonImages(lButtonImg: "FooterCheckmark", rButtonImg: "FooterBack")
             GraphicsService.shared.AnimateStartIcon(leftButton.layer)
@@ -69,20 +64,21 @@ class FooterBarView: UIView {
         hapticGenerator.selectionChanged()
         switch currentMode {
         case .dashboard:
-            dashboardVCButtonStateHandler?(.transitionToWorkoutMode)
+            currentMode = .prepare
+            buttonStateHandler?(.workout)
         case .prepare:
-            currentMode = .start
-            workoutVCButtonStateHandler?(.countdown)
+            currentMode = .prepare
+            TimerService.shared.startCountdown()
+            print("countdown")
         case .start:
             currentMode = .pause
-            workoutVCButtonStateHandler?(.pause)
+//            workoutVCButtonStateHandler?(.pause)
         case .pause:
             currentMode = .start
-            workoutVCButtonStateHandler?(.start)
+//            workoutVCButtonStateHandler?(.start)
         case .completion:
-            workoutVCButtonStateHandler?(.saving)
-        default:
-            break
+            print("")
+//            workoutVCButtonStateHandler?(.saving)
         }
     }
     
@@ -90,15 +86,17 @@ class FooterBarView: UIView {
         hapticGenerator.selectionChanged()
         switch currentMode {
         case .dashboard:
-            dashboardVCButtonStateHandler?(.transitionToProfile)
+            buttonStateHandler?(.transitionToProfile)
         case .prepare:
-            workoutVCButtonStateHandler?(.hide)
+            currentMode = .dashboard
+            buttonStateHandler?(.workoutEnd)
+            leftButton.layer.removeAllAnimations()
         case .start, .pause:
-            workoutVCButtonStateHandler?(.completion)
+            print("")
+//            workoutVCButtonStateHandler?(.completion)
         case .completion:
-            workoutVCButtonStateHandler?(.start)
-        default:
-            break
+            print("")
+//            workoutVCButtonStateHandler?(.start)
         }
     }
     
