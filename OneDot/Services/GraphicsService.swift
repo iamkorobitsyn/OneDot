@@ -15,12 +15,13 @@ class GraphicsService {
     private init() {}
     
     enum ShapeType {
-        case headerSingleShape
-        case footerSingleShape
-        case pickerSingleShape
-        case pickerDoubleShape
-        case crossShape(color: UIColor)
-        case dynamicDescriptionShape(descriptionCount: Int)
+        case headerSingleSeparator
+        case footerSingleSeparator
+        case pickerSingleSeparator
+        case pickerDoubleSeparator
+        case noteCellRedLine
+        case crossSeparator(color: UIColor)
+        case dynamicDescriptionSeparator(descriptionCount: Int)
     }
     
 
@@ -32,36 +33,41 @@ class GraphicsService {
         let path = UIBezierPath()
         
         switch shapeType {
-        case .headerSingleShape:
+        case .headerSingleSeparator:
             path.move(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 - 15))
             path.addLine(to: CGPoint(x: view.bounds.width / 2 , y: view.bounds.height / 2 + 15))
             shape.strokeColor = UIColor.myPaletteGray.cgColor
             
-        case .footerSingleShape:
+        case .footerSingleSeparator:
             path.move(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 - 30))
             path.addLine(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 + 30))
             shape.strokeColor = UIColor.white.cgColor
             
-        case .pickerSingleShape:
+        case .pickerSingleSeparator:
             path.move(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 - 10))
             path.addLine(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 + 10))
             shape.strokeColor = UIColor.myPaletteGray.cgColor
             
-        case .pickerDoubleShape:
+        case .pickerDoubleSeparator:
             path.move(to: CGPoint(x: view.bounds.width / 3, y: view.bounds.height / 2 - 10))
             path.addLine(to: CGPoint(x: view.bounds.width / 3, y: view.bounds.height / 2 + 10))
             path.move(to: CGPoint(x: view.bounds.width / 3 * 2, y: view.bounds.height / 2 - 10))
             path.addLine(to: CGPoint(x: view.bounds.width / 3 * 2, y: view.bounds.height / 2 + 10))
             shape.strokeColor = UIColor.myPaletteGray.cgColor
+               
+        case .noteCellRedLine:
+            path.move(to: CGPoint(x: view.bounds.width - 57, y: view.bounds.height / 2 - 5))
+            path.addLine(to: CGPoint(x: view.bounds.width - 57, y: view.bounds.height / 2 + 25))
+            shape.strokeColor = UIColor.red.withAlphaComponent(0.5).cgColor
             
-        case .crossShape(let color):
+        case .crossSeparator(let color):
             path.move(to: CGPoint(x: view.bounds.width / 2 + 15, y: view.bounds.height / 2 - 15))
             path.addLine(to: CGPoint(x: view.bounds.width - (view.bounds.width / 2) - 15, y: view.bounds.height / 2 + 15))
             path.move(to: CGPoint(x: view.bounds.width - (view.bounds.width / 2) - 15, y: view.bounds.height / 2 - 15))
             path.addLine(to: CGPoint(x: view.bounds.width / 2 + 15, y: view.bounds.height / 2 + 15))
             shape.strokeColor = color.cgColor
             
-        case .dynamicDescriptionShape(descriptionCount: let descriptionCount):
+        case .dynamicDescriptionSeparator(descriptionCount: let descriptionCount):
             path.move(to: CGPoint(x: .barWidth / 2, y:  76))
             path.addLine(to: CGPoint(x: .barWidth / 2 , y: 76 + CGFloat(descriptionCount * 30)))
             shape.strokeColor = UIColor.myPaletteGray.cgColor
@@ -107,7 +113,7 @@ class GraphicsService {
     
     
     
-    func splashScreenAnimate(_ frontLayer: CALayer,
+    func splashAnimate(_ frontLayer: CALayer,
                              _ backLayer: CAGradientLayer,
                              _ logoLayer: UIView,
                              delegate: CAAnimationDelegate) {

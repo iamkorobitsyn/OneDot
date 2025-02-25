@@ -37,9 +37,9 @@ class CalculationsPicker: UIVisualEffectView {
     override func layoutSubviews() {
         switch currentPickerState {
         case .pickerDistance, .pickerSpeed, .pickerPace:
-            GraphicsService.shared.drawShape(shape: separator, shapeType: .pickerSingleShape, view: self)
+            GraphicsService.shared.drawShape(shape: separator, shapeType: .pickerSingleSeparator, view: self)
         case .PickerTime:
-            GraphicsService.shared.drawShape(shape: separator, shapeType: .pickerDoubleShape, view: self)
+            GraphicsService.shared.drawShape(shape: separator, shapeType: .pickerDoubleSeparator, view: self)
         }
     }
     

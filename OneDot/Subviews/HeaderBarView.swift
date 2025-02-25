@@ -8,7 +8,7 @@
 import UIKit
 import AudioToolbox
 
-class headerBarView: UIVisualEffectView {
+class HeaderBarView: UIVisualEffectView {
     
     var buttonStateHandler: ((DashboardVC.Mode)->())?
     
@@ -252,7 +252,7 @@ class headerBarView: UIVisualEffectView {
 
 //MARK: - PickerDataSource&Delegate
 
-extension headerBarView: UIPickerViewDataSource, UIPickerViewDelegate {
+extension HeaderBarView: UIPickerViewDataSource, UIPickerViewDelegate {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }

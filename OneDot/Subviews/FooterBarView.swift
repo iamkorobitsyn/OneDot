@@ -7,7 +7,7 @@
 
 import UIKit
 
-class footerBarView: UIView {
+class FooterBarView: UIView {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
     

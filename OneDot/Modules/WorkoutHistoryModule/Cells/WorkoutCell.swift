@@ -87,7 +87,7 @@ class WorkoutCell: UITableViewCell {
     }
     
     override func layoutSubviews() {
-        GraphicsService.shared.drawShape(shape: separators, shapeType: .crossShape(color: .white), view: self)
+        GraphicsService.shared.drawShape(shape: separators, shapeType: .crossSeparator(color: .white), view: self)
     }
     
     func updateLabels() {

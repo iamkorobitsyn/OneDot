@@ -8,10 +8,10 @@
 import Foundation
 import UIKit
 
-class StartSplachScreenView: UIView {
+class SplashScreenView: UIView {
     
     let frontLayer: CALayer = CALayer()
-    let gradientBackLayer: CAGradientLayer = CAGradientLayer()
+    let gradient: CAGradientLayer = CAGradientLayer()
     let launchLogo: UIImageView = UIImageView()
     
     override init(frame: CGRect) {
@@ -28,8 +28,8 @@ class StartSplachScreenView: UIView {
         
         backgroundColor = .none
         
-        gradientBackLayer.locations = [0.0, 0.4]
-        gradientBackLayer.frame = CGRect(x: 0,
+        gradient.locations = [0.0, 0.4]
+        gradient.frame = CGRect(x: 0,
                                          y: 0,
                                          width: UIScreen.main.bounds.width,
                                          height: UIScreen.main.bounds.height)
@@ -40,12 +40,12 @@ class StartSplachScreenView: UIView {
                                   width: UIScreen.main.bounds.width,
                                   height: UIScreen.main.bounds.height)
         
-        gradientBackLayer.colors = [UIColor.white.cgColor,
+        gradient.colors = [UIColor.white.cgColor,
                                     UIColor.myPaletteBlue.cgColor]
         
         launchLogo.image = UIImage(named: "launchScreenLogo")
         
-        layer.insertSublayer(gradientBackLayer, at: 0)
+        layer.insertSublayer(gradient, at: 0)
         layer.insertSublayer(frontLayer, at: 1)
         addSubview(launchLogo)
         

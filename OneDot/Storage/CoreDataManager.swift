@@ -73,7 +73,6 @@ class CoreDataManager {
         note.i = 0
         note.rowHeight = 120
         note.text = ""
-        note.editing = false
         completion(note)
         saveContext()
     }
@@ -85,11 +84,9 @@ class CoreDataManager {
     
     func editNote(_ note: Note,
                   rowHeight: CGFloat,
-                  text: String,
-                  editing: Bool) {
+                  text: String) {
         note.rowHeight = Int64(rowHeight)
         note.text = text
-        note.editing = editing
         saveContext()
     }
 

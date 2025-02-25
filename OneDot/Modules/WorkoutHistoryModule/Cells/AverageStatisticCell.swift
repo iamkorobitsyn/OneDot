@@ -62,7 +62,7 @@ class AverageStatisticCell: UICollectionViewCell {
         addSubview(leadingResultModule)
         addSubview(trailingResultModule)
         
-        GraphicsService.shared.drawShape(shape: separator, shapeType: .headerSingleShape, view: self)
+        GraphicsService.shared.drawShape(shape: separator, shapeType: .headerSingleSeparator, view: self)
     }
     
     //MARK: - SetConstraints

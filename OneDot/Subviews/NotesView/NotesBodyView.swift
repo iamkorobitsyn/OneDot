@@ -20,8 +20,8 @@ class NotesBodyView: UIVisualEffectView {
              hide
     }
     
-    private var notes: [Note] = []
-    private var textEditingMode: Bool = false
+    private lazy var notes: [Note] = []
+    private lazy var textEditingMode: Bool = false
     
     private let tableView = UITableView()
     private let cellID = "noteCell"
@@ -68,14 +68,12 @@ class NotesBodyView: UIVisualEffectView {
     
     private func fetchNotes() {
         
-        CoreDataManager.shared.fetchNotes { result in
-            
+        CoreDataManager.shared.fetchNotes { [weak self] result in
+            guard let self else { return }
             switch result {
-            case .success(let result):
-                var notes = result
+            case .success(let notesList):
+                notes = notesList
                 notes.sort(by: { $0.i < $1.i })
-                self.notes = notes
-      
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -107,7 +105,7 @@ class NotesBodyView: UIVisualEffectView {
 
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
-        tableView.register(NotesBodyCell.self, forCellReuseIdentifier: cellID)
+        tableView.register(NoteCell.self, forCellReuseIdentifier: cellID)
 
         hideOrDoneButton.setBackgroundImage(UIImage(named: "BodyHide"), for: .normal)
         hideOrDoneButton.addTarget(self, action: #selector(tappedHideOrDoneButton), for: .touchUpInside)
@@ -151,12 +149,20 @@ class NotesBodyView: UIVisualEffectView {
         }
     }
     
-    //MARK: - EditDone
+    //MARK: - NotesEditing
     
-    private func notesEditDone(i: Int, rowHeight: CGFloat, text: String, editing: Bool) {
+    private func notesEditing(i: Int, rowHeight: CGFloat, text: String) {
+        tableView.beginUpdates()
+        activateMode(mode: .editing)
+        CoreDataManager.shared.editNote(notes[i], rowHeight: rowHeight, text: text)
+        tableView.endUpdates()
+        tableView.scrollToRow(at: IndexPath(row: i, section: 0), at: .top, animated: true)
+    }
+    
+    private func notesEditDone(i: Int, rowHeight: CGFloat, text: String) {
         tableView.endEditing(true)
         tableView.beginUpdates()
-        CoreDataManager.shared.editNote(notes[i], rowHeight: rowHeight, text: text, editing: editing)
+        CoreDataManager.shared.editNote(notes[i], rowHeight: rowHeight, text: text)
         tableView.endUpdates()
         activateMode(mode: .prepare)
     }
@@ -198,24 +204,18 @@ extension NotesBodyView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = NotesBodyCell()
-        cell.beginUpdates(textEditing: notes[indexPath.row].editing, text: notes[indexPath.row].text ?? "")
+        let cell = NoteCell()
+        cell.update(text: notes[indexPath.row].text ?? "")
         
-        cell.contentCompletion = { [weak self] contentHeight, text, editing in
+        cell.editingHandler = { [weak self] contentHeight, text, editing in
             guard let self else {return}
             
-            tableView.beginUpdates()
-            activateMode(mode: .editing)
-            CoreDataManager.shared.editNote(notes[indexPath.row], rowHeight: contentHeight, text: text, editing: editing)
-            tableView.endUpdates()
-            tableView.scrollToRow(at: IndexPath(row: indexPath.row, section: 0), at: .top, animated: true)
+            if editing {
+                notesEditing(i: indexPath.row, rowHeight: contentHeight, text: text)
+            } else {
+                notesEditDone(i: indexPath.row, rowHeight: contentHeight, text: text)
+            }
         }
-        
-        cell.notesEndEditingHandler = { [weak self] contentHeight, text, editing in
-            guard let self else {return}
-            notesEditDone(i: indexPath.row, rowHeight: contentHeight, text: text, editing: editing)
-        }
-
         return cell
     }
 }
@@ -235,6 +235,7 @@ extension NotesBodyView: UITableViewDelegate   {
     }
     
     func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) as? NoteCell { cell.deleteMode = true }
         activateMode(mode: .deleting)
     }
     

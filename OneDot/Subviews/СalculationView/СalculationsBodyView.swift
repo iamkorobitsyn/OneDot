@@ -45,7 +45,7 @@ class CalculationsBodyView: UIVisualEffectView {
     }
     
     override func layoutSubviews() {
-        GraphicsService.shared.drawShape(shape: separator, shapeType: .crossShape(color: .myPaletteGray), view: valuesContainerView)
+        GraphicsService.shared.drawShape(shape: separator, shapeType: .crossSeparator(color: .myPaletteGray), view: valuesContainerView)
     }
     
     required init?(coder: NSCoder) {

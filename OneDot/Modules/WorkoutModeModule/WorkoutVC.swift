@@ -46,8 +46,8 @@ class WorkoutVC: UIViewController {
         return view
     }()
     
-    private let footer: footerBarView = {
-        let view = footerBarView()
+    private let footer: FooterBarView = {
+        let view = FooterBarView()
         view.disableAutoresizingMask()
         return view
     }()
@@ -76,7 +76,7 @@ class WorkoutVC: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        GraphicsService.shared.drawShape(shape: footerSeparator, shapeType: .footerSingleShape, view: footer)
+        GraphicsService.shared.drawShape(shape: footerSeparator, shapeType: .footerSingleSeparator, view: footer)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

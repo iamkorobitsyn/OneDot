@@ -8,18 +8,19 @@
 import Foundation
 import UIKit
 
-class NotesBodyCell: UITableViewCell {
+class NoteCell: UITableViewCell {
+
+    var editingHandler: ((CGFloat, String, Bool) -> Void)?
     
-    var contentCompletion: ((CGFloat, String, Bool) -> Void)?
-    var notesEndEditingHandler: ((CGFloat, String, Bool) -> Void)?
-    
-    var rCounter: Int = 0
-    var contentHeight: CGFloat = 120
-    var textEditing: Bool = false
+    lazy var deleteMode: Bool = false
+    private lazy var rCounter: Int = 0
+    private lazy var contentHeight: CGFloat = 120
 
     private let containerView = UIVisualEffectView()
-    let textView = UITextView()
-    let placeholderImage: UIImageView = UIImageView()
+    private let textView = UITextView()
+    
+    private let placeholderImage: UIImageView = UIImageView()
+    private let redLineShape: CAShapeLayer = CAShapeLayer()
     
     //MARK: - Init
 
@@ -31,9 +32,14 @@ class NotesBodyCell: UITableViewCell {
         setConstraints()
     }
     
-    func beginUpdates(textEditing: Bool, text: String) {
-        placeholderImage.isHidden = textEditing
+    override func layoutSubviews() {
+        GraphicsService.shared.drawShape(shape: redLineShape, shapeType: .noteCellRedLine, view: self)
+        redLineShape.strokeColor = deleteMode ? UIColor.red.cgColor : UIColor.red.withAlphaComponent(0.5).cgColor
+    }
+    
+    func update(text: String) {
         textView.text = text
+        placeholderImage.isHidden = text.isEmpty ? false : true
     }
     
     //MARK: - SetViews
@@ -92,26 +98,16 @@ class NotesBodyCell: UITableViewCell {
 
 //MARK: - TextViewDidChange
 
-extension NotesBodyCell: UITextViewDelegate, UITextInteractionDelegate {
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        
-        contentHeight = textView.contentSize.height > 80 ? textView.contentSize.height + 40 : 120
-        notesEndEditingHandler?(contentHeight, textView.text, textEditing)
-        beginUpdates(textEditing: textEditing, text: textView.text)
-    }
+extension NoteCell: UITextViewDelegate, UITextInteractionDelegate {
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         
-        contentHeight = 150
         placeholderImage.isHidden = true
-        contentCompletion?(contentHeight, textView.text, textEditing)
+        editingHandler?(contentHeight, textView.text, true)
         return true
     }
   
     func textViewDidChange(_ textView: UITextView) {
-        textEditing = textView.text.count > 0 ? true : false
-        
         if textView.selectedRange.location == rCounter - 1 {
             if textView.attributedText.string.last == "\n" {
                 textView.text.removeLast()
@@ -120,6 +116,13 @@ extension NotesBodyCell: UITextViewDelegate, UITextInteractionDelegate {
         }
         rCounter = textView.selectedRange.location
         
-        contentCompletion?(contentHeight, textView.text, textEditing)
+        editingHandler?(contentHeight, textView.text, true)
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        
+        contentHeight = textView.contentSize.height > 100 ? textView.contentSize.height + 20 : 120
+        editingHandler?(contentHeight, textView.text, false)
+        update(text: textView.text)
     }
 }
