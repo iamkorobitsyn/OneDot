@@ -22,7 +22,7 @@ class WorkoutView: UIView {
     
     var workoutVCButtonStateHandler: ((WorkoutVC.Mode) -> ())?
     
-    var workout: Workout?
+    var workout: Workout? { WorkoutManager.shared.currentWorkout }
     
     private let timerLabel: UILabel = UILabel()
     private let focusLabel: UILabel = UILabel()
@@ -50,6 +50,9 @@ class WorkoutView: UIView {
         case .prepare:
             self.isHidden = false
             [timerLabel, eraseButton].forEach( {$0.isHidden = true} )
+            [focusLabel, workoutModeButtonTitle, stopwatchModeButtonTitle,
+             workoutModeButton, stopwatchModeButton].forEach( {$0.isHidden = false} )
+            focusLabel.text = "Get ready to start and click on the indicator, good luck in training and competitions"
             updateWorkoutMode(workoutModeIs: UserDefaultsManager.shared.workoutModeIs)
             focusLabel.instance(color: .white, alignment: .center, font: .standartMid)
         case .countdown:
@@ -133,7 +136,6 @@ class WorkoutView: UIView {
         timerLabel.instance(color: .white, alignment: .center, font: .timerWatch)
         timerLabel.text = "00:00:00"
         
-        focusLabel.text = "Get ready to start and click on the indicator, good luck in training and competitions"
         focusLabel.numberOfLines = 5
         
         workoutModeButtonTitle.instance(color: .white, alignment: .center, font: .standartMin)

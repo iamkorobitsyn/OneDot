@@ -28,7 +28,6 @@ class FooterBarView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setViews()
         setConstraints()
     }
@@ -37,7 +36,6 @@ class FooterBarView: UIView {
     
     func activateMode(mode: Mode) {
         currentMode = mode
-
         leftButton.layer.removeAllAnimations()
         
         switch mode {
@@ -69,7 +67,7 @@ class FooterBarView: UIView {
         case .start:
             buttonStateHandler?(.pause)
         case .pause:
-            TimerService.shared.startTimer()
+            buttonStateHandler?(.update)
         case .completion:
             buttonStateHandler?(.trackerClosed)
         }
@@ -101,11 +99,12 @@ class FooterBarView: UIView {
     
     private func setViews() {
         backgroundColor = .myPaletteBlue
-        
         layer.instance(border: false, corner: .max)
         
-        addSubview(leftButton)
-        addSubview(rightButton)
+        [leftButton, rightButton].forEach { button in
+            addSubview(button)
+            button.disableAutoresizingMask()
+        }
         leftButton.addTarget(self, action: #selector(leftTapped), for: .touchUpInside)
         rightButton.addTarget(self, action: #selector(rightTapped), for: .touchUpInside)
     }
@@ -114,9 +113,6 @@ class FooterBarView: UIView {
     //MARK: - SetConstrains
 
     private func setConstraints() {
-        leftButton.disableAutoresizingMask()
-        rightButton.disableAutoresizingMask()
-        
         NSLayoutConstraint.activate([
             leftButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
             leftButton.heightAnchor.constraint(equalToConstant: .bottomBarHeight),

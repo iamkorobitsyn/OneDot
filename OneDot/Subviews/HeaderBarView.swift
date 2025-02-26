@@ -164,13 +164,14 @@ class HeaderBarView: UIVisualEffectView {
         let row = isGeoTracking ? UserDefaultsManager.shared.pickerRowOutdoor : UserDefaultsManager.shared.pickerRowIndoor
         picker.reloadAllComponents()
         picker.selectRow(row, inComponent: 0, animated: true)
+        
+        sendCurrentWorkout(row: row)
     }
     
-    func getCurrentWorkout() -> Workout {
+    func sendCurrentWorkout(row: Int) {
         let workoutList = factoryWorkouts.get(isGeoTracking: isGeoTracking)
-        let workout = isGeoTracking ?
-        workoutList[UserDefaultsManager.shared.pickerRowOutdoor] : workoutList[UserDefaultsManager.shared.pickerRowIndoor]
-        return workout
+        let workout = workoutList[row]
+        WorkoutManager.shared.currentWorkout = workout
     }
     
     //MARK: - SetViews
@@ -264,11 +265,13 @@ extension HeaderBarView: UIPickerViewDataSource, UIPickerViewDelegate {
     
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
         if isGeoTracking {
             UserDefaultsManager.shared.pickerRowOutdoor = row
         } else {
             UserDefaultsManager.shared.pickerRowIndoor = row
         }
+        sendCurrentWorkout(row: row)
     }
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {

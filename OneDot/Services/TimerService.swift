@@ -56,9 +56,7 @@ class TimerService {
                 
                 timeInterval += 1
                 valueHandler?(timeInterval)
-                let distance = LocationService.shared.totalDistance
-                let locations = LocationService.shared.locations
-                WorkoutManager.shared.updateWorkout(timeInterval: timeInterval, totalDistance: distance, locations: locations)
+                WorkoutManager.shared.updateWorkout(timeInterval: timeInterval)
             }
         } else {
             valueHandler?(timeInterval)

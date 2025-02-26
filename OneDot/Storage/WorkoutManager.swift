@@ -14,12 +14,13 @@ class WorkoutManager {
     static let shared = WorkoutManager()
     private let healthStore = HKHealthStore()
     
-    private var currentWorkout: Workout?
-    private var startDate: Date?
+    var startDate: Date?
+    var currentWorkout: Workout?
     private lazy var timeInterval: TimeInterval = 0.0
     private lazy var totalCalories: Double = 0.0
-    private lazy var locationCoordinates: [CLLocation] = []
     private lazy var totalDistance: Double = 0.0
+    private lazy var locationCoordinates: [CLLocation] = []
+    
     
     enum InternalError: Error {
         case notAuthorized(Error)
@@ -54,9 +55,10 @@ class WorkoutManager {
         return .other
     }
     
+    
     //MARK: - ClearWorkout
     
-    func clearWorkout() {
+    func clearValues() {
         currentWorkout = nil
         startDate = nil
         timeInterval = 0.0
@@ -65,18 +67,13 @@ class WorkoutManager {
         totalDistance = 0.0
     }
     
-    //MARK: - SetWorkout
-    
-    func setWorkout(workout: Workout, startDate: Date) {
-        clearWorkout()
-        self.currentWorkout = workout
-        self.startDate = startDate
-    }
-    
     //MARK: - UpdateWorkout
     
-    func updateWorkout(timeInterval: Double, totalDistance: Double, locations: [CLLocation]) {
-        
+    func updateWorkout(timeInterval: Double) {
+        self.timeInterval = timeInterval
+        if let workout = currentWorkout { totalCalories = timeInterval * workout.averageCalBurnedPerSec }
+        totalDistance = LocationService.shared.totalDistance
+        locationCoordinates = LocationService.shared.locations
     }
     
     //MARK: - SaveWorkout

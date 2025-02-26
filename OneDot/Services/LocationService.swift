@@ -37,6 +37,12 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         locationManager.distanceFilter = 5.0
     }
     
+    func clearValues() {
+        recording = false
+        totalDistance = 0.0
+        locations = []
+    }
+    
     func startTracking() {
         locationManager.startUpdatingLocation()
         print("start tracking")

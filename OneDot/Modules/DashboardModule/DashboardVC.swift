@@ -119,12 +119,13 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
                 locationAlertLabel.isHidden = false
             }
         }
-        LocationService.shared.didUpdateRegion = { [weak self] region in self?.mapView.setRegion(region, animated: true) }
+        
         headerBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         footerBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         calculationsBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         notesBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         settingsBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
+        LocationService.shared.didUpdateRegion = { [weak self] region in self?.mapView.setRegion(region, animated: true) }
         TimerService.shared.dashboardModeHandler = { [weak self] in self?.activateMode(mode: $0)}
     }
     
@@ -144,8 +145,6 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             
         case .trackerOpened:
             [headerBar, mapView].forEach( {$0.isHidden = true} )
-            let currentWorkout = headerBar.getCurrentWorkout()
-            workoutView.workout = currentWorkout
             workoutView.activateMode(mode: .prepare)
             footerBar.activateMode(mode: .prepare)
             
@@ -157,16 +156,15 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         case .start:
             if workoutModeIs {
                 LocationService.shared.recording = true
-                let currentWorkout = headerBar.getCurrentWorkout()
-                WorkoutManager.shared.setWorkout(workout: currentWorkout, startDate: .now)
+                WorkoutManager.shared.startDate = .now
             }
             footerBar.isHidden = false
-            footerBar.activateMode(mode: .start)
             activateMode(mode: .update)
             
         case .update:
             TimerService.shared.startTimer()
             workoutView.activateMode(mode: .update)
+            footerBar.activateMode(mode: .start)
             
         case .pause:
             TimerService.shared.clearTimer()
@@ -174,13 +172,15 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             
         case .completion:
             footerBar.activateMode(mode: .completion)
-            
+
         case .trackerClosed:
             [headerBar, mapView].forEach( {$0.isHidden = false} )   
             workoutView.isHidden = true
             footerBar.activateMode(mode: .dashboard)
             TimerService.shared.clearTimer()
-            
+            TimerService.shared.timeInterval = 0.0
+            WorkoutManager.shared.clearValues()
+            LocationService.shared.clearValues()
             
         case .notesOpened:
             [calculationsBody, settingsBody, footerBar].forEach( {$0.isHidden = true} )
