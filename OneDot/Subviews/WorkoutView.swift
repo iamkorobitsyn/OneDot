@@ -14,8 +14,8 @@ class WorkoutView: UIView {
     
     enum Mode {
         case prepare
-        case countdown(Int)
-        case start(Double)
+        case countdown
+        case update
         case pause
         case end
     }
@@ -24,81 +24,22 @@ class WorkoutView: UIView {
     
     var workout: Workout?
     
-    private let timerLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .timerWatch)
-        label.text = "00:00:00"
-        return label
-    }()
+    private let timerLabel: UILabel = UILabel()
+    private let focusLabel: UILabel = UILabel()
+    private let workoutModeButtonTitle: UILabel = UILabel()
+    private let stopwatchModeButtonTitle: UILabel = UILabel()
     
-    private let eraseButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "FooterErase"), for: .normal)
-        return button
-    }()
-    
-    private let modeSwitchButtonLeft: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.layer.cornerRadius = 12
-        button.layer.cornerCurve = .continuous
-        button.layer.borderWidth = 1.5
-        return button
-    }()
-    
-    private let modeSwitchButtonRight: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "workoutStopWatch"), for: .normal)
-        button.setImage(UIImage(named: "workoutStopWatch"), for: .highlighted)
-        button.layer.cornerRadius = 12
-        button.layer.cornerCurve = .continuous
-        button.layer.borderWidth = 1.5
-        return button
-    }()
-    
-    private let leftButtonTitle: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .standartMin)
-        label.numberOfLines = 2
-        return label
-    }()
-    
-    private let rightButtonTitle: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.instance(color: .white, alignment: .center, font: .standartMin)
-        label.numberOfLines = 2
-        label.text = "Stopwatch"
-        return label
-    }()
-    
-    private let focusLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        label.text = "Get ready to start and click on the indicator, good luck in training and competitions"
-        label.numberOfLines = 5
-        return label
-    }()
-    
-    private let countDownLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        return label
-    }()
-    
+    private let workoutModeButton: UIButton = UIButton()
+    private let stopwatchModeButton: UIButton = UIButton()
+    private let eraseButton: UIButton = UIButton()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         isHidden = true
         backgroundColor = .clear
-        addSubview(focusLabel)
         
         setViews()
         setConstraints()
-        
     }
     
     //MARK: - ActivateMode
@@ -109,16 +50,17 @@ class WorkoutView: UIView {
         case .prepare:
             self.isHidden = false
             [timerLabel, eraseButton].forEach( {$0.isHidden = true} )
-            updateWorkoutMode(workoutModeIs: UserDefaultsManager.shared.isWorkoutMode)
+            updateWorkoutMode(workoutModeIs: UserDefaultsManager.shared.workoutModeIs)
             focusLabel.instance(color: .white, alignment: .center, font: .standartMid)
-        case .countdown(let value):
-            [timerLabel, eraseButton, modeSwitchButtonLeft, modeSwitchButtonRight,
-             leftButtonTitle, rightButtonTitle].forEach( {$0.isHidden = true} )
+        case .countdown:
+            TimerService.shared.valueHandler = { [weak self] in self?.updateCountdown(timeInterval: $0)}
+            [timerLabel, eraseButton, workoutModeButton, stopwatchModeButton,
+             workoutModeButtonTitle, stopwatchModeButtonTitle].forEach( {$0.isHidden = true} )
             focusLabel.instance(color: .white, alignment: .center, font: .countDown)
-            focusLabel.text = "\(value)"
-        case .start(let value):
-            timerLabel.isHidden = false
+        case .update:
+            TimerService.shared.valueHandler = { [weak self] in self?.updateTimer(timeInterval: $0)}
             focusLabel.isHidden = true
+            timerLabel.isHidden = false
         case .pause:
             print("pause")
         case .end:
@@ -126,39 +68,38 @@ class WorkoutView: UIView {
         }
     }
     
-    //MARK: - UpdateTimerLabel
+    //MARK: - UpdateCountdown
     
-    private func updateTimerLabel(text: String) {
-        timerLabel.text = text
+    private func updateCountdown(timeInterval: Double) {
+        focusLabel.text = "\(Int(timeInterval))"
     }
     
-    //MARK: - ClearVisibleViews
+    //MARK: - UpdateTimer
     
-    private func clearVisibleViews() {
-        [timerLabel, modeSwitchButtonLeft, modeSwitchButtonRight, eraseButton,
-         leftButtonTitle, rightButtonTitle].forEach({$0.isHidden = true})
+    private func updateTimer(timeInterval: Double) {
+        timerLabel.text = "\(CalculationsService.shared.formatTime(timeInterval))"
     }
     
     //MARK: - WorkoutMode
 
     private func updateWorkoutMode(workoutModeIs: Bool) {
         if let workout = workout {
-            leftButtonTitle.text = workout.name
-            modeSwitchButtonLeft.setImage(UIImage(named: workout.workoutIconName), for: .normal)
-            modeSwitchButtonLeft.setImage(UIImage(named: workout.workoutIconName), for: .highlighted)
+            workoutModeButtonTitle.text = workout.name
+            workoutModeButton.setImage(UIImage(named: workout.workoutIconName), for: .normal)
+            workoutModeButton.setImage(UIImage(named: workout.workoutIconName), for: .highlighted)
         }
-        UserDefaultsManager.shared.isWorkoutMode = workoutModeIs
-        modeSwitchButtonLeft.layer.borderColor = workoutModeIs ? UIColor.white.cgColor : UIColor.clear.cgColor
-        modeSwitchButtonRight.layer.borderColor = workoutModeIs ? UIColor.clear.cgColor  : UIColor.white.cgColor
+        UserDefaultsManager.shared.workoutModeIs = workoutModeIs
+        workoutModeButton.layer.borderColor = workoutModeIs ? UIColor.white.cgColor : UIColor.clear.cgColor
+        stopwatchModeButton.layer.borderColor = workoutModeIs ? UIColor.clear.cgColor  : UIColor.white.cgColor
     }
     
     @objc private func buttonTapped(_ sender: UIButton) {
         hapticGenerator.selectionChanged()
         
         switch sender {
-        case modeSwitchButtonLeft:
+        case workoutModeButton:
             updateWorkoutMode(workoutModeIs: true)
-        case modeSwitchButtonRight:
+        case stopwatchModeButton:
             updateWorkoutMode(workoutModeIs: false)
         case eraseButton:
             workoutVCButtonStateHandler?(.erase)
@@ -171,16 +112,40 @@ class WorkoutView: UIView {
     
     private func setViews() {
         
-        addSubview(modeSwitchButtonLeft)
-        addSubview(modeSwitchButtonRight)
-        modeSwitchButtonLeft.addTarget(self, action: #selector(buttonTapped(_ :)), for: .touchUpInside)
-        modeSwitchButtonRight.addTarget(self, action: #selector(buttonTapped(_ :)), for: .touchUpInside)
-        eraseButton.addTarget(self, action: #selector(buttonTapped(_ :)), for: .touchUpInside)
-
-        addSubview(leftButtonTitle)
-        addSubview(rightButtonTitle)
-        addSubview(timerLabel)
-        addSubview(eraseButton)
+        [workoutModeButton, stopwatchModeButton, eraseButton, timerLabel,
+         focusLabel, workoutModeButtonTitle, stopwatchModeButtonTitle].forEach { view in
+            addSubview(view)
+            view.disableAutoresizingMask()
+        }
+        
+        workoutModeButton.layer.cornerRadius = 12
+        workoutModeButton.layer.cornerCurve = .continuous
+        workoutModeButton.layer.borderWidth = 1.5
+        
+        stopwatchModeButton.setImage(UIImage(named: "workoutStopWatch"), for: .normal)
+        stopwatchModeButton.setImage(UIImage(named: "workoutStopWatch"), for: .highlighted)
+        stopwatchModeButton.layer.cornerRadius = 12
+        stopwatchModeButton.layer.cornerCurve = .continuous
+        stopwatchModeButton.layer.borderWidth = 1.5
+        
+        eraseButton.setImage(UIImage(named: "FooterErase"), for: .normal)
+        
+        timerLabel.instance(color: .white, alignment: .center, font: .timerWatch)
+        timerLabel.text = "00:00:00"
+        
+        focusLabel.text = "Get ready to start and click on the indicator, good luck in training and competitions"
+        focusLabel.numberOfLines = 5
+        
+        workoutModeButtonTitle.instance(color: .white, alignment: .center, font: .standartMin)
+        workoutModeButtonTitle.numberOfLines = 2
+        
+        stopwatchModeButtonTitle.instance(color: .white, alignment: .center, font: .standartMin)
+        stopwatchModeButtonTitle.numberOfLines = 2
+        stopwatchModeButtonTitle.text = "Stopwatch"
+        
+        [workoutModeButton, stopwatchModeButton, eraseButton].forEach { button in
+            button.addTarget(self, action: #selector(buttonTapped(_ :)), for: .touchUpInside)
+        }
     }
     
     //MARK: - SetConstraints
@@ -191,35 +156,35 @@ class WorkoutView: UIView {
             focusLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             focusLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            modeSwitchButtonLeft.widthAnchor.constraint(equalToConstant: .barWidth / 2),
-            modeSwitchButtonLeft.heightAnchor.constraint(equalToConstant: .barWidth / 2),
-            modeSwitchButtonLeft.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
-            modeSwitchButtonLeft.topAnchor.constraint(equalTo: topAnchor, constant: 150),
+            workoutModeButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
+            workoutModeButton.heightAnchor.constraint(equalToConstant: .barWidth / 2),
+            workoutModeButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -.barWidth / 4),
+            workoutModeButton.topAnchor.constraint(equalTo: topAnchor, constant: 150),
             
-            modeSwitchButtonRight.widthAnchor.constraint(equalToConstant: .barWidth / 2),
-            modeSwitchButtonRight.heightAnchor.constraint(equalToConstant: .barWidth / 2),
-            modeSwitchButtonRight.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4),
-            modeSwitchButtonRight.topAnchor.constraint(equalTo: topAnchor, constant: 150),
+            stopwatchModeButton.widthAnchor.constraint(equalToConstant: .barWidth / 2),
+            stopwatchModeButton.heightAnchor.constraint(equalToConstant: .barWidth / 2),
+            stopwatchModeButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: .barWidth / 4),
+            stopwatchModeButton.topAnchor.constraint(equalTo: topAnchor, constant: 150),
             
-            leftButtonTitle.widthAnchor.constraint(equalToConstant: .barWidth / 3),
-            leftButtonTitle.heightAnchor.constraint(equalToConstant: 50),
-            leftButtonTitle.centerXAnchor.constraint(equalTo: modeSwitchButtonLeft.centerXAnchor),
-            leftButtonTitle.centerYAnchor.constraint(equalTo: modeSwitchButtonLeft.centerYAnchor, constant: 50),
+            workoutModeButtonTitle.widthAnchor.constraint(equalToConstant: .barWidth / 3),
+            workoutModeButtonTitle.heightAnchor.constraint(equalToConstant: 50),
+            workoutModeButtonTitle.centerXAnchor.constraint(equalTo: workoutModeButton.centerXAnchor),
+            workoutModeButtonTitle.centerYAnchor.constraint(equalTo: workoutModeButton.centerYAnchor, constant: 50),
             
-            rightButtonTitle.widthAnchor.constraint(equalToConstant: .barWidth / 3),
-            rightButtonTitle.heightAnchor.constraint(equalToConstant: 50),
-            rightButtonTitle.centerXAnchor.constraint(equalTo: modeSwitchButtonRight.centerXAnchor),
-            rightButtonTitle.centerYAnchor.constraint(equalTo: modeSwitchButtonRight.centerYAnchor, constant: 50),
+            stopwatchModeButtonTitle.widthAnchor.constraint(equalToConstant: .barWidth / 3),
+            stopwatchModeButtonTitle.heightAnchor.constraint(equalToConstant: 50),
+            stopwatchModeButtonTitle.centerXAnchor.constraint(equalTo: stopwatchModeButton.centerXAnchor),
+            stopwatchModeButtonTitle.centerYAnchor.constraint(equalTo: stopwatchModeButton.centerYAnchor, constant: 50),
             
             timerLabel.widthAnchor.constraint(equalToConstant: .barWidth),
             timerLabel.heightAnchor.constraint(equalToConstant: .barWidth / 2),
             timerLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            timerLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            timerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 150),
             
             eraseButton.widthAnchor.constraint(equalToConstant: 42),
             eraseButton.heightAnchor.constraint(equalToConstant: 42),
-            eraseButton.centerXAnchor.constraint(equalTo: modeSwitchButtonRight.centerXAnchor),
-            eraseButton.bottomAnchor.constraint(equalTo: modeSwitchButtonRight.topAnchor)
+            eraseButton.centerXAnchor.constraint(equalTo: stopwatchModeButton.centerXAnchor),
+            eraseButton.bottomAnchor.constraint(equalTo: stopwatchModeButton.topAnchor)
         ])
         
     }

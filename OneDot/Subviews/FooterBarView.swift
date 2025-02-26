@@ -36,9 +36,10 @@ class FooterBarView: UIView {
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
-       
-        self.isHidden = false
         currentMode = mode
+
+        leftButton.layer.removeAllAnimations()
+        
         switch mode {
         case .dashboard:
             setButtonImages(lButtonImg: "FooterStart", rButtonImg: "FooterList")
@@ -50,11 +51,9 @@ class FooterBarView: UIView {
             GraphicsService.shared.AnimateStartIcon(leftButton.layer)
         case .start:
             setButtonImages(lButtonImg: "FooterPause", rButtonImg: "FooterStop")
-            leftButton.layer.removeAllAnimations()
         case .completion:
             setButtonImages(lButtonImg: "FooterCheckmark", rButtonImg: "FooterBack")
             GraphicsService.shared.AnimateStartIcon(leftButton.layer)
-            
         }
     }
     
@@ -64,21 +63,15 @@ class FooterBarView: UIView {
         hapticGenerator.selectionChanged()
         switch currentMode {
         case .dashboard:
-            currentMode = .prepare
-            buttonStateHandler?(.workout)
+            buttonStateHandler?(.trackerOpened)
         case .prepare:
-            currentMode = .prepare
-            TimerService.shared.startCountdown()
-            print("countdown")
+            buttonStateHandler?(.countDown)
         case .start:
-            currentMode = .pause
-//            workoutVCButtonStateHandler?(.pause)
+            buttonStateHandler?(.pause)
         case .pause:
-            currentMode = .start
-//            workoutVCButtonStateHandler?(.start)
+            TimerService.shared.startTimer()
         case .completion:
-            print("")
-//            workoutVCButtonStateHandler?(.saving)
+            buttonStateHandler?(.trackerClosed)
         }
     }
     
@@ -88,15 +81,11 @@ class FooterBarView: UIView {
         case .dashboard:
             buttonStateHandler?(.transitionToProfile)
         case .prepare:
-            currentMode = .dashboard
-            buttonStateHandler?(.workoutEnd)
-            leftButton.layer.removeAllAnimations()
+            buttonStateHandler?(.trackerClosed)
         case .start, .pause:
-            print("")
-//            workoutVCButtonStateHandler?(.completion)
+            buttonStateHandler?(.completion)
         case .completion:
-            print("")
-//            workoutVCButtonStateHandler?(.start)
+            activateMode(mode: .start)
         }
     }
     

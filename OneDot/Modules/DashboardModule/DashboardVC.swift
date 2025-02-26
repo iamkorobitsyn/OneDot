@@ -12,8 +12,8 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     
     private let hapticGenerator = UISelectionFeedbackGenerator()
     
+    private var workoutModeIs: Bool { UserDefaultsManager.shared.workoutModeIs }
     private let locationManager: CLLocationManager = CLLocationManager()
-    
     private var healthKitDataList: [WorkoutData]?
     
     private let headerBar: HeaderBarView = HeaderBarView()
@@ -35,15 +35,17 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     enum Mode {
         case geoTrackingActive
         case geoTrackingInactive
-        case workout
-        case workoutCountDown(Int)
-        case workoutStart(Double)
-        case workoutPause
-        case workoutEnd
-        case notes
-        case calculations
-        case settings
-        case toolHide(_ tool: UIView)
+        case trackerOpened
+        case countDown
+        case start
+        case update
+        case pause
+        case completion
+        case trackerClosed
+        case notesOpened
+        case calculationsOpened
+        case settingsOpened
+        case toolClosed(_ tool: UIView)
         case transitionToProfile
     }
     
@@ -134,42 +136,72 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             UserDefaultsManager.shared.isGeoTracking = true
             headerBar.activateMode(mode: .outdoor)
             footerBar.activateMode(mode: .dashboard)
+            
         case .geoTrackingInactive:
             UserDefaultsManager.shared.isGeoTracking = false
             headerBar.activateMode(mode: .indoor)
             footerBar.activateMode(mode: .dashboard)
-        case .workout:
+            
+        case .trackerOpened:
             [headerBar, mapView].forEach( {$0.isHidden = true} )
-            workoutView.workout = headerBar.getCurrentWorkout()
+            let currentWorkout = headerBar.getCurrentWorkout()
+            workoutView.workout = currentWorkout
             workoutView.activateMode(mode: .prepare)
             footerBar.activateMode(mode: .prepare)
-        case .workoutCountDown(let value):
+            
+        case .countDown:
+            workoutView.activateMode(mode: .countdown)
+            TimerService.shared.startCountdown()
             footerBar.isHidden = true
-            workoutView.activateMode(mode: .countdown(value))
-        case .workoutStart:
-            print("start")
-        case .workoutPause:
-            print("Pause")
-        case .workoutEnd:
+            
+        case .start:
+            if workoutModeIs {
+                LocationService.shared.recording = true
+                let currentWorkout = headerBar.getCurrentWorkout()
+                WorkoutManager.shared.setWorkout(workout: currentWorkout, startDate: .now)
+            }
+            footerBar.isHidden = false
+            footerBar.activateMode(mode: .start)
+            activateMode(mode: .update)
+            
+        case .update:
+            TimerService.shared.startTimer()
+            workoutView.activateMode(mode: .update)
+            
+        case .pause:
+            TimerService.shared.clearTimer()
+            footerBar.activateMode(mode: .pause)
+            
+        case .completion:
+            footerBar.activateMode(mode: .completion)
+            
+        case .trackerClosed:
             [headerBar, mapView].forEach( {$0.isHidden = false} )   
             workoutView.isHidden = true
             footerBar.activateMode(mode: .dashboard)
-        case .notes:
+            TimerService.shared.clearTimer()
+            
+            
+        case .notesOpened:
             [calculationsBody, settingsBody, footerBar].forEach( {$0.isHidden = true} )
             headerBar.activateMode(mode: .notes)
             notesBody.activateMode(mode: .prepare)
-        case .calculations:
+            
+        case .calculationsOpened:
             calculationsBody.isHidden = false
             [notesBody, settingsBody, footerBar].forEach( {$0.isHidden = true} )
             headerBar.activateMode(mode: .calculations)
-        case .settings:
+            
+        case .settingsOpened:
             [calculationsBody, notesBody, footerBar].forEach( {$0.isHidden = true} )
             settingsBody.activateMode(mode: .active)
             headerBar.activateMode(mode: .settings)
-        case .toolHide(let tool):
+            
+        case .toolClosed(let tool):
             tool.isHidden = true
             headerBar.activateMode(mode: .toolsDefault)
             footerBar.activateMode(mode: .dashboard)
+            
         case .transitionToProfile:
             let WorkoutsVC = WorkoutHistoryVC()
             WorkoutsVC.workoutList = healthKitDataList

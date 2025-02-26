@@ -90,11 +90,11 @@ class WorkoutVC: UIViewController {
         header.workoutVCButtonStateHandler =
         { [weak self] in self?.activateMode(mode: $0) }
         
-        LocationService.shared.didUpdateDistance =
-        { [weak self] in self?.totalDistance = $0}
-        
-        LocationService.shared.didUpdateCoordinates =
-        { [weak self] in self?.locationCoordinates.append($0)}
+//        LocationService.shared.didUpdateDistance =
+//        { [weak self] in self?.totalDistance = $0}
+//        
+//        LocationService.shared.didUpdateCoordinates =
+//        { [weak self] in self?.locationCoordinates.append($0)}
         
 //        TimerService.shared.workoutVCModeComletion =
 //        { [weak self] in self?.activateMode(mode: $0)}
@@ -102,20 +102,20 @@ class WorkoutVC: UIViewController {
 //        TimerService.shared.focusLabelCompletion =
 //        { [weak self] in self?.body.updateFocusLabel(text: "\($0)", countdownSize: true)}
         
-        TimerService.shared.timerStateHandler = { [weak self] in
-            guard let self else { return }
-            
-            timeInterval += 1
-            
-            totalCalories = currentWorkout.averageCalBurnedPerSec * timeInterval
-            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval))
-            
-
-            body.updateTrackingState(isGeoTracking: true,
-                                     duration: timeInterval,
-                                     distance: totalDistance,
-                                     calories: totalCalories)
-        }
+//        TimerService.shared.timerStateHandler = { [weak self] in
+//            guard let self else { return }
+//            
+//            timeInterval += 1
+//            
+//            totalCalories = currentWorkout.averageCalBurnedPerSec * timeInterval
+//            header.updateTimerLabel(text: CalculationsService.shared.formatTime(timeInterval))
+//            
+//
+//            body.updateTrackingState(isGeoTracking: true,
+//                                     duration: timeInterval,
+//                                     distance: totalDistance,
+//                                     calories: totalCalories)
+//        }
         
     }
     
@@ -141,20 +141,20 @@ class WorkoutVC: UIViewController {
             hapticGenerator.selectionChanged()
             startDate = .now
             
-            if UserDefaultsManager.shared.isWorkoutMode {
-                if UserDefaultsManager.shared.isGeoTracking {
-                    LocationService.shared.startTracking()
-                    LocationService.shared.recording = true
-                }
-                TimerService.shared.startTimer()
-                header.activateMode(mode: .workout)
-                body.activateMode(mode: .workout)
-            } else {
-                TimerService.shared.startStopWatch(timeInterval: timeInterval)
-                LocationService.shared.stopTracking()
-                header.activateMode(mode: .stopWatch)
-                body.activateMode(mode: .stopWatch)
-            }
+//            if UserDefaultsManager.shared.workoutModeIs {
+//                if UserDefaultsManager.shared.isGeoTracking {
+//                    LocationService.shared.startTracking()
+//                    LocationService.shared.recording = true
+//                }
+//                TimerService.shared.startTimer()
+//                header.activateMode(mode: .workout)
+//                body.activateMode(mode: .workout)
+//            } else {
+//                TimerService.shared.startStopWatch(timeInterval: timeInterval)
+//                LocationService.shared.stopTracking()
+//                header.activateMode(mode: .stopWatch)
+//                body.activateMode(mode: .stopWatch)
+//            }
             
         case .pause:
             header.activateMode(mode: .pause)

@@ -17,9 +17,10 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     
     private let locationManager: CLLocationManager = CLLocationManager()
     private var lastLocation: CLLocation?
-    private var totalDistance: Double = 0.0
-    var didUpdateCoordinates: ((CLLocation) -> Void)?
-    var didUpdateDistance: ((Double) -> Void)?
+    
+    lazy var totalDistance: Double = 0.0
+    lazy var locations: [CLLocation] = []
+    
     var didUpdateRegion: ((MKCoordinateRegion) -> Void)?
     var didUpdateHightAccuracy: ((LocationTrackingState) -> Void)?
     
@@ -76,12 +77,11 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         guard let currentLocation = locations.last else {return}
 
         if recording {
-            didUpdateCoordinates?(currentLocation)
             
+            self.locations.append(currentLocation)
             if let lastLocation = lastLocation {
                 let distance = lastLocation.distance(from: currentLocation)
                 totalDistance += distance
-                didUpdateDistance?(totalDistance)
             }
             
             lastLocation = currentLocation

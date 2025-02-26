@@ -117,7 +117,7 @@ class WorkoutHeaderView: UIView {
         case .pause:
             clearVisibleViews()
             timerLabel.isHidden = false
-            eraseButton.isHidden = UserDefaultsManager.shared.isWorkoutMode
+            eraseButton.isHidden = UserDefaultsManager.shared.workoutModeIs
         }
     }
     
@@ -142,17 +142,17 @@ class WorkoutHeaderView: UIView {
         modeSwitchButtonLeft.setImage(UIImage(named: workoutImageNamed), for: .normal)
         modeSwitchButtonLeft.setImage(UIImage(named: workoutImageNamed), for: .highlighted)
         
-        let status = UserDefaultsManager.shared.isWorkoutMode
+        let status = UserDefaultsManager.shared.workoutModeIs
         modeSwitchButtonLeft.layer.borderColor = status ? UIColor.white.cgColor : UIColor.clear.cgColor
         modeSwitchButtonRight.layer.borderColor = status ? UIColor.clear.cgColor  : UIColor.white.cgColor
     }
 
     private func updateWorkoutMode() {
         
-        UserDefaultsManager.shared.isWorkoutMode = modeSwitchButtonLeft.isTouchInside ? true : false
-        UserDefaultsManager.shared.isWorkoutMode = modeSwitchButtonRight.isTouchInside ? false : true
+        UserDefaultsManager.shared.workoutModeIs = modeSwitchButtonLeft.isTouchInside ? true : false
+        UserDefaultsManager.shared.workoutModeIs = modeSwitchButtonRight.isTouchInside ? false : true
         
-        let status = UserDefaultsManager.shared.isWorkoutMode
+        let status = UserDefaultsManager.shared.workoutModeIs
         modeSwitchButtonLeft.layer.borderColor = status ? UIColor.white.cgColor : UIColor.clear.cgColor
         modeSwitchButtonRight.layer.borderColor = status ? UIColor.clear.cgColor  : UIColor.white.cgColor
     }

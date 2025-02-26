@@ -82,7 +82,7 @@ class CalculationsBodyView: UIVisualEffectView {
     //MARK: - Present
     
     @objc private func hide() {
-        buttonStateHandler?(.toolHide(self))
+        buttonStateHandler?(.toolClosed(self))
     }
     
     //MARK: - UpdateValues

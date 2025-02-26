@@ -12,14 +12,14 @@ class TimerService {
     
     static let shared = TimerService()
     
-    var timer: Timer?
+    lazy var timeInterval = 0.0
+    private var timer: Timer?
+    private var workoutModeIs: Bool { UserDefaultsManager.shared.workoutModeIs }
     
-//    var workoutVCModeComletion: ((WorkoutVC.Mode) -> Void)?
     
-//    var focusLabelCompletion: ((Int) -> Void)?
+    
     var dashboardModeHandler: ((DashboardVC.Mode) -> Void)?
-    
-    var timerStateHandler: (() -> Void)?
+    var valueHandler: ((Double) -> Void)?
     
     private init() {}
     
@@ -31,44 +31,43 @@ class TimerService {
     func startCountdown() {
         
         clearTimer()
-        var timeInterval = 3
-        
-        dashboardModeHandler?(.workoutCountDown(Int(timeInterval)))
+        timeInterval = 3.0
+        valueHandler?(timeInterval)
         
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] timer in
             guard let self = self else { return }
             
             timeInterval -= 1
-            dashboardModeHandler?(.workoutCountDown(Int(timeInterval)))
+            valueHandler?(timeInterval)
             
             if timeInterval == 0 {
-                startTimer()
+                dashboardModeHandler?(.start)
             }
         })
     }
     
     func startTimer() {
         clearTimer()
-//        var timeInterval = timeInterval
-        
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
-            guard let self = self else { return }
+        if workoutModeIs {
+            valueHandler?(timeInterval)
             
-//            timeInterval += 1
-            dashboardModeHandler?(.workoutStart(timer.timeInterval))
-            print(timer.timeInterval)
-
-        }
-    }
-    
-    func startStopWatch(timeInterval: Double) {
-        clearTimer()
-        var timeInterval = timeInterval
-        
-        timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] timer in
-            guard let self = self else { return }
-            timeInterval += 0.01
-            timerStateHandler?()
+            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+                guard let self = self else { return }
+                
+                timeInterval += 1
+                valueHandler?(timeInterval)
+                let distance = LocationService.shared.totalDistance
+                let locations = LocationService.shared.locations
+                WorkoutManager.shared.updateWorkout(timeInterval: timeInterval, totalDistance: distance, locations: locations)
+            }
+        } else {
+            valueHandler?(timeInterval)
+            
+            timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] timer in
+                guard let self = self else { return }
+                timeInterval += 0.01
+                valueHandler?(timeInterval)
+            }
         }
     }
 }

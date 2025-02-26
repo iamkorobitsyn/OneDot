@@ -99,7 +99,7 @@ class CalculationsService {
     //MARK: - FormatTime
     
     func formatTime(_ timeInterval: TimeInterval) -> String {
-        if UserDefaultsManager.shared.isWorkoutMode {
+        if UserDefaultsManager.shared.workoutModeIs {
             let hours = Int(timeInterval) / 3600
             let minutes = Int(timeInterval) / 60 % 60
             let seconds = Int(timeInterval) % 60

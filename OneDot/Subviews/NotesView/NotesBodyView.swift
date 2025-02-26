@@ -142,7 +142,7 @@ class NotesBodyView: UIVisualEffectView {
             tableView.endEditing(true)
             hapticGenerator.selectionChanged()
         } else {
-            buttonStateHandler?(.toolHide(self))
+            buttonStateHandler?(.toolClosed(self))
         }
     }
     

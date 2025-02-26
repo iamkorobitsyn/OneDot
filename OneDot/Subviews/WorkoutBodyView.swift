@@ -48,7 +48,6 @@ class WorkoutBodyView: UIView {
         super.init(frame: frame)
         setViews()
         setConstraints()
-        
     }
     
     func activateMode(mode: Mode) {

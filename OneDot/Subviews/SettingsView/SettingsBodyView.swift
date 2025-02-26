@@ -42,7 +42,7 @@ class SettingsBodyView: UIVisualEffectView {
     
     
     @objc private func buttonPressed() {
-        buttonStateHandler?(.toolHide(self))
+        buttonStateHandler?(.toolClosed(self))
     }
 
 

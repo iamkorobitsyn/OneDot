@@ -51,7 +51,7 @@ class UserDefaultsManager {
         set { setValue(key: Keys.statisticsSegmenterValue, value: newValue) }
     }
 
-    var isWorkoutMode: Bool {
+    var workoutModeIs: Bool {
         get { getValue(key: Keys.isWorkoutMode, defaultValue: true) }
         set { setValue(key: Keys.isWorkoutMode, value: newValue) }
     }

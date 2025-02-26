@@ -113,13 +113,13 @@ class HeaderBarView: UIVisualEffectView {
         case indoorButton.isTouchInside:
             buttonStateHandler?(.geoTrackingInactive)
         case notesButton.isTouchInside:
-            buttonStateHandler?(.notes)
+            buttonStateHandler?(.notesOpened)
             toolsTitle.text = "Notes"
         case calculatorButton.isTouchInside:
-            buttonStateHandler?(.calculations)
+            buttonStateHandler?(.calculationsOpened)
             toolsTitle.text = "Calculations"
         case settingsButton.isTouchInside:
-            buttonStateHandler?(.settings)
+            buttonStateHandler?(.settingsOpened)
             toolsTitle.text = "Settings"
         default:
             break
