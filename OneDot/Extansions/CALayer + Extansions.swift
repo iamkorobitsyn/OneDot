@@ -28,7 +28,7 @@ extension CALayer {
             cornerRadius = 10
             cornerCurve = .continuous
         case .max:
-            cornerRadius = 30
+            cornerRadius = 20
             cornerCurve = .continuous
         }
     }

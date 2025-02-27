@@ -28,13 +28,7 @@ class DescriptionModuleView: UIView {
         label.disableAutoresizingMask()
         return label
     }()
-    
-    let horisontalSeparator: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        view.image = UIImage(named: "verticalSeparatorWhite")
-        return view
-    }()
+
     
     enum Mode {
         case timeDescription
@@ -46,7 +40,6 @@ class DescriptionModuleView: UIView {
         case stepsDescription
         case cadenceDescription
         case distanceTracking
-        case paceTracking
         case caloriesTracking
     }
     
@@ -74,34 +67,25 @@ class DescriptionModuleView: UIView {
             addSubview(titleIcon)
             addSubview(resultLabel)
             
-            titleLabel.textAlignment = .left
             titleLabel.instance(color: .myPaletteGray, alignment: .left, font: .condensedMin)
-            
-            resultLabel.textAlignment = .right
             resultLabel.instance(color: .myPaletteGray, alignment: .right, font: .standartMid)
             
         case .horizontalExpanded:
             
-            addSubview(titleLabel)
             addSubview(titleIcon)
             addSubview(resultLabel)
-            addSubview(horisontalSeparator)
+            addSubview(titleLabel)
             
-            titleLabel.textAlignment = .left
-            titleLabel.instance(color: .white, alignment: .left, font: .condensedMid)
+            resultLabel.instance(color: .white, alignment: .center, font: .standartExtra)
+            titleLabel.instance(color: .white, alignment: .center, font: .condensedMid)
             
-            resultLabel.textAlignment = .right
-            resultLabel.instance(color: .white, alignment: .right, font: .standartExtra)
         case .vertical:
             
             addSubview(titleLabel)
             addSubview(titleIcon)
             addSubview(resultLabel)
             
-            titleLabel.textAlignment = .center
             titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
-            
-            resultLabel.textAlignment = .center
             resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)
         }
         
@@ -132,13 +116,10 @@ class DescriptionModuleView: UIView {
             titleLabel.text = axis == .vertical ? "Average cadence" : "Cadence"
             titleIcon.image = UIImage(named: axis == .vertical ? "AMCadence25x25" : "AMCadence20x20")
         case .distanceTracking:
-            titleLabel.text = "Distance"
+            titleLabel.text = "km"
             titleIcon.image = UIImage(named: "AMDistanceTracking25x25")
-        case .paceTracking:
-            titleLabel.text = "Pace"
-            titleIcon.image = UIImage(named: "AMPaceTracking25x25")
         case .caloriesTracking:
-            titleLabel.text = "Calories"
+            titleLabel.text = "cal"
             titleIcon.image = UIImage(named: "AMCaloriesTracking25x25")
         }
         
@@ -170,18 +151,13 @@ class DescriptionModuleView: UIView {
                 titleIcon.leadingAnchor.constraint(equalTo: leadingAnchor),
                 titleIcon.centerYAnchor.constraint(equalTo: centerYAnchor),
                 
-                titleLabel.widthAnchor.constraint(equalToConstant: 75),
-                titleLabel.leadingAnchor.constraint(equalTo: titleIcon.trailingAnchor, constant: 15),
-                titleLabel.centerYAnchor.constraint(equalTo: titleIcon.centerYAnchor),
-                
-                horisontalSeparator.widthAnchor.constraint(equalToConstant: 42),
-                horisontalSeparator.heightAnchor.constraint(equalToConstant: 42),
-                horisontalSeparator.centerXAnchor.constraint(equalTo: centerXAnchor),
-                horisontalSeparator.centerYAnchor.constraint(equalTo: centerYAnchor),
-                
-                resultLabel.widthAnchor.constraint(equalToConstant: 100),
-                resultLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-                resultLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
+                resultLabel.widthAnchor.constraint(equalToConstant: 150),
+                resultLabel.leadingAnchor.constraint(equalTo: titleIcon.trailingAnchor),
+                resultLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+
+                titleLabel.widthAnchor.constraint(equalToConstant: 25),
+                titleLabel.leadingAnchor.constraint(equalTo: resultLabel.trailingAnchor),
+                titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
             ])
         case .vertical:
             NSLayoutConstraint.activate([

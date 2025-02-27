@@ -8,7 +8,7 @@
 import UIKit
 import HealthKit
 
-class WorkoutHistoryVC: UIViewController {
+class WorkoutListVC: UIViewController {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
     
@@ -20,83 +20,37 @@ class WorkoutHistoryVC: UIViewController {
         case dismiss
     }
     
-    let healthStore = HKHealthStore()
     var workoutList: [WorkoutData]?
     var workoutStatistics: WorkoutStatistics?
     
-    private let blurEffectView: UIVisualEffectView = {
-        let effect = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
-        effect.disableAutoresizingMask()
-        effect.layer.masksToBounds = true
-        effect.layer.cornerRadius = 10
-        return effect
-    }()
+    private let blurEffectView: UIVisualEffectView = UIVisualEffectView()
     
-    private let dismissButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "BodyHide"), for: .normal)
-        return button
-    }()
-    
-    private let pageControl: UIPageControl = {
-        let pageControl = UIPageControl()
-        pageControl.disableAutoresizingMask()
-        pageControl.numberOfPages = 3
-        pageControl.currentPageIndicatorTintColor = .myPaletteGold
-        pageControl.pageIndicatorTintColor = .lightGray
-        pageControl.isUserInteractionEnabled = false
-        return pageControl
-    }()
-    
+    private let pageControl: UIPageControl = UIPageControl()
     private let metricsPanel: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.disableAutoresizingMask()
-        collectionView.isPagingEnabled = true
-        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
+    private let segmenter: UISegmentedControl = UISegmentedControl()
     
-    private let segmenter: UISegmentedControl = {
-        let view = UISegmentedControl(items: ["Week", "Month", "Year"])
-        view.selectedSegmentTintColor = .myPaletteGold
-        view.selectedSegmentIndex = 1
-        view.setTitleTextAttributes([.foregroundColor: UIColor.white,
-                                     .font: UIFont.systemFont(ofSize: 16,
-                                                              weight: .medium,
-                                                              width: .compressed)], for: .selected)
-        view.setTitleTextAttributes([.foregroundColor: UIColor.myPaletteGray,
-                                     .font: UIFont.systemFont(ofSize: 16,
-                                                              weight: .light,
-                                                              width: .compressed)], for: .normal)
-        view.disableAutoresizingMask()
-        return view
-    }()
-    
-    private let workoutsListTable: UITableView = {
-        let tableView = UITableView()
-        tableView.disableAutoresizingMask()
-        tableView.backgroundColor = .clear
-        tableView.separatorColor = .clear
-        return tableView
-    }()
-    
-   
+    private let workoutsListTable: UITableView = UITableView()
 
+    private let dismissButton: UIButton = UIButton()
+    
+    //MARK: - DidLoad
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         isModalInPresentation = true
-        workoutsListTable.dataSource = self
-        workoutsListTable.delegate = self
-        
+        metricsPanel.register(AverageStatisticCell.self, forCellWithReuseIdentifier: "MetricsPanelCell")
         metricsPanel.delegate = self
         metricsPanel.dataSource = self
-        metricsPanel.register(AverageStatisticCell.self, forCellWithReuseIdentifier: "MetricsPanelCell")
- 
-        
+        workoutsListTable.register(WorkoutCell.self, forCellReuseIdentifier: "WorkoutCell")
+        workoutsListTable.dataSource = self
+        workoutsListTable.delegate = self
+
         setViews()
         setConstraints()
     }
@@ -147,25 +101,45 @@ class WorkoutHistoryVC: UIViewController {
     //MARK: - SetViews
     
     private func setViews() {
-        view.addSubview(blurEffectView)
+        [blurEffectView, pageControl, metricsPanel, segmenter, workoutsListTable, dismissButton].forEach { view in
+            self.view.addSubview(view)
+            view.disableAutoresizingMask()
+        }
         
+        blurEffectView.effect = UIBlurEffect(style: .extraLight)
+        blurEffectView.layer.masksToBounds = true
+        blurEffectView.layer.cornerRadius = 10
         
-        view.addSubview(pageControl)
-        view.addSubview(metricsPanel)
+        pageControl.numberOfPages = 3
+        pageControl.currentPageIndicatorTintColor = .myPaletteGold
+        pageControl.pageIndicatorTintColor = .lightGray
+        pageControl.isUserInteractionEnabled = false
+
         metricsPanel.backgroundColor = .clear
+        metricsPanel.isPagingEnabled = true
+        metricsPanel.showsHorizontalScrollIndicator = false
         
-        view.addSubview(segmenter)
-        
-        view.addSubview(workoutsListTable)
-        
-        view.addSubview(dismissButton)
-        
-        workoutsListTable.register(WorkoutCell.self, forCellReuseIdentifier: "WorkoutCell")
-        
-        dismissButton.addTarget(self, action: #selector(selfDismiss), for: .touchUpInside)
-        
+        segmenter.insertSegment(withTitle: "Week", at: 0, animated: true)
+        segmenter.insertSegment(withTitle: "Month", at: 1, animated: true)
+        segmenter.insertSegment(withTitle: "Year", at: 2, animated: true)
+        segmenter.selectedSegmentTintColor = .myPaletteGold
+        segmenter.selectedSegmentIndex = 1
+        segmenter.setTitleTextAttributes([.foregroundColor: UIColor.white,
+                                     .font: UIFont.systemFont(ofSize: 16,
+                                                              weight: .medium,
+                                                              width: .compressed)], for: .selected)
+        segmenter.setTitleTextAttributes([.foregroundColor: UIColor.myPaletteGray,
+                                     .font: UIFont.systemFont(ofSize: 16,
+                                                              weight: .light,
+                                                              width: .compressed)], for: .normal)
         segmenter.addTarget(self, action: #selector(segmenterTapped(_:)), for: .valueChanged)
         setSegmenter()
+        
+        workoutsListTable.backgroundColor = .clear
+        workoutsListTable.separatorColor = .clear
+        
+        dismissButton.setImage(UIImage(named: "BodyHide"), for: .normal)
+        dismissButton.addTarget(self, action: #selector(selfDismiss), for: .touchUpInside)
     }
     
     //MARK: - SetConstraints
@@ -206,7 +180,7 @@ class WorkoutHistoryVC: UIViewController {
 //MARK: - CollectionView
 
 
-extension WorkoutHistoryVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension WorkoutListVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: view.frame.width, height: 200)
@@ -236,7 +210,7 @@ extension WorkoutHistoryVC: UICollectionViewDataSource, UICollectionViewDelegate
 }
 
 
-extension WorkoutHistoryVC: UITableViewDataSource, UITableViewDelegate {
+extension WorkoutListVC: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource
        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -264,7 +238,7 @@ extension WorkoutHistoryVC: UITableViewDataSource, UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         hapticGenerator.selectionChanged()
         
-        let workoutFocusVC = WorkoutSnapshotVC()
+        let workoutFocusVC = SnapshotVC()
         self.navigationController?.pushViewController(workoutFocusVC, animated: true)
         workoutFocusVC.workoutData = workoutList?[indexPath.row]
     }

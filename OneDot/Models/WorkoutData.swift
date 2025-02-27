@@ -8,10 +8,10 @@
 import Foundation
 
 protocol Workout {
-    var averageCalBurnedPerSec: Double {get}
     var name: String {get}
     var pickerIconName: String {get}
     var workoutIconName: String {get}
+    var averageCalBurnedPerSec: Double {get}
 }
 
 struct WorkoutData {

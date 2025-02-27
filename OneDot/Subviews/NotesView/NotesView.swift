@@ -8,10 +8,10 @@
 import Foundation
 import UIKit
 
-class NotesBodyView: UIVisualEffectView {
+class NotesView: UIVisualEffectView {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
-    var buttonStateHandler: ((DashboardVC.Mode) -> Void)?
+    var dashboardModeHandler: ((DashboardVC.Mode) -> Void)?
     
     enum Mode {
         case prepare,
@@ -142,7 +142,7 @@ class NotesBodyView: UIVisualEffectView {
             tableView.endEditing(true)
             hapticGenerator.selectionChanged()
         } else {
-            buttonStateHandler?(.toolClosed(self))
+            dashboardModeHandler?(.toolClosed(self))
         }
     }
     
@@ -193,7 +193,7 @@ class NotesBodyView: UIVisualEffectView {
 
 //MARK: - UITableViewDataSource
 
-extension NotesBodyView: UITableViewDataSource {
+extension NotesView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         notes.count
@@ -219,7 +219,7 @@ extension NotesBodyView: UITableViewDataSource {
 
 //MARK: - UITableViewDelegate
 
-extension NotesBodyView: UITableViewDelegate   {
+extension NotesView: UITableViewDelegate   {
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         600

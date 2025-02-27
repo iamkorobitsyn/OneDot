@@ -10,7 +10,7 @@ import UIKit
 import Photos
 import MapKit
 
-class WorkoutSnapshotVC: UIViewController {
+class SnapshotVC: UIViewController {
     
     let hapticGenerator = UISelectionFeedbackGenerator()
 
@@ -216,12 +216,12 @@ class WorkoutSnapshotVC: UIViewController {
             bottleImage.widthAnchor.constraint(equalToConstant: 60),
             bottleImage.heightAnchor.constraint(equalToConstant: 60),
             bottleImage.bottomAnchor.constraint(equalTo: resultHeader.topAnchor),
-            bottleImage.leadingAnchor.constraint(equalTo: resultHeader.leadingAnchor, constant: 50),
+            bottleImage.leadingAnchor.constraint(equalTo: resultHeader.leadingAnchor, constant: 70),
             
             dumbbellImage.widthAnchor.constraint(equalToConstant: 60),
             dumbbellImage.heightAnchor.constraint(equalToConstant: 60),
-            dumbbellImage.bottomAnchor.constraint(equalTo: resultHeader.topAnchor, constant: 17.5),
-            dumbbellImage.trailingAnchor.constraint(equalTo: resultHeader.trailingAnchor),
+            dumbbellImage.bottomAnchor.constraint(equalTo: resultHeader.topAnchor, constant: 15.5),
+            dumbbellImage.trailingAnchor.constraint(equalTo: resultHeader.trailingAnchor, constant: -40),
             
             backButton.widthAnchor.constraint(equalToConstant: 42),
             backButton.heightAnchor.constraint(equalToConstant: 42),
@@ -238,7 +238,7 @@ class WorkoutSnapshotVC: UIViewController {
   
 }
 
-extension WorkoutSnapshotVC: MKMapViewDelegate {
+extension SnapshotVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let renderer = MKPolylineRenderer(overlay: overlay)
         renderer.strokeColor = .myPaletteGold

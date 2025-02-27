@@ -16,11 +16,7 @@ class WorkoutView: UIView {
         case prepare
         case countdown
         case update
-        case pause
-        case end
     }
-    
-    var workoutVCButtonStateHandler: ((WorkoutVC.Mode) -> ())?
     
     var workout: Workout? { WorkoutManager.shared.currentWorkout }
     
@@ -32,6 +28,10 @@ class WorkoutView: UIView {
     private let workoutModeButton: UIButton = UIButton()
     private let stopwatchModeButton: UIButton = UIButton()
     private let eraseButton: UIButton = UIButton()
+    
+    private let distanceView: DescriptionModuleView = DescriptionModuleView()
+    private let caloriesBurnedView: DescriptionModuleView = DescriptionModuleView()
+    private let separator: CAShapeLayer = CAShapeLayer()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,45 +42,81 @@ class WorkoutView: UIView {
         setConstraints()
     }
     
+    override func layoutSubviews() {
+        GraphicsService.shared.drawShape(shape: separator, shapeType: .workoutSingleSeparator, view: self)
+    }
+    
     //MARK: - ActivateMode
     
     func activateMode(mode: Mode) {
         switch mode {
-            
         case .prepare:
-            self.isHidden = false
-            [timerLabel, eraseButton].forEach( {$0.isHidden = true} )
-            [focusLabel, workoutModeButtonTitle, stopwatchModeButtonTitle,
-             workoutModeButton, stopwatchModeButton].forEach( {$0.isHidden = false} )
+            separator.isHidden = true
+            updateVisible(views: [focusLabel, workoutModeButtonTitle, stopwatchModeButtonTitle,
+                                  workoutModeButton, stopwatchModeButton, self])
+            timerLabel.text = "00:00:00"
             focusLabel.text = "Get ready to start and click on the indicator, good luck in training and competitions"
-            updateWorkoutMode(workoutModeIs: UserDefaultsManager.shared.workoutModeIs)
             focusLabel.instance(color: .white, alignment: .center, font: .standartMid)
+            distanceView.activateMode(axis: .horizontalExpanded, mode: .distanceTracking, text: "0.00")
+            caloriesBurnedView.activateMode(axis: .horizontalExpanded, mode: .caloriesTracking, text: "0")
+            updateWorkoutMode(workoutModeIs: UserDefaultsManager.shared.workoutModeIs)
+            
         case .countdown:
-            TimerService.shared.valueHandler = { [weak self] in self?.updateCountdown(timeInterval: $0)}
-            [timerLabel, eraseButton, workoutModeButton, stopwatchModeButton,
-             workoutModeButtonTitle, stopwatchModeButtonTitle].forEach( {$0.isHidden = true} )
+            updateVisible(views: [focusLabel])
             focusLabel.instance(color: .white, alignment: .center, font: .countDown)
+            TimerService.shared.valueHandler = { [weak self] countdown in
+                guard let self else {return}
+                updateVisibleValues(countdown: countdown, interval: nil, distance: nil, calories: nil)
+            }
+            
         case .update:
-            TimerService.shared.valueHandler = { [weak self] in self?.updateTimer(timeInterval: $0)}
-            focusLabel.isHidden = true
-            timerLabel.isHidden = false
-        case .pause:
-            print("pause")
-        case .end:
-            print("save")
+            if UserDefaultsManager.shared.workoutModeIs {
+                if UserDefaultsManager.shared.isGeoTracking {
+                    separator.isHidden = false
+                    updateVisible(views: [timerLabel, distanceView, caloriesBurnedView])
+                } else {
+                    updateVisible(views: [timerLabel, caloriesBurnedView])
+                }
+                WorkoutManager.shared.valuesHandler = { [weak self] distance, calories in
+                    guard let self else {return}
+                    updateVisibleValues(countdown: nil, interval: nil, distance: distance, calories: calories)
+                }
+            } else {
+                updateVisible(views: [timerLabel, eraseButton])
+            }
+            
+            TimerService.shared.valueHandler = { [weak self] timeInterval in
+                guard let self else {return}
+                updateVisibleValues(countdown: nil, interval: timeInterval, distance: nil, calories: nil)
+            }
         }
     }
     
-    //MARK: - UpdateCountdown
+    //MARK: - UpdateVisible
     
-    private func updateCountdown(timeInterval: Double) {
-        focusLabel.text = "\(Int(timeInterval))"
+    private func updateVisible(views: [UIView]) {
+        [timerLabel, focusLabel, workoutModeButtonTitle, stopwatchModeButtonTitle,
+         workoutModeButton, stopwatchModeButton, eraseButton, distanceView, caloriesBurnedView].forEach({$0.isHidden = true})
+        views.forEach({$0.isHidden = false})
     }
     
-    //MARK: - UpdateTimer
+    //MARK: - UpdateVisibleValues
     
-    private func updateTimer(timeInterval: Double) {
-        timerLabel.text = "\(CalculationsService.shared.formatTime(timeInterval))"
+    private func updateVisibleValues(countdown: Double?, interval: Double?, distance: Double?, calories: Double?) {
+        if let countdown = countdown {
+            focusLabel.text = "\(Int(countdown))"
+        }
+        if let interval = interval {
+            timerLabel.text = "\(CalculationsService.shared.formatTime(interval))"
+        }
+        if let distance = distance {
+            let kilometers = distance / 1000
+            let roundedKilometers = String(format: "%.2f", kilometers)
+            distanceView.activateMode(axis: .horizontalExpanded, mode: .distanceTracking, text: "\(roundedKilometers)")
+        }
+        if let calories = calories {
+            caloriesBurnedView.activateMode(axis: .horizontalExpanded, mode: .caloriesTracking, text: "\(Int(calories))")
+        }
     }
     
     //MARK: - WorkoutMode
@@ -96,6 +132,8 @@ class WorkoutView: UIView {
         stopwatchModeButton.layer.borderColor = workoutModeIs ? UIColor.clear.cgColor  : UIColor.white.cgColor
     }
     
+    //MARK: - ButtonTapped
+    
     @objc private func buttonTapped(_ sender: UIButton) {
         hapticGenerator.selectionChanged()
         
@@ -105,7 +143,8 @@ class WorkoutView: UIView {
         case stopwatchModeButton:
             updateWorkoutMode(workoutModeIs: false)
         case eraseButton:
-            workoutVCButtonStateHandler?(.erase)
+            timerLabel.text = "00:00.00"
+            TimerService.shared.timeInterval = 0.0
         default:
             break
         }
@@ -115,8 +154,8 @@ class WorkoutView: UIView {
     
     private func setViews() {
         
-        [workoutModeButton, stopwatchModeButton, eraseButton, timerLabel,
-         focusLabel, workoutModeButtonTitle, stopwatchModeButtonTitle].forEach { view in
+        [workoutModeButton, stopwatchModeButton, eraseButton, timerLabel, focusLabel,
+         workoutModeButtonTitle, stopwatchModeButtonTitle, distanceView, caloriesBurnedView].forEach { view in
             addSubview(view)
             view.disableAutoresizingMask()
         }
@@ -134,8 +173,6 @@ class WorkoutView: UIView {
         eraseButton.setImage(UIImage(named: "FooterErase"), for: .normal)
         
         timerLabel.instance(color: .white, alignment: .center, font: .timerWatch)
-        timerLabel.text = "00:00:00"
-        
         focusLabel.numberOfLines = 5
         
         workoutModeButtonTitle.instance(color: .white, alignment: .center, font: .standartMin)
@@ -144,7 +181,7 @@ class WorkoutView: UIView {
         stopwatchModeButtonTitle.instance(color: .white, alignment: .center, font: .standartMin)
         stopwatchModeButtonTitle.numberOfLines = 2
         stopwatchModeButtonTitle.text = "Stopwatch"
-        
+
         [workoutModeButton, stopwatchModeButton, eraseButton].forEach { button in
             button.addTarget(self, action: #selector(buttonTapped(_ :)), for: .touchUpInside)
         }
@@ -182,6 +219,16 @@ class WorkoutView: UIView {
             timerLabel.heightAnchor.constraint(equalToConstant: .barWidth / 2),
             timerLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             timerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 150),
+            
+            distanceView.widthAnchor.constraint(equalToConstant: 200),
+            distanceView.heightAnchor.constraint(equalToConstant: 25),
+            distanceView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            distanceView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -30),
+            
+            caloriesBurnedView.widthAnchor.constraint(equalToConstant: 200),
+            caloriesBurnedView.heightAnchor.constraint(equalToConstant: 25),
+            caloriesBurnedView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            caloriesBurnedView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 30),
             
             eraseButton.widthAnchor.constraint(equalToConstant: 42),
             eraseButton.heightAnchor.constraint(equalToConstant: 42),

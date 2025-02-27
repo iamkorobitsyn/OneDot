@@ -16,6 +16,7 @@ class GraphicsService {
     
     enum ShapeType {
         case headerSingleSeparator
+        case workoutSingleSeparator
         case footerSingleSeparator
         case pickerSingleSeparator
         case pickerDoubleSeparator
@@ -37,6 +38,11 @@ class GraphicsService {
             path.move(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 - 15))
             path.addLine(to: CGPoint(x: view.bounds.width / 2 , y: view.bounds.height / 2 + 15))
             shape.strokeColor = UIColor.myPaletteGray.cgColor
+            
+        case .workoutSingleSeparator:
+            path.move(to: CGPoint(x: view.bounds.width / 2 - 30, y: view.bounds.height / 2))
+            path.addLine(to: CGPoint(x: view.bounds.width / 2 + 30, y: view.bounds.height / 2))
+            shape.strokeColor = UIColor.white.cgColor
             
         case .footerSingleSeparator:
             path.move(to: CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2 - 30))

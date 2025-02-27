@@ -25,9 +25,9 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     private let mapView: MKMapView = MKMapView()
     
     private let workoutView: WorkoutView = WorkoutView()
-    private let notesBody: NotesBodyView = NotesBodyView()
-    private let calculationsBody: CalculationsBodyView = CalculationsBodyView()
-    private let settingsBody: SettingsBodyView = SettingsBodyView()
+    private let notesBody: NotesView = NotesView()
+    private let calculationsBody: CalculationsView = CalculationsView()
+    private let settingsBody: SettingsView = SettingsView()
     
     private let splashScreen: SplashScreenView = SplashScreenView()
     private let locationAlertLabel: UILabel = UILabel()
@@ -122,11 +122,11 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
         
         headerBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
         footerBar.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        calculationsBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        notesBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        settingsBody.buttonStateHandler = { [weak self] in self?.activateMode(mode: $0) }
-        LocationService.shared.didUpdateRegion = { [weak self] region in self?.mapView.setRegion(region, animated: true) }
+        notesBody.dashboardModeHandler = { [weak self] in self?.activateMode(mode: $0) }
+        calculationsBody.dashboardModeHandler = { [weak self] in self?.activateMode(mode: $0) }
+        settingsBody.dashboardModeHandler = { [weak self] in self?.activateMode(mode: $0) }
         TimerService.shared.dashboardModeHandler = { [weak self] in self?.activateMode(mode: $0)}
+        LocationService.shared.didUpdateRegion = { [weak self] region in self?.mapView.setRegion(region, animated: true) }
     }
     
     //MARK: - ActivateMode
@@ -144,13 +144,14 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             footerBar.activateMode(mode: .dashboard)
             
         case .trackerOpened:
-            [headerBar, mapView].forEach( {$0.isHidden = true} )
             workoutView.activateMode(mode: .prepare)
             footerBar.activateMode(mode: .prepare)
+            [headerBar, mapView].forEach( {$0.isHidden = true} )
             
         case .countDown:
             workoutView.activateMode(mode: .countdown)
             TimerService.shared.startCountdown()
+            workoutView.isHidden = false
             footerBar.isHidden = true
             
         case .start:
@@ -158,8 +159,8 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
                 LocationService.shared.recording = true
                 WorkoutManager.shared.startDate = .now
             }
-            footerBar.isHidden = false
             activateMode(mode: .update)
+            footerBar.isHidden = false
             
         case .update:
             TimerService.shared.startTimer()
@@ -174,13 +175,16 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             footerBar.activateMode(mode: .completion)
 
         case .trackerClosed:
-            [headerBar, mapView].forEach( {$0.isHidden = false} )   
-            workoutView.isHidden = true
+            Task {
+                try await WorkoutManager.shared.saveWorkout()
+                TimerService.shared.clearTimer()
+                WorkoutManager.shared.clearValues()
+                LocationService.shared.clearValues()
+            }
+            [headerBar, mapView].forEach( {$0.isHidden = false} )
+            workoutView.activateMode(mode: .prepare)
             footerBar.activateMode(mode: .dashboard)
-            TimerService.shared.clearTimer()
-            TimerService.shared.timeInterval = 0.0
-            WorkoutManager.shared.clearValues()
-            LocationService.shared.clearValues()
+            workoutView.isHidden = true
             
         case .notesOpened:
             [calculationsBody, settingsBody, footerBar].forEach( {$0.isHidden = true} )
@@ -188,9 +192,9 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             notesBody.activateMode(mode: .prepare)
             
         case .calculationsOpened:
-            calculationsBody.isHidden = false
             [notesBody, settingsBody, footerBar].forEach( {$0.isHidden = true} )
             headerBar.activateMode(mode: .calculations)
+            calculationsBody.isHidden = false
             
         case .settingsOpened:
             [calculationsBody, notesBody, footerBar].forEach( {$0.isHidden = true} )
@@ -199,11 +203,12 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
             
         case .toolClosed(let tool):
             tool.isHidden = true
+            footerBar.isHidden = false
             headerBar.activateMode(mode: .toolsDefault)
             footerBar.activateMode(mode: .dashboard)
             
         case .transitionToProfile:
-            let WorkoutsVC = WorkoutHistoryVC()
+            let WorkoutsVC = WorkoutListVC()
             WorkoutsVC.workoutList = healthKitDataList
             let navigationVC = UINavigationController(rootViewController: WorkoutsVC)
             present(navigationVC, animated: true)
