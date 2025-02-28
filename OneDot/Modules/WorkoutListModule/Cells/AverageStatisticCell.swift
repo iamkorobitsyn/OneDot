@@ -10,14 +10,14 @@ import UIKit
 
 class AverageStatisticCell: UICollectionViewCell {
     
-    let leadingResultModule: DescriptionModuleView = {
-        let module = DescriptionModuleView()
+    let leadingResultModule: ValueBlockView = {
+        let module = ValueBlockView()
         module.disableAutoresizingMask()
         return module
     }()
     
-    let trailingResultModule: DescriptionModuleView = {
-        let module = DescriptionModuleView()
+    let trailingResultModule: ValueBlockView = {
+        let module = ValueBlockView()
         module.disableAutoresizingMask()
         return module
     }()

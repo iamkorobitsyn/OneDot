@@ -119,24 +119,19 @@ class GraphicsService {
     
     
     
-    func splashAnimate(_ frontLayer: CALayer,
-                             _ backLayer: CAGradientLayer,
-                             _ logoLayer: UIView,
-                             delegate: CAAnimationDelegate) {
-        
-       
+    func splashAnimate(frontLayer: CALayer, backLayer: CAGradientLayer, logoLayer: UIView) {
         var animations: [CABasicAnimation] = []
         
         let frontLayerOpacity = CABasicAnimation(keyPath: "opacity")
         frontLayerOpacity.beginTime = 0
         frontLayerOpacity.fromValue = 1
         frontLayerOpacity.toValue = 0
-        frontLayerOpacity.duration = 1
+        frontLayerOpacity.duration = 1.5
         
         animations.append(frontLayerOpacity)
         
         let frontLayerDelay = CABasicAnimation(keyPath: "opacity")
-        frontLayerDelay.beginTime = 1
+        frontLayerDelay.beginTime = 1.5
         frontLayerDelay.fromValue = 0
         frontLayerDelay.toValue = 0
         frontLayerDelay.duration = 0.5
@@ -149,21 +144,19 @@ class GraphicsService {
         backLayerOpacity.beginTime = CACurrentMediaTime() + 1
         backLayerOpacity.fromValue = 1
         backLayerOpacity.toValue = 0
-        backLayerOpacity.duration = 0.50
+        backLayerOpacity.duration = 0.5
         backLayerOpacity.fillMode = .forwards
         backLayerOpacity.isRemovedOnCompletion = false
         
         let frontLayerAnimationGroup = CAAnimationGroup()
         frontLayerAnimationGroup.animations = animations
-        frontLayerAnimationGroup.duration = 1.5
+        frontLayerAnimationGroup.duration = 2
         frontLayerAnimationGroup.fillMode = .forwards
         frontLayerAnimationGroup.isRemovedOnCompletion = false
-        frontLayerAnimationGroup.delegate = delegate
 
-        frontLayer.add(frontLayerAnimationGroup, forKey: "opacityAnimations")
+        frontLayer.add(frontLayerAnimationGroup, forKey: "")
         backLayer.add(backLayerOpacity, forKey: "")
         logoLayer.layer.add(backLayerOpacity, forKey: "")
-        
     }
 
     

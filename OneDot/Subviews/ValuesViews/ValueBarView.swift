@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class SnapshotHeaderView: UIView {
+class ValueBarView: UIView {
     
     var workoutData: WorkoutData?
     var climbValue: Double = 0
@@ -107,7 +107,7 @@ class SnapshotHeaderView: UIView {
         workoutDateLabel.text = stringStartDate
 
         if workoutData.distance != 0 {
-            let distanceView = DescriptionModuleView()
+            let distanceView = ValueBlockView()
             let kilometers = workoutData.distance / 1000
             let roundedKilometers = String(format: "%.2f", kilometers)
             distanceView.activateMode(axis: .horizontalCompact, mode: .distanceDescription, text: "\(roundedKilometers) km")
@@ -115,18 +115,18 @@ class SnapshotHeaderView: UIView {
         }
             
         if climbValue != 0 {
-            let climbView = DescriptionModuleView()
+            let climbView = ValueBlockView()
             climbView.activateMode(axis: .horizontalCompact, mode: .climbDescription, text: "\(Int(climbValue))")
             leadingStackView.addArrangedSubview(climbView)
         }
         
         if workoutData.stepCount != 0 {
-            let stepsView = DescriptionModuleView()
+            let stepsView = ValueBlockView()
             stepsView.activateMode(axis: .horizontalCompact, mode: .stepsDescription, text: "\(Int(workoutData.stepCount))")
             leadingStackView.addArrangedSubview(stepsView)
         }
         
-        let caloriesView = DescriptionModuleView()
+        let caloriesView = ValueBlockView()
         caloriesView.activateMode(axis: .horizontalCompact, mode: .caloriesDescription, text: "\(Int(workoutData.calloriesBurned))")
         leadingStackView.addArrangedSubview(caloriesView)
         
@@ -136,26 +136,26 @@ class SnapshotHeaderView: UIView {
         let minutes = (Int(workoutData.duration) % 3600) / 60
         let seconds = Int(workoutData.duration) % 60
         let duration = String(format: "%02d:%02d:%02d", hours, minutes, seconds)
-        let timeView = DescriptionModuleView()
+        let timeView = ValueBlockView()
         timeView.activateMode(axis: .horizontalCompact, mode: .timeDescription, text: duration)
         trailingStackView.addArrangedSubview(timeView)
         
         if workoutData.pace != 0 {
             let paceMin = workoutData.pace / 60
             let paceSec = workoutData.pace % 60
-            let paceView = DescriptionModuleView()
+            let paceView = ValueBlockView()
             paceView.activateMode(axis: .horizontalCompact, mode: .paceDescription, text: String(format: "%02d:%02d", paceMin, paceSec))
             trailingStackView.addArrangedSubview(paceView)
         }
         
         if workoutData.cadence != 0 {
-            let cadenceView = DescriptionModuleView()
+            let cadenceView = ValueBlockView()
             cadenceView.activateMode(axis: .horizontalCompact, mode: .cadenceDescription, text: "\(workoutData.cadence)")
             trailingStackView.addArrangedSubview(cadenceView)
         }
         
         if workoutData.heartRate != 0 {
-            let heartRateView = DescriptionModuleView()
+            let heartRateView = ValueBlockView()
             heartRateView.activateMode(axis: .horizontalCompact, mode: .heartRateDescription, text: "\(Int(workoutData.heartRate))")
             trailingStackView.addArrangedSubview(heartRateView)
         }

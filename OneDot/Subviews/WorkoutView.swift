@@ -29,8 +29,8 @@ class WorkoutView: UIView {
     private let stopwatchModeButton: UIButton = UIButton()
     private let eraseButton: UIButton = UIButton()
     
-    private let distanceView: DescriptionModuleView = DescriptionModuleView()
-    private let caloriesBurnedView: DescriptionModuleView = DescriptionModuleView()
+    private let distanceView: ValueBlockView = ValueBlockView()
+    private let caloriesBurnedView: ValueBlockView = ValueBlockView()
     private let separator: CAShapeLayer = CAShapeLayer()
 
     override init(frame: CGRect) {

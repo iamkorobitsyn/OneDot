@@ -8,7 +8,7 @@
 import UIKit
 import MapKit
 
-class DashboardVC: UIViewController, CAAnimationDelegate {
+class DashboardVC: UIViewController {
     
     private let hapticGenerator = UISelectionFeedbackGenerator()
     
@@ -29,7 +29,6 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     private let calculationsBody: CalculationsView = CalculationsView()
     private let settingsBody: SettingsView = SettingsView()
     
-    private let splashScreen: SplashScreenView = SplashScreenView()
     private let locationAlertLabel: UILabel = UILabel()
     
     enum Mode {
@@ -63,25 +62,45 @@ class DashboardVC: UIViewController, CAAnimationDelegate {
     //MARK: - SplashScreenAnimations
     
     override func viewDidAppear(_ animated: Bool) {
-        GraphicsService.shared.splashAnimate(splashScreen.frontLayer, splashScreen.gradient, splashScreen.launchLogo, delegate: self)
         GraphicsService.shared.drawShape(shape: headerSeparator, shapeType: .headerSingleSeparator, view: headerBar)
         GraphicsService.shared.drawShape(shape: footerSeparator, shapeType: .footerSingleSeparator, view: footerBar)
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        setSplashScreen()
         getHealthKitDataList()
         headerBar.animateNavigationView()
-        NotificationCenter.default.addObserver(headerBar,
-                                               selector: #selector(headerBar.animateNavigationView),
-                                               name: UIApplication.didBecomeActiveNotification ,
-                                               object: nil)
-        
+        NotificationCenter.default.addObserver(headerBar, selector: #selector(headerBar.animateNavigationView),
+                                               name: UIApplication.didBecomeActiveNotification , object: nil)
     }
     
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        if flag {
-            splashScreen.alpha = 0
-        }
+    //MARK: - SetSplashScreen
+    
+    private func setSplashScreen() {
+        let frontLayer: CALayer = CALayer()
+        let gradient: CAGradientLayer = CAGradientLayer()
+        let launchLogo: UIImageView = UIImageView()
+        
+        gradient.locations = [0.0, 0.4]
+        gradient.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
+        gradient.colors = [UIColor.white.cgColor, UIColor.myPaletteBlue.cgColor]
+        
+        frontLayer.backgroundColor = UIColor.black.cgColor
+        frontLayer.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
+
+        launchLogo.image = UIImage(named: "launchScreenLogo")
+        
+        view.layer.insertSublayer(gradient, at: .max)
+        view.layer.insertSublayer(frontLayer, at: .max)
+        view.addSubview(launchLogo)
+        
+        launchLogo.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            launchLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            launchLogo.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+        GraphicsService.shared.splashAnimate(frontLayer: frontLayer, backLayer: gradient, logoLayer: launchLogo)
     }
     
     //MARK: - ActivateInintialSettings
@@ -241,9 +260,8 @@ extension DashboardVC {
         view.addSubview(settingsBody)
         view.addSubview(headerBar)
         view.addSubview(footerBar)
-        view.addSubview(splashScreen)
         
-        [splashScreen, mapView, headerBar, footerBar, workoutView, notesBody,
+        [mapView, headerBar, footerBar, workoutView, notesBody,
          calculationsBody, settingsBody, locationAlertLabel].forEach( {$0.disableAutoresizingMask()} )
     }
     
@@ -286,11 +304,6 @@ extension DashboardVC {
             notesBody.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat.headerBarHeight + 70),
             notesBody.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             notesBody.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
-            
-            splashScreen.topAnchor.constraint(equalTo: view.topAnchor),
-            splashScreen.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            splashScreen.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            splashScreen.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
             locationAlertLabel.widthAnchor.constraint(equalToConstant: .barWidth - 50),
             locationAlertLabel.heightAnchor.constraint(equalToConstant: 60),

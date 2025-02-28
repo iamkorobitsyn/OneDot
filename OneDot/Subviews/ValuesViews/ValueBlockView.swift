@@ -9,27 +9,12 @@
 import Foundation
 import UIKit
 
-class DescriptionModuleView: UIView {
+class ValueBlockView: UIView {
     
-    let titleLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        return label
-    }()
-    
-    let titleIcon: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        return view
-    }()
-    
-    let resultLabel: UILabel = {
-        let label = UILabel()
-        label.disableAutoresizingMask()
-        return label
-    }()
+    let titleLabel: UILabel = UILabel()
+    let resultLabel: UILabel = UILabel()
+    let titleIcon: UIImageView = UIImageView()
 
-    
     enum Mode {
         case timeDescription
         case caloriesDescription
@@ -51,39 +36,26 @@ class DescriptionModuleView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        
+        [titleLabel, resultLabel, titleIcon].forEach( {addSubview($0)} )
+        [titleLabel, resultLabel, titleIcon].forEach( {$0.disableAutoresizingMask()} )
     }
     
     func activateMode(axis: Axis, mode: Mode, text: String) {
         resultLabel.text = text
-        
-        
+
         switch axis {
             
         case .horizontalCompact:
-            
-            addSubview(titleLabel)
-            addSubview(titleIcon)
-            addSubview(resultLabel)
             
             titleLabel.instance(color: .myPaletteGray, alignment: .left, font: .condensedMin)
             resultLabel.instance(color: .myPaletteGray, alignment: .right, font: .standartMid)
             
         case .horizontalExpanded:
             
-            addSubview(titleIcon)
-            addSubview(resultLabel)
-            addSubview(titleLabel)
-            
             resultLabel.instance(color: .white, alignment: .center, font: .standartExtra)
             titleLabel.instance(color: .white, alignment: .center, font: .condensedMid)
             
         case .vertical:
-            
-            addSubview(titleLabel)
-            addSubview(titleIcon)
-            addSubview(resultLabel)
             
             titleLabel.instance(color: .myPaletteGray, alignment: .center, font: .condensedMid)
             resultLabel.instance(color: .myPaletteGray, alignment: .center, font: .standartMid)

@@ -25,8 +25,8 @@ class SnapshotVC: UIViewController {
     
     let gradientLayer: CAGradientLayer = CAGradientLayer()
     
-    let resultHeader: SnapshotHeaderView = {
-        let header = SnapshotHeaderView()
+    let resultHeader: ValueBarView = {
+        let header = ValueBarView()
         header.disableAutoresizingMask()
         return header
     }()
