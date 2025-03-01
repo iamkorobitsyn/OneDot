@@ -238,9 +238,9 @@ extension WorkoutListVC: UITableViewDataSource, UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         hapticGenerator.selectionChanged()
         
-        let workoutFocusVC = SnapshotVC()
-        self.navigationController?.pushViewController(workoutFocusVC, animated: true)
-        workoutFocusVC.workoutData = workoutList?[indexPath.row]
+        let snapshotVC = SnapshotVC()
+        self.navigationController?.pushViewController(snapshotVC, animated: true)
+        snapshotVC.workoutData = workoutList?[indexPath.row]
     }
 }
 

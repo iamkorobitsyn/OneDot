@@ -12,85 +12,41 @@ import MapKit
 
 class SnapshotVC: UIViewController {
     
-    let hapticGenerator = UISelectionFeedbackGenerator()
+    private let hapticGenerator = UISelectionFeedbackGenerator()
 
     var workoutData: WorkoutData?
 
-    enum Mode {
+    private enum Mode {
         case initial
         case screenshot
         case back
         case hide
     }
     
-    let gradientLayer: CAGradientLayer = CAGradientLayer()
+    private let gradientLayer: CAGradientLayer = CAGradientLayer()
     
-    let resultHeader: ValueBarView = {
-        let header = ValueBarView()
-        header.disableAutoresizingMask()
-        return header
-    }()
+    private let mapView: MKMapView = MKMapView()
+    private let valueBar: ValueBarView = ValueBarView()
     
-    let mapView: MKMapView = {
-        let view = MKMapView()
-        view.disableAutoresizingMask()
-        return view
-    }()
+    private let bottleImage: UIImageView = UIImageView()
+    private let dumbbellImage: UIImageView = UIImageView()
+    private let logoView: UIImageView = UIImageView()
     
-    let logoView: UIImageView = {
-        let view = UIImageView()
-        view.disableAutoresizingMask()
-        return view
-    }()
-    
-    let bottleImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.disableAutoresizingMask()
-        imageView.image = UIImage(named: "bottleImage")
-        return imageView
-    }()
-    
-    let dumbbellImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.disableAutoresizingMask()
-        imageView.image = UIImage(named: "dumbbellImage")
-        return imageView
-    }()
-
-    
-    private let backButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "BodyBack"), for: .normal)
-        return button
-    }()
-    
-    private let hideButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "BodyHide"), for: .normal)
-        return button
-    }()
-    
-    private let screenshotButton: UIButton = {
-        let button = UIButton()
-        button.disableAutoresizingMask()
-        button.setImage(UIImage(named: "FooterScreenshot"), for: .normal)
-        return button
-    }()
+    private let backButton: UIButton = UIButton()
+    private let hideButton: UIButton = UIButton()
+    private let screenshotButton: UIButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
         setViews()
-        activateMode(mode: .initial)
         setConstraints()
+        activateMode(mode: .initial)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
     }
-
     
     private func activateMode(mode: Mode) {
         
@@ -98,7 +54,7 @@ class SnapshotVC: UIViewController {
         case .initial:
             if let workoutData = workoutData {
                 
-                resultHeader.workoutData = workoutData
+                valueBar.workoutData = workoutData
                 Task {
                     do {
                         let locations = try await HealthKitManager.shared.getRoute(workout: workoutData)
@@ -117,20 +73,19 @@ class SnapshotVC: UIViewController {
                         mapView.setCenter(newCenter, animated: false)
                         
                         let climbing = try await HealthKitManager.shared.getClimbing(locations: locations)
-                        resultHeader.climbValue = climbing
-                        resultHeader.locationIconName = "AMOutdoorLocGold25x25"
+                        valueBar.climbValue = climbing
+                        valueBar.locationIconName = "AMOutdoorLocGold25x25"
                         
-                        
-                        gradientLayer.isHidden = true
                         bottleImage.isHidden = true
                         dumbbellImage.isHidden = true
                         logoView.image = UIImage(named: "workoutScreenLogoOrangeGray")
-                        resultHeader.activate(locationOutdoor: true)
+                        valueBar.activate(locationOutdoor: true)
                     } catch {
                         
-                        resultHeader.locationIconName = "AMIndoorLocGold25x25"
+                        mapView.isHidden = true
+                        valueBar.locationIconName = "AMIndoorLocGold25x25"
                         logoView.image = UIImage(named: "workoutScreenLogoOrangeWhite")
-                        resultHeader.activate(locationOutdoor: false)
+                        valueBar.activate(locationOutdoor: false)
                     }
                     
                 }
@@ -167,25 +122,26 @@ class SnapshotVC: UIViewController {
     //MARK: - SetViews
     
     private func setViews() {
-
-        view.addSubview(mapView)
         view.layer.addSublayer(gradientLayer)
-        view.addSubview(logoView)
-        view.addSubview(bottleImage)
-        view.addSubview(dumbbellImage)
-        view.addSubview(resultHeader)
-        view.addSubview(backButton)
-        view.addSubview(hideButton)
-        view.addSubview(screenshotButton)
-
-        [backButton, hideButton, screenshotButton].forEach { button in
-            button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
-        }
-        
         gradientLayer.locations = [0.0, 0.4]
         gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         gradientLayer.colors = [UIColor.white.cgColor, UIColor.myPaletteBlue.cgColor]
-
+        
+        [mapView, valueBar, bottleImage, dumbbellImage, logoView, backButton, hideButton, screenshotButton].forEach { view in
+            self.view.addSubview(view)
+            view.disableAutoresizingMask()
+        }
+        
+        bottleImage.image = UIImage(named: "bottleImage")
+        dumbbellImage.image = UIImage(named: "dumbbellImage")
+        
+        backButton.setImage(UIImage(named: "BodyBack"), for: .normal)
+        hideButton.setImage(UIImage(named: "BodyHide"), for: .normal)
+        screenshotButton.setImage(UIImage(named: "FooterScreenshot"), for: .normal)
+        
+        [backButton, hideButton, screenshotButton].forEach { button in
+            button.addTarget(self, action: #selector(buttonTapped(_: )), for: .touchUpInside)
+        }
     }
     
     //MARK: - SetConstraints
@@ -208,20 +164,20 @@ class SnapshotVC: UIViewController {
             screenshotButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             screenshotButton.centerYAnchor.constraint(equalTo: logoView.centerYAnchor),
             
-            resultHeader.heightAnchor.constraint(equalToConstant: 210),
-            resultHeader.widthAnchor.constraint(equalToConstant: .barWidth),
-            resultHeader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            resultHeader.topAnchor.constraint(equalTo: view.topAnchor, constant: 160),
+            valueBar.heightAnchor.constraint(equalToConstant: 210),
+            valueBar.widthAnchor.constraint(equalToConstant: .barWidth),
+            valueBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            valueBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 160),
             
             bottleImage.widthAnchor.constraint(equalToConstant: 60),
             bottleImage.heightAnchor.constraint(equalToConstant: 60),
-            bottleImage.bottomAnchor.constraint(equalTo: resultHeader.topAnchor),
-            bottleImage.leadingAnchor.constraint(equalTo: resultHeader.leadingAnchor, constant: 70),
+            bottleImage.bottomAnchor.constraint(equalTo: valueBar.topAnchor),
+            bottleImage.leadingAnchor.constraint(equalTo: valueBar.leadingAnchor, constant: 70),
             
             dumbbellImage.widthAnchor.constraint(equalToConstant: 60),
             dumbbellImage.heightAnchor.constraint(equalToConstant: 60),
-            dumbbellImage.bottomAnchor.constraint(equalTo: resultHeader.topAnchor, constant: 15.5),
-            dumbbellImage.trailingAnchor.constraint(equalTo: resultHeader.trailingAnchor, constant: -40),
+            dumbbellImage.bottomAnchor.constraint(equalTo: valueBar.topAnchor, constant: 15.5),
+            dumbbellImage.trailingAnchor.constraint(equalTo: valueBar.trailingAnchor, constant: -40),
             
             backButton.widthAnchor.constraint(equalToConstant: 42),
             backButton.heightAnchor.constraint(equalToConstant: 42),
