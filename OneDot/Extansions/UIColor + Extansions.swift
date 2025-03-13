@@ -13,6 +13,7 @@ extension UIColor {
         self.init(red: r/255, green: g/255, blue: b/255, alpha: alpha)
     }
     
+    
     static let myPaletteGray: UIColor = .init(r: 86, g: 86, b: 86, alpha: 1)
     static let myPaletteBlue: UIColor = .init(r: 82, g: 130, b: 176, alpha: 1)
     static let myPaletteRed: UIColor = .init(r: 228, g: 89, b: 96, alpha: 1)
