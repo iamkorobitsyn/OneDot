@@ -12,6 +12,7 @@ class DashboardVC: UIViewController {
     
     private let hapticGenerator = UISelectionFeedbackGenerator()
     
+    
     private var workoutModeIs: Bool { UserDefaultsManager.shared.workoutModeIs }
     private let locationManager: CLLocationManager = CLLocationManager()
     private var healthKitDataList: [WorkoutData]?
